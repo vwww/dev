@@ -1,0 +1,325 @@
+<script>
+import PaginationButtons from '../../common/PaginationButtons.svelte'
+import langList from './languages.json'
+
+const NUM_PROBLEMS = 524288 // 2^19
+const NUM_PROBLEMS_PER_PAGE = 10
+const NUM_PROBLEM_PAGES = Math.ceil(NUM_PROBLEMS / NUM_PROBLEMS_PER_PAGE)
+const PROBLEM_SPECIAL = 1337
+
+const NUM_USERS = 17179869184 // 2^34
+const NUM_USERS_PER_PAGE = 10
+const NUM_USER_PAGES = Math.ceil(NUM_USERS / NUM_USERS_PER_PAGE)
+
+const PROBLEM_POINTS = 1000
+
+const fakeSiteCreated = new Date(Date.now() - 86400000 * 365.25 * 10)
+
+let problemsPage = 1
+let leaderboardPage = 1
+
+$: problemNumbers = Array.from(numbersOnPageDesc(NUM_PROBLEMS, problemsPage, NUM_PROBLEMS_PER_PAGE))
+$: leaderboardNumbers = Array.from(numbersOnPageAsc(NUM_USERS, leaderboardPage, NUM_USERS_PER_PAGE))
+
+function* range(start, end, step) {
+  if (end === undefined) {
+    end = start
+    start = 0
+  }
+  step = step || (start < end ? 1 : -1)
+
+  for (
+    let length = Math.max((end - start) / step, 0);
+    length-- > 0;
+    start += step) {
+    yield start
+  }
+}
+
+function* numbersOnPageAsc (total, page, numPerPage) {
+  const start = 1 + (page - 1) * numPerPage
+  const end = Math.min(start + numPerPage, total)
+  yield* range(start, end)
+}
+
+function* numbersOnPageDesc (total, page, numPerPage) {
+  const start = total - (page - 1) * numPerPage
+  const end = Math.max(start - numPerPage, 0)
+  yield* range(start, end)
+}
+
+function userIdToName (i) { return i === 1 ? 'Victor' : `user${i}` }
+
+let problemsTab, leaderboardTab, problemTab
+
+let problemPageNum = PROBLEM_SPECIAL
+let problemPageTextarea
+let problemPageLang = 'Python 3'
+let problemPageHint = 0
+let problemPageRecent = true
+
+let userModalUID = 1
+
+function showProblems () {
+  jQuery(problemsTab).tab('show')
+}
+
+function showLeaderboard () {
+  jQuery(leaderboardTab).tab('show')
+}
+
+function showProblem (num) {
+  problemPageNum = num
+  jQuery(problemTab).tab('show')
+}
+
+function downloadBlankFile () {
+  location = URL.createObjectURL(new File([], 'submission', { type: 'application/octet-stream' }))
+}
+</script>
+
+<ul class="nav nav-tabs nav-fill mb-3" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="problems-tab" bind:this={problemsTab} data-toggle="tab" href="#problems" role="tab" aria-controls="problems" aria-selected="false">Problems</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="leaderboard-tab" bind:this={leaderboardTab} data-toggle="tab" href="#leaderboard" role="tab" aria-controls="contact" aria-selected="false">Leaderboard</a>
+  </li>
+  <li class="nav-item d-none">
+    <a class="nav-link" id="problem-tab" bind:this={problemTab} data-toggle="tab" href="#problem" role="tab" aria-controls="problem" aria-selected="false">Problem</a>
+  </li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="jumbotron">
+      <h1 class="display-4">BestCoder</h1>
+      <p class="lead">Be the best coder you can be; practice your skills on the most popular* programming contest practice site!</p>
+      <hr class="my-4">
+      <p>*We're probably the most popular with {NUM_PROBLEMS.toLocaleString()} problems and {NUM_USERS.toLocaleString()} users, who submitted {(NUM_PROBLEMS * NUM_USERS).toLocaleString()} solutions.</p>
+      <div class="btn-group d-flex">
+        <button class="btn btn-primary btn-lg w-100" on:click={showProblems}>Get Started</button>
+        <button class="btn btn-secondary w-50" on:click={showLeaderboard}>Top Users</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane" id="problems" role="tabpanel" aria-labelledby="problems-tab">
+    <h2>Problems</h2>
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Points</th>
+          <th>Solved</th>
+          <th>Attempted</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each problemNumbers as i}
+          <tr>
+            <td>{i.toLocaleString()}</td>
+            <td><a href="#problem{i}" on:click|preventDefault={() => showProblem(i)}>Problem {i.toLocaleString()}{i === PROBLEM_SPECIAL ? ': Do Nothing' : ` (alias of #${PROBLEM_SPECIAL.toLocaleString()})`}</a></td>
+            <td>{PROBLEM_POINTS.toLocaleString()}</td>
+            <td>{NUM_USERS.toLocaleString()}</td>
+            <td>{NUM_USERS.toLocaleString()}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+    <PaginationButtons
+      pageCur={problemsPage}
+      pageMax={NUM_PROBLEM_PAGES}
+      onSetPage={page => problemsPage = page} />
+  </div>
+  <div class="tab-pane" id="leaderboard" role="tabpanel" aria-labelledby="leaderboard-tab">
+    <h2>Leaderboard</h2>
+    <div class="alert alert-info" role="alert">
+      <h4 class="alert-heading">Ranking Info</h4>
+      Every user gets <code>w/(n+1)</code> points for each problem solved, where <code>w</code> is the weight of the problem, and <code>n</code> is the number of people who solved it earlier.
+    </div>
+    <ul class="nav nav-pills mb-2">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="pill" href="#leaderboard0">Last Century</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#leaderboard1">Last Millenium</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#leaderboard2">All Time</a>
+      </li>
+    </ul>
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Points</th>
+          <th>Solved</th>
+          <th>Attempted</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each leaderboardNumbers as i}
+          <tr>
+            <td>{i.toLocaleString()}</td>
+            <td><a href="#user{i}" on:click={() => userModalUID = i} data-toggle="modal" data-target="#userModal">{userIdToName(i)}</a></td>
+            <td>{Math.round(NUM_PROBLEMS * PROBLEM_POINTS / i).toLocaleString()}</td>
+            <td>{NUM_PROBLEMS.toLocaleString()}</td>
+            <td>{NUM_PROBLEMS.toLocaleString()}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+    <PaginationButtons
+      pageCur={leaderboardPage}
+      pageMax={NUM_USER_PAGES}
+      onSetPage={page => leaderboardPage = page} />
+  </div>
+  <div class="tab-pane" id="problem" role="tabpanel">
+    <h2>Problem #{problemPageNum.toLocaleString()}: Do Nothing{problemPageNum === PROBLEM_SPECIAL ? '' : ` (alias of #${PROBLEM_SPECIAL.toLocaleString()})`}</h2>
+
+    <h3>Input</h3>
+    <p>
+      There is no input for this problem, 69% of the time.
+      In the other 32%, the input is unspecified, and your program must handle it successfully.
+      -1% of the time, we don't check the output and just allow solutions without checking.
+    </p>
+
+    <h3>Output</h3>
+    <p>Exactly 0 bytes must be printed to standard output when the program terminates.<p>
+
+    <div class="row">
+      <div class="col-6">
+        <h3>Sample Input 0</h3>
+        <pre class="card card-body bg-light" />
+      </div>
+      <div class="col-6">
+        <h3>Sample Output 0</h3>
+        <pre class="card card-body bg-light" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+        <h3>Sample Input 1</h3>
+        <pre class="card card-body bg-light">1337</pre>
+      </div>
+      <div class="col-6">
+        <h3>Sample Output 1</h3>
+        <pre class="card card-body bg-light" />
+      </div>
+    </div>
+
+    <h3>Code Editor</h3>
+    <div class="mb-1">
+      <select class="form-control" bind:value={problemPageLang}>
+        {#each langList as lang}
+          <option>{lang}</option>
+        {/each}
+      </select>
+    </div>
+
+    <div class="mb-2">
+      <textarea class="form-control" bind:this={problemPageTextarea}># Enter your code here</textarea>
+    </div>
+
+    <div class="mb-2">
+      <button class="btn btn-lg btn-primary" on:click={() => problemPageHint = problemPageTextarea.value ? 2 : 3}>Submit</button>
+      <button class="btn btn-secondary" on:click={() => problemPageHint = 1}>Hint</button>
+    </div>
+
+    {#if problemPageHint === 1}
+      <div class="alert alert-info" role="alert">
+        <button class="close" on:click={() => problemPageHint = 0} aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        Do the simplest thing that could possibly work.
+      </div>
+    {:else if problemPageHint === 2}
+      <div class="alert alert-danger" role="alert">
+        <button class="close" on:click={() => problemPageHint = 0} aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="alert-heading">Code size limit exceeded</h4>
+        Try to solve this problem without wasting so much space!
+      </div>
+    {:else if problemPageHint === 3}
+      <div class="alert alert-danger" role="alert">
+        <button class="close" on:click={() => problemPageHint = 0} aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="alert-heading">Time Limit Exceeded</h4>
+        You are too late, after waiting so long that {NUM_USERS.toLocaleString()} users solved it before you!
+      </div>
+    {/if}
+
+    <h3>Past Submissions</h3>
+    <ul class="nav nav-pills mb-2">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="pill" href="#problem_newest" on:click={() => problemPageRecent = true}>Newest</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#problem_oldest" on:click={() => problemPageRecent = false}>Oldest</a>
+      </li>
+    </ul>
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Run Time / &micro;s</th>
+          <th>Submit Time</th>
+          <th>Language</th>
+          <th>Result</th>
+          <th>Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each Array.from((problemPageRecent ? numbersOnPageDesc : numbersOnPageAsc)(NUM_USERS, 1, 5)) as i}
+          <tr>
+            <td><a href="#user{i}" on:click={() => userModalUID = i} data-toggle="modal" data-target="#userModal">{userIdToName(i)}</a></td>
+            <td>0.000000</td>
+            <td>{new Date(fakeSiteCreated.getTime() + i).toISOString()}</td>
+            <td>{langList[((((i + 5 * problemPageNum) * 1103515245 + 12345) >> 16) & 0xFFFF) % langList.length]}</td>
+            <td>Accepted</td>
+            <td><button class="btn btn-outline-primary" on:click={downloadBlankFile}>Download</button></td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalTitle">User {userModalUID}: {userIdToName(userModalUID)}</h5>
+        <button class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="media">
+          <img src="https://gravatar.com/avatar/{userModalUID === 1 ? 'bc3ec022d71a5ec8e80990f198f9dc53' : userModalUID}?s=60&d=identicon" class="mr-3" alt="...">
+          <div class="media-body">
+            <h5 class="mt-0">{userIdToName(userModalUID)}</h5>
+            <p>Member since: {fakeSiteCreated.toLocaleString()}</p>
+            <p>Submitted: {NUM_PROBLEMS.toLocaleString()}</p>
+            <p>Solved: {NUM_PROBLEMS.toLocaleString()}</p>
+            <p>Points: {Math.round(NUM_PROBLEMS * PROBLEM_POINTS / userModalUID).toLocaleString()}</p>
+            <p>Rank: {userModalUID.toLocaleString()}</p>
+            <p>Rank History</p>
+            <img src="https://chart.googleapis.com/chart?cht=lc&chs=320x165&chxt=y&chxr=0,0,{userModalUID * 2}&chd=t:{userModalUID},{userModalUID}&chds=0,{userModalUID * 2}" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+{% include _init.html %}
+
+<!-- Fixed navbar -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="{{base}}"><img src="{{assets}}victorz/logo.png" alt="logo"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+{%- assign href_check = page.url | slice: 1, 1337 -%}
+{%- for item in site.data.navbar -%}
+{%- if item.dropdown -%}
+        {%- assign prefix = '/' | append: item.prefix %}
+        {%- assign prefix_len = prefix | size %}
+        {%- assign prefix_check = page.url | slice: 0, prefix_len %}
+        <li class="nav-item dropdown{% if prefix == prefix_check %} active{% endif %}">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
+          <ul class="dropdown-menu" role="menu">
+          {%- assign href2 = item.prefix | append: '/' -%}
+            <li><a class="dropdown-item{% if href2 == href_check %} active{% endif %}" href="{{base}}/{{ href2 }}">List</a></li>
+          {%- for section in site.data.nav[item.dropdown] %}
+            <li class="dropdown-divider"></li>
+          {%- if section.name %}
+            <li class="dropdown-header">{{ section.name }}</li>
+          {%- endif %}
+          {%- for d in section.items %}
+            <li>
+              {%- assign href2 = d.href | append: '.html' -%}
+              <a class="dropdown-item{% if d.disabled %} disabled{% endif %}{% if d.href == href_check or href2 == href_check %} active{% endif %}"
+              {%- if d.href_external %}
+                href="{{d.href_external}}"
+                target="_blank"
+              {%- else %}
+                href="{{base}}/{{d.href}}"
+              {%- endif %}
+              {%- if d.desc %}
+                title="{{d.desc}}"
+              {%- endif %}
+              >{{d.name}}
+              {%- for b in d.badges %}
+                <span class="badge badge-{{b[0]}}">{{b[1]}}</span>
+              {%- endfor %}
+              {%- if d.href_external %}
+              <span class="badge badge-info">Ext</span>
+              {%- endif %}
+              </a>
+            </li>
+          {%- endfor %}
+          {%- endfor %}
+          </ul>
+        </li>
+{%- else %}
+        <li class="nav-item{% if href_check == item.href %} active{% endif %}"><a class="nav-link" href="{{base}}/{{item.href}}">{{item.name}}</a></li>
+{%- endif %}
+{%- endfor %}
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="{{site.edit_prefix}}{{page.path}}">HTML</a></li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Theme</a>
+          <ul class="dropdown-menu" role="menu">
+            <li id="theme-switcher-msg" class="btn-danger">
+              <a class="dropdown-item disabled" href="#" id="theme-switcher-msg-text">Cannot save</a>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li><a class="dropdown-item theme-switcher" href="#" data-theme="bootstrap">Bootstrap</a></li>
+            <li><a class="dropdown-item theme-switcher active" href="#" data-theme="bootstrap2">Bootstrap Theme</a></li>
+            <li class="dropdown-divider"></li>
+            <li class="dropdown-header">Bootswatch</li>
+            {%- for theme in site.data.themes.bootswatch %}
+            <li><a class="dropdown-item theme-switcher" href="#" data-theme="bootswatch-{{ theme[0] }}">{{ theme[1] }}</a></li>
+            {%- endfor %}
+          </ul>
+        </li>
+
+        <li id="april-fools-joke-menu" class="dropdown d-none">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language <span class="badge badge-warning">NEW</span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li class="dropdown-header">10 languages</li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li class="dropdown-divider"></li>
+            <li class="dropdown-header">April Fools!</li>
+          </ul>
+        </li>
+
+<!--
+        <li class="dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HTTPS</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a class="dropdown-item" href="https://victorz.ca{{page.url}}">victorz.ca</a></li>
+            <li><a class="dropdown-item" href="https://vwww.github.io/new{{page_url}}">github.io</a></li>
+          </ul>
+        </li>
+-->
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>

@@ -1,0 +1,46 @@
+name: Pauline's Five Men in Europe
+desc: >
+  All of Pauline's favorite male relatives live in
+  Europe. They are her father, her uncle, her first
+  cousin, her brother, and her husband. In no
+  particular order, their names are Daniel, Edgar,
+  Wilfred, Luther, and Walter. Although they all
+  live in Europe, no two men live in the same
+  city. The cities in which they live are London,
+  Paris, Rome, Madrid, and Berlin. From the
+  clues given, try to determine not only the city
+  in which each man lives and his relationship to
+  Pauline, but his occupation as well, be it
+  diplomat, correspondent, student, artist or
+  professor. Assume her husband is only related to
+  the other men through marriage to her.
+clues:
+- >
+  The man in Berlin is the father of the
+  correspondent and the diplomat is the father of
+  the man in Paris.
+- >
+  Luther is the son of the man in Rome and Walter is the artist's son.
+- >
+  Daniel is the father of the man in Madrid and Wilfred is the father of the
+  student.
+- >
+  Her cousin does not live in Paris.
+types:
+  - type: First M
+    vals: [Daniel, Edgar, Wilfred, Luther, Walter]
+  - type: Family M
+    vals: [Father, Uncle, Cousin, Brother, Husband]
+  - type: City
+    vals: [London, Paris, Rome, Madrid, Berlin]
+  - type: Occupation
+    vals: [Diplomat, Corresp., Student, Artist, Prof.]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0143"
+  - "1404"
+  - "2020"
+  - "3312"
+  - "4231"

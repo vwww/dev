@@ -1,0 +1,49 @@
+name: The Russian Course
+desc: >
+  Edward, Mary, Robert, Howard, Harold, and
+  Mabel are taking a night course in Russian at a
+  university in Queens. They all come from Long
+  Island but each comes from a different town:
+  Huntington, Lake Success, Westbury, Mineola,
+  Oyster Bay, and Great Neck. They are all
+  employed--one is a broker, one an artist, one a
+  doctor, one a banker, one an engineer, and one
+  an editor. From the clues given try to
+  determine where each person lives and what each
+  person does for a living.
+clues:
+- >
+  One of the women is an editor and tHe other
+  one lives in Huntington.
+- >
+  The man from Oyster Bay, Mary, and the
+  artist are all Harold's patients.
+- >
+  The engineer from Lake Success, the broker,
+  and Mabel have plans to visit the Soviet Union soon; the others are taking the
+  course as an intellectual exercise.
+- >
+  The man from Westbury, the broker, Robert, and Howard often make up a golf
+  foursome.
+- >
+  Robert lives in Oyster Bay but he is not the engineer.
+- >
+  Edward and the banker often drive in_to class together as do the men from
+  Lake Success and Great Neck.
+types:
+  - type: First (3 M, 2 F)
+    vals: [Edward, Mary, Robert, Howard, Harold, Mabel]
+  - type: Occupation
+    vals: [Broker, Artist, Doctor, Banker, Engineer, Editor]
+  - type: Town
+    vals: [Huntington, Lake Success, Westbury, Mineola, Oyster Bay, Great Neck]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "012"
+  - "100"
+  - "234"
+  - "341"
+  - "425"
+  - "553"

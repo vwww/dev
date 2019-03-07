@@ -1,0 +1,32 @@
+---
+title: Archives
+entry: blog_tag_cloud
+---
+{%- include blog-header.html -%}
+
+{%- assign posts_by_year = site.posts | reverse | group_by_exp: 'post', 'post.date | date: "%Y"' | reverse -%}
+<div class="tag-cloud mb-4">
+	{%- for group in posts_by_year %}
+	<a href="#{{ group.name }}" class="badge badge-secondary">{{ group.name }} <sup>{{ group.size }}</sup></a>
+	{%- endfor %}
+</div>
+
+{%- for group in posts_by_year %}
+<div id="{{ group.name }}" class="card mb-3">
+	<div class="card-header">
+		{{ group.name }} <sup>{{ group.size }}</sup>
+	</div>
+	<ul class="list-group list-group-flush">
+		{%- for post in group.items %}
+		<li class="list-group-item">
+			<h5 class="card-title"><a href="{{ post.url }}">{{ post.title }}</a></h5>
+			<h6 class="card-subtitle mb-2 text-muted">
+				<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %e" }}</time>
+				|
+				{% include blog-tags.html tags=post.tags categories=post.categories year=group.name year_count=group.size is_year=1 %}
+			</h6>
+		</li>
+		{%- endfor %}
+	</ul>
+</div>
+{%- endfor %}

@@ -1,0 +1,42 @@
+name: Double Gifts
+desc: >
+  Five women went shopping together to get birthday
+  presents for a mutual friend. Their names are
+  Nancy, Olivia, Rita, Sally, and Vivian. The five gifts
+  that they bought for their friend are: gloves, a
+  necklace, a sweater, a wallet, and a watch. While
+  shopping each woman bought one of the same gifts
+  for herself. From the information given, determine
+  the gift that each woman bought for her friend as
+  well as the gift that each one bought for herself.
+clues:
+- >
+  Nancy and Rita did not buy a sweater or a
+  wallet.
+- >
+  Vivian bought a necklace for herself and the
+  woman who bought the same gift for her friend
+  is not Rita.
+- >
+  Sally bought for herself the same thing that
+  Olivia bought for her friend.
+- >
+  Vivian and Rita bought watches.
+- >
+  Sally did not buy a sweater for herself.
+types:
+  - type: First F
+    vals: [Nancy, Olivia, Rita, Sally, Vivian]
+  - type: Gift (Self)
+    vals: [GlovesS, NecklaceS, SweaterS, WalletS, WatchS]
+  - type: Gift (Friend)
+    vals: [GlovesF, NecklaceF, SweaterF, WalletF, WatchF]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [Nancy, GlovesS, NecklaceF]
+  - [Olivia, SweaterS, WalletF]
+  - [Rita, WatchS, GlovesF]
+  - [Sally, WalletS, SweaterF]
+  - [Vivian, NecklaceS, WatchF]

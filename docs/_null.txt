@@ -1,0 +1,9 @@
+search [ "layout: ~" ]
+
+blog/atom.xml
+blog/rss.xml
+bots/poke_old
+game/logic.json
+misc/jokes/ie
+misc/oxidane
+xkcd_map/

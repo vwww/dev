@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./tsc_temp",
+    "strict": true,
+    // "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "module": "ES6",
+    "moduleResolution": "node",
+    "target": "ES6",
+    // "allowJs": true,
+    // "importsNotUsedAsValues": "error",
+    // "isolatedModules": true, // causes bug with `export const enum`?
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": [
+    "scripts",
+    "typings.d.ts",
+    "typings.playerio.d.ts",
+  ]
+}

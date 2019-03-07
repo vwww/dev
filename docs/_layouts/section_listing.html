@@ -1,0 +1,38 @@
+---
+layout: pages
+---
+{%- include _init.html -%}
+{%- for s in page.sections %}
+  {%- unless forloop.first %}
+  <hr>
+  {%- endunless %}
+  {%- for section in site.data.nav[s] %}
+    {%- unless forloop.first %}
+      <hr>
+    {%- endunless %}
+    {%- if section.name %}
+      <h2>{{ section.name }}</h2>
+    {%- endif %}
+    {%- if section.desc %}
+      <p>{{ section.desc }}</p>
+    {%- endif %}
+    <div class="card-columns">
+    {%- for item in section.items %}
+      <div class="card{% if item.badges %} border-{{ item.badges[0][0] }}{% endif %}">
+        <div class="card-header">{{ item.name }}{% if item.badges %} <span class="badge badge-{{ item.badges[0][0] }}">{{ item.badges[0][1] }}</span>{% endif %}</div>
+        <div class="card-body">
+          {%- if item.desc %}
+            <p class="card-text">{{ item.desc }}</p>
+          {%- endif %}
+          {%- if item.href %}
+            <a href="{{ base }}/{{ item.href }}" class="btn btn-primary">Go</a>
+          {%- endif %}
+          {%- if item.href_external %}
+            <a href="{{ item.href_external }}" target="_blank" class="btn btn-info">Go</a>
+          {%- endif %}
+        </div>
+      </div>
+    {%- endfor -%}
+    </div>
+  {%- endfor %}
+{%- endfor -%}

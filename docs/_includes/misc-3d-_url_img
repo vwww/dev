@@ -1,0 +1,1 @@
+https://vwww.github.io/3d/{{ page.area }}/{{ include.p }}{% if include.t %}_{% endif %}/{{ include.k | default: 'none' }}.png

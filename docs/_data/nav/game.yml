@@ -1,0 +1,31 @@
+- name: Downloadable
+  desc: Games that you can download
+  items:
+  - name: AssaultCube Reloaded
+    desc: ACR is a free-and-open-source first-person-shooter.
+    href_external: https://acr.victorz.ca
+  - name: Real Eclipse
+    desc: Realistic Red Eclipse, set in the present instead of future
+    href_external: https://re.victorz.ca
+    badges:
+      - [secondary, Planning]
+- items:
+  - name: Arcade
+    desc: my arcade, full of hacked flash games!
+    date_added: 2008-09?
+    href_external: https://games.victorz.ca
+  - name: Tic-Tac-Toe Analyzer
+    desc: Analyze Tic-Tac-Toe in various variants and game states
+    href: game/t3
+  - name: Fill Solver
+    desc: Solve the game Fill efficiently [abandoned]
+    href: game/fill
+  - name: Logic Grid Puzzles
+    desc: Logical puzzle grid (future) solver with sample solutions
+    href: game/logic
+  - name: Balanced Tetris
+    desc: Tetris, but don't let it tip over to one side
+    href: game/tetris
+  - name: Clicking Game Remake
+    desc: Modern version of the first game I created
+    href: game/click

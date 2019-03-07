@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches: master
+  workflow_dispatch:
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - run: bundle install
+      - run: npm install
+      - run: npm run build
+      - name: Deploy
+        working-directory: ./docs/_site
+        run: |
+          touch .nojekyll && \
+          git init && \
+          git config user.name "Victor" && \
+          git config user.email "theonlypwner@users.noreply.github.com" && \
+          git add . && \
+          git commit -m "Build ${GITHUB_SHA}" && \
+          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/vwww.github.io.git HEAD && \
+          echo victorz.ca > CNAME && \
+          git add . && \
+          git commit --amend --no-edit && \
+          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/prod.git HEAD
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

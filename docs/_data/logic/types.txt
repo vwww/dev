@@ -1,0 +1,17 @@
+=
+for all i, a == b[i]
+
+!=
+for all i, a != b[i]
+
+=OR
+for all i, for some j, a[i] == b[j]
+
+D
+for all i, for all j, if i != j, then data[i] != data[j]
+
+<
+TODO
+
+<=
+TODO

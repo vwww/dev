@@ -1,0 +1,48 @@
+name: Like-Named Cats and Dogs
+desc: >
+  Joe, Bill, Bob, Jack, and Tom, whose last
+  names are Carter, Dawson, Mingus, Wood, and
+  Cole, live in an apartment building in New
+  York. Each man owns a dog and a cat. The
+  names of the dogs are Dusty, Midnight, Ginger,
+  Smokey, and Daisy. Although the men do not
+  know each other, it happens the five names
+  they chose for their cats are the same five
+  names chosen for the dogs. From the clues
+  given, try to determine each man's first and last
+  name and the names of his pets. (Hint: No man
+  gave the same name to both his dog and his
+  cat.)
+clues:
+- >
+  Joe and Jack each have a pet named Ginger.
+- >
+  Jack, Joe, and Mr. Carter did not name any
+  of their pets Midnight.
+- >
+  Bob's dog and Jack's cat have the same name, as do Bill's cat and Tom's dog.
+- >
+  The cat Daisy is not owned by Jack Cole, Mr. Mingus, Mr. Carter, or Bill.
+- >
+  Smokey the cat does not live with Ginger the dog, and neither of them live with
+  Tom or Mr. Dawson.
+- >
+  Joe's dog is named Daisy.
+types:
+  - type: First M
+    vals: [Joe, Bill, Bob, Jack, Tom]
+  - type: Last M
+    vals: [Carter, Dawson, Mingus, Wood, Cole]
+  - type: Cat
+    vals: [DustyC, MidnightC, GingerC, SmokeyC, DaisyC]
+  - type: Dog
+    vals: [DustyD, MidnightD, GingerD, SmokeyD, DaisyD]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0225"
+  - "1110"
+  - "2033"
+  - "3402"
+  - "4341"

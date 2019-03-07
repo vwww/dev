@@ -1,0 +1,121 @@
+digraph G {
+	root[label=".", style=dashed]
+	ca[style=dashed]
+	ca_victorz[label=victorz, href="https://victorz.ca"]
+	ca_victorz_[label="*"]
+	ca_victorz__dmarc[label=_dmarc]
+	ca_victorz__domainkey[label=_domainkey, style=dotted]
+	ca_victorz__domainkey_[label="[DKIM selector]"]
+	ca_victorz_acr[label="acr"]
+	ca_victorz_acr_[label="*"]
+	ca_victorz_acr_forum[label=forum]
+	ca_victorz_acr_forum_chat[label=chat]
+	ca_victorz_acr_ms[label=ms]
+	ca_victorz_acr_play[label=play]
+	ca_victorz_cdn[label=cdn, style=dotted]
+	ca_victorz_cdn_games[label=games]
+	ca_victorz_cdn_p[label=p]
+	ca_victorz_cdn_s[label=s]
+	ca_victorz_d[label=d]
+	ca_victorz_d4[label=d4]
+	ca_victorz_d6[label=d6]
+	ca_victorz_games[label=games]
+	ca_victorz_github[label=github]
+	ca_victorz_go[label=go]
+	ca_victorz_ilf[label=ilf]
+	ca_victorz_re[label=re]
+	ca_victorz_seizure[label=seizure]
+	ca_victorz_seizure_[label="*"]
+	ca_victorz_sendmail[label=sendmail]
+	ca_victorz_vm[label=vm]
+
+	/* DNS structure */
+	root
+	-> ca
+	-> ca_victorz
+	-> {
+		ca_victorz_
+		ca_victorz__dmarc
+		ca_victorz__domainkey
+		ca_victorz_acr
+		ca_victorz_cdn
+		ca_victorz_d
+		ca_victorz_d4
+		ca_victorz_d6
+		ca_victorz_games
+		ca_victorz_github
+		ca_victorz_go
+		ca_victorz_ilf
+		ca_victorz_re
+		ca_victorz_seizure
+		ca_victorz_sendmail
+		ca_victorz_vm
+	} [arrowhead=none]
+	ca_victorz_seizure -> ca_victorz_seizure_ [arrowhead=none]
+	ca_victorz__domainkey -> ca_victorz__domainkey_ [arrowhead=none]
+	ca_victorz_acr -> {
+		ca_victorz_acr_
+		ca_victorz_acr_forum
+		ca_victorz_acr_ms
+		ca_victorz_acr_play
+	} [arrowhead=none]
+	ca_victorz_cdn -> {
+		ca_victorz_cdn_games
+		ca_victorz_cdn_p
+		ca_victorz_cdn_s
+	} [arrowhead=none]
+	ca_victorz_acr_forum -> ca_victorz_acr_forum_chat [arrowhead=none]
+
+	/* Records except CNAME, A, AAAA */
+	ca_victorz -> {
+		ca_victorz_soa__[label=SOA, shape=box]
+		ca_victorz_txt__[label="TXT: google site verification", shape=note]
+		ca_victorz_mx__[label=MX, shape=cds]
+	}
+	ca_victorz__dmarc -> { ca_victorz__dmarc_txt__[label="TXT: DMARC record", shape=note] }
+	ca_victorz__domainkey_ -> { ca_victorz__domainkey_txt__[label="TXT: DKIM record", shape=note] }
+	ca_victorz -> { ca_victorz_spf__ [label="TXT: SPF record", shape=note] }
+	ca_victorz_sendmail -> { ca_victorz_spf__ [label="TXT: SPF record", shape=note] }
+
+	/* CNAME records */
+	{
+		ca_victorz_acr
+		ca_victorz_cdn_games
+		ca_victorz_cdn_p
+		ca_victorz_re
+		ca_victorz
+	} -> ca_victorz_github[style=dashed]
+	{
+		ca_victorz_acr_forum
+		ca_victorz_acr_forum_chat
+		ca_victorz_acr_ms
+		ca_victorz_acr_play
+		ca_victorz_games
+		ca_victorz_go
+	} -> ca_victorz_vm[style=dashed]
+	{
+		ca_victorz_
+		ca_victorz_acr_
+		ca_victorz_seizure_
+		ca_victorz_ilf
+		ca_victorz_cdn_s
+	} -> ca_victorz_d[style=dashed]
+
+	/* Servers */
+	subgraph cluster_servers {
+		label = "Servers"
+		vm[label="Virtual Machine"]
+		github[label="GitHub"]
+		google[label="Google"]
+		seizure[label="seizedservers"]
+	}
+	ca_victorz_vm -> vm [style=dotted]
+	ca_victorz_github -> github [style=dotted]
+	{
+		ca_victorz_d
+		ca_victorz_d4
+		ca_victorz_d6
+		ca_victorz_mx__
+	} -> google [style=dotted]
+	ca_victorz_seizure -> seizure [style=dotted]
+}

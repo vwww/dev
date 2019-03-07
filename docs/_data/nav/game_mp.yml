@@ -1,0 +1,57 @@
+- name: Realtime
+  desc: These multiplayer games have continuous realtime actions.
+  items:
+  - name: Slime Volleyball
+    desc: Don't let the ball hit your side's ground
+    href: game/slime
+    badges:
+      - [secondary, Down]
+      #- [success, NEW]
+  - name: Duel
+    desc: 20% luck and 80% skill
+    href: game/duel
+    badges:
+      - [secondary, Down]
+      #- [primary, Beta]
+      #- [success, NEW]
+  - name: Hockey
+    desc: Score the puck on the opponent goal
+    href: game/hockey
+    badges:
+      - [secondary, TODO]
+- name: Turn-Based
+  desc: These multiplayer games have discrete turns.
+  items:
+  - name: Actionless
+    desc: Random winners, do no action
+    href: game/actionless
+  - name: Morra
+    desc: Pick a number, sum determines winner
+    href: game/morra
+  - name: Rock Paper Scissors
+    desc: Pick a group
+    href: game/rps
+  - name: Blackjack
+    desc: Get close to 21, but not over.
+    href: game/blackjack
+    badges:
+      - [secondary, TODO]
+  - name: Cheat
+    desc: Shed cards, possibly dishonestly.
+    href: game/cheat
+    badges:
+      - [secondary, TODO]
+  - name: President
+    desc: Shed your cards first to be the President!
+    href: game/president
+    badges:
+      - [secondary, TODO]
+  - name: Discard
+    desc: Isomorphism of Love Letter
+    href: game/discard
+  - name: Tic-Tac-Toe
+    desc: Get 3 in a row to win!
+    href: game/t3_multi
+  - name: Ultimate Tic-Tac-Toe
+    desc: Win small local boards to win the big global board.
+    href: game/ut3

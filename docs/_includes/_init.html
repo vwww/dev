@@ -1,0 +1,9 @@
+{%- unless INIT_DONE -%}
+{%- assign INIT_DONE = 1 -%}
+
+{%- assign page_level = page.url | append:'INDEX_FIX' | remove_first:'/' | split:'/' | size -%}
+{%- capture base %}{% for i in (2..page_level) %}{% unless forloop.first %}/{% endunless %}..{% endfor %}{% endcapture -%}
+{%- assign assets = base | append:'/assets/' -%}
+{%- assign page_url = page.url | remove:'index.html' -%}
+
+{%- endunless -%}

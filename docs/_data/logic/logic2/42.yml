@@ -1,0 +1,47 @@
+name: Class Reunion
+desc: >
+  At the twenty-year class reunion of the class of 1962
+  of the Littleboro High School, the ex-president,
+  ex-vice-president, ex-secretary, ex-treasurer, and
+  ex-prom committee chairperson of the senior class all
+  showed up. Their last names are Carter, Conway,
+  Matson, Rollings, and Wilson. Three of them are
+  men named Bill, Glen, and Phil. Two of them are
+  women named Liz and Mary. At present they each
+  hold a different one of these five jobs: banker, bus
+  driver, C.P.A., doctor, and teacher. From the
+  information given, determine the first and last name
+  of each class officer, the class position each one
+  held, and each one's present job.
+clues:
+- >
+  The ex-president and ex-treasurer are both males
+  but it is the other male who works as a C.P.A.
+- >
+  Bill's last name does not begin with a "C" and Mary's last name is not Wilson.
+- >
+  Mr. Conway, Phil, and the guy who used to be the secretary do not work as
+  either a banker or a bus driver.
+- >
+  Liz and the banker are not named Matson or Carter and none of these four is
+  the ex-president.
+- >
+  The ex-president, ex-vice-president, and the doctor are not named Wilson.
+types:
+  - type: Ex-Role
+    vals: [Ex-president, Ex-vice-pres., Ex-secretary, Ex-treasurer, Ex-prom comm.]
+  - type: First (3 M, 2 F)
+    vals: [Bill, Glen, Liz, Mary, Phil]
+  - type: Last
+    vals: [Carter, Conway, Matson, Rollings, Wilson]
+  - type: Occupation
+    vals: [Banker, Bus Driver, C.P.A., Doctor, Teacher]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0114"
+  - "1330"
+  - "2402"
+  - "3023"
+  - "4241"

@@ -1,0 +1,30 @@
+pages:
+  index:
+    title: Home
+#  rps:
+#    title: Rock Paper Scissors
+#    game_desc: Rocks smash scissors, which cut paper, which covers the first. This game is not limited to two players; this version supports <b>unlimited players</b>.
+#    subpages:
+#      help: Instructions
+#  morra:
+#    title: Morra
+#    game_desc: Choose a number, which will be part of a total, and then guess if the sum will be odd or even. This game supports <b>unlimited players</b>.
+#    subpages:
+#      help: Instructions
+#  blackjack:
+#    title: Blackjack
+#    game_desc: Also known as 21, this game is popular in casinos. Using virtual credits, play it here without risking your money. This game supports <b>unlimited players</b> but requires <b>waiting</b> between rounds.
+#    subpages:
+#      help: Instructions
+#  cheat:
+#    title: Cheat
+#    game_desc: This is a shedding-type card game whose rules allow cheating! However, making a false accusation or being caught cheating results in receiving the entire deck. This game supports <b>unlimited players</b> but late players have a <b>disadvantage</b>.
+#    subpages:
+#      help: Instructions
+  uttt:
+    title: Ultimate Tic-Tac-Toe
+    game_desc: This is Tic-Tac-Toe (noughts and crosses) squared! It's more complicated than regular Tic-Tac-Toe, in which experts can always force a tie. This game requires <b>match-making</b>, so ask a friend to join you.
+    subpages:
+      help: Instructions
+  about:
+    title: About

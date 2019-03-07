@@ -1,0 +1,74 @@
+name: Parking Lot
+desc: >
+  Mr. Smith, Mr. Jones, Mr. Brown, Mr.
+  Johnson, and Mr. Black work for the Tinyburg
+  Electric Company. Their cars are different
+  colors: red, yellow, green, blue, and white. As
+  it happens, each man also drives a different
+  type of car: a sedan, a station wagon, a sports
+  car, a coupe, and a convertible. From the clues
+  given try to determine the owner, color, and
+  type of each car.
+clues:
+- >
+  Neither Mr. Johnson nor Mr. Jones owns the
+  red car, but one of them owns the
+  convertible.
+- >
+  Mr. Jones, Mr. Brown, and the owner of the
+  sedan sometimes go on camping trips with
+  the owner of the yellow station wagon.
+- >
+  The coupe and the white car are owned by
+  the men with the colorful last names.
+- >
+  Mr. Smith used to own the sports car but then he changed its original white
+  color and sold it to one of the other men who did not paint it green.
+- >
+  Mr. Johnson owns a green car.
+
+types:
+  - type: Car
+    vals: [Sedan, Sta. Wagon, Sports Car, Coupe, Convert.]
+  - type: Last M
+    vals: [Smith, Jones, Brown, Johnson, Black]
+  - type: Color
+    vals: [Red, Yellow, Green, Blue, White]
+rules:
+  - name: Clue 1
+    type: '='
+    a: Red
+    b: [Jones, Johnson]
+  - name: Clue 1
+    type: '!='
+    a: Convert.
+    b: [Smith, Brown, Black]
+
+  - name: Clue 2
+    type: '='
+    a: Yellow
+    b: Sta. Wagon
+  - name: Clue 2
+    type: 'D'
+    data: [Jones, Brown, Sedan, Yellow]
+
+  - name: Clue 3
+    type: 'D'
+    data: [Coupe, White, Smith, Jones, Johnson]
+
+  - name: Clue 4
+    type: '!='
+    a: Sports Car
+    b: [Smith, White, Green]
+
+  - name: Clue 5
+    type: '='
+    a: Johnson
+    b: Green
+
+solution:
+  - [Sedan, Black, White]
+  - [Sta. Wagon, Smith, Yellow]
+  - [Sports Car, Jones, Blue]
+  - [Coupe, Brown, Red]
+  - [Convert., Johnson, Green]

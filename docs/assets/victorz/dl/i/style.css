@@ -1,0 +1,46 @@
+.file-root,
+.file-up,
+.file-dir,
+.file-file {
+	background-position: left;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+}
+
+.file-root { background-image: url('root.png'); }
+.file-up { background-image: url('up.png'); }
+.file-dir { background-image: url('folder.png'); }
+.file-file { background-image: url('unknown.png'); }
+.file-file[data-ext='jpg'],
+.file-file[data-ext='jpeg'] { background-image: url('jpg.png'); }
+.file-file[data-ext='bmp'] { background-image: url('bmp.png'); }
+.file-file[data-ext='zip'],
+.file-file[data-ext='rar'],
+.file-file[data-ext='gz'] { background-image: url('archive.png'); }
+.file-file[data-ext='txt'] { background-image: url('text.png'); }
+.file-file[data-ext='htm'],
+.file-file[data-ext='html'] { background-image: url('html.png'); }
+.file-file[data-ext='xls'],
+.file-file[data-ext='xlsx'] { background-image: url('xls.png'); }
+.file-file[data-ext='doc'],
+.file-file[data-ext='docx'] { background-image: url('doc.png'); }
+.file-file[data-ext='mpg'],
+.file-file[data-ext='mpeg'],
+.file-file[data-ext='mov'],
+.file-file[data-ext='avi'],
+.file-file[data-ext='mp4'] { background-image: url('video.png'); }
+.file-file[data-ext='gm6'],
+.file-file[data-ext='gmk'] { background-image: url('gm.png'); }
+.file-file[data-ext='js'],
+.file-file[data-ext='vbs'] { background-image: url('script.png'); }
+.file-file[data-ext='png'] { background-image: url('png.png'); }
+.file-file[data-ext='gif'] { background-image: url('gif.png'); }
+.file-file[data-ext='exe'] { background-image: url('exe.png'); }
+.file-file[data-ext='fla'] { background-image: url('fla.png'); }
+.file-file[data-ext='swf'] { background-image: url('swf.png'); }
+/*.file-file[data-ext='sig'] { background-image: url('sig.png'); }*/
+.file-file[data-ext='pdf'] { background-image: url('pdf.png'); }
+.file-file[data-ext='psd'] { background-image: url('psd.png'); }
+.file-file[data-ext='rm'] { background-image: url('rm.png'); }
+.file-file[data-ext='eps'] { background-image: url('eps.png'); }
+.file-file[data-ext='css'] { background-image: url('css.png'); }

@@ -1,0 +1,23 @@
+- items:
+  - name: IP Address
+    desc: See your IP address
+    href: tools/ip
+  - name: Ping
+    desc: Check your ping for HTTP requests
+    href: tools/ping
+- desc: general tools
+  items:
+  - name: Base Converter
+    desc: Convert between bases 2 to 36
+    href: tools/base
+  - name: GCD/LCM Calculator
+    href: tools/gcd
+  - name: Unit Converter
+    href: tools/unit
+  - name: Frequency
+    desc: Measure frequency, like heart rate
+    href: tools/freq
+  - name: Letter Counter
+    href: tools/letter_count
+  - name: Encryption Tools
+    href: tools/encrypt

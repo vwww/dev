@@ -1,0 +1,7 @@
+{% assign play_url = '/game/' | append: include.game %}
+{% assign rule_url = '/game/' | append: include.game | append: '_rules' %}
+
+<ul class="nav nav-pills mb-3">
+  <li class="nav-item"><a class="nav-link{% if page.url == play_url %} active{% endif %}" href="{{ include.game }}">Play</a></li>
+  <li class="nav-item"><a class="nav-link{% if page.url == rule_url %} active{% endif %}" href="{{ include.game }}_rules">Rules</a></li>
+</ul>
