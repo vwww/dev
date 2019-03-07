@@ -1,0 +1,46 @@
+name: Dieters' Club
+desc: >
+  A new diet club was started in Phattsburg. The first
+  five members to join up are named Biggs, Gross,
+  House, Piles, and Tubbs. Two of them are men
+  named Barney and Whalen, while three of them are
+  women named Bertha, Fanny, and Fatima. Each
+  started out at a different. one of these five weights:
+  300 lbs., 275 lbs., 250 lbs., 225 lbs., and 200 lbs.
+  After three months on the diet, each person had lost
+  a different amount of weight, either 125, 100, 75, 50,
+  or 25 lbs. From the information given, determine
+  each person's first and last name, original weight,
+  and amount of weight lost.
+clues:
+- >
+  At the beginning of the diet Whalen weighed less
+  than Mr. Piles and the woman who lost the most
+  weight in the whole group but more than Ms.
+  House and the woman who lost the least weight of the whole group.
+- >
+  Barney did not lose exactly 75 lbs. and he is not now the same weight as Ms.
+  Gross.
+- >
+  Mr. Tubbs, at the beginning of the diet, weighed more than Ms. Biggs and less
+  than Fanny.
+- >
+  Fatima started out lighter but lost twice as much weight as Ms. Biggs.
+types:
+  - type: Weight_
+    vals: [300 lbs., 275 lbs., 250 lbs., 225 lbs., 200 lbs.]
+  - type: Weight Delta_
+    vals: [125 lbs., 100 lbs., 75 lbs., 50 lbs., 25 lbs.]
+  - type: First (2 M, 3 F)
+    vals: [Barney, Bertha, Fanny, Fatima, Whalen]
+  - type: Last
+    vals: [Biggs, Gross, House, Piles, Tubbs]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0103"
+  - "1021"
+  - "2244"
+  - "3410"
+  - "4332"

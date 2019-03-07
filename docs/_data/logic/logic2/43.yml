@@ -1,0 +1,46 @@
+name: Rock Tour
+desc: >
+  The Woebegones are a European rock band touring
+  the United States. Five of the cities at which they
+  performed concerts are Buffalo, Cleveland, Kansas
+  City, Los Angeles, and New York City. In each of
+  these cities the concert was opened by one of these
+  five bands: Crazy Glues, Double Double, Draw
+  Backward, Right Turn, and Street Crazed. The
+  attendances at the five concerts were 70,000, 60,000,
+  50,000, 30,000, and 25,000. From the information
+  given., determine the order in which they played the
+  five cities, the attendance, and the name of the
+  opening band.
+clues:
+- >
+  Cleveland was later in the tour than Buffalo but
+  earlier than K.C. which was earlier than the city
+  where they had the largest crowd.
+- >
+  Draw Backward was not the opening act for the
+  largest crowd but they opened for a larger crowd than the Crazy Glues.
+- >
+  Street Crazed opened in a city that was later in the tour than N.Y.C. but earlier
+  than Cleveland.
+- >
+  The crowd when Double Double was the opening act was larger than in
+  Cleveland but exactly one half of the crowd at the N.Y.C. concert.
+types:
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: City
+    vals: [Buffalo, Cleveland, K.C., L.A., and N.Y.C]
+  - type: Band
+    vals: [Crazy Glues, Double Double, Draw Backward, Right Turn, Street Crazed]
+  - type: Count_
+    vals: ['70,000', '60,000', '50,000', '30,000', '20,000']
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0421"
+  - "1042"
+  - "2104"
+  - "3213"
+  - "4330"

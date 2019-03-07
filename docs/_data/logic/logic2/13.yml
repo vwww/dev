@@ -1,0 +1,41 @@
+name: Winter Vacations
+desc: >
+  Lucky Duckworth and his wife took five vacations
+  last winter, one in each of the months of
+  November, December, January, February, and
+  March. Each vacation was for a different length of
+  time, either two weeks, one week, five days, four
+  days, or three days. They went to these five places:
+  Bermuda, Hawaii, Jamaica, Puerto Rico, and
+  Tahiti. From the information given, determine
+  where they went on vacation each month and how
+  long they stayed.
+clues:
+- >
+  Their two longest vacations were in the Pacific
+  but neither of these two longest vacations was
+  in November or March.
+- >
+  They did not go to Puerto Rico for four days.
+- >
+  They went on a five-day vacation before going to
+  Bermuda but after going to Puerto Rico.
+- >
+  The January vacation was longer and after the Tahitian vacation but before their
+  vacation to Jamaica.
+types:
+  - type: Month_
+    vals: [November, December, January, February, March]
+  - type: Duration_
+    vals: [Two Weeks, One Week, Five Days, Four Days, Three Days]
+  - type: City
+    vals: [Bermuda, Hawaii, Jamaica, Puerto Rico, Tahiti]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "043"
+  - "114"
+  - "201"
+  - "322"
+  - "430"

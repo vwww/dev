@@ -1,0 +1,44 @@
+name: Wake-up Calls
+desc: >
+  Three women named Brewster, Desmond, and
+  Farrell along with two men named Donahue and
+  Hendricks are all staying on the ninth floor of the
+  Dawnlight Hotel. They have each left a wake-up call
+  with the desk clerk for a different time in the
+  morning: either 7:00, 7:15, 7:20, 7:30, or 7:45. Their
+  room numbers are 945, 930, 920, 915, and 900.
+  From the information given, determine each person's
+  room number and the time each one wishes to be
+  called in the morning.
+clues:
+- >
+  A woman has the highest room number and a
+  man has the lowest room number but neither
+  wishes to be awakened at 7:00 or 7:45.
+- >
+  The woman in room 915 wishes to be called
+  earlier than the man in room 930 but later than
+  Ms. Farrell who is not the woman who wishes to
+  be called before everybody else.
+- >
+  Ms. Brewster's room number is lower than the room number of the person who
+  wishes to be called first.
+- >
+  Mr. Donahue's room number is lower than Ms. Brewster's room number and he
+  wishes to be called later than she.
+types:
+  - type: Time_
+    vals: ['7:00', '7:15', '7:20', '7:30', '7:45']
+  - type: First (3 F, 2 M)
+    vals: [Brewster, Desmond, Donahue, Farrell, Hendricks]
+  - type: Room Number_
+    vals: [945, 930, 920, 915, 900]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "012"
+  - "130"
+  - "203"
+  - "324"
+  - "441"

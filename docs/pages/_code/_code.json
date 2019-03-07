@@ -1,0 +1,4 @@
+{
+	"layout": "pages",
+	"permalink": "/code/{{ page.fileSlug }}.{{ page.outputFileExtension }}"
+}

@@ -1,0 +1,43 @@
+name: Car Pool
+desc: >
+  Three men named Greene, Grey, and Tann, along
+  with two women named Browne and Whyte, each
+  drive the car in their car pool on a different one of
+  the five weekdays each week. Each person's car is a
+  different one of these five colors: brown, gray,
+  green, tan, and white. From the information given,
+  determine the day on which each person drives, as
+  well as the color of his or her car.
+clues:
+- >
+  The color of no person's car is similar to his or
+  her name.
+- >
+  They ride in the green car earlier in the week
+  than in the tan car but later than in the gray car.
+- >
+  The woman who drives the brown car drives
+  later in the week than Mr. Greene but earlier
+  than Mr. Grey, who is not the man who drives
+  on Friday.
+- >
+  The man who drives the tan car drives earlier in the week than the man who
+  drives the white car but later than Ms. Browne, who does not drive on Monday.
+- >
+  Ms. Browne does not drive on Tuesday.
+types:
+  - type: Weekday_
+    vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
+  - type: Full
+    vals: [Mr. Greene, Mr. Grey, Mr. Tann, Ms. Browne, Ms. Whyte]
+  - type: Color
+    vals: [Brown, Gray, Green, Tan, White]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "004"
+  - "140"
+  - "221"
+  - "332"
+  - "413"

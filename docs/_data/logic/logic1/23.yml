@@ -1,0 +1,46 @@
+name: Two-Card Hand
+desc: >
+  Joe, Harry, Al, and Vince play a type of card
+  game in which each player receives two cards.
+  In one hand, each man received two cards in
+  the same suit, and no man received cards in the
+  same suit as any other man. The four suits are,
+  of course, spades, hearts, diamonds and clubs.
+  The first cards were an ace, a king, a queen,
+  and a jack. The second cards were a ten, a
+  nine, an eight, and a seven. From the clues
+  given, try to determine the first and second
+  card that each man received and the suit that
+  both cards were in.
+clues:
+- >
+  Al and Vince both have a picture card, and
+  one of them has spades and the other the
+  nine.
+- >
+  The man with the king does not have hearts
+  or the seven and neither does Joe.
+- >
+  Harry does not have the jack or the eight.
+- >
+  Al sits to the right of Harry who sits to the right of the man with diamonds
+  who sits to the right of the man with the queen of clubs.
+- >
+  The jack, the ten, the eight, and the diamonds are in four different hands.
+types:
+  - type: First M
+    vals: [Joe, Harry, Al, Vince]
+  - type: Suit
+    vals: [Spades, Hearts, Diamonds, Clubs]
+  - type: Royal Card
+    vals: [Ace, King, Queen, Jack]
+  - type: "# Card"
+    vals: [Ten, Nine, Eight, Seven]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0322"
+  - "1100"
+  - "2033"
+  - "3211"

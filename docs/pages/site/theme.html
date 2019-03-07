@@ -1,0 +1,40 @@
+---
+title: Theme Switcher
+---
+<div class="alert alert-danger theme-switcher-msg" role="alert">
+  <h4 class="alert-heading">Cannot save!</h4>
+  If you switch themes on this page, it cannot be saved and applied to other pages. Upgrade to a browser that supports <code>localStorage</code>.
+</div>
+
+<div class="row grid-container" data-packery='{ "itemSelector": ".grid-item" }'>
+  <div class="col-sm-6 mb-3 grid-item">
+  <div class="card">
+    <div class="card-header">Bootstrap</div>
+    <div class="card-body text-center">
+      <p class="card-text">The default Bootstrap theme</p>
+      <button class="btn btn-outline-primary theme-switcher" data-theme="bootstrap">Select</button>
+    </div>
+  </div>
+  </div>
+  <div class="col-sm-6 mb-3 grid-item">
+  <div class="card">
+    <div class="card-header">Bootstrap Theme</div>
+    <div class="card-body text-center">
+      <p class="card-text">The default Bootstrap theme, plus shadows and gradients</p>
+      <button class="btn btn-outline-primary theme-switcher" data-theme="bootstrap2">Select</button>
+    </div>
+  </div>
+  </div>
+{%- for theme, nameDesc in themes.bootswatch %}
+  <div class="col-sm-6 col-md-4 col-xl-3 mb-3 grid-item">
+  <div class="card">
+    <div class="card-header">{{ nameDesc[0] }}</div>
+    <img src="https://bootswatch.com/{{ theme }}/thumbnail.png" role="button" class="theme-switcher" data-theme="bootswatch-{{ theme }}">
+    <div class="card-body text-center">
+      <p class="card-text">{{ nameDesc[1] }}</p>
+      <button class="btn btn-outline-primary theme-switcher" data-theme="bootswatch-{{ theme }}">Select</button>
+    </div>
+  </div>
+  </div>
+{%- endfor %}
+</div>

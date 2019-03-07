@@ -1,0 +1,53 @@
+name: Workdays
+desc: >
+  Ms. Smith plans her week's work and pleasure
+  precisely. She schedules a different activity each
+  weekday for the morning, afternoon, and evening, in
+  addition to her daily chores of making beds, doing
+  dishes, etc. In the mornings she keeps one free,
+  works at a hospital, does her ironing, does her
+  laundry, and helps out at the preschool that her
+  youngest child attends. The activities occupying her
+  afternoons are cleaning the bathrooms, gardening,
+  cleaning the kitchen, cleaning the upstairs, and
+  vacuuming. The five activities that occupy her evenings
+  are bowling, bridge, night class at the local
+  college, gym workout, and going to the movies.
+  From the information given, determine what she does
+  in the morning, afternoon, and evening of each day
+  Monday through Friday.
+clues:
+- >
+  The morning that she has free, except for daily chores, is on an earlier day of the week than
+  the afternoon when she does the gardening but later than the afternoon when she does
+  the vacuuming, which is not Monday.
+- >
+  Her gym workout is not on Friday but it is later in the week than the night when
+  she goes bowling, which in turn is later in the week than the night when she plays bridge,
+  but none of these evening activities is on the same day when she has a free morning.
+- >
+  She does the laundry and cleans the bathroom on the same day.
+- >
+  On the day she has an afternoon to work in the garden, she has already been to her night
+  class but she has yet to put in her morning of volunteer work at the hospital.
+- >
+  She works at the preschool later in the week than the day when she cleans
+  the kitchen floor.
+types:
+  - type: Weekday_
+    vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
+  - type: Activity Morning
+    vals: [Free, Hospital, Ironing, Laundry, Preschool]
+  - type: Activity Afternoon
+    vals: [Bathrooms, Gardening, Kitchen, Upstairs, Vacuuming]
+  - type: Activity Evening
+    vals: [Bowling, Bridge, Class, Gym, Movies]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0301"
+  - "1240"
+  - "2022"
+  - "3413"
+  - "4134"

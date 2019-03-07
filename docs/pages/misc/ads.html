@@ -1,0 +1,73 @@
+---
+title: Ads/Banners
+date: "2012-03-20 09:00:00 -0700"
+ads:
+  link: https://victorz.ca
+  text: Victor's Site
+  prefix: https://victorz.ca/assets/a/
+  alt: Victor!
+  suffix: .png
+  images:
+    - name: Leaderboard
+      w: 728
+      h: 90
+    - name: Full Banner
+      w: 468
+      h: 60
+    - name: Medium Rectangle
+      w: 300
+      h: 250
+    - name: Button
+      w: 120
+      h: 60
+    - name: Micro Button
+      w: 88
+      h: 31
+    - name: Button
+      w: 120
+      h: 90
+    - name: Micro Button
+      w: 80
+      h: 15
+---
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Direct Link</th>
+      <th>HTML</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Text</td>
+      <td><input type="text" class="form-control" value="{{ ads.link }}" /></td>
+      <td><input type="text" class="form-control" value="&lt;a href=&quot;{{ ads.link }}&quot;&gt;{{ ads.text }}&lt;/a&gt;" /></td>
+    </tr>
+    <tr class="text-center">
+      <td colspan="3"><a href="{{ ads.link }}">{{ ads.text }}</a></td>
+    </tr>
+    {%- for ad in ads.images %}
+    {%- set file = ad.file or ad.w + '-' + ad.h %}
+    {%- set adl = ads.prefix + file + ads.suffix -%}
+    {%- set adf %}<a href="{{ adl }}"><img src="{{ adl }}" alt="{{ ads.alt }}" width="{{ ad.w }}" height="{{ ad.h }}" /></a>{% endset -%}
+    <tr>
+      <td>{{ ad.name }} ({{ ad.w }}x{{ ad.h }})</td>
+      <td><input type="text" class="form-control" value="{{ adl | escape }}" /></td>
+      <td><input type="text" class="form-control" value="{{ adf | escape }}" /></td>
+    </tr>
+    <tr class="text-center"><td colspan="3">{{ adf }}</td></tr>
+    {%- endfor %}
+  </tbody>
+</table>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function (event) {
+  var inputs = document.getElementsByTagName('input')
+  for (var i in inputs) {
+    if (inputs[i].type === 'text') {
+      inputs[i].readonly = true
+      inputs[i].onclick = function () { this.select() }
+    }
+  }
+})
+</script>

@@ -1,0 +1,8 @@
+blog_data:
+  title: Victor's Blog
+  tagline: articulation, assertions, calls, exclamations, voice, words
+  author:
+    name: Victor
+    url: https://victorz.ca
+  url: https://victorz.ca/blog
+  short_url: victorz.ca/blog

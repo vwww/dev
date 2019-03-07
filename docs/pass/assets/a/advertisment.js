@@ -1,0 +1,1 @@
+(function(){var a=document.createElement("style");a.type="text/css";a.innerHTML="img.detect_ID10T{display:none}";document.body.appendChild(a)})();

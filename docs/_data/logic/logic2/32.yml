@@ -1,0 +1,45 @@
+name: Country Fair
+desc: >
+  The carnival was in town for the week and five
+  friends spent many evenings there. They are two
+  boys named Carl and Clark, and three girls named
+  Carol, Clara, and Clare. They each had a favorite
+  ride at the carnival, either the dodgems, ferris wheel,
+  round-up, scrambler, or whip. They also liked to
+  spend time in the midway trying to win prizes at
+  their favorite booths. Each had a different favorite
+  booth: baseball throw, darts, horse racing, ring toss,
+  and sledge hammer. From the information given,
+  determine the favorite ride and midway attraction of
+  each of the five friends.
+clues:
+- >
+  One boy likes throwing baseballs and the other
+  boy likes riding the whip.
+- >
+  The girl who likes the dodgems and the girl who
+  likes the ring toss are not named Clara.
+- >
+  Carl does not like the round-up and his favorite contest is not darts or the horse
+  race.
+- >
+  Carol is not the girl who likes the ferris wheel or the girl who likes the scrambler
+  and Carol's favorite contest is not darts or ring toss.
+- >
+  Clare's favorite ride is not the ferris wheel.
+types:
+  - type: First (2 M, 3 F, C*)
+    vals: [Carl, Carol, Clara, Clare, Clark]
+  - type: Booth
+    vals: [Baseball, Darts, Horse Race, Ring Toss, Hammer]
+  - type: Ride
+    vals: [Dodgems, Ferris Wheel, Round-up, Scrambler, Whip]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "044"
+  - "120"
+  - "211"
+  - "333"
+  - "402"

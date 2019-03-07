@@ -1,0 +1,43 @@
+name: Family Favorites
+desc: >
+  The members of the Jones family--the father,
+  the mother, the daughter, the son, and the
+  aunt--each have a favorite television program. One
+  likes a comedy, one a western, one a drama,
+  one an interview show, and one a sports program.
+  Each of the favorite programs is on a different
+  weeknight. From the clues given try to
+  determine the type of show that is each person's
+  favorite and the night it is on.
+clues:
+- >
+  The comedy is not on Tuesday.
+- >
+  None of the women's favorite shows is a
+  sports program or the one on Wednesday
+  night.
+- >
+  The mother's favorite show is on earlier in
+  the week than the drama but later than the
+  son's favorite show.
+- >
+  One of the parents likes a western and the other likes a show that is on
+  Monday.
+- >
+  The daughter does not like the interview show.
+types:
+  - type: Family
+    vals: [Father, Mother, Daughter, Son, Aunt]
+  - type: TV Show Type
+    vals: [Comedy, Western, Drama, Interview, Sports]
+  - type: Weekday_
+    vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "040"
+  - "113"
+  - "224"
+  - "302"
+  - "431"

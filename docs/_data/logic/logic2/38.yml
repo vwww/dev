@@ -1,0 +1,50 @@
+name: Returning from Vacation
+desc: >
+  Five couples who live on Maple Avenue in
+  Forestville were all away on vacation for the same
+  two weeks during the summer. The Smiths had kept
+  the keys to the houses of all five couples in order to
+  water the plants. The couples are named Finn,
+  Gersten, Hawkins, O'Malley, and Webster. They
+  were each on vacation in a different one of these
+  five cities: Denver, Las Vegas, Los Angeles, Reno,
+  and Vancouver. Each couple returned by a different
+  means of transportation, either airplane, camper, bus,
+  car, or train. From the information given, determine
+  the order in which they returned, where they had
+  been, and how they got home.
+clues:
+- >
+  The Websters arrived home earlier than the
+  couple who were in Las Vegas but later than the couple who came back by airplane.
+- >
+  The couple returning from Reno did not come by camper but they arrived after the
+  couple returning from L.A.
+- >
+  The Hawkins arrived home before the Gerstens but after the Finns, who didn't
+  return by airplane.
+- >
+  The couple who returned by bus arrived home later than the couple who
+  returned by train but before the Hawkinses, however, none of these three couples
+  had been to Denver or Vancouver.
+- >
+  The first couple to arrive home had not been to L.A., Reno, or Vancouver, and
+  neither had the Finns.
+types:
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Last
+    vals: [Finn, Gersten, Hawkins, O'Malley, Webster]
+  - type: Transport Mode
+    vals: [Airplane, Camper, Bus, Car, Train]
+  - type: City
+    vals: [Denver, Las Vegas, Los Angeles, Reno, Vancouver]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0300"
+  - "1041"
+  - "2422"
+  - "3233"
+  - "4114"

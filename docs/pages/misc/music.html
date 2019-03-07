@@ -1,0 +1,34 @@
+---
+title: Music
+date: "2011-02-25 09:00:00 -0700"
+entries:
+  - id: deranged
+    name: Out of Range
+    desc: How does the piano sound beyond the 7 1/4 octave range? Listen for yourself.
+  - id: full
+    name: Full
+    desc: How does the piano sound when you press all the keys? This is the answer to your wonders.
+  - id: restful
+    name: Restful
+    desc: How relaxing would silence be? Try it for yourself!
+---
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>MIDi</th>
+      <th>Source (Lilypond)</th>
+      <th>PDF</th>
+    </tr>
+  </thead>
+  {%- for entry in entries %}
+  <tr>
+    <td>{{ entry.name }}</td>
+    <td>{{ entry.desc }}</td>
+    <td><a href="{{assets}}victorz/misc/music/{{ entry.id }}.mid" class="btn btn-outline-secondary" role="button">Download</a></td>
+    <td><a href="{{assets}}victorz/misc/music/{{ entry.id }}.ly" class="btn btn-outline-secondary" role="button">Download</a></td>
+    <td><a href="{{assets}}victorz/misc/music/{{ entry.id }}.pdf" class="btn btn-outline-secondary" role="button">Download</a></td>
+  </tr>
+  {%- endfor %}
+</table>

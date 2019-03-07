@@ -1,0 +1,21 @@
+---
+title: Random Video
+date: "2019-01-01 00:00:00 +0000" # exact date is unknown
+mdate: 2024-08-31 19:44:00 -0600
+entry: misc_rndvid
+---
+<div id="selectedRenderer" class="d-none">
+  <p>Click the video for full-screen.</p>
+</div>
+
+<div id="selectRenderer">
+  <h2>Select renderer</h2>
+
+  <p><code>2d</code> uses WebCrypto's <code>getRandomValues</code>, which should be random, or <code>Math.random</code>, which is pseudorandom. It could potentially draw all images, but it is slower than WebGL, as it uses the CPU more than the GPU.</p>
+
+  <p><code>webgl</code> and <code>webgl2</code> use a pseudorandom shader. The size of its input seed value cannot draw all possible images.</p>
+
+  <div id="selectRendererGroup" class="btn-group d-flex mb-2" role="group"></div>
+</div>
+
+<canvas id="rndvid" class="d-none"></canvas>

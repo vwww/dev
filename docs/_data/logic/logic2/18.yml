@@ -1,0 +1,45 @@
+name: Commuters
+desc: >
+  Five employees at the Wild Fowl Publishing
+  Company each come to work by a different one of
+  these five means: bus, car, railroad, subway, and
+  walking. They hold these five positions at the
+  company: art director, editor, publisher,
+  receptionist, and secretary. Two of them are men
+  named Finch and Marten, while three of them are
+  women named Fulmer, Gannet, and Hawk. From
+  the information given, determine the position held
+  by each person as well as the means by which each
+  one gets to work each day.
+clues:
+- >
+  Neither of the men walk to work but one is the
+  art director and the other is not the publisher or
+  secretary.
+- >
+  The publisher is not named Hawk or Fulmer
+  and none of these three takes the railroad or a
+  car.
+- >
+  Mr. Finch does not come by railroad and he is not the editor.
+- >
+  The female receptionist is not named Fulmer and neither of these two walks to
+  work.
+- >
+  The secretary does not take the bus to work.
+types:
+  - type: Full (2 M, 3 F)
+    vals: [Mr. Finch, Mr. Marten, Ms. Fulmer, Ms. Gannet, Ms. Hawk]
+  - type: Transport Mode
+    vals: [Bus, Car, Railroad, Subway, Walk]
+  - type: Occupation
+    vals: [Art Director, Editor, Publisher, Receptionist, Secretary]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "010"
+  - "121"
+  - "234"
+  - "342"
+  - "403"

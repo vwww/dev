@@ -1,0 +1,50 @@
+name: College Roommates
+desc: >
+  Five college seniors--John, Oscar, Earl, Ernie,
+  and Marvin--rent an off-campus house. Each
+  one is majoring in a different
+  subject--psychology, chemistry, biology, math, or
+  physics. They are attending college on sports
+  scholarships in five sports: football, baseball,
+  track, tennis, and swimming. And each is taking
+  a different foreign language: French,
+  Spanish, Italian, German, and Russian. From
+  the clues given, try to determine the language,
+  the sport, and the major of each of the five
+  students.
+clues:
+- >
+  The biology major, the swimmer, the student
+  taking Italian, and Marvin have never
+  missed any of Ernie's home football games.
+- >
+  Neither Oscar nor Earl is the one who takes
+  Spanish or the one who is a physics major, but one of them is a baseball
+  player.
+- >
+  Marvin and the track star had lunch with the math major and later on met
+  Oscar after his German class.
+  The baseball player, the math major, and Oscar all have rooms on the top
+  floor, whereas John and the physics major have rooms on the ground floor.
+- >
+  The psychology major is taking German.
+- >
+  The biology major is not the track star and does not take Russian.
+types:
+  - type: First M
+    vals: [John, Oscar, Earl, Ernie, Marvin]
+  - type: Language
+    vals: [French, Spanish, Italian, German, Russian]
+  - type: Sport
+    vals: [Football, Baseball, Track, Tennis, Swimming]
+  - type: Major
+    vals: [Psych., Chem., Biology, Math., Physics]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0221"
+  - "1340"
+  - "2012"
+  - "3103"
+  - "4434"

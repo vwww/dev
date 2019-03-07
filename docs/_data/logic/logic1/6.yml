@@ -1,0 +1,47 @@
+name: Family at Home
+desc: >
+  Each member of the Smith family--father,
+  mother, daughter, son and aunt--is
+  in a different room doing something.
+  One is reading, one is writing a letter, one is
+  watching T.V., one is on the telephone, and one
+  is doing a crossword puzzle. The five rooms in
+  which these activities are taking place are the
+  living room, the dining room, a bedroom, the
+  kitchen, and the den. Where is each family
+  member and what is he or she doing?
+clues:
+- >
+  Someone is reading in the living room.
+- >
+  Neither of the men is the person in the dining
+  room or the person on the telephone but
+  one of them is in the bedroom.
+- >
+  The person doing the crossword puzzle occasionally
+  calls out for help with a clue to
+  the person in the living room and the aunt.
+- >
+  The person in the den is not one of the women and is not writing, nor are
+  the women writing the letter.
+- >
+  One of the parents is watching T.V. and one of the children is doing the
+  crossword.
+- >
+  The person in the den is not doing a crossword puzzle.
+types:
+  - type: Family
+    vals: [Father, Mother, Daughter, Son, Aunt]
+  - type: Room
+    vals: [Living, Dining, Bedroom, Kitchen, Den]
+  - type: Activity
+    vals: [Reading, Writing, T.V., Phone, Crosswd]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [Father, Den, T.V.]
+  - [Mother, Living, Reading]
+  - [Daughter, Dining, Crosswd]
+  - [Son, Bedroom, Writing]
+  - [Aunt, Kitchen, Phone]

@@ -1,0 +1,9 @@
+---
+layout: pages
+---
+{%- import 'blog.html' as blog -%}
+{%- set post_year = page.date.getFullYear() -%}
+{%- set year_count = collections.postsByYear[post_year].length -%}
+<p>{{ page.date | date(site.format_blog_datetime) }} | {{ blog.tags(base, collections.postsByTag, blog_tags, categories, post_year, year_count) }}</p>
+
+{{ content }}

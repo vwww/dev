@@ -1,0 +1,50 @@
+name: Five Men on Sycamore
+desc: >
+  On Sycamore Street, in a small town in
+  Connecticut, live Joshua, Malcolm, Trevor, Rupert,
+  and Charles. Their last names are Holden, Berger,
+  Whittier, Previn, and Brooking. Collectively,
+  they are graduates of Columbia, Cornell,
+  N.Y.U., Harvard, and Yale. After college, they
+  pursued the following professions: doctor,
+  teacher, actor, lawyer, and veterinarian. From
+  the clues given try to determine the first and
+  last name of each man, his profession, and his
+  alma mater.
+clues:
+- >
+  Malcolm was not the one who went to
+  N.Y.U. nor the one who became an actor;
+  neither was his friend Mr. Previn.
+- >
+  Yesterday the lawyer, the doctor, Joshua,
+  the one who went to Cornell, and Trevor
+  Whittier had lunch together. There were five men at the table.
+- >
+  Charles is the veterinarian.
+- >
+  Neither Rupert nor Joshua is named Brooking or Previn and it was not one of
+  these four who became a teacher after going to N.Y.U.
+- >
+  The doctor and the one who went to Yale knew Rupert before he went to
+  Harvard.
+- >
+  Joshua is not Mr. Berger.
+types:
+  - type: First M
+    vals: [Joshua, Malcolm, Trevor, Rupert, Charles]
+  - type: Last M
+    vals: [Holden, Berger, Whittier, Previn, Brooking]
+  - type: University
+    vals: [Columbia, Cornell, N.Y.U., Harvard, Yale]
+  - type: Occupation
+    vals: [Doctor, Teacher, Actor, Lawyer, Vet.]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0021"
+  - "1400"
+  - "2242"
+  - "3133"
+  - "4314"

@@ -1,0 +1,43 @@
+name: Video Wizard
+desc: >
+  John (Joystick) Jones spends a great deal of his
+  time in the arcades playing his five favorite video
+  games: Hot Rod Racer, Mazerama, Pool Shark,
+  Robot Blaster, and Space Wars. One time he played
+  each of the five games once and achieved these
+  scores: 250,000, 200,000, 150,000, 100,000, and
+  50,000 points. From the information given,
+  determine the order in which he played the five
+  games and the scores achieved on each one.
+clues:
+- >
+  His first game, his last game, and Space Wars
+  were not the games on which he got his highest
+  or lowest scores.
+- >
+  He got a higher score on Robot Blaster than on
+  Pool Shark but a lower score than on Space
+  Wars.
+- >
+  He played Hot Rod Racer later than his highest
+  scoring game but earlier than his second-highest scoring game.
+- >
+  He played Mazerama later than Robot Blaster but earlier than Pool Shark; one
+  of these was his highest scoring game but neither of the other two was his lowest
+  scoring game.
+types:
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Score_
+    vals: ["250,000", "200,000", "150,000", "100,000", "50,000"]
+  - type: Game Title
+    vals: [Hot Rod, Mazerama, Pool Shark, Blaster, Space Wars]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "023"
+  - "101"
+  - "240"
+  - "314"
+  - "432"

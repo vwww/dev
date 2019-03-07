@@ -1,0 +1,212 @@
+---
+title: Grammar Bot
+date: "2013-06-15 18:12:00 -0700"
+mdate: 2022-09-25 16:00:00 -0600
+entry: packery
+#category: Programming
+#tags: English Grammar Programming Python Web
+---
+<div class="alert alert-secondary" role="alert">
+  This bot is down.
+  It has been discontinued, so it will not be restored for a long time.
+  Also, Twitter changed their policy, and it is highly unlikely that they will reinstate the account.
+</div>
+
+<div class="row">
+  <div class="col-sm-6 col-md-8">
+    <p>
+      <span class="badge text-bg-secondary">who</span> My grammar bot
+      <span class="badge text-bg-secondary">what</span> corrects users&rsquo; grammar
+      <span class="badge text-bg-secondary">where</span> on Twitter
+      <span class="badge text-bg-secondary">when</span> since 2012
+      <span class="badge text-bg-secondary">why</span> to serve the public interest by educating users,
+      <span class="badge text-bg-secondary">how</span> by <mark>using heuristics to find patterns that usually constitute a solecism and correcting them</mark>.
+    </p>
+    <p>
+      It <mark>doesn't just correct everything</mark>; there are some restrictions to help prioritize replies.
+    </p>
+    <ul>
+      <li><strong>Notify-Once Restriction</strong> - the bot will <mark>try not to correct users corrected in the last month</mark>. However, memcache pressure does not guarantee they will not be corrected.</li>
+      <li><strong>Follower Restrictions</strong> - the bot <mark>automatically adjusts the follower count threshold</mark> (slightly) every 15 tweets or 16 hours, whichever occurs earlier, to maintain approximately 1 tweet/3 hours for each of the 14 checks. Some of the checks do not occur often enough, so this results in <mark>less than 120 tweets/day</mark>. Probably only 75% (90 tweets/day) will occur. Also, the <mark>minimum follower:following ratio is 3:2 (1.5)</mark>.</li>
+    </ul>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th colspan="2">Link</th>
+        </tr>
+      </thead>
+      <tr>
+        <td>Corrections (tweets)</td>
+        <td>(<a href="https://twitter.com/_grammar_/with_replies">statuses/user_timeline</a>)</td>
+        <td>or [<a href="https://twitter.com/search?f=live&amp;q=from%3A_grammar_">from:_grammar_</a>] (not recommended)</td>
+      </tr>
+      <tr>
+        <td><mark>Replies</mark></td>
+        <td><mark>[<a href="https://twitter.com/search?f=live&amp;q=to%3A_grammar_">to:_grammar_</a>]</mark></td>
+        <td>or [<a href="https://twitter.com/search?f=live&amp;q=%40_grammar_+-from%3A_grammar_">@_grammar_ -from:_grammar_</a>] (mentions)</td>
+      </tr>
+      <tr>
+        <td>Mentions without replies</td>
+        <td colspan="2">[ <a href="https://twitter.com/search?f=live&amp;q=%40_grammar_+-from%3A_grammar_+-to%3A_grammar_">@_grammar_ -from:_grammar_ -to:_grammar_</a> ]</td>
+      </tr>
+      <tr>
+        <td colspan="3">This bot used to favorite every reply, but this policy has been reversed.</td>
+      </tr>
+      <tr>
+        <td>Appreciative answers</td>
+        <td colspan="2">[ <a href="https://twitter.com/search?f=live&amp;q=to%3A_grammar_+thank+OR+thanks">to:_grammar_ thank OR thanks</a> ]</td>
+      </tr>
+      <tr>
+        <td>Raging responses</td>
+        <td colspan="2">[ <a href="https://twitter.com/search?f=live&amp;q=to%3A_grammar_+fuck">to:_grammar_ fuck</a> ]</td>
+      </tr>
+      <tr>
+        <td><mark>Source code</mark></td>
+        <td colspan="2"><mark>available on <a href="https://github.com/theonlypwner/grammar">GitHub</a></mark></td>
+      </tr>
+      <tr>
+        <td>Parser Test</td>
+        <td colspan="2"><a href="https://www.reddit.com/r/grammarcheck/" target="_blank">/r/grammarcheck/</a> on Reddit</td>
+      </tr>
+    </table>
+  </div>
+  <div class="col-sm-6 col-md-4">
+    <a class="twitter-timeline" data-height="600" data-chrome="nofooter" data-dnt="true" href="https://twitter.com/_grammar_">Tweets by @_grammar_</a>
+    <script async src="//platform.twitter.com/widgets.js"></script>
+  </div>
+</div>
+
+<h2>Frequently <span title="Some of these are statements. All of them are concerns.">Asked &ldquo;Questions&rdquo;</span></h2>
+<div class="row grid-container" data-packery='{ "itemSelector": ".grid-item" }'>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">The bot made an <mark>improper correction</mark>.</div>
+      <div class="card-body">
+        Although I strive to keep the error rate low, <mark>the bot is not perfect</mark>. Additional checks have already been added to reduce false positives. Also, if you can improve the bot, <mark>feel free to <a href="https://github.com/theonlypwner/grammar/pulls">submit a pull request</a>.</mark>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-8 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">I made a mistake similar to one the bot corrected, but <mark>I was not corrected</mark>.</div>
+      <div class="card-body">
+        You need to meet the follower requirement, which dynamically changes, within a few (about 4) minutes of the tweet. <mark>After 8 minutes, it is safe to assume that you will not be corrected.</mark> If you wish to be corrected, you may <mark>force a correction by saying &ldquo;#GRAMMAROVERRIDE&rdquo; or &ldquo;I don’t supposed to make this mistake.&rdquo;</mark> Any tweet containing that statement (with the period, without quotation marks) or the hashtag (it must be entirely in capitals) is exempt from the follower restriction, but it is also case-sensitive. However, <mark>it will not bypass the notify-once restriction</mark>.
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">There is a 140 character limit.</div>
+      <div class="card-body">
+        The bot does not attempt to lengthen your tweet. <mark>For almost every correction, the length is either shortened or untouched.</mark>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">The <mark>periods</mark> should be <mark>inside the quotation marks</mark>.</div>
+      <div class="card-body">
+        <mark>No, this is a style choice</mark> in American English, whose historical &lsquo;rule&rsquo; was created to place &lsquo;convenience above logic&rsquo;: the newspaper printing presses might go out of alignment if the period is outside of the quotation marks, but the British still risked misalignment. Clearly, this is no longer an issue today.
+    </div>
+      </div>
+  </div>
+  <div class="col-sm-6 col-md-8 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">Isn&rsquo;t this a grammar bot? Why does it correct spelling?</div>
+      <div class="card-body">
+        The bot <mark>corrects for the grammar error, not for the misspelling</mark>. For example, <code>there is</code> is sometimes mistyped as <code>*their is</code> and will be corrected. However, <code>sneak *peak</code> (a sneaky mountain?) is sometimes misused to mean <code>sneak peek</code> (preview of the future). Both are valid noun phrases, so this does not concern grammar.
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">Do you have a <mark>life</mark>? Get a <mark>life</mark>, etc.</div>
+      <div class="card-body">
+        The <mark>bot isn&rsquo;t even alive; it&rsquo;s just a piece of software</mark>.
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">What happened to <mark>freedom of speech</mark>?</div>
+      <div class="card-body">
+        Because of freedom of speech, you have <mark>the right to use improper grammar</mark>, but the bot has <mark>the right to point it out</mark>.
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header"><del>&ldquo;<mark>My/Our Grammar Police!</mark>&rdquo;? I/We don't have nor own grammar police. Also, the exclamation mark is superfluous.</del></div>
+      <div class="card-body">
+        <del>The account name is <mark>intended to mean ((Your Grammar) Police) rather than (Your (Grammar Police))</mark> and therefore means <mark><code>Police of Your Grammar</code> rather than <code>Grammar Police of You</code></mark>, so despite the awkward construction, there is no error. As Twitter allows 20 characters in the name, adding that one exclamation mark allows the name to fully occupy the space given for it. The name is still a <mark>complete noun phrase</mark>.</del>
+        <p>This issue has been resolved.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header"><del>The biography uses poor grammar.</del></div>
+      <div class="card-body">
+        <del><blockquote class="blockquote">@victor_zheng, inspired by @StealthMountain, coded me, which am alerting users in whose statuses I detect improper grammar. To publish solecisms abases oneself!</blockquote>
+        <p>While it <mark>might have awkward constructions</mark>, it does not have any grammar errors; it is <mark>grammatically valid</mark> and shouldn't've been perceived as incorrect. The 'am' in "me, which am alerting" is simple subject-verb agreement and is also notorious for causing unwarranted criticism.</p>
+        <p>Also, here&rsquo;s a nice fact about <mark>the biography: it uses exactly 160 characters, the maximum allowed</mark> by Twitter.</p></del>
+        <p>This issue has been resolved by rewriting the biography for clearer language.</p>
+        <blockquote class="blockquote">@victor_zheng developed me to alert users in whose tweets I find improper grammar—he was inspired by @StealthMountain. To publish solecisms is to abase oneself!</blockquote>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">Shouldn&rsquo;t &lsquo;fewer&rsquo; be used for countable nouns instead of &lsquo;less&rsquo;?</div>
+      <div class="card-body">
+        Alfred the Great (888 AD) <a href="http://itre.cis.upenn.edu/~myl/languagelog/archives/003775.html">used &lsquo;less&rsquo; for a number of words</a>. Also, this <mark>modification would lengthen the tweet</mark> and is <mark>difficult to implement</mark>. Usually, &lsquo;fewer&rsquo; is preferred over &lsquo;less&rsquo; for countable nouns (except amounts like time, money, distance, speed, etc.) but does not necessarily have to be used, just like in the quote from Alfred the Great: "Swa mid l&aelig;s worda swa mid ma, sw&aelig;&eth;er we hit &#541;ereccan ma&#541;on." This means <code>whether we may prove it with less words or with more</code>.
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">Wasn&rsquo;t this account suspended?</div>
+      <div class="card-body">
+        It was at one point, so I had to write this to Twitter many many times:
+        <blockquote class="blockquote">
+        <p>
+          Upon registration, I agreed to the Twitter Terms of Service, Rules, and Privacy Policy.<br>
+          My actions do not violate any rules specified those pages. The only prohibited uses of @replies are these two:
+        </p>
+
+        <p>
+          to send large numbers of duplicate @replies or mentions;<br>
+          to send large numbers of unsolicited @replies or mentions in an<br>
+          attempt to spam a service or link
+        </p>
+
+        <p>
+          My account, by sending @replies in a manner similar to that of @StealthMountain, does not spam any service nor does it spam links. Since it only @replies a user that it has not @replied before, it does not send any duplicates @replies.<br>
+          There is no prohibited following behavior that was/is/will be engaged in.
+        </p>
+
+        <p>
+          You may review all of this account's tweets, and you will find that all of them do not even mention any service, and all of them have no links. They are all @replies, with no links and no services.
+        </p>
+
+        <p>
+          Thank you in advance!
+        </p>
+        </blockquote>
+        Their automated system requires me to make a reply before they will consider my request:
+        <blockquote class="blockquote">
+          I confirm that the account complies with the Twitter Rules as described in my initial request.
+        </blockquote>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 grid-item">
+    <div class="card mb-3">
+      <div class="card-header">Who made the profile picture?</div>
+      <div class="card-body">
+        The logo is from <a href="https://digitaldmx.wordpress.com/2011/11/26/grammar-police-special-apostrophe-unit/">digitaldmx</a>.
+      </div>
+    </div>
+  </div>
+</div>

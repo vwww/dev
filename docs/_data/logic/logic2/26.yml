@@ -1,0 +1,43 @@
+name: Little League Teams
+desc: >
+  The final standings at the end of the Little League
+  season put these five teams in the top five positions:
+  Bobcats, Cougars, Lions, Panthers, and Tigers.
+  Each team is sponsored by a different one of these
+  local businesses: Al's Hardware, City Bank, Decker
+  Insurance Company, Joe's Florist, and Mom's
+  Bakery. From the information given, determine the
+  name and sponsor of each team and how they
+  finished in the standings.
+clues:
+- >
+  The Panthers finished higher in the standings
+  than the City Bank team.
+- >
+  Al's Hardware team is not called the Lions and
+  the team sponsored by Mom's Bakery is not
+  called the Bobcats.
+- >
+  The Decker Insurance Company team did not do
+  as well as the Lions but they did better than the
+  Cougars who did not finish in fifth place.
+- >
+  The Tigers finished higher in the standings than the team sponsored by Mom's
+  Bakery but lower than the team sponsored by Joe's Florist which is not the team
+  that finished first.
+types:
+  - type: Rank_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Sports Team
+    vals: [Bobcats, Cougars, Lions, Panthers, Tigers]
+  - type: Company
+    vals: [Hardware, City Bank, Decker Ins., Joe's Florist, Mom's Bakery]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "030"
+  - "123"
+  - "242"
+  - "314"
+  - "401"

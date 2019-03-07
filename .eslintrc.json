@@ -1,0 +1,180 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        // https://github.com/eslint/eslint/blob/main/packages/js/src/configs/eslint-recommended.js
+        "eslint:recommended",
+        // https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/src/configs/recommended-type-checked.ts
+        "plugin:@typescript-eslint/recommended-type-checked",
+        // https://github.com/sveltejs/eslint-plugin-svelte/blob/main/src/configs/recommended.ts
+        "plugin:svelte/recommended",
+        // https://github.com/mightyiam/eslint-config-love/blob/main/src/index.ts
+        "love"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "overrides": [
+        {
+            "files": "*.svelte",
+            "parser": "svelte-eslint-parser",
+            "parserOptions": {
+                "parser": "@typescript-eslint/parser",
+                "extraFileExtensions": [
+                    ".svelte"
+                ]
+            }
+        },
+        {
+            "files": "*.html",
+            "parser": "espree",
+            "plugins": [
+                "frontmatter",
+                "html"
+            ]
+        }
+    ],
+    "ignorePatterns": [
+        "scripts/vendor/*.js"
+    ],
+    "rules": {
+        // TSLint -> ESLint https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/ROADMAP.md
+        // TS Lint Standard Plus
+        /*
+        "max-len": [
+            "warn",
+            {
+                "code": 120
+            }
+        ],
+        */
+        "@typescript-eslint/member-ordering": [
+            "warn",
+            {
+                "default": [
+                    "public-static-field",
+                    "protected-static-field",
+                    "private-static-field",
+                    "public-instance-field",
+                    "protected-instance-field",
+                    "private-instance-field",
+                    "constructor",
+                    "public-static-method",
+                    "protected-static-method",
+                    "private-static-method",
+                    "public-instance-method",
+                    "protected-instance-method",
+                    "private-instance-method"
+                ]
+            }
+        ],
+        "@typescript-eslint/prefer-namespace-keyword": "error",
+        "@typescript-eslint/type-annotation-spacing": "error",
+        "@typescript-eslint/await-thenable": "error",
+        "no-unused-labels": "error",
+        "@typescript-eslint/triple-slash-reference": [
+            "error",
+            {
+                "path": "never",
+                "types": "never",
+                "lib": "never"
+            }
+        ],
+        // "return-undefined": "error", // no good equivalent
+        "@typescript-eslint/naming-convention": "error",
+        // "jsdoc-format": "error", // no good equivalent
+        "@typescript-eslint/consistent-type-assertions": [
+            "error",
+            {
+                "assertionStyle": "as",
+                "objectLiteralTypeAssertions": "never"
+            }
+        ],
+        "@typescript-eslint/no-confusing-void-expression": "off",
+        "@typescript-eslint/no-floating-promises": "warn",
+        "@typescript-eslint/no-misused-new": "error",
+        "@typescript-eslint/no-unnecessary-qualifier": "error",
+        "@typescript-eslint/no-unnecessary-type-assertion": "error",
+        "@typescript-eslint/no-require-imports": "error",
+        "arrow-body-style": "error",
+        "arrow-parens": "error",
+        // "strict-type-predicates": "error", // no good equivalent
+        "@typescript-eslint/unified-signatures": "warn",
+        "@typescript-eslint/no-inferrable-types": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/prefer-readonly": "warn",
+        // Custom: workaround for sveltejs/eslint-plugin-svelte3#41
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 1,
+                "maxBOF": 2,
+                "maxEOF": 0
+            }
+        ],
+        // Custom: workaround for typescript-eslint/typescript-eslint#1824
+        "@typescript-eslint/indent": "off",
+        // Custom
+        "comma-dangle": "off",
+        "@typescript-eslint/comma-dangle": "off",
+        "no-labels": "off",
+        "no-new": "off",
+        "no-self-assign": "off", // svelte and .innerHTML self-assign hack
+        "no-sequences": "off",
+        "no-var": "error",
+        "no-void": "off",
+        "quote-props": [
+            "error",
+            "consistent-as-needed"
+        ],
+        "yoda": [
+            "error",
+            "never",
+            {
+                "exceptRange": true
+            }
+        ],
+        // Custom: disable some eslint-config-standard-with-typescript rules
+        "@typescript-eslint/array-type": [
+            "error",
+            {
+                "default": "array"
+            }
+        ],
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/method-signature-style": [
+            "error",
+            "method"
+        ],
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-invalid-void-type": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-this-alias": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/promise-function-async": "off",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/unbound-method": "off"
+        /*
+        "sort-imports": [ // "import/order"?
+            "error",
+            {
+                "allowSeparatedGroups": true
+            }
+        ]
+        */
+    }
+}
