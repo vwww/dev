@@ -1,0 +1,15 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{base}}">Home</a></li>
+    {% for b in site.data.breadcrumbs %}
+      {% unless b.exclude contains page.path %}
+        {% assign l = b.prefix | size %}
+        {% assign page_prefix = page.path | truncate: l, '' %}
+        {% if b.prefix == page_prefix %}
+        <li class="breadcrumb-item"><a href="{{base}}{{ b.prefix }}">{{ b.name }}</a></li>
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+    <li class="breadcrumb-item active" aria-current="page">{{ page.title | default: '[unnamed page]' }}</li>
+  </ol>
+</nav>

@@ -1,0 +1,46 @@
+---
+layout: base
+---
+{% include _init.html %}
+
+{% assign active_area = site.data.m3d.areas[page.area] %}
+{% assign active_page = active_area.pages[page.page] %}
+{% assign loc = base | append: 'misc/3d/' %}
+<!-- TODO fix titles for 3D pages ->
+<!--<title>Victor's 3D &ndash; {{ active_page }} ({{ active_area.name }})</title>-->
+
+<div class="container row">
+  <!-- left content -->
+  <div class="col-12 col-sm-7 col-md-8 col-lg-9">
+  {% if page.area == 'base' %}
+    {% include misc-3d-base.html %}
+  {% else %}
+    {% include misc-3d-autodesk.html %}
+  {% endif %}
+  </div>
+
+  <!-- right nav -->
+  <div class="col-12 col-sm-5 col-md-4 col-lg-3">
+    <h2>Files</h2>
+    <div class="list-group">
+    {% for area in site.data.m3d.areas %}
+      <a href="{{ loc }}{% if area[0] != 'base' %}{{ area[0] }}/{% endif %}"
+          class="list-group-item{% if area[0] == page.area %} active{% endif %}">
+        {{ area[1].name }}
+      </a>
+    {% endfor %}
+    </div>
+
+    {% assign total_pages = active_area.pages | size %}
+    {% if total_pages > 1 %}
+    <!-- Active Item -->
+    <h3>Views</h3>
+
+    <div class="list-group">
+    {% for p in active_area.pages %}
+      <a href="{% include misc-3d-_url_page %}" class="list-group-item{% if p[0] == page.page %} active{% endif %}">{{ p[1] }}</a>
+    {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>

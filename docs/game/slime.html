@@ -1,0 +1,98 @@
+---
+title: Slime Volleyball Multiplayer
+date: "2017-05-09 22:33:05 -0600"
+---
+<div class="alert alert-danger" role="alert">The server is down right now.</div>
+
+<p>
+  If the ball hits the <mark>ground on your side</mark>, you lose the round.
+  Players <mark>alternate service</mark> (in older versions, the winner serves).
+</p>
+
+<p>To move your player, move the <kbd>mouse</kbd>, press the <kbd>touchscreen</kbd>, or press <kbd>WASD</kbd>/<kbd>arrow</kbd> keys.</p>
+
+<p>
+  This project is still under development. These features are planned:
+  <ul>
+    <li>Bots (client-side)
+    <li>Client-side Prediction (Extrapolation, and possibly interpolation)
+  </ul>
+</p>
+
+<div class="row">
+  <div class="col-sm-6 col-md-7 col-lg-8">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Name</span>
+      </div>
+      <input id="pName" type="text" class="form-control" placeholder="unnamed" maxlength="20">
+    </div>
+  </div>
+  <div class="col-9 col-sm-4 col-md-3 col-lg-2">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Color</span>
+      </div>
+      <input id="pColor" type="text" class="form-control" placeholder="77ff00" maxlength="6">
+    </div>
+  </div>
+  <div class="col-3 col-sm-2">
+    <div class="btn-group btn-group-justified" role="group">
+      <a id="connect" class="btn btn-primary" role="button">Connect</a>
+    </div>
+  </div>
+</div>
+
+<p></p> <!-- spacing -->
+
+<div class="row">
+  <div class="col-12">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">
+          <input type="radio" name="p1side" id="notFlipP1" checked> Left
+        </span>
+        <span class="input-group-text">
+          Right
+          <input type="radio" name="p1side" id="flipP1">
+        </span>
+        <span class="input-group-text">
+          <input id="background" type="checkbox"> Fancy Background
+        </span>
+        <span class="input-group-text">
+          <input id="devMode" type="checkbox"> Dev Mode
+        </span>
+      </div>
+      <div class="input-group-append">
+        <span class="input-group-text">
+          <input id="fullscreen" type="checkbox"> Full-Screen
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p></p> <!-- spacing -->
+
+<div id="gameSizer">
+  <div>
+    <canvas id="gameCanvas">
+  </div>
+</div>
+
+<script src="slime.src.js"></script>
+
+<style>
+#gameSizer {
+  position: relative;
+  width: 100%;
+  padding-bottom: 50%;
+}
+#gameSizer > div {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+}
+#gameCanvas {
+  border: solid black 2px;
+}
+</style>

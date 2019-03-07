@@ -1,0 +1,5 @@
+= - a == b[0] == b[1] == b[i]
+!= - a != b[i]
+D - data[i] != data[j], i != j
+< - TODO
+<= - TODO

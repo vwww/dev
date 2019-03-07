@@ -1,0 +1,9 @@
+- name: Bots
+  prefix: bots/
+  exclude: [bots/index.html]
+- name: Misc
+  prefix: misc/
+  exclude: [misc/index.html]
+- name: 3D
+  prefix: misc/3d/
+  exclude: [misc/3d/index.html]

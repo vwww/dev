@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "./tsc_temp",
+    "strict": true,
+    // "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    // "module": "es6",
+    // "target": "es5",
+    // "allowJs": true,
+  },
+  "include": [
+    "scripts",
+    "typings.d.ts"
+  ]
+}

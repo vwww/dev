@@ -1,0 +1,105 @@
+---
+title: Poke Bot
+date: "2015-10-11 09:00:00 -0600"
+mdate: "2016-08-20 18:57:00 -0600"
+extra_css: bots_poke
+extra_js_deps: [firebase-app_database-5.8.5, plotly-1.33.1.min]
+extra_js: bots_poke
+---
+<div class="row">
+  <div class="col-8">
+    <div class="alert alert-info" role="alert">
+      <p>I created a bot to win &lsquo;poke wars&rsquo; on Facebook by returning pokes.</p>
+      <p>Watch <strong>realtime</strong> updates for the statistics and leaderboard on this page.</p>
+    </div>
+    <p>The <a href="poke_old" class="alert-link">old leaderboard</a> has less formatting and is more lightweight.</p>
+    <div class="alert alert-warning" role="alert">
+      The leaderboard includes only recent pokes (since <span class="timeago" title="2014-07-30T04:15:43.000Z">the end of July 2014</span>).
+    <!-- Stale entries may be pruned over time. -->
+    </div>
+  </div>
+  <div class="col-4 clearfix">
+    <ul class="list-group">
+      <li class="list-group-item">
+        <span id="poke_r" class="badge badge-secondary">?</span>
+        Pokes Returned
+      </li>
+      <li class="list-group-item">
+        <span id="poke_t" class="badge badge-secondary">?</span>
+        Checks
+      </li>
+      <li class="list-group-item">
+        <span id="poke_c" class="badge badge-secondary">?</span>
+        Duty Cycle
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h2>Opponent Distribution</h2>
+<div id="opponentPlot"></div>
+
+<h2>Leaderboard of Losers (LOL)</h2>
+
+<div class="form-group">
+  <label>Show up to</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-limit" value="10" checked="checked"> 10
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-limit" value="25"> 25
+    </label>
+    <label class="btn btn-outline-secondary active">
+      <input type="radio" name="leaderboard-limit" value="50"> 50
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-limit" value="100"> 100
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-limit" value="250"> 250
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-limit" value="500"> 500
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-limit" value="1000"> 1000
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-limit" value="0"> all
+    </label>
+  </div>
+  <label>entries</label>
+  <label>using</label>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-tie" value="1"> dense
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-tie" value="2"> competition
+    </label>
+    <label class="btn btn-outline-secondary active">
+      <input type="radio" name="leaderboard-tie" value="3" checked="checked"> fractional
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-tie" value="4"> modified
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="leaderboard-tie" value="5"> ordinal
+    </label>
+  </div>
+  <label>ranking, for those who poked at least</label>
+  <input id="poke-limit-lower" type="number" min="1" value="1">
+  <label>times</label>
+</div>
+
+<div id="leaderboards" class="tie0 row clearfix">
+  <div class="col-6">
+    <h3>Top Opponents</h3>
+    <ol id="leaderboard1" class="leaderboard"></ol>
+  </div>
+  <div class="col-6">
+    <h3>Recent Pokes</h3>
+    <ol id="leaderboard2" class="leaderboard"></ol>
+  </div>
+</div>

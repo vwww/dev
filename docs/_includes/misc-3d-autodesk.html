@@ -1,0 +1,62 @@
+{% if page.page == 'base' %}
+  {% assign show_all = true %}
+{% else %}
+  {% assign show_all = false %}
+{% endif %}
+
+<div class="page-header">
+  <h1>
+  {% if show_all %}
+    {{ active_area.name }}
+  {% else %}
+	{{ active_page }} <small>({{ active_area.name }})</small>
+  {% endif %}
+  </h1>
+  <hr class="my-3">
+</div>
+
+<style>@media (min-width: 992px) { .twocol { column-count: 2 } }</style>
+
+{% if show_all %}
+
+<h3>Camera Selection</h3>
+<div class="twocol">
+{% for p in active_area.pages %}
+  {% assign b = p[0] %}
+  {% if b != 'base' %}
+  <div class="media">
+    <div class="media-left media-middle">
+      <a href="{% include misc-3d-_url_img p=b %}">
+        <img class="media-object" src="{% include misc-3d-_url_img p=b t=1 %}" width="60" height="60" alt="">
+      </a>
+    </div>
+    <div class="media-body">
+      <h4 class="media-heading"><a href="{% include misc-3d-_url_page %}">{{ p[1] }}</a></h4>
+      <p>{{ p[1] }}</p>
+    </div>
+  </div>
+  {% endif %}
+{% endfor %}
+</div>
+
+{% else %}
+
+<h3>Environments</h3>
+<div class="twocol">
+{% for env in site.data.m3d.environments %}
+  {% assign e = env[0] %}
+  <div class="media">
+    <div class="media-left media-middle">
+      <a href="{% include misc-3d-_url_img p=page.page k=e %}">
+        <img class="media-object" src="{% include misc-3d-_url_img p=page.page t=1 k=e %}" width="60" height="60" alt="">
+      </a>
+    </div>
+    <div class="media-body">
+      <h4 class="media-heading"><a href="{% include misc-3d-_url_img p=page.page k=e %}">{{ env[1].name }}</a> <small>({{ env[0] }})</small></h4>
+      <p>{{ env[1].desc }}</p>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+{% endif %}

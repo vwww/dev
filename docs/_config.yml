@@ -1,0 +1,41 @@
+canonical: http://victorz.ca
+timezone: America/Edmonton
+#redcarpet
+
+format_date: "%A, %B %d, %Y"
+format_time: "%I:%M %p %Z"
+format_time_min: "%I:%M:%S %p %Z"
+
+collections:
+  code:
+    output: true
+    permalink: /:collection/:path
+  go:
+    output: true
+    permalink: /:path
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "posts"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "pages"
+  - scope:
+      path: ""
+      type: go
+    values:
+      layout: go-imports
+  - scope:
+      path: ""
+      type: code
+    values:
+      layout: pages
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed

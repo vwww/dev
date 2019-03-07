@@ -1,0 +1,3 @@
+game/slime: highest priority to fix?
+misc/3d: clean up media
+misc/oxidane: (port to TS)

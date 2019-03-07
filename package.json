@@ -1,0 +1,43 @@
+{
+  "name": "vwww",
+  "version": "1.0.0",
+  "description": "Victor's Website",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"webpack -w\" \"sass -w styles:docs/assets/dist --style compressed --sourcemap=none --unix-newlines\" \"cd docs && jekyll s\"",
+    "build": "webpack && sass --update styles:docs/assets/dist --style compressed --sourcemap=none --unix-newlines && cd docs && jekyll b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theonlypwner/www_dev.git"
+  },
+  "author": "Victor",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/theonlypwner/www_dev/issues"
+  },
+  "homepage": "https://github.com/theonlypwner/www_dev#readme",
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3333",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {
+    "@types/jquery": "^3.3.29",
+    "@types/jquery.timeago": "^1.0.29",
+    "@types/jssha": "^2.0.0",
+    "@types/leaflet": "^1.4.3",
+    "@types/packery": "^1.4.31",
+    "@types/plotly.js": "^1.44.0",
+    "bootstrap": "^4.3.1",
+    "firebase": "^5.8.5",
+    "jquery": "^3.3.1",
+    "jssha": "^2.3.1",
+    "leaflet": "^1.4.0",
+    "packery": "^2.1.2",
+    "popper.js": "^1.14.7"
+  }
+}

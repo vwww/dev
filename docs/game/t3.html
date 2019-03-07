@@ -1,0 +1,78 @@
+---
+title: Tic-Tac-Toe Analyzer
+date: "2016-10-23 11:00:00 -0600"
+extra_css: game_t3
+extra_js: game_t3
+---
+
+<div class="row">
+  <div class="col-md-6">
+    <p>Player X</p>
+    <div class="btn-group d-flex" role="group">
+      <a id="pl00" role="button" class="w-100 btn btn-outline-secondary active">Human</a>
+      <a id="pl01" role="button" class="w-100 btn btn-outline-secondary">Nice Bot</a>
+      <a id="pl02" role="button" class="w-100 btn btn-outline-secondary">Random Bot</a>
+      <a id="pl03" role="button" class="w-100 btn btn-outline-secondary">Optimal Bot</a>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <p>Player O</p>
+    <div class="btn-group d-flex" role="group">
+      <a id="pl10" role="button" class="w-100 btn btn-outline-secondary">Human</a>
+      <a id="pl11" role="button" class="w-100 btn btn-outline-secondary">Nice Bot</a>
+      <a id="pl12" role="button" class="w-100 btn btn-outline-secondary">Random Bot</a>
+      <a id="pl13" role="button" class="w-100 btn btn-outline-secondary active">Optimal Bot</a>
+    </div>
+  </div>
+</div>
+
+<p>Options</p>
+<div class="btn-group d-flex" role="group">
+  <a id="btnHints" role="button" class="btn btn-outline-secondary w-100">Analysis Mode (Hints)</a>
+  <a id="btnSwap" role="button" class="btn btn-outline-secondary w-100">Swap Types</a>
+  <div class="btn-group w-100">
+    <!-- <button> needed for 'disabled' attribute -->
+    <button id="btnUndo" type="button" class="btn btn-outline-secondary">Undo</button>
+  </div>
+</div>
+
+<h2>Board</h2>
+
+<div class="row">
+  <div class="col-sm-6">
+    <p id="t3status"><strong>You need JavaScript to play this game.</strong></p>
+    <table id="t3table">
+      <tr><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td></tr>
+      <tr><td></td><td></td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="col-sm-6">
+    <table id="t3moves" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Move</th>
+          <th>Position</th>
+          <th>X Win</th>
+          <th>O Win</th>
+          <th>Tie</th>
+        </tr>
+      </thead>
+      <tr><td>#1</td><td></td><td class="table-success">Possible</td><td class="table-success">Possible</td><td class="table-success">Possible</td></tr>
+      <tr><td>#2</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>#3</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>#4</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>#5</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>#6</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>#7</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>#8</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>#9</td><td></td><td></td><td></td><td></td></tr>
+    </table>
+  </div>
+</div>
+
+<h2>Bot Profiles</h2>
+<p>Nice bot always chooses the lowest-numbered positions, so you can easily beat it.</p>
+<p>Random bot always chooses whatever it feels like, even if it is a bad choice. If you don&rsquo;t like its choice, you can undo your move and redo it.</p>
+<p>Optimal bot never loses. But it can defeat you.</p>

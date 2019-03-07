@@ -1,0 +1,87 @@
+{% include _init.html %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--
+    URL {{ page.url }}
+    PATH {{ page.path }}
+    -->
+    <title>{% if page.title %}{{ page.title }} &ndash; {% endif %}Victor&lsquo;s Site</title>
+
+    {% if page.desc %}
+    <meta name="description" content="{{ page.desc }}" />
+    {% endif %}
+    {% if page.keywords %}
+    <meta name="keywords" content="{{ page.keywords }}" />
+    {% endif %}
+
+    {% comment %}<!--- {{ page.url | replace:'index.html', '.html' | replace:'.html', '' }} -->{% endcomment %}
+    <link rel="canonical" href="{{ site.canonical }}{{ page.url }}">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{assets}}victorz/favicon.ico">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" id="theme-switcher" href="{{assets}}dist/bootstrap_theme.css">
+    <meta name="theme-switcher" id="theme-bootstrap" content="{{assets}}bootstrap/bootstrap.min.css">
+    <meta name="theme-switcher" id="theme-bootstrap2" content="{{assets}}dist/bootstrap_theme.css">
+    {% for theme in site.data.themes.bootswatch %}
+    <meta name="theme-switcher" id="theme-bootswatch-{{ theme[0] }}" content="{{assets}}bootswatch/{{ theme[0] }}.min.css">
+    {% endfor %}
+    <link rel="stylesheet" href="{{assets}}dist/global.css">
+    {% for style in page.extra_css %}
+    <link rel="stylesheet" href="{{assets}}dist/{{ style }}.css">
+    {% endfor %}
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    {% include navbar.html %}
+
+    <div class="container">
+      {{ content }}
+
+      <footer class="footer">
+        <div class="container">
+          <p>
+          &copy; 2005-<span id="copyyear">{{ site.time | date: "%Y" }}</span> Victor Zheng. All rights reserved.
+          {% unless post %}
+          {% if page.date %}
+            This page was created <span class="timeago" title="{{ page.date | date_to_xmlschema }}">on {{ page.date | date: site.format_date }} at {{ page.date | date: site.format_time }}</span>.
+          {% endif %}
+          {% if page.mdate %}
+            This page was modified <span class="timeago" title="{{ page.mdate | date_to_xmlschema }}">on {{ page.mdate | date: site.format_date }} at {{ page.mdate | date: site.format_time }}</span>.
+          {% endif %}
+        <!-- TODO page_dates | array_to_sentence_string -->
+          {% endunless %}
+          </p>
+          <p>
+            <script src="//d.victorz.ca/online.js?o=s"></script>
+            <!--<a href="http://victorz.ca"><img src="{{ assets }}a/80-15.png" alt="Victor"/></a>-->
+            This site uses <a href="https://validator.w3.org/check?uri=referer">HTML 5</a> and <a href="https://jigsaw.w3.org/css-validator/check/referer?profile=css3">CSS 3</a>.
+            Running for <strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years, this site was regenerated <span class="timeago" title="{{ site.time | date_to_xmlschema }}">on {{ site.time | date: "%A, %B %d, %Y" }} at {{ site.time | date: site.format_time }}</span>.
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{assets}}js/jquery-3.3.1.min.js"></script>
+    <script src="{{assets}}bootstrap/bootstrap.min.js"></script>
+    <script src="{{assets}}js/jquery.timeago.js"></script>
+    {% for script in page.extra_js_deps %}
+    <script src="{{assets}}js/{{ script }}.js"></script>
+    {% endfor %}
+    <script src="{{assets}}dist/global.js"></script>
+    {% for script in page.extra_js %}
+    <script src="{{assets}}dist/{{ script }}.js"></script>
+    {% endfor %}
+  </body>
+</html>

@@ -1,0 +1,84 @@
+---
+title: Duel Multiplayer
+date: "2017-06-05 09:00:00 -0600"
+---
+<div class="alert alert-danger" role="alert">The server is down right now.</div>
+
+<p>This game is 20% luck and 80% skill. This game is still under development.</p>
+
+<p>Pick a color:</p>
+<div id="hue"></div>
+
+<p></p> <!-- spacing -->
+
+<div class="row">
+  <div class="col-8 col-sm-9 col-md-3 col-lg-4">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Name</span>
+      </div>
+      <input id="pName" type="text" class="form-control" placeholder="unnamed" maxlength="20">
+    </div>
+  </div>
+  <div class="col-4 col-sm-3 col-md-2">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Color</span>
+      </div>
+      <input id="pColor" type="text" class="form-control" placeholder="42" maxlength="2">
+    </div>
+  </div>
+  <div class="col-3 col-sm-2">
+    <div class="btn-group btn-group-justified" role="group">
+      <a id="connect" class="btn btn-primary" role="button">Connect</a>
+    </div>
+  </div>
+  <div class="col-9 col-sm-10 col-md-5 col-lg-4">
+    <div class="input-group">
+        <div class="input-group-prepend">
+        <span class="input-group-text">
+          <input id="background" type="checkbox" checked disabled> Show FPS
+        </span>
+        <span class="input-group-text">
+          <input id="devMode" type="checkbox" checked disabled> Dev Mode
+        </span>
+      </div>
+      <div class="input-group-append">
+        <span class="input-group-text">
+          <input id="fullscreen" type="checkbox"> Full-Screen
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p></p> <!-- spacing -->
+
+<div id="gameSizer">
+  <div>
+    <canvas id="gameCanvas">
+  </div>
+</div>
+
+<script src="duel.src.js"></script>
+
+<style>
+#gameSizer {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+}
+#gameSizer > div {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+}
+#gameCanvas {
+  border: solid black 2px;
+}
+#hue {
+  width: 100%;
+  height: 36px;
+  background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+  border: solid #ccc 2px;
+}
+</style>

@@ -1,0 +1,47 @@
+{% assign assets_loc = assets | append: 'victorz/misc/3d/' %}
+<div class="page-header">
+  <h1>{{ active_page }}</h1>
+  <hr class="my-3">
+</div>
+<p><u>Look at the navigation bar</u>. All legacy images, as old as from 2008, are placed on this page!</p>
+<p>The <code>.max</code> source files are also available for download!</p>
+<p>Remember, all of the <u>cloud renderings are on the navigation&mdash;click on one</u>!</p>
+
+<h2>Legacy 3D Shape Downloads</h2>
+
+<div class="row">
+  <div class="col-12 col-md-6">
+    <h3>Spheres <small><a href="{{ assets_loc }}sphere.max">(source)</a></small></h3>
+  {% for style in site.data.m3d.legacy_styles %}
+  {% if style[0] != 'm' %}
+    <div class="media">
+      <div class="media-left media-middle">
+        <a href="{{ assets_loc }}{{ style[0] }}s.png">
+          <img class="media-object" src="{{ assets_loc }}t/{{ style[0] }}s.png" width="100" height="75" alt="{{ style[0] }}-sphere">
+        </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="{{ assets_loc }}{{ style[0] }}s.png">{{ style[1] }} Sphere</a></h4>
+        <p>This is just some {{ style[1] | downcase }} sphere.</p>
+      </div>
+    </div>
+  {% endif %}
+  {% endfor %}
+  </div>
+  <div class="col-12 col-md-6">
+    <h3>Cubes <small><a href="{{ assets_loc }}cube.max">(source)</a></small></h3>
+  {% for style in site.data.m3d.legacy_styles %}
+    <div class="media">
+      <div class="media-body">
+        <h4 class="media-heading"><a href="{{ assets_loc }}{{ style[0] }}c.png">{{ style[1] }} Cube</a></h4>
+        <p>This is just some {{ style[1] | downcase }} cube.</p>
+      </div>
+      <div class="media-right media-middle">
+        <a href="{{ assets_loc }}{{ style[0] }}c.png">
+          <img class="media-object" src="{{ assets_loc }}t/{{ style[0] }}c.png" width="100" height="75" alt="{{ style[0] }}-cube">
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+</div>

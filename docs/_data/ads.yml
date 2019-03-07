@@ -1,0 +1,27 @@
+link: http://victorz.ca
+text: Victor's Site
+prefix: http://victorz.ca/assets/a/
+alt: Victor!
+suffix: .png
+images:
+  - name: Leaderboard
+    w: 728
+    h: 90
+  - name: Full Banner
+    w: 468
+    h: 60
+  - name: Medium Rectangle
+    w: 300
+    h: 250
+  - name: Button
+    w: 120
+    h: 60
+  - name: Micro Button
+    w: 88
+    h: 31
+  - name: Button
+    w: 120
+    h: 90
+  - name: Micro Button
+    w: 80
+    h: 15

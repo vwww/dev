@@ -1,0 +1,1 @@
+{{ loc }}{% if page.area != 'base' %}{{ page.area }}/{% endif %}{% if p[0] != 'base' %}{{ p[0] }}.html{% endif %}

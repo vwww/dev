@@ -1,0 +1,75 @@
+name: Five Women Out to Dinner
+desc: >
+  Some women from the District Attorney's office
+  went out to dinner last night. Elizabeth,
+  Gladys, Barbara, Virginia and Gwendolyn were
+  their names, and each ordered a different main
+  course. Steak, ham, chicken, pork, and lamb
+  were the only main courses on the menu. Each
+  woman also ordered mashed potatoes, salad,
+  and a different vegetable. The five vegetables
+  on the menu were peas, carrots, corn, squash,
+  and spinach. What main course and vegetable
+  did each woman have?
+clues:
+- >
+  The woman who had steak and corn sat on
+  the left of Elizabeth and on the right of
+  Gwendolyn.
+- >
+  The woman who had chicken doesn't play
+  cards but the woman who had ham, the
+  woman who had squash, and Barbara played bridge yesterday with Gwendolyn.
+- >
+  The woman who had squash did not have it with pork; Virginia did not order
+  pork either.
+- >
+  The woman who had ham was recently married to Elizabeth's brother;
+  the woman who had squash helped Elizabeth wrap her present.
+- >
+  Gladys's and Gwendolyn's vegetables begin with the same letter as do the
+  vegetables of Elizabeth and Barbara.
+types:
+  - type: First F
+    vals: [Elizabeth, Gladys, Barbara, Virginia, Gwendolyn]
+  - type: Main Course
+    vals: [Steak, Ham, Chicken, Pork, Lamb]
+  - type: Appetizer
+    vals: [Peas, Carrots, Corn, Squash, Spinach]
+rules:
+  - name: Clue 1
+    type: '='
+    a: Steak
+    b: Corn
+  - name: Clue 1
+    type: '!='
+    a: Steak
+    b: [Elizabeth, Gwendolyn]
+
+  - name: Clue 2
+    type: 'D'
+    data: [Chicken, Ham, Squash, Barbara, Gwendolyn]
+
+  - name: Clue 3
+    type: 'D'
+    data: [Squash, Pork, Virginia]
+
+  - name: Clue 4
+    type: '!='
+    a: Elizabeth
+    b: [Ham, Squash]
+# TODO: change to D?
+
+  - name: Clue 5
+    type: '='
+    a: Glady
+    b: [Carrots, Corn, Squash, Spinach]
+  - name: Clue 5
+    type: '='
+    a: Gwendolyn
+    b: [Carrots, Corn, Squash, Spinach]
+
+# TODO
+assert:
+  - [Elizabeth, Chicken, Carrots]
+# TODO

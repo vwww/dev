@@ -1,0 +1,47 @@
+{% include _init.html %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="{{ page.description }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title %}{{ page.title }} &ndash; {% endif %}BestCoder</title>
+
+    <link rel="shortcut icon" href="{{assets}}victorz/misc/coding/favicon.png">
+
+    <link rel="stylesheet" href="{{assets}}mdl/material.min.css">
+    <link rel="stylesheet" href="{{assets}}victorz/misc/coding/styles.css">
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">BestCoder</span>
+          <!-- Add spacer, to align navigation to the right -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation. We could hide it in small screens with mdl-layout--large-screen-only. -->
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="{{base}}misc/coding/">Home</a>
+            <a class="mdl-navigation__link" href="{{base}}misc/coding/problems">Problems</a>
+            <a class="mdl-navigation__link" href="{{base}}misc/coding/leaderboard">Leaderboard</a>
+          </nav>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="page-content">{{ content }}</div>
+        <footer class="demo-footer mdl-mini-footer">
+          <div class="mdl-mini-footer--left-section">
+            &copy; 2015-2016 <a href="{{base}}">Victor Zheng</a>. All rights reserved. 
+            <a href="#" id="tt_poordesign">Why does the design suck so much?</a>
+            <div class="mdl-tooltip" for="tt_poordesign">
+              Clearly, this site is just a joke and is not legit.
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <script src="{{assets}}mdl/material.min.js"></script>
+  </body>
+</html>
