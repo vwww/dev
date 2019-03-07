@@ -1,0 +1,44 @@
+name: Forks in the Road
+desc: >
+  There are five forks in the road from Tratsburg to
+  Denville. Turning left at each of these five forks will
+  lead to one of these five towns: Asterly, Hornton,
+  Seattle, Teasdale, and Thornberry. Turning right at
+  each of the five forks will lead to one of these five
+  towns: Estwater, Houston, Stewartville, Tewsbury,
+  and Thousand Oaks. From the information given,
+  determine the left and right turning at each fork in
+  the road, as well as the order that a traveler would
+  come upon the five forks heading from Tratsburg to
+  Denville.
+clues:
+- >
+  The fork in the road to Houston comes earlier
+  than the one to Tewsbury but later than the ones
+  to Teasdale or Thornberry, but neither of these
+  two is a turning at the first fork in the road.
+- >
+  There is not a fork with roads to Stewartville
+  and Asterly.
+- >
+  The fork with a road to Thousand Oaks comes before the one to Teasdale, but
+  after the one to Stewartville.
+- >
+  The fork to Hornton is not at the same place as the one to Stewartville or
+  Tewsbury.
+types:
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Town 1
+    vals: [Asterly, Hornton, Seattle, Teasdale, Thornberry]
+  - type: Town 2
+    vals: [Estwater, Houston, Stewartville, Tewsbury, Thous. Oaks]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "022"
+  - "144"
+  - "230"
+  - "311"
+  - "403"

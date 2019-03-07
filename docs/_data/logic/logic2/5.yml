@@ -1,0 +1,40 @@
+name: Baseball-Hitting Contest
+desc: >
+  In a baseball-hitting contest at the office picnic, five
+  men participated named: Biff, Carl, Fred, Marty,
+  and Tom. Their last names, in alphabetical order,
+  are Jenkins, Keech, MacNab, Miller, and Winslow.
+  The distances that each man hit the ball in feet are
+  325, 300, 275, 250, and 200. From the information
+  given, determine the first and last name of each
+  man, as well as how far each one hit the baseball.
+clues:
+- >
+  Mr. Miller didn't hit the ball as far as Biff, but
+  he hit one farther than Tom.
+- >
+  Carl hit the ball farther than Marty, but not the
+  farthest.
+- >
+  Fred hit a ball farther than Mr. MacNab but not
+  as far as Mr. Keech, who didn't hit the ball the
+  farthest.
+- >
+  Tom hit a ball farther than Mr. Winslow, whose
+  first name is not Marty.
+types:
+  - type: Distance_ (ft)
+    vals: [325, 300, 275, 250, 200]
+  - type: First M
+    vals: [Biff, Carl, Fred, Marty, Tom]
+  - type: Last
+    vals: [Jenkins, Keech, MacNab, Miller, Winslow]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "000"
+  - "113"
+  - "241"
+  - "324"
+  - "432"

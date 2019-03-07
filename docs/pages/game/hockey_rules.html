@@ -1,0 +1,87 @@
+---
+title: Rules for Hockey
+date: "2021-01-28 18:04:28 -0700"
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'hockey') }}
+
+<h1>Gameplay</h1>
+<p>Make the <span class="badge text-bg-dark">puck</span> enter the opponent team's <span class="badge text-bg-success">goal</span>!</p>
+
+<p>If you control the <span class="badge text-bg-dark">puck</span>, you can move it around and shoot/pass it. If you don't have it, you can check players to get it. When two players collide, one player wins the <span class="badge text-bg-dark">puck</span> (depends on Check mode).</p>
+
+<p>The rink has a center red line and two red lines at each end. Between the center and a red line, there is a blue line. The center red line divides the rink into two halves. The blue lines divide the rink into three thirds, called zones. The center zone is the neutral zone. For a team, the zone with their own goal is the defending zone, and the zone with their opponent's goal is the attacking zone.</p>
+
+<p>On each team, the first player to completely enter the team's goal crease becomes a goalie (1.25x radius) until he completely leaves.</p>
+
+<p>When the <span class="badge text-bg-dark">puck</span> enters a team's <span class="badge text-bg-success">goal</span> by completely passing the red line into the <span class="badge text-bg-success">goal</span>, the other team gets 1 point if the other team is not <span class="badge text-bg-danger">nonscoring</span> (otherwise 0 points), and a face-off occurs at center ice.</p>
+
+<p>A face-off happens at the center after the game begins or a <span class="badge text-bg-success">goal</span> is scored. All other face-offs happen at one of the 8 other spots.</p>
+
+<h2>Offside</h2>
+<p>
+  When a player enters the attacking zone, and the <span class="badge text-bg-dark">puck</span> is neither in the attacking zone nor controlled by the player, <span class="badge text-bg-secondary">pending offside</span> for that team appears (offside occurs in strict mode).
+  If all players on the attacking team leave the attacking zone, the <span class="badge text-bg-secondary">pending offside</span> warning for that team is cleared.
+</p>
+<p>
+  When the <span class="badge text-bg-dark">puck</span> enters the attacking zone, offside is checked.
+  If the <span class="badge text-bg-dark">puck</span> was last touched by the attacking team, and an attacking player is in the attacking zone and not the last to touch the <span class="badge text-bg-dark">puck</span>,
+  the team is offside (offside occurs in immediate mode), the warning shows <span class="badge text-bg-primary">delayed offside</span>, and the team becomes <span class="badge text-bg-danger">nonscoring</span> until the puck is touched by the other team or leaves the attacking zone.
+</p>
+<p>
+  If a team is <span class="badge text-bg-primary">offside</span>, and one of its players in the attacking zone touches the puck or a defending player, offside occurs (offside occurs in delayed mode).
+  If a team is <span class="badge text-bg-primary">offside</span>, and the puck or all of its members leaves the attacking zone, it is no longer offside, clearing the <span class="badge text-bg-primary">delayed offside</span>.
+</p>
+<p>When offside occurs (offside never occurs if disabled), the play is stopped, and a face-off occurs at the face-off dot outside of the attacking zone, closest to the puck.</p>
+<p>If offside is disabled, no warnings will appear, and teams never become <span class="badge text-bg-danger">nonscoring</span>.</p>
+
+<h3>Zone Positions</h3>
+<p>A player is in the attacking zone if he no longer touches the blue line and is in the zone with the opponent goal. It is stateless.</p>
+<p>The puck is in a zone when it completely crosses the blue line into the new zone. It is stateful: the blue line and nearby area is considered to be in the same zone as the one the puck is currently in.</p>
+
+<h2>Two-Line Pass</h2>
+<p>When a player shoots the puck from the defending zone, and it crosses the center red line before any other player touches it, and then a different player on the defending team touches the puck before the attacking team, a two-line pass occurs.</p>
+<p>When a two-line pass occurs (only if enabled), play is stopped, and a face-off occurs in the defending team's face-off circle, closest to puck.</p>
+
+<h2>Icing</h2>
+<p>If a player shoots the puck across the center red line and then the other team's red line without scoring a goal, and no players touched the puck in between, and the player's team is not shorthanded, it is <span class="badge text-bg-light">icing</span> (icing never occurs if disabled). When a shot is made across the center red line towards the opponent's side, an <span class="badge text-bg-light">icing</span> warning appears if icing is possible, and it disappears if a player touches it before it passes the other red line.</p>
+<p>If a team is <span class="badge text-bg-light">icing</span> (icing occurs in immediate mode), one team prevails, based on the mode's condition, but the icing team prevails if a goalie on the non-icing team leaves the goal crease (becomes a regular player) or touches the puck.</p>
+<p>If the <span class="badge text-bg-light">icing</span> team prevails, it is no longer <span class="badge text-bg-light">icing</span>. If the other team prevails, play is stopped, and a face-off occurs in the icing team's face-off circle, closest to puck.</p>
+
+<h1>Time Control</h1>
+<p>When the clock, which starts at 1 hour, reaches zero, the teams' (but not players') scores are reset, and a face-off occurs at center ice.</p>
+
+<h1>Options</h1>
+
+<h2>Check teamates</h2>
+<ul>
+  <li><strong>passthrough</strong>: teammates do not collide with each other
+  <li><strong>off</strong>: collide, but the puck is never transferred
+  <li><strong>on</strong> <em>(default)</em>: collide like with enemies
+</ul>
+
+<h2>Check</h2>
+<ul>
+  <li><strong>slow absolute</strong> <em>(default)</em>: the slower player (after colliding) wins
+  <li><strong>slow weighted</strong>: (other player speed)/(player speed + other player speed) chance of winning
+  <li><strong>fast absolute</strong>: the faster player wins
+  <li><strong>fast weighted</strong>: (player speed)/(total speed) chance of winning
+</ul>
+
+<h2>Offside</h2>
+<ul>
+  <li><strong>off</strong>: never
+  <li><strong>delayed</strong> <em>(default)</em>: when attacking team is offside and controls the puck
+  <li><strong>immediate</strong>: even if the attacking team does not control the puck
+  <li><strong>strict</strong>: when players enter, even before the puck enters
+</ul>
+
+<h2>Two-Line Pass (default: off)</h2>
+
+<h2>Icing</h2>
+<ul>
+  <li><strong>off</strong>: icing team prevails
+  <li><strong>touch</strong> <em>(default)</em>: first team to touch puck prevails
+  <li><strong>hybrid</strong>: closest team to puck when any team touches puck or reaches area bounded by red line and line between faceoff circles prevails
+  <li><strong>immediate</strong>: non-icing team always prevails, immediately when puck crosses red line
+</ul>

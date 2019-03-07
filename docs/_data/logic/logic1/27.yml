@@ -1,0 +1,48 @@
+name: Music Poll
+desc: >
+  Musicians Joe, Jim, John, Jake, and Josh
+  recently finished in the top five positions of a
+  music poll. Each plays in a different type of
+  group--soul, jazz, country & western, reggae,
+  and folk--and each performer plays a different
+  instrument. From the clues given, try to determine
+  for each position on the poll, the man, his
+  type of group, and the instrument he plays.
+clues:
+- >
+  The bass-player's reggae group finished
+  third.
+- >
+  The folk and country & western groups do
+  not have keyboard instruments in them and
+  neither does Josh's group.
+- >
+  Jake's group placed higher in the polls than
+  the bass-player's group which placed higher
+  than the soul group but none of these groups
+  finished first.
+- >
+  The drummer's group finished behind John's group but ahead of the jazz
+  group; however, none of these groups finished last.
+- >
+  The guitar player's group does not play country & western.
+- >
+  Joe does not play his piano in the soul group.
+types:
+  - type: Music Type
+    vals: [Soul, Jazz, C & W, Reggae, Folk]
+  - type: First M (J*)
+    vals: [Joe, Jim, John, Jake, Josh]
+  - type: Instrument
+    vals: [Drums, Guitar, Bass, Piano, Organ]
+  - type: Position_
+    vals: [1, 2, 3, 4, 5]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0144"
+  - "1033"
+  - "2301"
+  - "3422"
+  - "4210"

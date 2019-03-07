@@ -1,0 +1,44 @@
+name: Night Classes
+desc: >
+  Pamela, Dorothy, Rita, Eunice, and Bernice are
+  each taking an art course and a foreign language
+  course. The art courses are painting, drawing,
+  sculpture, pottery, and graphics. The foreign
+  languages are French, Italian, Spanish, German,
+  and Chinese. From the clues given try to
+  determine the art course and the language
+  course each woman is taking.
+clues:
+- >
+  The woman taking sculpture is not taking
+  Italian.
+- >
+  Bernice and Pamela do not study Chinese
+  but one takes pottery, and the other French.
+- >
+  The woman studying Italian has taken other
+  courses with Dorothy and Eunice, but she
+  has never had a class with the women taking
+  drawing and pottery.
+- >
+  Dorothy does not study German.
+- >
+  Bernice, Dorothy, and Eunice drive to class together on Thursday night. In no
+  particular order, one of these women takes graphics, one takes German, and
+  the other one takes pottery.
+types:
+  - type: First F
+    vals: [Pamela, Dorothy, Rita, Eunice, Bernice]
+  - type: Art
+    vals: [Painting, Drawing, Sculpture, Pottery, Graphics]
+  - type: Language
+    vals: [French, Italian, Spanish, German, Chinese]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [Pamela, Drawing, French]
+  - [Dorothy, Graphics, Chinese]
+  - [Rita, Painting, Italian]
+  - [Eunice, Sculpture, German]
+  - [Bernice, Pottery, Spanish]

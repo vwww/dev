@@ -1,0 +1,44 @@
+name: Bank Employees
+desc: >
+  Sometimes people are perfect for their jobs. In the
+  case of five employees of the Tinyboro bank this is
+  very much the case. The five employees are named
+  Cash, Coyne, El Grande, Finn, and Nicholson. In
+  alphabetical order their names are Bill, Buck, Nick,
+  Penny, and Senta. The positions that they hold at
+  the bank are as a head teller, an officer, the
+  president, a security guard, and a teller. From the
+  information given, determine the first and last name
+  of each employee and the position each holds at the
+  bank.
+clues:
+- >
+  The president is a man but neither he nor Buck
+  has the last name of El Grande, Finn, or
+  Nicholson.
+- >
+  Senta's last name is not Finn, and neither she nor
+  Finn is the security guard.
+- >
+  The two tellers are not the same sex but one is named Nicholson and one is
+  named Coyne.
+- >
+  Nick, Buck, and Mr. Cash are not the regular teller.
+- >
+  Neither Penny nor Mr. El Grande is the president.
+types:
+  - type: Occupation (Bank)
+    vals: [Head Teller, Officer, President, Sec. Guard, Teller]
+  - type: First (3 M, 2 F)
+    vals: [Bill, Buck, Nick, Penny, Senta]
+  - type: Last
+    vals: [Cash, Coyne, El Grande, Finn, Nicholson]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [Head Teller, Buck, Coyne]
+  - [Officer, Penny, Finn]
+  - [President, Bill, Cash]
+  - [Sec. Guard, Nick, El Grande]
+  - [Teller, Senta, Nicholson]

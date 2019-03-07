@@ -1,0 +1,46 @@
+name: Picnic Toys
+desc: >
+  The five Johnson children each brought a toy to the
+  family picnic on the Fourth of July. Their ages are
+  16, 12, 10, 8, and 6. Their names are Alice, Billy,
+  Brenda, Greg, and Sally. A ball, a frisbee, a hoop, a
+  kite, and a rope are the five toys that they brought,
+  which are each a different one of these five colors:
+  blue, gold, red, silver, and white. From the
+  information given, determine each child's name and
+  age as well as the color of the toy that each one
+  brought.
+clues:
+- >
+  The 6-year-old and the 16-year-old children are
+  the same sex and one brought something silver
+  and the other brought the frisbee.
+- >
+  Toe rope and the kite are not blue or gold.
+- >
+  Alice is older than Billy but younger than the
+  girl who brought the hoop.
+- >
+  The girl who brought the kite is older than Brenda who is older than the kid
+  who brought the ball.
+- >
+  The kid who brought the red toy is older than the girl who brought the rope but
+  younger than the girl who brought the blue toy.
+types:
+  - type: Age_
+    vals: [16, 12, 10, 8, 6]
+  - type: First (2 M, 3 F)
+    vals: [Alice, Billy, Brenda, Greg, Sally]
+  - type: Toy
+    vals: [Ball, Frisbee, Hoop, Kite, Rope]
+  - type: Color
+    vals: [Blue, Gold, Red, Silver, White]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0411"
+  - "1320"
+  - "2032"
+  - "3244"
+  - "4103"

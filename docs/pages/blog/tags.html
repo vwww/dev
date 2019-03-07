@@ -1,0 +1,34 @@
+---
+title: Tags
+entry: blog_tag_cloud
+---
+{%- import 'blog.html' as blog -%}
+
+{{ blog.header(base, page_url) }}
+
+<div class="tag-cloud mb-4">
+	{%- for tag in collections.postTagsByName %}
+	<a href="#{{ tag }}" class="badge text-bg-secondary">{{ tag }} <sup>{{ collections.postsByTag[tag].length }}</sup></a>
+	{%- endfor %}
+</div>
+
+{%- for tag_name in collections.postTagsBySize %}
+<div id="{{ tag_name }}" class="card mb-3">
+	<div class="card-header">
+		{{ tag_name }} <sup>{{ collections.postsByTag[tag_name].length }}</sup>
+	</div>
+	<ul class="list-group list-group-flush">
+		{%- for post in collections.postsByTag[tag_name] %}
+		{%- set post_year = post.date.getFullYear() -%}
+		<li class="list-group-item">
+			<h5 class="card-title"><a href="{{ post.data.page_url }}">{{ post.data.title }}</a></h5>
+			<h6 class="card-subtitle mb-2 text-muted">
+				<time datetime="{{ post.date | date('xmlschema') }}">{{ post.date | date(site.format_blog_date) }}</time>
+				|
+				{{ blog.tags(base, collections.postsByTag, tags=post.data.blog_tags, categories=post.data.categories, tag=tag_name, year=post_year, year_count=collections.postsByYear[post_year].length) }}
+			</h6>
+		</li>
+		{%- endfor %}
+	</ul>
+</div>
+{%- endfor %}

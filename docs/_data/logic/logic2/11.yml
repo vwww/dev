@@ -1,0 +1,39 @@
+name: Where are the Kids at 11 P.M.?
+desc: >
+  The Johnson kids are each upstairs in their
+  bedrooms at 11 P.M. However, each one is doing
+  something different, either doing crossword puzzles,
+  drawing, reading, sleeping, or watching TV. The five
+  kids are three boys named Albert, Daniel, and
+  Ryan, and two girls named Cathy and Grace. They
+  range in age from 14 to 18 years old. From the
+  information given, determine each child's age and
+  what he or she is doing at 11 P.M.
+clues:
+- >
+  The eldest, a daughter, is not watching TV, or
+  sleeping.
+- >
+  Grace is not reading or watching TV.
+- >
+  The child who is drawing is older than Grace but
+  younger than Daniel.
+- >
+  The child who is reading is younger than Ryan
+  but older than Albert.
+types:
+  - type: Age_
+    vals: [18, 17, 16, 15, 14]
+  - type: First (3 M, 2 F)
+    vals: [Albert, Cathy, Daniel, Grace, Ryan]
+  - type: Activity
+    vals: [Crosswords, Drawing, Reading, Sleeping, T.V.]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "010"
+  - "144"
+  - "222"
+  - "301"
+  - "433"

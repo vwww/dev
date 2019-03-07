@@ -1,0 +1,45 @@
+name: Dog House
+desc: >
+  Five women friends each live on a different floor of
+  the North Star apartment building. Their names are
+  Edith, Hannah, Linda, Michelle, and Sarah. They
+  each own a dog. Each dog is one of these types:
+  cocker spaniel, dachshund, pekingese, poodle, and
+  schnauzer. The dogs are named Buttercup, Daisy,
+  Pansy, Rose, and Violet. From the information
+  given, determine the floor on which each woman
+  lives as well as the name and type of dog owned by
+  each one.
+clues:
+- >
+  Linda lives on a higher floor than the dog
+  named Buttercup but on a lower floor than the
+  pekingese, which is not named Rose.
+- >
+  Edith and her dog live on a higher floor than the
+  dog named Pansy but on a lower floor than the
+  dog named Buttercup, however, none of these
+  dogs is a schnauzer.
+- >
+  The dachshund lives on a higher floor than the poodle but a lower floor than
+  Sarah, whose dog is not a pekingese.
+- >
+  Violet is not a schnauzer but lives on a lower floor than Michelle.
+types:
+  - type: Floor Level_
+    vals: [Fifth, Fourth, Third, Second, First]
+  - type: First F
+    vals: [Edith, Hannah, Linda, Michelle, Sarah]
+  - type: Dog Type
+    vals: [Cocker, Dachshund, Pekingese, Poodle, Schnauzer]
+  - type: Dog Name
+    vals: [Buttercup, Daisy, Pansy, Rose, Violet]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0321"
+  - "1243"
+  - "2400"
+  - "3014"
+  - "4132"

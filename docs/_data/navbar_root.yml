@@ -1,0 +1,19 @@
+- name: Home
+  href: ""
+- name: Games
+  prefix: game
+  dropdown: game
+- name: Multiplayer
+  prefix: game
+  dropdown: game_mp
+# - name: Code [TODO]
+#   href: code
+- name: Tools
+  prefix: tools
+  dropdown: tools
+- name: Misc
+  prefix: misc
+  dropdown: misc
+- name: Bots
+  prefix: bots
+  dropdown: bots

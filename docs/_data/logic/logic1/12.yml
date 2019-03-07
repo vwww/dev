@@ -1,0 +1,41 @@
+name: Five Daughters' Sons
+desc: >
+  Between January 1 and May 31, Mrs. Jackson's
+  daughters Jane, Jean, Joan, June, and Jill, gave
+  birth to five sons. The names of the boys, in no
+  particular order, are Leonard, Edward, Harry,
+  Malcolm, and David. What was the name of
+  each daughter's son and in what month was he
+  born? Each daughter gave birth in a different
+  month.
+clues:
+- >
+  Jill's baby was born after Harry and they
+  were both born after Leonard.
+- >
+  David was born before Harry but neither
+  David nor Malcolm was born first or last.
+- >
+  Joan, Jane, and Jean gave birth in that order.
+- >
+  Malcolm, June's son Edward, and the boy
+  born in March all have blond hair.
+- >
+  Joan's son is older than both Harry and
+  Malcolm.
+types:
+  - type: First F (J*)
+    vals: [Jane, Jean, Joan, June, Jill]
+  - type: First M
+    vals: [Leonard, Edward, Harry, Malcolm, David]
+  - type: Month_
+    vals: [January, February, March, April, May]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "041"
+  - "122"
+  - "200"
+  - "314"
+  - "433"

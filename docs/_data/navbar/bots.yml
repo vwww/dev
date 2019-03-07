@@ -1,0 +1,62 @@
+- desc: Automation is convenient! Robots can easily do repetitive and tedious tasks.
+  items:
+  - name: Facebook Poke
+    desc: See the leaderboard of people who poke a bot that returned pokes automatically
+    href: bots/poke
+- name: Twitter
+  desc: Former Bots on Twitter (I no longer use Twitter.)
+  items:
+  - name: Grammar
+    desc: "@_grammar_ corrects users' grammar. It was suspended many times."
+    href: bots/grammar
+    hrefs:
+      - name: Twitter
+        href: https://twitter.com/_grammar_
+        ext: true
+  - name: Random Words
+    desc: 'This bot spews a stream of random words.'
+    href: bots/random
+    badges:
+      - [warning, Local]
+  - name: Recent Ideas
+    desc: '@recentideas learns to tweet from recent tweets.'
+    href: bots/recent
+    hrefs:
+      - name: Twitter
+        href: https://twitter.com/recentideas
+        ext: true
+  - name: Prose
+    desc: '@prosegen generates sentences from a grammar.'
+    href: bots/prose
+    hrefs:
+      - name: Twitter
+        href: https://twitter.com/prosegen
+        ext: true
+    badges:
+      - [secondary, TODO]
+      - [warning, Local]
+  - name: GooGuns Lulz
+    desc: '@googuns_lulz is like other @googuns_ accounts, yet very different.'
+    href: bots/googuns
+    hrefs:
+      - name: Twitter
+        href: https://twitter.com/googuns_lulz
+        ext: true
+    badges:
+      - [warning, Local]
+  - name: Bing Tomorrow
+    desc: "@BingTomorrow can see the future! It can predict Bing's homepage image for tomorrow."
+    href: bots/bing_tomorrow
+    hrefs:
+      - name: Twitter
+        href: https://twitter.com/BingTomorrow
+        ext: true
+    badges:
+      - [warning, Local]
+  - name: Spelling
+    desc: "@Bot_Dictionary corrects users' spelling. Its output rate from random searches is quite low."
+    href: bots/spelling
+    hrefs:
+      - name: Twitter
+        href: https://twitter.com/Bot_Dictionary
+        ext: true

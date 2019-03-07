@@ -1,0 +1,252 @@
+---
+title: Rules for Discard
+date: "2020-02-02 14:11:00 -0700"
+mdate: 2025-11-01 10:10:00 -0600
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'discard') }}
+
+<h1>Gameplay</h1>
+
+<div class="alert alert-info">
+  This game is isomorphic to the board game <strong>Love Letter</strong> for 3 or 4 players (or in <mark>Extended</mark>, <strong>Love Letter Premium Edition</strong> for 5 to 8 players), except it is perpetual, replacing Tokens of Affection.
+</div>
+
+<p>
+  Players take turns until the draw pile has one or zero cards remaining.
+  Each player always has 2 cards when taking a turn, 1 card when otherwise in game, and 0 when eliminated.
+  The minimum player count is 2, but there must be at least 3 players to remove perfect information about card counts.
+</p>
+
+<p>
+  Each turn, a player draws a card and uses one, which activates its effect.
+  The turn order is random, but the first player is a randomly selected previous winner (<code>last rank</code> is 1 on the scoreboard), when possible.
+</p>
+
+<p>When a card is used or destroyed, it is discarded face up, and then the card's effect activates.</p>
+
+<p>
+  Eliminated players destroy all cards in their hands.
+  <mark>If 6b is in the eliminated player's discard pile and not the last card, the eliminated player partially wins.</mark>
+  Leaving players are treated as eliminated and reset the turn timer.
+</p>
+
+<p>
+  The game ends when the draw pile has 0 cards (or 1 card before drawing), or when only 1 player remains.
+  The player who has the highest adjusted hand value (the hand card value <mark>+ hand bonus</mark>) wins.
+  If a player has two cards in hand when the game ends, the recently-drawn card must be returned to the draw pile, without contributing to the hand value.
+  If there is a tie, the tie breaker is the sum of discarded card values. If there is still a tie, those players are equally ranked.
+  Eliminated players are ranked by the order of elimination, below players who were not eliminated.
+</p>
+
+<p><mark>After determining ranks, if a <span class="badge text-bg-warning">WATCHED</span> player has rank 1, the player who discarded 0b, if still present, partially wins.</mark></p>
+
+<p>When a player partially wins, his win counter is increased by 1 without affecting any other score or streak.</p>
+
+<h2>Cards</h2>
+
+<p>There are 16 <mark>(32 in Extended)</mark> cards per deck:</p>
+
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Friendly Name</th>
+      <th>Use Effect</th>
+      <th>Count (<mark>Extended</mark>)</th>
+    </tr>
+  </thead>
+  <tr>
+    <td>8</td>
+    <td>Princess Annette</td>
+    <td>eliminate discarder <mark>(+4 adjusted hand value if 9b is in another player's hand)</mark></td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>Countess Wilhelmina</td>
+    <td>no action (must use if other is 5 or 6) <mark>(+4 adjusted hand value possible)</mark></td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>King Arnaud IV</td>
+    <td>(unusable if other card is 7) target another player; trade cards</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>Prince Arnaud</td>
+    <td>(unusable if other card is 7) target <em>any</em> player; destroy target's hand</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Handmaid Susannah</td>
+    <td>become <span class="badge text-bg-info">IMMUNE</span> (prevent being targeted) until user's next turn starts</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Baron Talus</td>
+    <td rowspan="2">target another player; compare hand card values, if not equal, eliminate lower player <mark>(+4 adjusted hand value possible for 7b)</mark></td>
+    <td>2</td>
+  </tr>
+  <tr class="table-warning">
+    <td>7b</td>
+    <td>Dowager Queen Tummia</td>
+    <td>0 (1)</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Priest Tomas</td>
+    <td>target another player; user looks at target's hand</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Guard Odette (Dougaul)</td>
+    <td>target another player and guess value (not 1); <mark>if target has 0c, eliminate user, target destroys hand; otherwise,</mark> if guess = target hand card value, eliminate target</td>
+    <td>5 (8)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>9b</td>
+    <td>Bishop Vinizio</td>
+    <td>target another player and guess value; if guess = target hand card value, user partially wins, target <em>optionally</em> destroys hand</td>
+    <td>0 (1)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>6b</td>
+    <td>Constable Viktor</td>
+    <td>none (partially win if eliminated while in discard pile)</td>
+    <td>0 (2)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>5b</td>
+    <td>Count Guntram</td>
+    <td>none (+1 to adjusted hand value later)</td>
+    <td>0 (2)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>4b</td>
+    <td>Sycophant Morris</td>
+    <td>target <em>any</em> player; target becomes <span class="badge text-bg-danger">REQUIRED</span> (must be targeted at least once) until the end of the next turn</td>
+    <td>0 (2)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>3b</td>
+    <td>Baroness Fiona</td>
+    <td>target <em>two other</em> players (both may be same); user looks at first target's hand, user looks at second target's hand</td>
+    <td>0 (2)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>2b</td>
+    <td>Cardinal Vesper</td>
+    <td>target <em>two different</em> players; players swap hands, user looks at first target's hand</td>
+    <td>0 (2)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>0b</td>
+    <td>Jester Darius</td>
+    <td>target another player; target becomes <span class="badge text-bg-warning">WATCHED</span></td>
+    <td>0 (1)</td>
+  </tr>
+  <tr class="table-warning">
+    <td>0c</td>
+    <td>Assassin</td>
+    <td>none (defends against 1)</td>
+    <td>0 (1)</td>
+  </tr>
+</table>
+
+<p>Only 8 has an effect when it is destroyed (same as effect when used). If any other card is destroyed, the player draws another card to replace it.</p>
+
+<p>
+  If players are to be targeted, but no target valid (by <span class="badge text-bg-info">IMMUNE</span> <mark>or <span class="badge text-bg-danger">REQUIRED</span></mark>), the targeting fails, and no effect occurs, since the effect requires a valid target and is skipped.
+  Some cards do not target: 4, 7, <mark>6b, 5b, 0c</mark>.
+</p>
+
+<p>A target is valid if it meets the textual constraint ("another" excludes the targeter, "different" requires the members to be distinct), <mark>contains all <span class="badge text-bg-danger">REQUIRED</span> players,</mark> and does not contain any <span class="badge text-bg-info">IMMUNE</span> members.</p>
+
+<p>
+  In some cases, the constraints are impossible to satisfy.
+  If targeting other players, and all other players are <span class="badge text-bg-info">IMMUNE</span>, <mark>or a player is both <span class="badge text-bg-danger">REQUIRED</span> and either the targeter or <span class="badge text-bg-info">IMMUNE</span>,</mark> no target is valid.
+  <mark>If the <span class="badge text-bg-danger">REQUIRED</span> player is not targeting and is not <span class="badge text-bg-info">IMMUNE</span>, that player can be targeted twice (3b), or the targeter can target himself and the <span class="badge text-bg-danger">REQUIRED</span> player (2b).</mark>
+  A player who activates 5 <mark>or 4b</mark> can always target someone (himself <mark>or the <span class="badge text-bg-danger">REQUIRED</span> player</mark>) <mark>unless someone is both <span class="badge text-bg-danger">REQUIRED</span> and <span class="badge text-bg-info">IMMUNE</span></mark>.
+</p>
+
+<h3>Adjustments</h3>
+<div class="alert alert-warning">
+  The hand bonus is the number of 5b in the cardholder's discard pile + 4 if any of these conditions are met (otherwise + 0):
+  <ul>
+    <li>8 is in hand and 9b is in another player's hand.</li>
+    <li>7 or 7b is in hand, both 5b are in discard pile, another player has 8 in hand, and another player has 9b in hand and has lower discard sum than cardholder</li>
+  </ul>
+  <p>The hand bonus rules might seem complex, but they are required to satisfy</p>
+  <ul>
+    <li>
+      lifted 7+2 and Princess (Bishop, Princess, and 7+2 beating Bishop)
+      <ul>
+        <li>13 = Countess + 2 = Dowager + 2</li>
+        <li>12 = Princess</li>
+        <li>9 = Bishop</li>
+        <li>7 = Countess = Dowager</li>
+      </ul>
+    </li>
+    <li>
+      lifted Princess (Bishop discard sum &ge; discard sum of all 7+2, if any)
+      <ul>
+        <li>14 = Princess + 2</li>
+        <li>12 = Princess</li>
+        <li>11 = Bishop + 2</li>
+        <li>10 = Bishop + 1</li>
+        <li>9 = Bishop = Countess + 2 = Dowager + 2</li>
+        <li>8 = Countess + 1 = Dowager + 1 = King + 2 = Constable + 2</li>
+        <li>Even if 7+1 or 6+2 would equal or beat Princess, they lose to Bishop.</li>
+        <li>Even if 7+2 would beat Princess, it equals Bishop, comparing discard sum.</li>
+      </ul>
+    </li>
+    <li>
+      simple (no Princess)
+      <ul>
+        <li>11 = Bishop + 2</li>
+        <li>10 = Bishop + 1</li>
+        <li>9 = Bishop = Countess + 2 = Dowager + 2</li>
+        <li>8 = Countess + 1 = Dowager + 1 = King + 2 = Constable + 2</li>
+      </ul>
+    </li>
+    <li>
+      simple (no Bishop)
+      <ul>
+        <li>9 = Countess + 2 = Dowager + 2</li>
+        <li>8 = Princess = Countess + 1 = Dowager + 1 = King + 2 = Constable + 2</li>
+        <li>7 = Countess = Dowager = King + 1 = Constable + 1 = Prince + 2</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h2>Honesty</h2>
+<p>
+  In real life, players can cheat by lying when targeted by 1 <mark>or 9b</mark> or by not using 7 when required.
+  Preventing such cheating, the game server makes it better than the physical version,
+  which needs an arbitrator, who would likely rather play.
+</p>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 30 seconds, ending early if all players are ready.</p>
+<p>Each turn lasts up to 20 seconds by default, with automatic random moves by default. Unused turn time cannot be carried to future turns. There is only a turn timer, not a game timer.</p>
+
+<h1>Options</h1>
+
+<h2>Turn Time / s <small>(default: 20, min: 5, max: 60)</small></h2>
+<p>A random move will be made after the turn timer expires.</p>
+
+<h2>Decks <small>(default: 1, min: 1, max: 3)</small></h2>
+<p>Number of decks in play. This setting does not increase the threshold of 2 cards, which ends the game when there are less than 2 cards in the draw pile.</p>
+
+<h1>FUTURE Options</h1>
+
+<h2>Extended <small>(default: off)</small></h2>
+<p>Enable extra cards and <mark>highlighted portions</mark>.</p>
+<p>The rules are currently based on Love Letter Premium Edition, but another mode might be added to be based on Love Letter Second Edition.</p>

@@ -1,0 +1,23 @@
+---
+title: Tic-Tac-Toe Analyzer
+date: "2016-10-23 11:00:00 -0600"
+mdate: 2025-08-13 20:00:00 -0600
+entry: app_game_t3
+---
+{% include 'app.html' %}
+
+<h2>Player Types</h2>
+<p><strong>Human</strong> players are controlled in the user interface.</p>
+<p><strong>First</strong> bot always chooses the lowest-numbered positions, so you can easily beat it.</p>
+<p><strong>Random</strong> bot chooses whatever it &ldquo;feels like&rdquo;, even if it is a bad choice. If you don&rsquo;t like its choice, you can undo your move and redo it.</p>
+<p><strong>Nice</strong> bot tries to lose as soon as possible, tie, and then win as late as possible. If it chooses all of its moves under default rules, it never wins.</p>
+<p><strong>Optimal</strong> bot tries to win as soon as possible, tie, and then lose as late as possible. If it chooses all of its moves under default rules, it never loses.</p>
+
+<h2>Table Results</h2>
+<p><strong>Forcable</strong> means the current player can force the desired result. <strong>Forced</strong> paths are those that allow the current player to keep the result forcable.</p>
+
+<p><strong>Possible</strong> means the result is possible, but the opponent can force a different result. <strong>Lost</strong> paths are those that allow the opponent to force a different result.</p>
+
+<p><strong>Impossible</strong> means that the result is not possible.</p>
+
+<p><strong>Result</strong> means that the result is guaranteed, as other results are impossible.</p>

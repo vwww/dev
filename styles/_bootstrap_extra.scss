@@ -1,0 +1,5 @@
+@each $color, $value in $theme-colors {
+	.text-bg-outline-#{$color} {
+		@extend .border, .border-#{$color}, .text-#{$color}
+	}
+}

@@ -1,0 +1,54 @@
+---
+layout: base
+---
+{% extends './misc-3d-template.html' %}
+
+{%- block page_name -%}
+{{ active_page }}
+{%- endblock -%}
+
+{%- block left -%}
+{%- set assets_loc = assets + 'victorz/misc/3d/' -%}
+<p><u>Look at the navigation bar</u>. All legacy images, as old as from 2008, are placed on this page!</p>
+<p>The <code>.max</code> source files are also available for download!</p>
+<p>Remember, all of the <u>cloud renderings are on the navigation&mdash;click on one</u>!</p>
+
+<h2>Legacy 3D Shape Downloads</h2>
+
+<div class="row">
+  <div class="col-12 col-md-6">
+    <h3>Spheres <small><a href="{{ assets_loc }}sphere.max">(source)</a></small></h3>
+  {%- for s, style in data.legacy_styles %}
+  {%- if s != 'm' %}
+    <div class="d-flex align-items-center">
+      <div class="flex-shrink-0 me-3">
+        <a href="{{ assets_loc }}{{ s }}s.png">
+          <img src="{{ assets_loc }}t/{{ s }}s.png" width="100" height="75" alt="{{ s }}-sphere">
+        </a>
+      </div>
+      <div class="flex-grow-1">
+        <h5><a href="{{ assets_loc }}{{ s }}s.png">{{ style }} Sphere</a></h5>
+        <p>This is just some {{ style | lower }} sphere.</p>
+      </div>
+    </div>
+  {%- endif %}
+  {%- endfor %}
+  </div>
+  <div class="col-12 col-md-6">
+    <h3>Cubes <small><a href="{{ assets_loc }}cube.max">(source)</a></small></h3>
+  {%- for s, style in data.legacy_styles %}
+    <div class="d-flex align-items-center">
+      <div class="flex-grow-1 me-3">
+        <h5><a href="{{ assets_loc }}{{ s }}c.png">{{ style }} Cube</a></h5>
+        <p>This is just some {{ style | lower }} cube.</p>
+      </div>
+      <div class="flex-shrink-0 ms-3">
+        <a href="{{ assets_loc }}{{ s }}c.png">
+          <img src="{{ assets_loc }}t/{{ s }}c.png" width="100" height="75" alt="{{ s }}-cube">
+        </a>
+      </div>
+    </div>
+  {%- endfor %}
+  </div>
+</div>
+{%- endblock -%}

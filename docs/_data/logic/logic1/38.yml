@@ -1,0 +1,55 @@
+name: Anniversaries
+desc: >
+  On June 1st, five couples who live in Smallboro
+  will celebrate their wedding anniversaries.
+  Their names are Johnstone, Parker, Watson,
+  Graves, and Shearer. The husbands' first names
+  are Russell, Douglas, Charles, Peter, and
+  Everett. The wives' first names are Elaine,
+  Joyce, Marcia, Elizabeth, and Mildred. Keep in
+  mind that no two couples have been married
+  the same number of years. From the clues
+  given, try to determine the husband and wife
+  that make up each couple and the number of
+  years they have been married.
+
+  Solved years: [5, 10, 20, 25, 30]
+clues:
+- >
+  Joyce has not been married as long as
+  Charles or the Parkers but longer than
+  Douglas or the Johnstones.
+- >
+  Elizabeth has been married twice as long as
+  the Watsons but only half as long as Russell.
+- >
+  The Shearers have been married ten years longer than Peter and ten years less
+  than Marcia.
+- >
+  Douglas and Mildred have been married for 25 years less than the Graves
+  who, having been married for 30 years, are the couple who have been married
+  the longest.
+- >
+  Neither Elaine nor the Johnstones have been married the shortest amount of
+  time.
+- >
+  Everett has been
+  married for 25 years.
+types:
+  - type: First M
+    vals: [Russell, Douglas, Charles, Peter, Everett]
+  - type: First F
+    vals: [Elaine, Joyce, Marcia, Elizabeth, Mildred]
+  - type: Last
+    vals: [Johnstone, Parker, Watson, Graves, Shearer]
+  - type: Years__
+    vals: [y1, y2, y3, y4, y5]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0142"
+  - "1420"
+  - "2234"
+  - "3301"
+  - "4013"

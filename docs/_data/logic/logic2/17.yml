@@ -1,0 +1,47 @@
+name: Bay Area Mysteries
+desc: >
+  Sam Chovell is a private detective working in the
+  Bay Area. One month he helped the police to solve
+  five mysteries. The crimes involved were arson,
+  embezzlement, kidnapping, murder, and robbery.
+  Each of the crimes occurred in a different one of
+  these five cities: Berkeley, Oakland, Palo Alto, San
+  Francisco, and San Jose. The primary clue that he
+  used to solve the crime was different in each case,
+  either an eyewitness, fingerprints, a letter, a phone
+  tip, or a tire track: From the information given,
+  determine the location of each type of crime as well
+  as the type of clue that cracked each case.
+clues:
+- >
+  In no particular order, the mysteries solved in
+  Berkeley, Oakland, and Palo Alto were arson,
+  embezzlement, and the one solved by the
+  evidence of an eyewitness.
+- >
+  The tire track and the phone tip were not the clues that solved the crimes of
+  embezzlement or murder.
+- >
+  The murder, the kidnapping, and the crime solved by the clue in a letter did not
+  occur in San Jose or Palo Alto.
+- >
+  The crime solved by a tire-track clue, the kidnapping, and the robbery did not
+  occur in San Francisco.
+- >
+  The crime in Berkeley was not solved by a clue found in a letter.
+types:
+  - type: City
+    vals: [Berkeley, Oakland, Palo Alto, San Fran., San Jose]
+  - type: Crime
+    vals: [Arson, Embezzlement, Kidnapping, Murder, Robbery]
+  - type: Evidence
+    vals: [Eyewitness, Fingerprints, Letter, Phone Tip, Tire Track]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "020"
+  - "112"
+  - "204"
+  - "331"
+  - "443"

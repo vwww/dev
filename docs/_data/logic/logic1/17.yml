@@ -1,0 +1,42 @@
+name: Royalty of the Land of Pirnz
+desc: >
+  Among the royalty of the land of Pirnz are
+  Velve, Brint, Draz, Flard, and Sorn. In no
+  particular order, their titles are queen, marquis,
+  duke, baron, and duchess. Their ages are
+  25, 30, 35, 40, and 45. From the clues given
+  try to determine the age and title of each
+  of the five.
+clues:
+- >
+  Flard is younger than Sorn who is younger
+  than the queen but the duchess is older than
+  all three.
+- >
+  Velve is older than the baron who is older
+  than Brint but none of these three is the
+  youngest.
+- >
+  Draz is not the oldest, nor is Draz the name
+  of any of the men.
+- >
+  Sorn is not 40 years old and neither is the
+  duchess.
+- >
+  Brint is not the marquis.
+types:
+  - type: Title (Royal)
+    vals: [Queen, Marquis, Duke, Baron, Duchess]
+  - type: Last
+    vals: [Velve, Brint, Draz, Flard, and Sorn]
+  - type: Age_
+    vals: [45, 50, 35, 30, 25]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "021"
+  - "134"
+  - "213"
+  - "342"
+  - "400"

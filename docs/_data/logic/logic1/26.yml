@@ -1,0 +1,47 @@
+name: The Pie Contest
+desc: >
+  Among prize winners in the pie contest at the
+  County Fair are Mrs. Plumcott, Mrs. Custardine,
+  Mrs. Appleby, Mrs. Peachet, and Mrs.
+  Lemoni. In no particular order their first names
+  are Janet, Lydia, Victoria, Vivian, and Doris.
+  From the clues given, try to determine the first
+  and last name of each woman, the type of pie
+  she baked (custard, peach, lemon, apple, or
+  plum), and the prize, first through fifth, that she
+  won.
+clues:
+- >
+  Mrs. Custardine's pie finished ahead of the
+  plum pie which finished ahead of Doris's pie,
+  but none of these won first prize.
+- >
+  Neither the peach nor the custard pie was
+  baked by Victoria or Mrs. Lemoni.
+- >
+  Mrs. Peachet's custard pie received a higher
+  prize than Vivian's pie which in turn did better than Mrs. Plumcott's lemon
+  pie.
+- >
+  Mrs. Custardine's pie finished oehind Mrs. Peachet's pie and they both
+  finished behind Lydia's pie.
+- >
+  Lydia's last name is not Lemoni and she did not bake the lemon pie.
+types:
+  - type: Last F
+    vals: [Plumcott, Custardine, Appleby, Peachet, Lemoni]
+  - type: First F
+    vals: [Janet, Lydia, Victoria, Vivian, Doris]
+  - type: Pie Type
+    vals: [Custard, Peach, Lemon, Apple, Plum]
+  - type: Rank_
+    vals: [First, Second, Third, Fourth, Fifth]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0424"
+  - "1232"
+  - "2110"
+  - "3001"
+  - "4343"

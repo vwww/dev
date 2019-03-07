@@ -1,0 +1,54 @@
+---
+title: Rules for Tic-Tac-Toe
+date: "2020-01-12 15:51:39 -0700"
+mdate: 2025-08-13 20:00:00 -0600
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 't3_multi') }}
+
+<h1>Gameplay</h1>
+<p>
+  Tic-Tac-Toe is a two-player board game.
+  Each turn, a player adds a mark to a 3x3 board.
+  A player wins when he makes three marks in a row (horizontal, vertical, or diagonal).
+  If the board is full but not won, the game ends in a draw.
+</p>
+
+<h2>Isomorphisms</h2>
+<p>Some games are isomorphic to Tic-Tac-Toe.</p>
+
+<h3>Pick15 <small>(Number Scrabble)</small></h3>
+<p>There are numbers from 1 to 9.</p>
+<p>Each turn, a player chooses an untaken number and wins if a subset of his numbers sums to 15.</p>
+
+<h3>Words</h3>
+<p>There are 9 words: <code>eat</code>, <code>bee</code>, <code>less</code>, <code>air</code>, <code>bits</code>, <code>lip</code>, <code>soda</code>, <code>book</code>, <code>lot</code>.</p>
+<p>Each turn, a player chooses an untaken word and wins if three of his words have the same letter.</p>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 30 seconds, ending early if all players are ready.</p>
+<p>Each turn lasts up to 10 seconds by default, with automatic random moves. Unused turn time cannot be carried to future turns. There is only a turn timer, not a game timer.</p>
+
+<h1>Options</h1>
+
+<h2>Turn Time / s <small>(default: 10, min: 1.5, max: 20)</small></h2>
+<p>A random move will be made after the turn timer expires.</p>
+
+<h2>Inverted <small>(switch winning and losing, default: off)</small></h2>
+<p>Winners and losers are swapped. Draws and resign/forfeit are unaffected.</p>
+
+<h2>Checked <small>(default: off)</small></h2>
+<p>
+  This disallows obviously bad moves.
+  If the opponent can win in one move, you are in check. Moves that make you in check or lose are invalid.
+  If you have no moves, you lose by checkmate.
+</p>
+
+<h2>Quick <small>(default: off)</small></h2>
+<p>If the game outcome is guaranteed, the game ends immediately. It is not enough for a player to be able to force an outcome; it must be the only possible outcome.</p>
+<p>The game outcome can be guaranteed to be a</p>
+<ul>
+  <li>draw (check up to 6 moves, when up to 3 spaces remain)</li>
+  <li>win for X (check up to 24 moves, when up to 4 spaces remain)</li>
+  <li>win for O (check up to 6 moves, when up to 3 spaces remain)</li>
+</ul>

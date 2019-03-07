@@ -1,0 +1,34 @@
+- items:
+  - name: IP Address
+    desc: See your IP address
+    href: tools/ip
+  - name: Ping
+    desc: Check your ping for HTTP requests
+    href: tools/ping
+- desc: general tools
+  items:
+  - name: Base Converter
+    desc: Convert between bases 2 to 36
+    href: tools/base
+  - name: GCD/LCM Calculator
+    href: tools/gcd
+  - name: Unit Converter
+    href: tools/unit
+  - name: Frequency
+    desc: Measure frequency, like heart rate
+    href: tools/freq
+  - name: Letter Counter
+    desc: Count letter frequency in text
+    href: tools/letter_count
+  - name: Encryption Tools
+    desc: Old encryption tools
+    href: tools/encrypt
+  - name: Time Perception
+    desc: It's later than you think!
+    href: tools/time
+  - name: Match Win Calculator
+    desc: Calculate the probability of winning first-to-n/best-of-(2n-1)
+    href: tools/match_win
+  - name: Fund Comparison
+    desc: Compare outcomes of holding funds
+    href: tools/fund_compare

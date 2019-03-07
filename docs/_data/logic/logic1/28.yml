@@ -1,0 +1,69 @@
+name: Park Street Residents
+desc: >
+  The Wilcoxes, the Byrds, the Talmadges, the
+  Marsdens, and the Levers all live on the west
+  side of Park Street. The numbers on the houses
+  run from south to north, with the highest number
+  being the most northerly, and only odd
+  numbers are used on the west side of the street.
+  Each house has white trim, but the main color
+  of each house is different. The colors are red,
+  brown, tan, yellow, and green. On the front
+  lawn of each house there is a different type of
+  tree in the central position. The five trees are
+  an oak, an elm, an ash, a willow, and a maple.
+  From the clues given, try to determine for each
+  family the color of the house, the type of tree
+  they have planted out front, and the address
+  number of the house.
+clues:
+- >
+  The Lever house is the next house to the south of the tan house and the next
+  house north of the house with an oak on its front lawn.
+- >
+  The Marsden house does not have an elm in its front lawn.
+- >
+  Neither the Wilcox house nor the Talmadge house has a tree on its front lawn
+  with a three letter name, but the colors of both of their houses are three letter
+  words.
+- >
+  The green house is the next one north of the Marsden house, which is the next
+  house to the north of the
+  house with a willow on its
+  front lawn.
+- >
+  The Lever house is the one
+  just north of the green house
+  and just south of
+  the house with
+  the maple on
+  its front lawn.
+- >
+  The Wilcox
+  house and the
+  Marsden house
+  do not have a
+  maple tree on
+  either of their
+  front lawns and
+  neither does
+  the brown
+  house.
+types:
+  - type: Last
+    vals: [Wilcox, Byrd, Talmadge, Marsden, Lever]
+  - type: Tree
+    vals: [Oak, Elm, Ash, Willow, Maple]
+  - type: Color
+    vals: [Red, Brown, Tan, Yellow, Green]
+  - type: House Number_
+    vals: [9, 7, 5, 3, 1]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0304"
+  - "1042"
+  - "2420"
+  - "3233"
+  - "4111"

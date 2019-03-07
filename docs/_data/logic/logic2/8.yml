@@ -1,0 +1,39 @@
+name: Win, Place, and Show Plus Two
+desc: >
+  In the big race at the Horseheads' racetrack the top
+  five finishers were Full Sweep, Nightshade,
+  Quartermain, Top Drawer, and Whirlaway. In
+  alphabetical order, they were ridden by Alvarez,
+  Hernandez, Perez, Pickman, and Wilson. From the
+  information given, determine the order of finish of
+  the race and the name of the jockey who rode each
+  of the five horses.
+clues:
+- >
+  Of Whirlaway and Quartermain, one finished
+  first and one was ridden by Alvarez.
+- >
+  Pickman finished ahead of Perez but after
+  Whirlaway, who did not win top money.
+- >
+  Full Sweep did not finish third.
+- >
+  Top Drawer finished ahead of Nightshade but
+  after Wilson, who did not ride the winning
+  horse.
+types:
+  - type: Rank_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Horse
+    vals: [Full Sweep, Nightshade, Quartermain, Top Drawer, Whirlaway]
+  - type: Last
+    vals: [Alvarez, Hernandez, Perez, Pickman, Wilson]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "021"
+  - "104"
+  - "240"
+  - "333"
+  - "412"

@@ -1,0 +1,44 @@
+name: Divorce
+desc: >
+  The marriages of five brothers ended in divorce
+  after various numbers of years married. The five
+  brothers are named James, Jeremy, John, Joseph,
+  and Justin. Their five wives are named Bertrice,
+  Loreen, Luanne, Maybelle, and Rosette. From the
+  information given, determine the name of each
+  brother's wife as well as the number of years that
+  each was married. All five couples were married on
+  the same day.
+
+  After solving, years = [10, 8, 5, 4, 3]
+clues:
+- >
+  Although Justin was married for half as long as
+  Luanne, he was married one year longer than
+  Jeremy, who was married for half as long as
+  Rosette-none of these people are husband and
+  wife.
+- >
+  Ten years was the longest marriage.
+- >
+  Loreen was married one year longer than Joseph
+  but one year less than Justin.
+- >
+  James was not married to Maybelle and neither of them was a part of the couple
+  who were the first or last to get divorced.
+types:
+  - type: Years__
+    vals: [y4, y3, y2, y1, y0]
+  - type: First M
+    vals: [James, Jeremy, John, Joseph, Justin]
+  - type: First F
+    vals: [Bertrice, Loreen, Luanne, Maybelle, Rosette]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "022"
+  - "104"
+  - "243"
+  - "311"
+  - "430"

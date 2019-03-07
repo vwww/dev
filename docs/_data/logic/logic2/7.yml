@@ -1,0 +1,41 @@
+name: Birthdays in June
+desc: >
+  All of Ms. Johnson's children were born in June.
+  Their birthdays are June 1, June 7, June 12, June
+  20, and June 29. There are three girls named Mary,
+  Elvira, and Joan, and there are two boys named
+  Douglas and Timothy. Ms. Johnson bought these five
+  presents for them: a book, a coat, concert tickets, a
+  dress, and an electronic game. From the information
+  given, determine the birthday and present received
+  by each child.
+clues:
+- >
+  Timothy's birthday comes before that of the girl
+  who received a dress but after the girl who
+  received a coat.
+- >
+  Douglas's birthday comes before Elvira's
+  birthday but after the birthday of the girl who
+  received an electronic game.
+- >
+  Elvira did not receive the dress and neither did
+  Joan.
+- >
+  Douglas did not get a book as a present.
+types:
+  - type: June Day_
+    vals: [June 1, June 7, June 12, June 20, June 29]
+  - type: First (3 F, 2 M)
+    vals: [Douglas, Elvira, Joan, Mary, Timothy]
+  - type: Gift
+    vals: [Book, Coat, Concert Tix, Dress, Elec. Game]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "024"
+  - "102"
+  - "211"
+  - "340"
+  - "433"

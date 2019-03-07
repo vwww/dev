@@ -1,0 +1,37 @@
+---
+title: Compound Interest Graph
+date: "2014-05-19 09:00:00 -0600"
+mdate: 2019-11-03 12:19:37 -0700
+entry: misc_compound
+---
+<div class="row">
+  <div class="col-md-6 mb-2">
+    <div class="input-group">
+      <span class="input-group-text">Start Date</span>
+      <input class="form-control" type="date" id="startDate" value="2014-04-14">
+    </div>
+  </div>
+  <div class="col-md-6 mb-2">
+    <div class="input-group">
+      <span class="input-group-text">Principal</span>
+      <input class="form-control" type="number" id="principal" value="10">
+    </div>
+  </div>
+  <div class="col-md-7 col-lg-5 mb-2">
+    <div class="input-group">
+      <span class="input-group-text">Interest Rate (%/year)</span>
+      <input class="form-control" type="number" id="interest" value="60">
+    </div>
+  </div>
+  <div class="col-sm-7 col-md-5 col-lg-4 mb-2">
+    <div class="input-group">
+      <span class="input-group-text">Terms (years)</span>
+      <input class="form-control" type="number" id="terms" value="50">
+    </div>
+  </div>
+  <div class="col-sm-5 col-md-12 col-lg-3 mb-2">
+    <button id="plotDataButton" class="btn btn-primary d-block w-100">Calculate</button>
+  </div>
+</div>
+
+<div id="container" style="height: 400px; min-width: 310px"></div>

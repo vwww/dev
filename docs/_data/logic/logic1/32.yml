@@ -1,0 +1,49 @@
+name: Race Results
+desc: >
+  The first race at the Middleville Track was a
+  five-horse race. The horses were Stillwind,
+  Fleur-de-Lis, Graymere, Fool's Friend, and
+  Emergency. The jockeys--Smith, Jones, Wilson,
+  McCoy, and Larson, each wore a cap of a
+  different color. One wore red, one wore yellow,
+  one blue, one green, and one wore orange.
+  From the clues given, try to determine the
+  jockey of each horse, the color of his cap and
+  the order in which the race finished.
+clues:
+- >
+  Graymere won but was not ridden by the
+  jockey with the yellow cap.
+- >
+  Stillwind finished ahead of McCoy's horse
+  but behind the blue-capped jockey;
+  however, none of these finished first.
+- >
+  Neither Graymere, Fleur-de-Lis nor Emergency
+  was ridden by the jockey with the red cap but one was ridden by Jones
+  and another by Larson and the other was the horse who finished fourth.
+- >
+  Fool's Friend finished ahead of the horse ridden by the jockey in the red cap,
+  who finished ahead of McCoy, who finished ahead of the jockey with the
+  orange cap.
+- >
+  Neither Fleur-de-Lis nor Graymere was ridden by Larson or Smith and none
+  of these horses or riders finished second.
+types:
+  - type: Horse
+    vals: [Stillwind, Fleur-de-Lis, Graymere, Fool's Friend, Emergency]
+  - type: Last (Jockey)
+    vals: [Smith, Jones, Wilson, McCoy, Larson]
+  - type: Color
+    vals: [Red, Yellow, Blue, Green, Orange]
+  - type: Rank_
+    vals: [First, Second, Third, Fourth, Fifth]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0002"
+  - "1313"
+  - "2130"
+  - "3221"
+  - "4444"

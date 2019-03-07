@@ -1,0 +1,149 @@
+---
+title: Basic Calculator Emulator
+date: "2016-04-12 14:14:45 -0600"
+mdate: 2022-11-04 19:54:00 -0600
+entry: app_misc_calc
+examples:
+  - name: Chain Calculation
+    case:
+      - name: (2+5-3)*8/4-7 = 1
+        keys: [2, +, 5, '-', 3, '*', 8, /, 4, '-', 7, =]
+        disp: 1
+  - name: Constant Calculation
+    case:
+      - name: 2 * 3
+        keys: [2, '*', 3, =]
+        disp: 6
+      - name: 2 * 5
+        keys: [5, =]
+        disp: 10
+      - name: 8 / 4
+        keys: [8, /, 4, =]
+        disp: 2
+      - name: 4 / 4
+        keys: [4, =]
+        disp: 1
+      - name: 1 + 2
+        keys: [1, +, 2, =]
+        disp: 3
+      - name: 4 + 2
+        keys: [4, =]
+        disp: 6
+      - name: 3 - 2
+        keys: [3, '-', 2, =]
+        disp: 1
+      - name: 7 - 2
+        keys: [7, =]
+        disp: 5
+  - name: Exponents
+    case:
+      - name: 3&sup2;*2/5&sup3;
+        keys: [3, '*', =, '*', 2, /, 5, =, =, =]
+        disp: 0.144
+  - name: Accumulation Calculation
+    case:
+      - name: 23*7 = 161
+        keys: [MRC, MRC, 23, '*', 7, M+]
+        disp: 161 M
+      - name: +) 12/4 = 3
+        keys: [12, /, 4, M+]
+        disp: 3 M
+      - name: -) 13*2 = 26
+        keys: [13, '*', 2, M-]
+        disp: 26 M
+      - name: -) 9/2 = 4.5
+        keys: [9, /, 2, M-]
+        disp: 4.5 M
+      - name: Total = 133.5
+        keys: [MRC]
+        disp: 133.5 M
+  - name: Percentage Calculation
+    case:
+      - name: 360 * 85%
+        keys: [360, '*', 85, '%']
+        disp: 306
+  - name: Percentage Of
+    case:
+      - name: 360 / 4%
+        keys: [360, /, 4, '%']
+        disp: 9000
+  - name: Percentage Increase
+    case:
+      - name: 360 * (1+2%)
+        keys: [360, +, 2, '%']
+        disp: 367.2
+  - name: Percentage Decrease (Discount)
+    case:
+      - name: 360 * (1-15%)
+        keys: [360, '-', 15, '%']
+        disp: 306
+  - name: Operation State
+    case:
+      - name: 2 + 3
+        keys: [2, +, 3, =]
+        disp: 5
+      - name: 5 + 3
+        keys: =
+        disp: 8
+      - name: 1 + 3
+        keys: [1, =]
+        disp: 4
+      - name: 3 + 4
+        keys: [+, =]
+        disp: 7
+      - name: 7 + 4
+        keys: =
+        disp: 11
+      - name: 11 * 11
+        keys: ['*', =]
+        disp: 121
+      - name: 2 * 3
+        keys: [2, '*', 3, =]
+        disp: 6
+      - name: 2 * 6
+        keys: =
+        disp: 12
+      - name: 2 * 5
+        keys: [5, =]
+        disp: 10
+      - name: 2 + 10
+        keys: [+, =]
+        disp: 12
+      - name: 12 + 10
+        keys: =
+        disp: 22
+      - name: 1 + 3
+        keys: [1, +, 3, =]
+        disp: 4
+      - name: 1 / 4
+        keys: [/, =]
+        disp: 0.25
+---
+{% include 'app.html' %}
+
+<h2 class="my-3">Examples</h2>
+
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Key Entry</th>
+      <th>Display</th>
+    </tr>
+  </thead>
+  {%- for e in examples %}
+  <tr>
+    <td{% if e.case.length > 1 %} rowspan="{{ e.case.length }}"{% endif %}>{{ e.name }}</td>
+  {%- for c in e.case %}
+  {%- if not loop.first %}
+  </tr>
+  <tr>
+  {%- endif %}
+    <td>{{ c.name }}</td>
+    <td>{% for k in c.keys %}{% if k is string %}<kbd>{{ k }}</kbd>{% else %}{{ k }}{% endif %} {% endfor %}</td>
+    <td>{{ c.disp }}</td>
+  {%- endfor %}
+  </tr>
+  {%- endfor %}
+</table>

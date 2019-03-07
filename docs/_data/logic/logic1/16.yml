@@ -1,0 +1,44 @@
+name: Two Weeks Vacation
+desc: >
+  Gardner, Plunkett, Maloney, Phelps, and Lopez
+  work for the Littleville fire department. They
+  each get two weeks vacation per year. As it
+  happens, last year they each took their first
+  week in the first five months of the year and
+  their second week in the last five months of the
+  year. Remembering that each man took each of
+  his weeks in a different month, try to determine
+  the months in which each man took his first and
+  second weeks.
+clues:
+- >
+  Mr. Plunkett took his first week before Mr.
+  Gardner who took his before Mr. Phelps; for
+  their second week the order was reversed.
+- >
+  The man who vacationed in March also
+  vacationed in September.
+- >
+  Mr. Lopez did not take his first week in
+  April or in March.
+- >
+  Neither Mr. Lopez nor the man who took his first week in January took
+  his second week in August or December.
+- >
+  Mr. Maloney took his second week before Mr. Plunkett but after Mr. Lopez.
+types:
+  - type: Last M
+    vals: [Gardner, Plunkett, Maloney, Phelps, Lopez]
+  - type: Month_ First
+    vals: [Jan, Feb, March, April, May]
+  - type: Month_ Last
+    vals: [August, Sept, Oct, Nov, Dec]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "021"
+  - "114"
+  - "203"
+  - "330"
+  - "442"

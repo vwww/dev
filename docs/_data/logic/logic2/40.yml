@@ -1,0 +1,48 @@
+name: Interpreters
+desc: >
+  There are five interpreters at the U.N. whose names
+  are Aix, Dee, Jay, Kay, and Oh. Each one is a
+  native speaker of a different one of these five
+  languages English, French, German, Hebrew, and
+  Japanese. They each speak two other languages
+  fluently. The five best languages spoken are Arabic,
+  Chinese, Persian, Russian, and Turkish. As it
+  happens, the five second best languages of the five
+  interpreters are these same languages. Aix and Dee
+  are women while Jay, Kay, and Oh are men. From
+  the information given, determine each person's
+  native language and his first and second best foreign
+  language.
+clues:
+- >
+  The native English speaker doesn't speak Arabic
+  at all.
+- >
+  The Japanese and the German both list Russian
+  as one of the languages that they speak but
+  neither man is Mr. Jay who is not French.
+- >
+  Mr. Kay is not Japanese.
+- >
+  Ms. Dee's best foreign language is the same as Mr. Oh's second best foreign language.
+- >
+  Neither woman speaks Persian but the best foreign language of one of them is
+  Chinese and the second best foreign language of the other is Arabic.
+types:
+  - type: First (2 F, 3 M)
+    vals: [Aix, Dee, Jay, Kay, Oh]
+  - type: Language Native
+    vals: [English, French, German, Hebrew, Japanese]
+  - type: Language First
+    vals: [Arabic1, Chinese1, Persian1, Russian1, Turkish1]
+  - type: Language Second
+    vals: [Arabic2, Chinese2, Persian2, Russian2, Turkish2]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0140"
+  - "1014"
+  - "2302"
+  - "3223"
+  - "4431"

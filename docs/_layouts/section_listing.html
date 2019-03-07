@@ -1,0 +1,42 @@
+---
+layout: pages
+---
+{%- for s in sections | to_array %}
+  {%- if not loop.first %}
+  <hr>
+  {%- endif %}
+  {%- for section in navbar[s] %}
+    {%- if not loop.first %}
+      <hr>
+    {%- endif %}
+    {%- if section.name %}
+      <h2>{{ section.name }}</h2>
+    {%- endif %}
+    {%- if section.desc %}
+      <p>{{ section.desc }}</p>
+    {%- endif %}
+    <div class="row grid-container" data-packery='{ "itemSelector": ".grid-item" }'>
+    {%- for item in section.items %}
+      <div class="col-sm-6 col-md-4 col-xl-3 mb-3 grid-item">
+        <div class="card{% if item.badges %} border-{{ item.badges[0][0] }}{% endif %}">
+          <div class="card-header">{{ item.name }}{% for badge in item.badges %} <span class="badge text-bg-{{ badge[0] }}">{{ badge[1] }}</span>{% endfor %}</div>
+          <div class="card-body">
+            {%- if item.desc %}
+              <p class="card-text">{{ item.desc }}</p>
+            {%- endif %}
+            {%- if item.href %}
+              <a href="{{ base }}/{{ item.href }}" class="btn btn-primary">Go</a>
+            {%- endif %}
+            {%- if item.href_ext %}
+              <a href="{{ item.href_ext }}" target="_blank" class="btn btn-info">Go</a>
+            {%- endif %}
+            {%- for extra in item.hrefs %}
+              <a href="{% if not extra.ext %}{{ base }}/{% endif %}{{ extra.href }}" {%- if extra.ext %} target="_blank"{% endif %} class="btn btn-{{ extra.class | default('info') }}">{{ extra.name | default('Go') }}</a>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+    </div>
+  {%- endfor %}
+{%- endfor -%}

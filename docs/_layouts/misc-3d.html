@@ -1,0 +1,58 @@
+---
+layout: base
+---
+{% extends './misc-3d-template.html' %}
+
+{%- block page_name -%}
+  {%- if show_all -%}
+    {{ active_area.name }}
+  {%- else -%}
+	{{ active_page }} <small>({{ active_area.name }})</small>
+  {%- endif -%}
+{%- endblock -%}
+
+{%- set show_all = view == 'base' -%}
+
+{%- block left -%}
+{%- if show_all -%}
+
+<h3>Camera Selection</h3>
+<div class="row">
+{%- for b, p in active_area.pages %}
+  {%- if b != 'base' %}
+  <div class="col-lg-6 d-flex align-items-center">
+    <div class="flex-shrink-0">
+      <a href="{{ url_img(area, b) }}">
+        <img src="{{ url_img(area, b, 1) }}" width="60" height="60" alt="">
+      </a>
+    </div>
+    <div class="flex-grow-1 ms-3">
+      <h5><a href="{{ url_page(loc, area, b) }}">{{ p }}</a></h5>
+      <p>{{ p }}</p>
+    </div>
+  </div>
+  {%- endif %}
+{%- endfor %}
+</div>
+
+{%- else -%}
+
+<h3>Environments</h3>
+<div class="row">
+{%- for e, env in data.environments -%}
+  <div class="col-lg-6 d-flex align-items-center">
+    <div class="flex-shrink-0">
+      <a href="{{ url_img(area, view, 0, e) }}">
+        <img src="{{ url_img(area, view, 1, e) }}" width="60" height="60" alt="">
+      </a>
+    </div>
+    <div class="flex-grow-1 ms-3">
+      <h5><a href="{{ url_img(area, view, 0, e) }}">{{ env.name }}</a> <small>({{ e }})</small></h5>
+      <p>{{ env.desc }}</p>
+    </div>
+  </div>
+{%- endfor %}
+</div>
+
+{%- endif -%}
+{%- endblock -%}
