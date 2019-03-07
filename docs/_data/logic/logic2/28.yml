@@ -1,0 +1,44 @@
+name: Lucky Charms
+desc: >
+  Baseball players are notoriously superstitious.
+  Blacket, Bluet, Browning, Greenfield, and Whitehall
+  are five players on the Boomtown Bombers who
+  each carry a different lucky charm with them in
+  every game. The charms are a four-leaf clover, a
+  penny, a rabbit's foot, a ribbon, and a silver dollar.
+  The five positions that they play are centerfield,
+  first base, right field, shortstop, and third base.
+  From the information given, determine each player's
+  lucky charm as well as his position.
+clues:
+- >
+  Neither Browning nor the two outfielders have a
+  coin as a lucky charm.
+- >
+  Bluet is not an outfielder.
+- >
+  Greenfield is an outfielder and Whitehall's infield
+  position is not first base but neither has his
+  lucky charm a clover or a penny and Blacket
+  does not have either of these two lucky charms.
+- >
+  Blacket and Bluet are not the players who play first base or third base and
+  neither of them has a lucky ribbon.
+- >
+  The centerfielder's lucky charm is not a rabbit's foot.
+types:
+  - type: Last M
+    vals: [Blacket, Bluet, Browning, Greenfield, Whitehall]
+  - type: Lucky Charm
+    vals: [Clover, Penny, Rabbit's Foot, Ribbon, Silver Dollar]
+  - type: Baseball Position
+    vals: [Centerfielder, First Baseman, Right Fielder, Greenfield, Whitehall]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "022"
+  - "113"
+  - "201"
+  - "330"
+  - "444"

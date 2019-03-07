@@ -1,0 +1,52 @@
+name: Vital Statistics
+desc: >
+  Four men who work for the Littletown city
+  government recently underwent their annual
+  physical exams. The four men are Vince, Clem,
+  Mort, and Phil. From the clues given, try to
+  determine the exact age, height and weight of
+  each of the four men.
+
+    After solving:
+    a = [45, 40, 35, 30]
+    h = [6'1", 6'0", 5'11", 5'10"]
+    w = [180, 175, 170, 165]
+clues:
+- >
+  Mort is five years older than the tallest man
+  and he is lighter than the shortest man.
+- >
+  Clem is taller than the oldest man and
+  lighter than the youngest man.
+- >
+  Phil is two inches shorter and ten pounds
+  heavier than Clem but Phil weighs less than
+  the tallest man.
+- >
+  Someone is 6'1" and 40 years old, and
+  someone is 5'11" and weighs 170 pounds.
+- >
+  The lightest man is five years older than the
+  shortest man.
+- >
+  The youngest man is 30, one inch shorter than Mort, and five pounds lighter
+  than Vince.
+- >
+  The man who is 6' is not Vince, 175-pound Phil, or the oldest man.
+types:
+  - type: First M
+    vals: [Vince, Clem, Mort, Phil]
+  - type: Age__
+    vals: [a4, a3, a2, a1]
+  - type: Height__
+    vals: [h4, h3, h2, h1]
+  - type: Weight__
+    vals: [w4, w3, w2, w1]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0100"
+  - "1213"
+  - "2022"
+  - "3331"

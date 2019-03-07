@@ -1,0 +1,128 @@
+---
+layout: ~
+date: "2013-08-23 18:27:02 -0600"
+mdate: 2023-01-21 23:31:21 -0700
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ILF Clan</title>
+
+<meta name="author" content="[ILF] McDonalds - victorz.ca">
+<meta name="description" content="Some COD4 gaming clan.">
+<meta name="keywords" content="call,of,duty,4,four,cod,cod4,modern,warfare,mw,mw1,clan,game,gaming,pro,win,skill,skilled,winner">
+
+<link rel="stylesheet" type="text/css" media="screen" href="{{assets}}victorz/misc/ilf/style.css">
+</head>
+
+<body>
+	<!-- wrap starts here -->
+	<div id="wrap">
+
+		<!--header -->
+		<div id="header">
+
+			<h1 id="logo-text">[ILF]<span class="gray"> Clan</span></h1>
+			<h2 id="slogan">We are the best COD4 gamers&hellip;</h2>
+			<!--
+			<form class="search" method="post" action="#">
+				<p>
+					<input class="textbox" type="text" name="search_query" value="">
+					<input class="button" type="submit" name="Submit" value="Search">
+				</p>
+			</form>
+			-->
+		</div>
+
+		<!-- menu -->
+		<div  id="menu">
+			<ul>
+				<li id="current"><a href="">Home</a></li>
+				<li><a href="">Roster</a></li>
+				<li><a href="">Matches</a></li>
+				<li><a href="">Forums</a></li>
+				<li><a href="">Sponsors</a></li>
+				<li><a href="">Trolol&hellip;</a></li>
+			</ul>
+		</div>
+
+		<!-- content-wrap starts here -->
+		<div id="content-wrap">
+
+			<div id="main">
+				<script src="//d.victorz.ca/a/ilf_head"></script>
+
+				<h3>Results: 87 wins, 8 ties, 5 losses &mdash; 100 total</h3>
+				<h2 class="win">[ILF] vs [PDE]: Win &ndash; 0&mdash;0 - Search and Destroy - Wet Work</h2>
+				<p><strong>We have tentatively won!</strong> They were absent, and for two hours, none of their clan members showed up.</p>
+
+				<div id="oldMatches"></div>
+
+				<script src="//d.victorz.ca/a/ilf_foot"></script>
+			</div>
+
+			<div id="sidebar">
+				<h1>[ILF] Roster</h1>
+				<div class="left-box">
+					<p>All unclassified members are listed. Team leaders are denoted by an asterisk*</p>
+				</div>
+
+				<h1>Team A &mdash; Alpha</h1>
+				<div class="left-box">
+					<ul class="sidemenu" id="teamAlpha">
+						<li><a href="">Loading&hellip;</a></li>
+					</ul>
+				</div>
+
+				<h1>Team B &mdash; Bravo</h1>
+				<div class="left-box">
+					<ul class="sidemenu">
+						<li><a href="">[ILF] KFC*</a></li>
+						<li><a href="https://victorz.ca">[ILF] McDonalds</a></li>
+						<li><a href="">[ILF] Herp Derp</a></li>
+						<li><a href="">[ILF] A&amp;W</a></li>
+						<li><a href="">More are withheld&hellip;</a></li>
+					</ul>
+				</div>
+
+				<h1>Wise Words</h1>
+				<div class="left-box">
+					<p>&quot;To be concious that you are ignorant of the
+					facts is a great step to knowledge&quot; </p>
+
+					<p class="align-right">- Benjamin Disraeli</p>
+				</div>
+			</div>
+
+		<!-- content-wrap ends here -->
+		</div>
+
+		<!--footer starts here-->
+		<div id="footer">
+
+			<p>
+				&copy; 1337-<span id="copyyear">now</span> [ILF] Clan |
+				Operations are operated by <a href="https://victorz.ca">[ILF] McDonalds</a>.
+
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+				<a href="index.html">Home</a> |
+				<a href="ilf.html">Alt</a> |
+				<a href="https://validator.w3.org/check?uri=referer" referrerpolicy="unsafe-url">Valid HTML5</a> |
+				<a href="https://jigsaw.w3.org/css-validator/check/referer" referrerpolicy="unsafe-url">Valid CSS</a> |
+				<a id="pageVer">v0</a>
+			</p>
+
+		</div>
+
+	<!-- wrap ends here -->
+	</div>
+
+<!-- scripts -->
+{%- for file in manifest.js.misc_ilf %}
+<script src="{{assets}}dist/{{ file }}.js"></script>
+{%- endfor %}
+{% include '_scripts.html' %}
+
+</body>
+</html>

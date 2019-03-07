@@ -1,0 +1,43 @@
+name: Choice of Shows
+desc: >
+  The Gold Dust, Gold Horn, Gold Rush, Silver Bell,
+  and Silver Dollar are five popular showplaces on
+  the strip. At each club one week a different one of
+  these five singers was performing: Carol Channing,
+  Tom Jones, Liza Minnelli, Wayne Newton, and
+  Andy Williams. Opening the show for each of them
+  was a different one of these five comics: David
+  Brenner, George Carlin, Gilda Radner, Joan Rivers,
+  and Lily Tomlin. From the information given,
+  determine the singer and comic performing at each
+  club.
+clues:
+- >
+  The only place where the performers are both
+  women is the Gold Rush and the only place
+  where the performers are both men is the Gold
+  Horn.
+- >
+  Brenner and Tomlin are appearing in places
+  whose names have "Silver" in them, but Channing is not.
+- >
+  The male comic appearing with Newton is not Brenner.
+- >
+  The male singer appearing with Radner is not Williams, and none of these is
+  appearing at the Silver Bell.
+types:
+  - type: Showplace
+    vals: [Gold Dust, Gold Horn, Gold Rush, Silver Bell, Silver Dollar]
+  - type: Last (3 M, 2 F)
+    vals: [Channing, Jones, Minnelli, Newton, Williams]
+  - type: Last (2 M, 3 F)
+    vals: [Brenner, Carlin, Radner, Rivers, Tomlin]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "012"
+  - "131"
+  - "203"
+  - "320"
+  - "444"

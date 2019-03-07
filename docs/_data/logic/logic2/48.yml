@@ -1,0 +1,49 @@
+name: Bird Houses
+desc: >
+  Presently being boarded at the Bird House are five
+  birds, which are a canary, a cockatoo, a myna bird,
+  a parakeet, and a parrot. The owners of these birds
+  are named Crane, Finch, Hawk, Heron, and Raven.
+  In alphabetical order, the first names of the two
+  men are Jay and Martin, while the three women are
+  Mavis, Polly, and Robin. They each live on a
+  different one of these five streets: Birdsall Street,
+  Downs Street, Fowler Avenue, Poltrecci Avenue,
+  and Winger Street. From the information given,
+  determine the first and last name of each pet's
+  owner as well as the name of the street on which
+  each one lives.
+clues:
+- >
+  Polly does not own the parakeet or the parrot
+  but one of these two birds belongs to Ms. Heron
+  and the other one lives on Winger Street.
+- >
+  Martin is not Mr. Crane and neither of these two men lives on Birdsall Street
+  or Fowler Avenue.
+- >
+  Robin, Ms. Heron, and the woman who lives on Downs Street do not own the
+  myna bird or the parakeet.
+- >
+  Ms. Finch, Mr. Hawk, and the canary's owner do not live on Poltrecci Avenue
+  or Birdsall Street.
+- >
+  The canary does not live on Fowler Avenue.
+types:
+  - type: Bird Type
+    vals: [Canary, Cockatoo, Myna Bird, Parakeet, Parrot]
+  - type: Street Name
+    vals: [Birdsall, Downs, Fowler, Poltrecci, Winger]
+  - type: First (2 M, 3 F)
+    vals: [Jay, Martin, Mavis, Polly, Robin]
+  - type: Last
+    vals: [Crane, Finch, Hawk, Heron, and Raven]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0134"
+  - "1241"
+  - "2300"
+  - "3412"
+  - "4023"

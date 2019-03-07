@@ -1,0 +1,53 @@
+---
+title: Rules for Ultimate Tic-Tac-Toe
+date: "2020-01-12 16:28:00 -0700"
+mdate: 2025-08-13 20:00:00 -0600
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'ut3') }}
+
+<h1>Gameplay</h1>
+<p>Ultimate Tic-Tac-Toe is a more advanced version of the two-player board game Tic-Tac-Toe.</p>
+
+<p>
+  Winning on a small board is the same as in regular Tic-Tac-Toe.
+  The first player to win a small board wins it.
+  Each small board has either zero or one winner.
+  If a small board is won or full (equivalently, won or drawn), it is closed, and no further moves may be made in it.
+</p>
+
+<p>
+  The first player may start in any small board.
+  Making a move "sends" the opponent to the corresponding small board.
+  If that board is closed, the next move can be made in any other open board.
+</p>
+
+<p>
+  To win the match, a player must win on the big board by winning three small boards in a line, as if the small boards were the cells in regular Tic-Tac-Toe.
+  If all small boards are closed, and the big board is not won, the match ends in a draw.
+</p>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 30 seconds, ending early if all players are ready.</p>
+<p>Each turn lasts up to 15 seconds by default, with automatic random moves. Unused turn time cannot be carried to future turns. There is only a turn timer, not a game timer.</p>
+
+<h1>Options</h1>
+
+<h2>Turn Time / s <small>(default: 15, min: 5, max: 60)</small></h2>
+<p>A random move will be made after the turn timer expires.</p>
+
+<h2>Inverted <small>(switch winning and losing, default: off)</small></h2>
+<p>Winners and losers are swapped. Draws and resign/forfeit are unaffected.</p>
+
+<h2>Checked <small>(default: off)</small></h2>
+<p>
+  This disallows obviously bad moves.
+  If the opponent can win in one move (zero moves in Inverted), you are in check. Moves that make you in check (or lose in Inverted) are invalid.
+  If you have no valid moves, and the game is not drawn, you lose by checkmate.
+</p>
+
+<h2>Quick <small>(default: off)</small></h2>
+<p>Capture one small board to win (enabling Checked is recommended, to avoid misclicks).</p>
+
+<h2>Open <small>(default: off)</small></h2>
+<p>Moves are allowed on any open small board, in any unoccupied cell.</p>

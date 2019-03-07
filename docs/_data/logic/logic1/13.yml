@@ -1,0 +1,39 @@
+name: Five Students Cross Main
+desc: >
+  Main Street in Smallville is crossed by these
+  other streets: River, Oak, Highland, Northfield,
+  and Evergreen. Each street name is followed
+  by one of the following: Avenue, Boulevard,
+  Road, Lane, or Drive. From the clues given,
+  try to determine the name of each street and
+  the order in which one would cross them if one
+  were coming down Main Street.
+clues:
+- >
+  Evergreen Boulevard is not the first or the
+  last street one would cross.
+- >
+  One would cross Evergreen before Oak,
+  which one would cross before the Avenue.
+- >
+  The Road comes after the Boulevard but
+  before the Lane and they all come before
+  Highland.
+- >
+  River is the middle street.
+types:
+  - type: Street Name
+    vals: [River, Oak, Highland, Northfield, Evergreen]
+  - type: Street Type
+    vals: [Avenue, Boulevard, Road, Lane, Drive]
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "022"
+  - "133"
+  - "204"
+  - "340"
+  - "411"

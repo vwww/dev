@@ -1,0 +1,48 @@
+name: The Party
+desc: >
+  Last weekend, the Carsons had a party and
+  invited the O'Tooles, Levines, Jacksons,
+  Martins, and Smiths. The five husbands were
+  named Elmer, John, David, Charles, and
+  Stewart. The five wives were named Mary,
+  Hilda, Madalene, Jessica, and Marlene. From
+  the clues given try to determine not only the
+  first and last names of each of the guests but
+  also the order in which they arrived at the
+  party. Keep in mind that each couple arrived
+  together as a couple.
+clues:
+- >
+  When Mary arrived, her brother David was
+  already there, talking with Elmer Smith and
+  the O'Tooles.
+- >
+  The Jacksons arrived after the Levines but
+  before Jessica.
+- >
+  No person at the party has first and last names beginning with the same letter.
+- >
+  Neither Hilda nor Mrs. Martin is married to David.
+- >
+  John and Marlene arrived together after Elmer and before Mary, but none of
+  these people arrived first.
+- >
+  Charles is not married to Jessica.
+types:
+  - type: Last
+    vals: [O'Tooles, Levines, Jacksons, Martins, Smiths]
+  - type: First M
+    vals: [Elmer, John, David, Charles, Stewart]
+  - type: First F
+    vals: [Mary, Hilda, Madalene, Jessica, Marlene]
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0142"
+  - "1220"
+  - "2303"
+  - "3434"
+  - "4011"

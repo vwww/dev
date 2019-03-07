@@ -1,0 +1,46 @@
+name: Who Dun Its
+desc: >
+  One rainy evening, five military men were
+  murdered in the old mansion on Willow Lane (a
+  general, a captain, a lieutenant, a sergeant, and
+  a corporal). The murders took place in the
+  bedroom, basement, pantry, den, and attic of
+  the house. No two men were murdered in the
+  same room or with the same weapon. The
+  weapons used were poison, a poker, a gun, a
+  knife, and a shovel. From the clues given, try
+  to determine the room in which each man was
+  killed and the weapon used to do him in.
+clues:
+- >
+  The murder with the shovel was not done in
+  the den or the attic; neither the captain nor
+  the lieutenant was killed with the shovel,
+  nor was either killed in the den or the attic.
+- >
+  The captain was not murdered in the
+  bedroom.
+- >
+  The poker was not the murder weapon used in the attic.
+- >
+  Neither the general nor the corporal was murdered with poison, a gun, or a
+  shovel.
+- >
+  The man murdered in the basement had just had dinner with the corporal,
+  the captain, the man done in with poison, and the victim of the poker.
+types:
+  - type: Army Rank
+    vals: [General, Captain, Lieut., Sergeant, Corporal]
+  - type: Room
+    vals: [Bedroom, Basement, Pantry, Den, Attic]
+  - type: Weapon
+    vals: [Poison, Poker, Gun, Knife, Shovel]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [General, Den, Poker]
+  - [Captain, Pantry, Gun]
+  - [Lieut., Bedroom, Poison]
+  - [Sergeant, Basement, Shovel]
+  - [Corporal, Attic, Knife]

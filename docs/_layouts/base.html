@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" class="h-100">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--
+    URL {{ page_url }}
+    PATH {{ page_path }}
+    -->
+    <title>{% if title %}{{ title }} &ndash; {% endif %}Victor&lsquo;s Site</title>
+
+    {%- if desc %}
+    <meta name="description" content="{{ desc }}" />
+    {%- endif %}
+    {%- if keywords %}
+    <meta name="keywords" content="{{ keywords }}" />
+    {%- endif %}
+
+    <link rel="canonical" href="{{ site.mirrors[0][1] }}{{ page_url }}">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{assets}}{{ favicon | default('victorz/favicon.ico') }}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" id="theme-switcher" href="{{assets}}dist/bootstrap_theme.css">
+    <meta name="theme-switcher" id="theme-bootstrap" content="{{assets}}dist/bootstrap.css">
+    <meta name="theme-switcher" id="theme-bootstrap2" content="{{assets}}dist/bootstrap_theme.css">
+    {%- for theme, _ in themes.bootswatch %}
+    <meta name="theme-switcher" id="theme-bootswatch-{{ theme }}" content="{{assets}}dist/bootswatch_{{ theme }}.css">
+    {%- endfor %}
+    <link rel="stylesheet" href="{{assets}}dist/global.css">
+    {%- for style in extra_css %}
+    <link rel="stylesheet" href="{{assets}}dist/{{ style }}.css">
+    {%- endfor %}
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="d-flex flex-column h-100">
+    {% include 'navbar.html' %}
+
+    <main class="flex-shrink-0 my-3">
+      <div class="container">
+        {{ content }}
+      </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 text-bg-light">
+      <div class="container">
+        <div class="mb-2">
+          &copy; 2005-<span id="copyyear">{{ 'now' | date('y') }}</span> Victor Zheng. All rights reserved.
+          {%- if not post %}
+          {%- if date %}
+            <div class="badge-group me-2" title="This page was created on {{ date | date(site.format_date) }} at {{ date | date(site.format_time) }}">
+              <span class="badge text-bg-secondary">Created</span>
+              <span class="timeago badge text-bg-primary" title="{{ date | date('jekyll') }}"></span>
+            </div>
+          {%- endif %}
+          {%- if mdate %}
+            <div class="badge-group me-2" title="This page was modified on {{ mdate | date(site.format_date) }} at {{ mdate | date(site.format_time) }}">
+              <span class="badge text-bg-secondary">Modified</span>
+              <span class="timeago badge text-bg-primary" title="{{ mdate | date('jekyll') }}"></span>
+            </div>
+          {%- endif %}
+          {%- endif %}
+          The source code is licensed under the <a href="https://github.com/vwww/dev/blob/main/LICENSE.md" rel="nofollow">GPL v3</a>.
+        </div>
+        <div>
+          <script src="//d.victorz.ca/online.js?o=s"></script>
+
+          <a href="{{ base }}"><img src="{{assets}}a/80-15.png" class="rounded" alt="Victor"></a>
+
+          <a href="https://validator.w3.org/check?uri=referer" referrerpolicy="unsafe-url" class="badge text-bg-primary" title="This site uses HTML5.">HTML5</a>
+
+          <a href="https://jigsaw.w3.org/css-validator/check/referer" referrerpolicy="unsafe-url" class="badge text-bg-primary" title="This site uses CSS.">CSS</a>
+
+          <div class="badge-group me-2" title="This site was last regenerated on {{ 'now' | date(site.format_date) }} at {{ 'now' | date(site.format_time) }}">
+            <span class="badge text-bg-secondary">Regenerated</span>
+            <span class="timeago badge text-bg-primary" title="{{ 'now' | date('jekyll') }}"></span>
+          </div>
+
+          <div class="badge-group me-2" title="This is how long it has been since my site started to exist.">
+            <span class="badge text-bg-dark">Site Age</span>
+            <span class="badge text-bg-light border"><strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    {%- for file in manifest.js.global %}
+      <script src="{{assets}}dist/{{ file }}.js"></script>
+    {%- endfor %}
+    {%- for entry in entry | to_array %}
+      {%- for file in manifest.jsNoGlobal[entry] %}
+      <script src="{{assets}}dist/{{ file }}.js"></script>
+      {%- endfor %}
+    {%- endfor %}
+    {%- if page_url.startsWith('/blog/') %}
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      }
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>
+    {%- endif %}
+    {% include '_scripts.html' %}
+  </body>
+</html>

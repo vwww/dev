@@ -1,0 +1,41 @@
+name: Test Cars' MPGs
+desc: >
+  The miles-per-gallon ratings on a single model of a
+  car may vary for many reasons, including the test
+  driver and other factors. A new model line of
+  popular car called the Zinx, during tests, produced
+  mpg's of 32, 31, 30, 29, and 28. Each car was a
+  different one of these five colors: blue, green, red,
+  white, and yellow. Each car was driven by a
+  different one of these five drivers: Cox, Durham,
+  Gosling, Heynek, and Wollinsky. From the
+  information given, determine the color and driver of
+  each car, as well as the mpg attained by each one.
+clues:
+- >
+  The driver named Durham got more mpg's than
+  the green car but not as many as the red car.
+- >
+  The blue car got better mpg's than the car driven
+  by Wollinsky.
+- >
+  Cox did not drive the green or red car.
+- >
+  The yellow car got more mpg's than the car
+  driven by Gosling but not as many as the green car.
+types:
+  - type: MPG_ (28-32)
+    vals: [32, 31, 30, 29, 28]
+  - type: Color
+    vals: [Blue, Green, Red, White, Yellow]
+  - type: Last M
+    vals: [Cox, Durham, Gosling, Heynek, Wollinsky]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [32, Red, Heynek]
+  - [31, Blue, Durham]
+  - [30, Green, Wollinsky]
+  - [29, Yellow, Cox]
+  - [28, White, Gosling]

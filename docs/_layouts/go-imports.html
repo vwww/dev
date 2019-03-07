@@ -1,0 +1,14 @@
+{%- set github %}https://github.com/{{ old }}{% endset -%}
+{%- set redirect = redirect or github -%}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="go-import" content="{{ new }} git {{ github }}">
+		<meta name="go-source" content="{{ new }} {{ redirect }} {{ github }}/tree/main{/dir} {{ github }}/blob/main{/dir}/{file}#L{line}">
+		<meta http-equiv="refresh" content="0; url={{ redirect }}">
+	</head>
+	<body>
+		Nothing to see here; <a href="{{ redirect }}">move along</a>.
+	</body>
+</html>

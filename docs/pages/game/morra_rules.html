@@ -1,0 +1,28 @@
+---
+title: Rules for Morra
+date: "2020-01-12 14:48:17 -0700"
+mdate: 2020-09-22 19:48:25 -0600
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'morra') }}
+
+<h1>Gameplay</h1>
+<p>Each round, each player chooses a number. The system generates a random number if applicable.</p>
+<p>When every player has chosen a number (or the timer expires), the round ends. Players randomly fill teams, which are indexed sequentially starting from 0.</p>
+<p>The result is the sum of all numbers, reduced modulo the number of teams. Teams win if the result matches their index number.</p>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 5 seconds, ending early if all players are ready.</p>
+<p>Each round is 3 seconds long.</p>
+
+<h1>Options</h1>
+
+<h2>Inverted <small>(switch winning and losing, default: off)</small></h2>
+<p>Winners and losers are swapped.</p>
+
+<h2>Random <small>(default: off)</small></h2>
+<p>A random number is added to the result.</p>
+
+<h2>Teams <small>(default: 0)</small></h2>
+<p>Players randomly fill teams. If nonzero, this is the number of teams. Otherwise, there is one team per player.</p>
+<p>Team sizes are approximately equal. The size of the largest team is at most one plus the size of the smallest team.</p>

@@ -1,0 +1,13 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{base}}">Home</a></li>
+    {%- for b in breadcrumbs %}
+      {%- if b.prefix != page_url and page_url.startsWith(b.prefix) %}
+        <li class="breadcrumb-item">
+          <a href="{{base}}{{ b.prefix }}">{{ b.name }}</a>
+        </li>
+      {%- endif %}
+    {%- endfor %}
+    <li class="breadcrumb-item active" aria-current="page">{{ title | default('[unnamed page]') }}</li>
+  </ol>
+</nav>

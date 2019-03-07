@@ -1,0 +1,42 @@
+name: Sister Cities
+desc: >
+  The five cities of Appleboro, Bellville, Cherryvale,
+  Keystown, and Peachburg have each adopted a
+  sister city abroad. Those five cities are Abbemount,
+  Corley, Monmouth, Newton, and Poulson. Each
+  city is located in a different one of these five foreign
+  countries: Australia, Canada, Great Britain, New
+  Zealand, and South Africa. From the information
+  given, determine the name and country location of
+  the sister city of each of the five American towns.
+clues:
+- >
+  Of Corley and Monmouth, one is in New
+  Zealand and one is in Australia but neither one
+  is the sister city of Appleboro, Bellville, or
+  Peach burg.
+- >
+  Newton is not in Great Britain.
+- >
+  Of Appleboro and Keystown, one is the sister
+  city of a city in Canada and one is the sister city
+  of the city of Monmouth.
+- >
+  The sister city of Bellville, the sister city of Cherryvale, and Poulson are not in
+  either New Zealand or South Africa.
+types:
+  - type: City 1
+    vals: [Appleboro, Bellville, Cherryvale, Keystown, Peachburg]
+  - type: City 2
+    vals: [Abbemount, Corley, Monmouth, Newton, Poulson]
+  - type: Country
+    vals: [Australia, Canada, Great Britain, New Zealand, South Africa]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "041"
+  - "102"
+  - "210"
+  - "323"
+  - "434"

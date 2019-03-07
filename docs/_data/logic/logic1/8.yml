@@ -1,0 +1,45 @@
+name: Former Homes
+desc: >
+  A group of men live and work in New York City
+  (Mr. Lester, Mr. Becket, Mr. Lennox, Mr. Standish,
+  and Mr. Weiss). Formerly, each had made
+  his home in two other cities. The men lived first
+  in the cities of New Orleans, Seattle, Milwaukee,
+  Denver, and Dallas. They then lived in the
+  cities of San Francisco, Houston, Atlanta, Boston,
+  and Los Angeles. From the clues given, try
+  to determine the two former cities in which
+  each man lived.
+clues:
+- >
+  Mr. Weiss has always lived in the South, but
+  Mr. Standish never has.
+- >
+  The man from New Orleans, the man from
+  Denver and Mr. Lester all would have liked
+  to have lived in San Francisco.
+- >
+  Mr. Becket has not lived in Milwaukee or
+  New Orleans.
+- >
+  Neither Mr. Lennox or Mr. Standish has ever lived in a city with a two-word
+  name.
+- >
+  Neither Mr. Lennox nor Mr. Weiss has ever lived on the west coast but one of
+  them has always lived in Texas.
+types:
+  - type: Last M
+    vals: [Lester, Becket, Lennox, Standish, Weiss]
+  - type: City
+    vals: [New Orleans, Seattle, Milwaukee, Denver, Dallas]
+  - type: City
+    vals: [San Fran, Houston, Atlanta, Boston, Los Angeles]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [Lester, Milwaukee, Los Angeles]
+  - [Becket, Seattle, San Fran]
+  - [Lennox, Dallas, Houston]
+  - [Standish, Denver, Boston]
+  - [Weiss, New Orleans, Atlanta]

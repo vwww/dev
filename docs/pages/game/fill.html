@@ -1,0 +1,90 @@
+---
+title: Fill Solver
+date: "2018-08-03 16:25:48 -0600"
+mdate: 2024-08-31 11:11:00 -0600
+entry: app_game_fill
+---
+<div class="alert alert-info" role="alert">
+  The complementary <a href="fill_browser" class="alert-link">Fill Browser</a> shows the level/stages in v4.7.0 and their official solutions.
+</div>
+
+<p>
+  I made a solver for the game Fill (on <a href="https://play.google.com/store/apps/details?id=com.gamestart.fill">Google Play</a> and <a href="https://apps.apple.com/ca/app/fill-one-line-puzzle-game/id1091456207">Apple Store</a>).
+  The solver works for stages that have unique solutions, plus some that do not.
+</p>
+<p>
+  The basic algorithm solves by inspection and runs in O(n&alpha;(n)) time and O(n) space for n cells. It can solve most but not all stages.
+</p>
+<p>
+  Consider a tree representing where guesses have to be made.
+  For each node, we check its immediate children. If exactly one child is feasible, we continue traversing without counting it towards the depth.
+  Depth-first search (DFS) can explore the tree to depth D in O(n&sup2;4<sup>D</sup>&alpha;(n)) time and O(n + D) space.
+</p>
+<p>
+  The Hamiltonian path problem for general grid graphs with specific start and end nodes is an NP-Complete problem (<a href="https://epubs.siam.org/doi/10.1137/0211056">Itai et al. 1982</a>).
+  Here, only the start node is specified, and the end node cannot be specified.
+  However, even without specifying the start or end nodes, the problem is NP-Complete (<a href="https://graphclasses.org/classes/problem_Hamiltonian_path.html#NP-complete">ISGCI</a>).
+</p>
+
+{% include 'app.html' %}
+
+<p>These 13 stages cannot be solved, as they break the assumption of a unique solution: 2611, 2672, 2726, 2730, 2745, 2755, 2759, 2821, 2825, 2835, 2845, 2849, 2879</p>
+<table class="table">
+  <tr>
+    <th scope="row">Depth</th>
+    <th>0</th>
+    <th>1</th>
+    <th>2</th>
+    <th>3</th>
+    <th>4</th>
+    <th>5</th>
+    <th>6</th>
+    <th>&ge;7</th>
+  </tr>
+  <tr>
+    <th scope="row">Solved</th>
+    <td>2234</td>
+    <td>2632</td>
+    <td>2708</td>
+    <td>2743</td>
+    <td>2768</td>
+    <td>2783</td>
+    <td>2786</td>
+    <td>2787</td>
+  </tr>
+  <tr>
+    <th scope="row">Solved %</th>
+    <td>79.79</td>
+    <td>94.00</td>
+    <td>96.71</td>
+    <td>97.96</td>
+    <td>98.86</td>
+    <td>99.39</td>
+    <td>99.50</td>
+    <td>99.54</td>
+  </tr>
+  <tr>
+    <th scope="row">Unsolved</th>
+    <td>566</td>
+    <td>168</td>
+    <td>92</td>
+    <td>57</td>
+    <td>32</td>
+    <td>17</td>
+    <td>14</td>
+    <td>13</td>
+  </tr>
+  <tr>
+    <th scope="row">Unsolved %</th>
+    <td>20.21</td>
+    <td>6.00</td>
+    <td>3.29</td>
+    <td>2.04</td>
+    <td>1.14</td>
+    <td>0.61</td>
+    <td>0.50</td>
+    <td>0.46</td>
+  </tr>
+</table>
+
+<p>Level 27 and 28 are alternate versions of Level 1: stages 27xx and 28xx are alternate versions of 1xx.</p>

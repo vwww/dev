@@ -1,0 +1,24 @@
+---
+layout: ~
+date: "2013-04-11 08:00:00 -0700"
+mdate: 2014-02-16 08:00:00 -0700
+---
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>xkcd #1110 - Click and Drag - Map</title>
+		<link rel="stylesheet" href="{{assets}}dist/xkcd_map.css">
+		<link rel="icon" href="{{assets}}victorz/xkcd_map/favicon.ico" type="image/x-icon">
+		<meta name="description" content="Explore a gigapixel of the xkcd-1110 webcomic in a zoomable interface.">
+	</head>
+	<body>
+		<img id="intro" src="https://vwww.github.io/xkcd-map/init.png" alt="init">
+		<div id="map"></div>
+		<script src="https://vwww.github.io/xkcd-map/converted.js"></script>
+		{%- for file in manifest.js.xkcd_map %}
+		<script src="{{assets}}dist/{{ file }}.js"></script>
+		{%- endfor %}
+		<div id="autoclose"><script src="//d.victorz.ca/a/xkcd"></script></div>
+		{% include '_scripts.html' %}
+	</body>
+</html>

@@ -1,0 +1,153 @@
+---
+title: Rules for President
+date: "2020-01-12 15:49:00 -0700"
+mdate: 2025-08-30 11:30:00 -0600
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'president') }}
+
+<h1>Gameplay</h1>
+<p>
+  President is a shedding card game with simple moves.
+  The minimum player count is 2, but there must be at least 3 players to remove perfect information about card counts.
+</p>
+
+<p>
+  Players are dealt cards, starting with the President, or a random player if there is no President.
+  Hands are private information to each player, but everything else is public knowledge, including what cards have been played.
+</p>
+
+<p>
+  In each round, card transfers occur, based on the results of the previous round, and then tricks are played until one player remains.
+  Players win when they have no cards left (played all of their cards), giving them the best unfilled rank.
+</p>
+
+<p>If a player leaves, his cards are discarded face up, but he gets the worst unfilled rank, and the turn timer is reset.</p>
+
+<h2>Card Transfer Phase</h2>
+<p>If there is no President or Vice-President, like in the first round, this phase is skipped, and the player with the special 3 starts (but must play that card).</p>
+
+<ul>
+  <li>President: first-place last round
+  <li>Vice-President: second-place last round (minimum of 4 players if President exists)
+  <li>Neutral: everyone else
+  <li>High-Scum: second-last player (if President and Vice-President exist) or last player (if Vice-President exists without President)
+  <li>Scum: last player (if President exists)
+</ul>
+
+<div class="alert alert-info">
+  To prevent cheating by reconnecting, new and rejoining players are more likely to be Scum.
+  Players are ordered by their ranks in the previous round, followed by new players ordered by join time.
+  When a round starts, Scum and High-Scum are assigned to the last players.
+</div>
+
+<p>The Scum gives the President his 2 best cards. The High-Scum gives the Vice-President his best card.</p>
+<p>After that, the President chooses 2 cards to give to the Scum. The Vice-President chooses 1 card to give to the High-Scum.</p>
+<p>If the President leaves during the card transfer, the server will give his 2 lowest cards to the Scum, and if the Scum leaves, the President directly discards the 2 cards that would have been given to the Scum. The same applies to Vice-President and High-Scum with 1 card.</p>
+<p>The turn order is random. The Scum, President, or a random player (depending on the rules) starts the first trick.</p>
+
+<h2>Trick Phase</h2>
+<p>In each trick, the first player plays a combo of N cards, and then each player plays a combo to beat the previous combo, or equalize if allowed.</p>
+<p>Each player can play on top of the current trick or pass.</p>
+<p>When everyone except P (the last player to move) has passed, P starts a new trick. If P has already won, the player after P starts instead.</p>
+<p>Passing must be within a trick. Passing is not allowed when starting a trick.</p>
+
+<h2>Card Ranks</h2>
+<p>The cards (4 each per deck) are in this order from lowest to highest:</p>
+<pre>3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; 10 &lt; Jack &lt; Queen &lt; King &lt; Ace &lt; 2</pre>
+
+<p>If enabled, Jokers (2/deck) are considered to be above 2 during the card transfer, since they are flexible wildcards that can be used as any card.</p>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 30 seconds, ending early if all players are ready.</p>
+<p>
+  Each turn lasts up to 20 seconds by default, with automatic moves (when starting a trick, all of the smallest cards; otherwise, pass).
+  Unused turn time cannot be carried to future turns.
+  There is only a turn timer, not a game timer.
+</p>
+
+<h1>Options</h1>
+
+<h2>Turn Time / s <small>(default: 20, min: 5, max: 60)</small></h2>
+<p>An arbitrary move will be made after the turn timer expires.</p>
+
+<h2>Decks <small>(default: 1, min: 1, max: 2<sup>51</sup>)</small></h2>
+<p>Number of decks to use.</p>
+
+<h2>Jokers per deck <small>(default: 2, min: 0, max: 2)</small></h2>
+<p>Jokers are used as wildcards.</p>
+
+<h2>Keep jokers <small>(default: off)</small></h2>
+<p>Scum and High-Scum do not give jokers during the card transfer when other cards are available.</p>
+
+<h2>Must give lowest <small>(default: off)</small></h2>
+<p>President and Vice-President must give their lowest cards, speeding up the card transfer.</p>
+
+<h2>Revolutions</h2>
+<p>
+  When a combo of at least 4 cards is played, the rankings are reversed (except jokers) until the end of the round.
+  This effect can stack to cancel out the previous revolution.
+</p>
+<ul>
+  <li><strong>off</strong> <em>(default)</em>
+  <li><strong>on, strict</strong>: revolution does not occur if any of the cards is a joker
+  <li><strong>on, relaxed</strong>: revolution occurs only if at least 4 of the cards are not jokers
+  <li><strong>on, jokers</strong>: 4 cards may include jokers
+</ul>
+
+<h2>Revolution ends trick <small>(default: off)</small></h2>
+<p>A revolution ends the current trick and starts a new one.</p>
+
+<h2>One fewer 2 <small>(default: on)</small></h2>
+<p>For N &ge; 2, N-1 cards of rank 2 (3 if revolution is active) beat N cards that are not 2 (3). The only higher move is N cards of rank 2 (3).</p>
+
+<p>If M cards of rank 2 (3) start a trick, N would be M, not M-1, so it is the higher move of M cards, not the lesser move of (M+1)-1 cards.</p>
+
+<h2>Pass</h2>
+<p>Can you play again later in the trick?</p>
+<ul>
+  <li><strong>pass turn</strong>: play or pass your turn
+  <li><strong>pass trick</strong> <em>(default)</em>: play or pass the trick
+  <li><strong>single turn</strong>: treated as passed unless starting a new trick (end a trick early to start the next one)
+</ul>
+
+<h2>Equalize</h2>
+<p>Equalizing is playing the same combo as the previous combo, instead of playing a higher combo.</p>
+<p>If a player equalizes and the trick does not end, there might be an effect on the next player. The effect is not triggered if the trick ends (if the next player is the current player).</p>
+<ul>
+  <li><strong>disallow</strong>: players cannot equalize
+  <li><strong>allow</strong> <em>(default)</em>: players can equalize
+  <li><strong>equalize or skip</strong>: the next player must equalize or skip a turn
+  <li><strong>equalize or pass</strong>: the next player must equalize or pass
+  <li><strong>force skip</strong>: the next player skips a turn
+</ul>
+
+<h2>Equalize end trick by Scum <small>(default: off)</small></h2>
+<p>If on, the trick ends if the scum equalizes.</p>
+
+<h2>Equalize end trick by non-Scum <small>(default: off)</small></h2>
+<p>If on, the trick ends if a player who is not scum equalizes.</p>
+
+<h2>Equalize only by scum <small>(default: off)</small></h2>
+<p>If on, only scum can equalize.</p>
+
+<h2>4-in-a-row <small>(default: off)</small></h2>
+<p>If at least 4 cards of the same rank are played in a trick (possibly by equalizing), the trick ends.</p>
+
+<h2>8-rule <small>(default: off)</small></h2>
+<p>If an 8 is played, the trick ends.</p>
+
+<h2>Penalize final 2 <small>(default: off)</small></h2>
+<p>Playing a 2 as the last card results in the worst unfilled rank instead of best unfilled rank.
+
+<h2>Penalize final joker <small>(default: off)</small></h2>
+<p>Similar to the previous option, but applicable when a joker is the last card played.</p>
+
+<h2>First Trick</h2>
+<p>Who starts the first trick?</p>
+<ul>
+  <li>Scum (or High-Scum) <em>(default)</em>
+  <li>President (or Vice-President)
+  <li>Random
+</ul>
+<p>When there is no President or Vice-President, like in the first round, the player holding the special 3 starts (but must play it).</p>

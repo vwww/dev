@@ -1,0 +1,16 @@
+{% macro header(base, page_url) %}
+<div class="btn-group mb-3 d-flex">
+	<span class="input-group-text">View</span>
+	<a class="btn btn-outline-primary w-100{% if page_url == '/blog/' or page_url.startsWith('/blog/page/') %} active{% endif %}" href="{{base}}/blog">Excerpts by Pages</a>
+	<a class="btn btn-outline-primary w-100{% if page_url == '/blog/archives' %} active{% endif %}" href="{{base}}/blog/archives">Titles by Year</a>
+	<a class="btn btn-outline-primary w-100{% if page_url == '/blog/tags' %} active{% endif %}" href="{{base}}/blog/tags">Titles by Tags</a>
+</div>
+{% endmacro %}
+
+{% macro tags(base, postsByTag, tags, categories, year, year_count, tag, is_year) %}
+{%- for t in tags %}
+{%- set is_cat = t in categories %}
+<a href="{{base}}/blog/tags#{{ t }}" class="badge text-bg-{% if tag == t %}primary{% else %}secondary{% endif %}">{% if is_cat %}<strong>{% endif %}{{ t }}{% if is_cat %}</strong>{% endif %}<sup>{{ postsByTag[t].length }}</sup></a>
+{%- endfor %}
+<a href="{{base}}/blog/archives#{{ year }}" class="badge text-bg-{% if is_year %}primary{% else %}secondary{% endif %}">[{{ year }}]<sup>{{ year_count }}</sup></a>
+{% endmacro %}

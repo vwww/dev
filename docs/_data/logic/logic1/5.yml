@@ -1,0 +1,47 @@
+name: Visiting Relatives
+desc: >
+  During his summer vacation, John decided to
+  visit some of his relatives--his cousin, his parents,
+  his uncle, his nephew and his brother--who
+  all live in different cities. The five cities
+  they live in are St. Louis, Denver, Miami, San
+  Francisco, and Boston. John used five different
+  means of transportation to get from one city to
+  another. He went by car, plane, bus, train, and
+  motorcycle. From the clues given, try to determine
+  the city in which each of his relatives live
+  and the means of transportation John used to
+  reach there.
+clues:
+- >
+  He arrived by plane and bus at the two
+  cities which are not on the coast.
+- >
+  His uncle and his cousin live on the east
+  coast.
+- >
+  His nephew met his plane when arrived.
+- >
+  He did not arrive at his uncle's city by car and his uncle does not live in
+  Boston.
+- >
+  He did not go by bus to St. Louis or to visit his parents and he did not go to
+  his cousin's city by train or car.
+types:
+  - type: City
+    vals: [St. Louis, Denver, Miami, S.F., Boston]
+  - type: Relationship
+    vals: [Cousin, Parents, Uncle, Nephew, Brother]
+  - type: Transport Mode
+    vals: [Car, Plane, Bus, Train, Cycle]
+# not on coast: St. Louis, Denver
+# east coast: Miami, Boston
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [St. Louis, Nephew, Plane]
+  - [Denver, Brother, Bus]
+  - [Miami, Uncle, Train]
+  - [S.F., Parents, Car]
+  - [Boston, Cousin, Cycle]

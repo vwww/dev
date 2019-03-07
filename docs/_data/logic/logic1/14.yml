@@ -1,0 +1,36 @@
+name: Commemorative Stamps
+desc: >
+  Edison, Marconi, the Wright Brothers,
+  Franklin, and Bell, are pictured on 5 cent, 10
+  cent, 15 cent, 20 cent and 25 cent stamps which
+  are red, blue, green, gray, and yellow. Whose
+  picture is on what colored stamp and what is
+  the value of each?
+clues:
+- >
+  The Edison stamp is worth more than the
+  brown one which costs more than the Marconi stamp.
+- >
+  The Wright Brothers stamp costs twice as
+  much as the green one.
+- >
+  The blue stamp costs less than the Franklin
+  stamp but more than the 15 cent red one.
+- >
+  The Edison stamp did not cost 20 cents.
+types:
+  - type: Last M (Famous)
+    vals: [Edison, Marconi, Wright, Franklin, Bell]
+  - type: Color
+    vals: [Red, Blue, Green, Gray, Brown]
+  - type: Cents_
+    vals: [5, 10, 15, 20, 25]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "002"
+  - "120"
+  - "241"
+  - "334"
+  - "413"

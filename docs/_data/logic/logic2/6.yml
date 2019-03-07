@@ -1,0 +1,40 @@
+name: Candidates
+desc: >
+  The five candidates for mayor in the town of
+  Smallville were members of these five parties:
+  Conservative, Democrat, Independent, Liberal, and
+  Republican. Their names are Goshen, Hargreaves,
+  Jensen, Liebowitz, and Nelson. From the
+  information given, determine not only the party to
+  which each of the candidates belong, but also the
+  order of finish in the election.
+clues:
+- >
+  The Democrat and the Independent, in no
+  particular order, were the first- and fifth-place
+  vote-getters, but neither one is named
+  Hargreaves or Jensen.
+- >
+  Nelson did better than Liebowitz but not as well
+  as the Republican.
+- >
+  Goshen is not an Independent candidate.
+- >
+  The Liberal did better than Jensen but not as
+  well as Hargreaves.
+types:
+  - type: Rank_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Political Party
+    vals: [Conservative, Democrat, Independent, Liberal, Republican]
+  - type: Last
+    vals: [Goshen, Hargreaves, Jensen, Liebowitz, Nelson]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "010"
+  - "141"
+  - "234"
+  - "302"
+  - "423"

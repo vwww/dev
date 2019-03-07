@@ -1,0 +1,40 @@
+name: Antique Shopping
+desc: >
+  Five women friends went antique shopping together
+  in the old section of town. Their names are
+  Addison, Comisky, Evans, Simmons, and Wallis.
+  They each bought a different one of these five items:
+  chair, desk, lamp, stool, and vase. The items ranged
+  in price from $100.00 to $500.00. From the
+  information given, determine the object bought by
+  each woman as well as its price.
+clues:
+- >
+  The chair cost less than what Ms. Addison
+  bought but more than what Ms. Wallis bought.
+- >
+  The item bought by Ms. Simmons cost more
+  than the item bought by Ms. Evans but less than
+  the lamp.
+- >
+  Ms. Comisky bought something that cost more
+  than the lamp but it was not the desk.
+- >
+  The vase cost less than the desk but more than
+  the stool.
+types:
+  - type: Price_
+    vals: [$500.00, $400.00, $300.00, $200.00, $100.00]
+  - type: Last F
+    vals: [Addison, Comisky, Evans, Simmons, Wallis]
+  - type: Item
+    vals: [Chair, Desk, Lamp, Stool, Vase]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "001"
+  - "110"
+  - "242"
+  - "334"
+  - "423"

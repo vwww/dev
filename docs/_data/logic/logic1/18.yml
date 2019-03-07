@@ -1,0 +1,48 @@
+name: Sportsville Teams
+desc: >
+  There are four stadiums in Sportsville:
+  Memorial, the Coliseum, Central, and All
+  Saints. These are the home grounds for the
+  football, soccer, baseball, tennis, and basketball
+  teams. Two teams share the same stadium.
+  The five teams are the Blazers, the Fireballs,
+  the Streaks, the Flames, and the Demons.
+  From the clues given, try to determine the
+  nickname of each sports team and the stadium
+  at which they play.
+
+    NOTE: Two teams share the same stadium.
+    When solved, Shared = Coliseum.
+clues:
+- >
+  Neither the Demons nor the team that plays
+  at Central must share its stadium but the
+  Flames must.
+- >
+  The football team doesn't play at Central
+  stadium and it shares its stadium with the
+  Streaks.
+- >
+  The basketball team, the baseball team, and the Fireballs do not share their
+  stadiums.
+- >
+  The soccer team is not called the Fireballs and doesn't play at All Saints.
+- >
+  The tennis team plays at Memorial stadium but the baseball team does not
+  play at All Saints.
+types:
+  - type: Sport
+    vals: [Football, Soccer, Baseball, Tennis, Basket]
+  - type: Sports Team
+    vals: [Blazers, Fireballs, Streaks, Flames, Demons]
+  - type: Stadium
+    vals: [Memorial, Coliseum, Central, All Saints, Shared]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "034"
+  - "121"
+  - "202"
+  - "310"
+  - "443"

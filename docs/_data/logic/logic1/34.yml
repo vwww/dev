@@ -1,0 +1,50 @@
+name: At the Movies
+desc: >
+  There are five movie theaters in Farville: the
+  Strand, the Bijou, the Palace, the Capital, and
+  the Odeon. Last week each one featured a different
+  film starring the five favorite femme-fatales
+  of Frankie (the film fanatic) Fusco. The
+  five films starred Julie Christie, Bette Davis,
+  Glenda Jackson, Marilyn Monroe (a revival
+  film), and Katherine Hepburn. Each night during
+  the week, Frankie went to see a different
+  film. From the clues given try to determine the
+  star, the theater, the type of film (drama,
+  comedy, western, thriller, or mystery), and the
+  night on which Frankie saw each film.
+clues:
+- >
+  He did not see the western first but he saw it
+  before the Marilyn Monroe film which he
+  saw before the movie at the Odeon.
+- >
+  Neither Julie Christie nor Glenda Jackson played in the comedy but one of
+  them was in the film at the Strand.
+- >
+  He saw the Glenda Jackson film before the mystery but after the drama.
+- >
+  The pictures at the Palace and the Capital were not the Bette Davis movie or
+  the Katherine Hepburn western.
+- >
+  The mystery starred Bette Davis.
+- >
+  He saw the comedy before the thriller but after the film at the Palace.
+types:
+  - type: Theater
+    vals: [Strand, Bijou, Palace, Capital, Odeon]
+  - type: Last (Actor)
+    vals: [Christie, Davis, Jackson, Monroe, Hepburn]
+  - type: Weekday_
+    vals: [Mon, Tues, Wed, Thurs, Fri]
+  - type: Film Genre
+    vals: [Drama, Comedy, Western, Thriller, Mystery]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0233"
+  - "1412"
+  - "2000"
+  - "3321"
+  - "4144"

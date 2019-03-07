@@ -1,0 +1,12 @@
+- name: Bots
+  prefix: /bots/
+- name: Misc
+  prefix: /misc/
+- name: Games
+  prefix: /game/
+- name: Tools
+  prefix: /tools/
+- name: 3D
+  prefix: /misc/3d/
+- name: Blog
+  prefix: /blog/

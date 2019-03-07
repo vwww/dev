@@ -1,0 +1,7 @@
+$enable-shadows: true;
+$enable-gradients: true;
+
+@import "~bootstrap/scss/bootstrap";
+@import "_bootstrap_extra";
+
+@import '~prismjs/themes/prism';

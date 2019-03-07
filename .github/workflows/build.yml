@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches: main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - name: Persist npm cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy
+        working-directory: ./docs/_site
+        run: |
+          touch .nojekyll
+          git init
+          git config user.name "Victor"
+          git config user.email "theonlypwner@users.noreply.github.com"
+          git add .
+          git commit -m "Auto-build ${GITHUB_SHA}"
+          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/victorz.ca.git HEAD
+          rm CNAME
+          mv robots2.txt robots.txt
+          git add .
+          git commit --amend --no-edit
+          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/vwww.github.io.git HEAD
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

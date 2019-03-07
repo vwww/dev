@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["scripts/*"],
+      "@gc/*": ["scripts/game/common/*"],
+      "@gmc/*": ["scripts/game/mp/common/*"],
+    },
+    "outDir": "./tsc_temp",
+    "strict": true,
+    // "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "ES6",
+    "moduleResolution": "node",
+    "target": "ES2023",
+    // "allowJs": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": [
+    "scripts",
+    "scripts/types",
+  ]
+}

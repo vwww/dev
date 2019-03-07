@@ -1,0 +1,165 @@
+---
+title: Rules for Blackjack
+date: "2020-10-03 15:24:00 -0600"
+mdate: 2025-11-30 12:00:00 -0700
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'blackjack') }}
+
+<h1>Gameplay</h1>
+<p>Blackjack is a popular comparing card game.</p>
+<p>The decks of cards are shuffled and placed into the shoe, from where cards are drawn. If the shoe is empty, it is refilled completely.</p>
+
+<h2>Rounds</h2>
+
+<p>Each round consists of these phases:</p>
+
+<ol>
+  <li><b>Bet Phase</b>: Each player simultaneously places a bet, up to max(the player's balance + 200, 100). Bet amounts are not revealed until the next phase.
+  <li><b>Deal Phase</b>: The dealer gets 2 cards, 1 face-down and 1 face-up. Each player gets 2 cards. The cards are dealt in this order:
+    <ol>
+      <li>Players get one card each.
+      <li>The dealer gets the face-down hole card (or face-up revealed card if there is no hole card).
+      <li>Players get their second cards.
+      <li>The dealer gets the face-up revealed card (if there is a hole card).
+    </ol>
+  <li><b>Pre-Play Phase</b>: If the dealer reveals an Ace, each player can purchase insurance of (up to) half of the bet. If surrendering is possible, each player can surrender.
+    <ul>
+      <li>Before (late surrender) or after (early surrender), the dealer peeks at the hole card (if applicable).
+      <li>When the dealer peeks, the game ends immediately if there is a blackjack.
+    </ul>
+  <li><b>Play Phase</b>: Each player makes a move until he busts or stands, and then the next player moves. All players move at the same time if Speed is enabled.
+  <li><b>Post-Play Phase</b>: If applicable, players get an offer to buy insurance after the Play Phase instead of the Deal Phase.
+  <li><b>End Phase</b>:
+    The dealer reveals the face-down hole card.
+    Unless all players have blackjack, busted, or surrendered, the dealer hits until the hand value is at least 17 (possibly hits on soft 17).
+    Every hand is compared against the dealer's, and payouts are processed.
+</ol>
+
+<h3>Payout</h3>
+<p>The better hand wins the bet amount.</p>
+<p>If the player has a natural blackjack while the dealer does not, a bonus is paid on top.</p>
+<p>If the player's hand busts (exceeds 21), the dealer wins, even if the dealer also busts.</p>
+<p>If the hands are otherwise equal, it is a "push" and neither side wins.</p>
+
+<h2>Card Ranks</h2>
+<p>The cards (4 each per deck) are in this order from lowest to highest:</p>
+<pre>Ace (as 1) &lt; 2 &lt; 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; 10 = Jack = Queen = King &lt; Ace (as 11)</pre>
+
+<p>Jack, Queen, and King are equivalent to 10, so the interface combines them. Ace has a value of 1 or 11.</p>
+
+<h2>Hand Values</h2>
+<p>Hands are ranked from best to worst in 21 categories:</p>
+<ol>
+  <li>Natural blackjack (best): non-split Ace and 10
+  <li>21 to 3 (19 categories): ordered by hand value descending
+  <li>Bust (worst): hand value is 22 or higher
+</ol>
+
+<p>The hand value is intuitively the best possible sum of card values.</p>
+
+<p>
+  Formally, the hand value is the <em>hard hand value</em> if the <em>soft hand value</em> exceeds 21; otherwise, it is the <em>soft hand value</em>.
+  The <em>hard hand value</em> is the sum of card values, treating Ace as 1.
+  The <em>soft hand value</em> is the <em>hard hand value</em>, plus 10 if there is at least one ace.
+</p>
+
+<h2>Moves</h2>
+<p>If the dealer shows Ace, during the Pre-Play (or Post-Play, depending on the game mode) phase, each player can bet (up to) half of the bet as insurance, which pays 2:1 if dealer has a blackjack.</p>
+
+<p>If surrendering is allowed, it is possible to do it during the Pre-Play phase. The game mode can also allow surrendering during the Play phase.</p>
+
+<p>During the Play Phase, players can make these moves: (unless hand value is 21 or more)</p>
+
+<ul>
+  <li>Hit: get 1 card
+  <li>Stand: end turn
+  <li>Double: if hand has 2 cards, double bet amount, get 1 card and stand
+  <li>Split: with a hand of two equal-value cards, move one to a new hand, add a bet to the new hand equal to the original bet, and draw one card for both hands
+  <li>Surrender: if original hand has 2 cards, forfeit half of bet and recover the other half (if mode allows)
+</ul>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 30 seconds, ending early if all players are ready.</p>
+<p>Each turn lasts up to 20 seconds by default, with automatic Stand and 0 insurance. Unused turn time cannot be carried to future turns. There is only a turn timer, not a game timer.</p>
+
+<h1>Options</h1>
+
+<p>
+  Blackjack pays 3 to 2 (50% bonus), and maximum insurance is half of the bet amount, so bets must be an even integer.
+  Supporting both 3:2 and 6:5 would require bets to be multiples of 10.
+  This option might be added in the future.
+</p>
+
+<h2>Turn Time / s <small>(default: 20, min: 5, max: 60)</small></h2>
+<p>An automatic move will be made after the turn timer expires.</p>
+
+<h2>Speed <small>(default: on)</small></h2>
+<p>All players move in the same turn. Cards drawn are given to the first player to move. The turn timer is reset whenever any player makes a move.</p>
+
+<h2>Inverted <small>(default: off)</small></h2>
+<p>Balance changes are negated.</p>
+
+<h2>Decks <small>(default: 1, min: 0, max: 2<sup>51</sup>)</small></h2>
+<p>Number of decks to use. 0 is treated as &infin; decks. Increases house edge.</p>
+
+<h2>Dealer Hits on Soft 17 <small>(default: on)</small></h2>
+<p>Dealer hits on soft 17 instead of standing. Increases house edge.</p>
+
+<h2>Dealer Hole Card and Peek</h2>
+<p>Surrendering is allowed when</p>
+<ul>
+  <li><strong>No Hole Card</strong>: the dealer does not have a hole card
+  <li><strong>Hole Card, No Peek</strong>: the dealer has a hole card but does not peek
+  <li><strong>Hole Card, Peek Early</strong> <em>(default)</em>: the dealer peeks after dealing and insurance offer (late surrender)
+  <li><strong>Hole Card, Peek Late</strong>: the dealer peeks after early surrender
+</ul>
+<p>Typically Hole Card Peek Early in American games and No Hole Card in European games.</p>
+<p>If Simple is enabled or surrendering is disabled, Hole Card Peek Late will be set to Hole Card Peek Early.</p>
+<p>Later options decrease house edge.</p>
+
+<h2>Simple <small>(default: off)</small></h2>
+<p>Play with the simpler rules of 21, without the new rules in Blackjack. Just Hit or Stand, without worrying about splitting, doubling, surrendering, or insurance.</p>
+
+<h2>Double</h2>
+<p>Doubling is allowed when the hard hand value is</p>
+<ul>
+  <li>any <em>(default)</em>
+  <li>9 to 11
+  <li>10 or 11
+</ul>
+<p>Later options increase house edge.</p>
+
+<h2>Double After Split <small>(default: on)</small></h2>
+<p>After splitting, allow doubling each hand separately. Decreases house edge.</p>
+
+<h2>Surrender After Split <small>(default: off)</small></h2>
+<p>After splitting, allow surrendering each hand separately. Decreases house edge.</p>
+
+<h2>Surrender After Hit <small>(default: off)</small></h2>
+<p>Allow surrendering a hand of more than two cards. Decreases house edge.</p>
+
+<h2>Surrender</h2>
+<p>Surrendering is allowed</p>
+<ul>
+  <li><strong>off</strong>: never
+  <li><strong>non-ace</strong>: when the dealer shows a non-Ace
+  <li><strong>any <em>(default)</em></strong>: always
+</ul>
+<p>Later options decrease house edge.</p>
+
+<h2>Split Non-Ace <small>(default: 3, min: 0, max: 254)</small></h2>
+<p>Pairs of 2 to 10 can be split N times to make N+1 hands. Decreases house edge.</p>
+
+<h2>Split Ace <small>(default: 1, min: 0, max: 254)</small></h2>
+<p>Pairs of aces can be split N times to make N+1 hands. 10 with a split ace is not a natural blackjack. Decreases house edge.</p>
+
+<h2>Hit Split Ace <small>(default: on)</small></h2>
+<p>Allow hitting or doubling split aces. Decreases house edge.</p>
+
+<h2>Partial Insurance <small>(default: on)</small></h2>
+<p>Allow insuring up to (rather than exactly) half of initial bet value.</p>
+
+<h2>Late Insurance Offer <small>(default: off)</small></h2>
+<p>Move the Insurance Phase to after all players have moved. The offer is based on the total number of unsurrendered hands.</p>
+<p>This option will be disabled if Hole Card Peek is on.</p>

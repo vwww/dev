@@ -1,0 +1,9 @@
+{% macro tab(page_url, game) %}
+{% set play_url = '/game/' + game %}
+{% set rule_url = play_url + '_rules' %}
+
+<ul class="nav nav-pills mb-3">
+  <li class="nav-item"><a class="nav-link{% if page_url == play_url %} active{% endif %}" href="{{ game }}">Play</a></li>
+  <li class="nav-item"><a class="nav-link{% if page_url == rule_url %} active{% endif %}" href="{{ game }}_rules">Rules</a></li>
+</ul>
+{% endmacro %}

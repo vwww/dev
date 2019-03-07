@@ -1,0 +1,49 @@
+name: Sweepstakes
+desc: >
+  Five women won the top five prizes in a big
+  national sweepstakes contest. Their names are
+  Heather, Holly, Laurel, Lily, and Rose. Their last
+  names are Heatherton, Hollyer, Laurelton,
+  Lilyman, and Rosen. No woman's first name is
+  repeated in her last name. In alphabetical order, the
+  five prizes were a boat, a car, cash, a house, and a
+  trip. From the information given, determine the first
+  and last name of each of the winners, the prize won,
+  and whether it was the first, second, third, fourth,
+  or fifth prize.
+clues:
+- >
+  Ms. Laurelton won a higher prize than the
+  woman who won the trip but a lower prize than
+  Lily who did not win the first prize.
+- >
+  Ms. Lilyman and Holly did not win the car.
+- >
+  The trip was a higher prize than the one that
+  Holly won but a lower prize than the one that
+  Heather won which was not the first prize.
+- >
+  The cash was a higher prize than the car but a lower prize than the one that
+  Laurel won.
+- >
+  Ms. Heatherton won a higher prize than Ms. Hollyer but a lower prize than the
+  house.
+types:
+  - type: Rank_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Prize
+    vals: [Boat, Car, Cash, House, Trip]
+  - type: First F
+    vals: [Heather, Holly, Laurel, Lily, Rose]
+  - type: Last
+    vals: [Heatherton, Hollyer, Laurelton, Lilyman, Rosen]
+# rules:
+# Clue 0: No woman's first name is repeated in her last name.
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0323"
+  - "1230"
+  - "2102"
+  - "3441"
+  - "4014"

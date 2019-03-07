@@ -1,0 +1,44 @@
+name: Popular New Secretary
+desc: >
+  A popular new secretary at the law firm of
+  Farnsworth, Newman, O'Malley, Price, and
+  Reynolds, is taken to lunch by a different one of
+  those five men on each of the five days of her first
+  week on the job. Each man took her to eat a
+  different one of these five types of food: Chinese,
+  French, Greek, Indian, and Mexican. From the
+  information given, determine whom she went to
+  lunch with on each day and the type of food that
+  they had.
+clues:
+- >
+  Neither Mr. Newman nor Mr. Reynolds took
+  her to lunch on Thursday or Friday but one
+  took her for Chinese food and the one who took
+  her to lunch earlier than the other took her for
+  Greek food.
+- >
+  She went for a Mexican food lunch before her
+  Indian food lunch but after her lunch with Mr. Price.
+- >
+  She had lunch with Mr. Farnsworth before her lunch with Mr. O'Malley but
+  after the lunch when she had French food, which was not on Monday.
+- >
+  She had lunch with Mr. Newman later in the week than the lunch when she had
+  French food.
+types:
+  - type: Weekday_
+    vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
+  - type: Last M
+    vals: [Farnsworth, Newman, O'Malley, Price, Reynolds]
+  - type: Food Country
+    vals: [Chinese, French, Greek, Indian, Mexican]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "040"
+  - "131"
+  - "212"
+  - "304"
+  - "423"

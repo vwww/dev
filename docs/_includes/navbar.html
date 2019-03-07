@@ -1,0 +1,98 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="{{base}}"><img src="{{assets}}victorz/logo.png" alt="logo"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto">
+{%- set href_check = page_url.slice(1) -%}
+{%- for item in navbar_root -%}
+{%- if item.dropdown %}
+        <li class="nav-item dropdown">
+          <a class="nav-link{% if href_check.startsWith(item.prefix) %} active{% endif %} dropdown-toggle" href="#nav/{{ item.dropdown }}" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
+          <ul class="dropdown-menu" role="menu">
+          {%- set href2 = item.prefix + '/' -%}
+            <li><a class="dropdown-item{% if href2 == href_check %} active{% endif %}" href="{{base}}/{{ href2 }}">List</a></li>
+          {%- for section in navbar[item.dropdown] %}
+            <li class="dropdown-divider"></li>
+          {%- if section.name %}
+            <li class="dropdown-header">{{ section.name }}</li>
+          {%- endif %}
+          {%- for d in section.items %}
+            <li>
+              {%- set href2 = d.href + '.html' -%}
+              <a class="dropdown-item{% if d.disabled %} disabled{% endif %}{% if d.href == href_check or href2 == href_check %} active{% endif %}"
+              {%- if d.href_ext %}
+                href="{{d.href_ext}}"
+                target="_blank"
+              {%- else %}
+                href="{{base}}/{{d.href}}"
+              {%- endif %}
+              {%- if d.desc %}
+                title="{{d.desc}}"
+              {%- endif %}
+              >{{d.name}}
+              {%- for b in d.badges %}
+                <span class="badge text-bg-{{b[0]}}">{{b[1]}}</span>
+              {%- endfor %}
+              {%- if d.href_ext %}
+              <span class="badge text-bg-info">&#8599;</span>
+              {%- endif %}
+              </a>
+            </li>
+          {%- endfor %}
+          {%- endfor %}
+          </ul>
+        </li>
+{%- else %}
+        <li class="nav-item"><a class="nav-link{% if href_check == item.href %} active{% endif %}" href="{{base}}/{{item.href}}">{{item.name}}</a></li>
+{%- endif %}
+{%- endfor %}
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="{{site.edit_prefix}}{{page_path}}">Edit</a></li>
+        <li class="nav-item dropdown">
+          <a href="#nav/theme" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Theme</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="{{base}}/site/theme" class="dropdown-item">Theme Switcher</a></li>
+            <li class="dropdown-divider"></li>
+            <li id="theme-switcher-msg" class="btn-danger">
+              <button class="dropdown-item disabled" id="theme-switcher-msg-text">Cannot save</button>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li><button class="dropdown-item theme-switcher" data-theme="bootstrap">Bootstrap</button></li>
+            <li><button class="dropdown-item theme-switcher active" data-theme="bootstrap2">Bootstrap Theme</button></li>
+            <li class="dropdown-divider"></li>
+            <li class="dropdown-header">Bootswatch</li>
+            {%- for theme, nameTitle in themes.bootswatch %}
+            <li><button class="dropdown-item theme-switcher" data-theme="bootswatch-{{ theme }}" title="{{ nameTitle[1] }}">{{ nameTitle[0] }}</button></li>
+            {%- endfor %}
+          </ul>
+        </li>
+
+        <li id="april-fools-joke-menu" class="dropdown d-none">
+          <a class="nav-link dropdown-toggle" href="#nav/language" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language <span class="badge text-bg-warning">NEW</span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li class="dropdown-header">10 languages</li>
+            {%- for i in range(10) %}
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            {%- endfor %}
+            <li class="dropdown-divider"></li>
+            <li class="dropdown-header">April Fools!</li>
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a class="nav-link dropdown-toggle" href="#nav/mirror" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mirror</a>
+          <ul class="dropdown-menu" role="menu">
+            {%- for mirror in site.mirrors %}
+            <li><a class="dropdown-item" href="{{mirror[1]}}{{page_url}}" rel="nofollow">{{mirror[0]}}</a></li>
+            {%- endfor %}
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

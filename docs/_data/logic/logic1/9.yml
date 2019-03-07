@@ -1,0 +1,37 @@
+name: Family Weddings
+desc: >
+  Last June, five brothers married five sisters on
+  the same day, in the same church, five different
+  ceremonies. The five brothers are Earl, Virgil,
+  Lester, Leroy, and Ray. The five sisters (and
+  brides) are Betty Lou, Peggy Sue, Mary Jane,
+  Sally Jo, and Cindy Lee. From the clues given,
+  try to determine the composition of each
+  couple and the order in which the ceremonies
+  were performed.
+clues:
+- >
+  Lester was married after Cindy Lee and
+  Mary Jane but before Earl and Leroy.
+- >
+  Betty Lou was not Lester's bride.
+- >
+  The first and last couples to be married
+  featured Cindy Lee, Sally Jo, Virgil, and
+  Leroy.
+types:
+  - type: First M
+    vals: [Earl, Virgil, Lester, Leroy, Ray]
+  - type: Full F
+    vals: [Betty Lou, Peggy Sue, Mary Jane, Sally Jo, Cindy Lee]
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [Earl, Betty Lou, Fourth]
+  - [Virgil, Cindy Lee, First]
+  - [Lester, Peggy Sue, Third]
+  - [Leroy, Sally Jo, Fifth]
+  - [Ray, Mary Jane, Second]

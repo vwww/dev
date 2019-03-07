@@ -1,0 +1,4 @@
+{
+	"layout": "go-imports",
+	"permalink": "/{{ page.fileSlug }}.{{ page.outputFileExtension }}"
+}

@@ -1,0 +1,99 @@
+- name: Realtime Multiplayer
+  desc: These multiplayer games have continuous realtime actions.
+  items:
+  - name: Slime Volleyball
+    desc: Make the ball hit enemy ground
+    href: game/slime
+    hrefs:
+      - name: Rules
+        href: game/slime_rules
+        class: secondary
+    badges:
+      - [success, Revived]
+  - name: Duel
+    desc: 20% luck and 80% skill
+    href: game/duel
+    hrefs:
+      - name: Rules
+        href: game/duel_rules
+        class: secondary
+    badges:
+      - [primary, Beta]
+      - [success, Revived]
+  - name: Hockey
+    desc: Score the puck on the opponent goal
+    href: game/hockey
+    hrefs:
+      - name: Rules
+        href: game/hockey_rules
+        class: secondary
+    badges:
+      - [secondary, TODO]
+- name: Turn-Based Multiplayer
+  desc: These multiplayer games have discrete turns.
+  items:
+  - name: Actionless
+    desc: Random winners, do no action
+    href: game/actionless
+    hrefs:
+      - name: Rules
+        href: game/actionless_rules
+        class: secondary
+  - name: Morra
+    desc: Pick a number, sum determines winner
+    href: game/morra
+    hrefs:
+      - name: Rules
+        href: game/morra_rules
+        class: secondary
+  - name: Rock Paper Scissors
+    desc: Pick a group
+    href: game/rps
+    hrefs:
+      - name: Rules
+        href: game/rps_rules
+        class: secondary
+  - name: Blackjack
+    desc: Get close to 21, but not over.
+    href: game/blackjack
+    hrefs:
+      - name: Rules
+        href: game/blackjack_rules
+        class: secondary
+    badges:
+      - [success, NEW]
+  - name: Cheat
+    desc: Shed cards, possibly dishonestly.
+    href: game/cheat
+    hrefs:
+      - name: Rules
+        href: game/cheat_rules
+        class: secondary
+  - name: President
+    desc: Shed your cards first to be the President!
+    href: game/president
+    hrefs:
+      - name: Rules
+        href: game/president_rules
+        class: secondary
+  - name: Discard
+    desc: Isomorphism of Love Letter
+    href: game/discard
+    hrefs:
+      - name: Rules
+        href: game/discard_rules
+        class: secondary
+  - name: Tic-Tac-Toe
+    desc: Get 3 in a line to win!
+    href: game/t3_multi
+    hrefs:
+      - name: Rules
+        href: game/t3_multi_rules
+        class: secondary
+  - name: Ultimate Tic-Tac-Toe
+    desc: Win small boards to win the big board.
+    href: game/ut3
+    hrefs:
+      - name: Rules
+        href: game/ut3_rules
+        class: secondary

@@ -1,0 +1,43 @@
+name: Book of the Month Club
+desc: >
+  The first choice and second choice in a popular
+  book club for the months January through May
+  were mysteries, romances, science fiction, thrillers,
+  and westerns. From the information given,
+  determine the first and second choice offered by the
+  club for each month.
+clues:
+- >
+  In no single month were the first and second
+  choices both the same type of book and in no
+  two months were the first and second choices the
+  same two types of books in reverse order.
+- >
+  In January and May neither the first nor the
+  second choice was a western or a mystery.
+- >
+  A mystery was offered as the second choice
+  earlier in the year than the month in which a
+  mystery was offered as a first choice but later in
+  the year than the month in which a western was
+  offered as a first choice.
+- >
+  A romance novel was offered as a second choice earlier than a romance novel
+  was offered as a first choice but later than the month in which a science fiction
+  book was offered as a second choice.
+types:
+  - type: Month_
+    vals: [January, February, March, April, May]
+  - type: Book Type 1
+    vals: [Mystery1, Romance1, Sci. Fiction1, Thriller1, Western1]
+  - type: Book Type 2
+    vals: [Mystery2, Romance2, Sci. Fiction2, Thriller2, Western2]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "032"
+  - "141"
+  - "220"
+  - "314"
+  - "403"

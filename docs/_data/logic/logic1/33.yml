@@ -1,0 +1,49 @@
+name: Birthday Boys
+desc: >
+  Mrs. Smith had five sons, Norman, Felix,
+  Raymond, Wilbur, and Edward. Each was born
+  in a different year (1948, 1950, 1951, 1956, and
+  1957) and each was born in a different month
+  (January, April, July, September, and November).
+  Mrs. Smith remembers clearly that no son
+  was born on the weekend but each son was
+  born on a different day of the week. From the
+  clues given try to determine the day of the
+  week, the month and the year of birth of each
+  son.
+clues:
+- >
+  Wilbur was not the son born on Wednesday
+  nor was he the son born in July.
+- >
+  Raymond is older than the son born on a
+  Thursday and younger than the son born in
+  November, however, it is the two remaining
+  sons who are the eldest and youngest.
+- >
+  The second eldest one and Felix both wear glasses but the son born on Friday,
+  the son born in January, and Wilbur do not.
+- >
+  The son born in April was not born on Tuesday or Thursday and the son born
+  in 1951 was not born on Monday or Friday.
+- >
+  The son born in 1948 was born on Wednesday and Norman was born on
+  Monday.
+types:
+  - type: First M
+    vals: [Norman, Felix, Raymond, Wilbur, Edward]
+  - type: Weekday_
+    vals: [Mon, Tues, Wed, Thurs, Fri]
+  - type: Month_
+    vals: [January, April, July, Sept, Nov]
+  - type: Year_
+    vals: [1948, 1950, 1951, 1956, 1957]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0043"
+  - "1210"
+  - "2302"
+  - "3131"
+  - "4424"

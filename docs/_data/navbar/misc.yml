@@ -1,0 +1,74 @@
+- items:
+  - name: Downloads
+    desc: file browser/directory listing of old binary files
+    href: misc/dl
+  - name: Path
+    desc: Do you wonder how this site is configured?
+    href: misc/path
+  - name: Old Blog
+    desc: my old blog
+    href: blog/
+- desc: Made to supplement others' projects
+  items:
+  - name: "XKCD #1110 Map"
+    desc: an improved way to view the xkcd-1110 webcomic
+    href: xkcd_map/
+    badges:
+      - [primary, ⛶]
+  - name: ggroups.exe
+    desc: view chat text in ggroups.exe of SUPERHOT
+    href: misc/ggroups
+  - name: Orbs Viewer
+    desc: view orbits in orbs.it
+    href: misc/orbs
+  - name: Starblast Mods Schedule
+    desc: view scrollable starblast.io schedule
+    href: misc/starblast_mods
+  - name: Starblast Upgrade Optimizer
+    desc: view optimal starblast.io ship upgrades
+    href: misc/starblast_upgrade
+- desc: Many unsorted items go here!
+  items:
+  - name: 3D
+    desc: Autodesk 3DS Max primitive and sample cloud renderings!
+    href: misc/3d/
+  - name: Ads
+    desc: Some advertisements&hellip;
+    href: misc/ads
+  - name: Basic Calculator
+    desc: Simulate a basic calculator.
+    href: misc/calc
+  - name: Compound Interest
+    desc: Plot a graph of compound interest.
+    href: misc/compound
+  - name: Music
+    desc: These pieces of &ldquo;music&rdquo; are more like noise.
+    href: misc/music
+  - name: Random Video
+    desc: Watch random pixels
+    href: misc/rndvid
+  - name: Redirect Loop (Endless)
+    desc: Follow endless redirections! It never ends!
+    href: misc/redirect
+  - name: Fast Infinite Downloads
+    desc: Download faster than your internet speed!
+    href: misc/streamdl
+  - name: Strobe (Seizure Generator)
+    desc: Strobe lights (stroboscopic lamps) flash light between black and white.
+    href: misc/strobe
+  - name: Seizure Domain
+    desc: This subdomain points to the seizure servers hosted by the U.S. Immigration and Customs Enforcement.
+    date_added: 2011-03-28
+    href_ext: http://seizure.victorz.ca
+- name: Jokes
+  desc: These are intended as jokes. Don't take them seriously.
+  items:
+  - name: IQ Test
+    desc: 2-question IQ test
+    href: misc/jokes/iq
+  - name: Coding Contest
+    desc: Practice on the most popular programming contest practice site!
+    href: misc/coding
+  - name: Old Jokes
+    desc: Some old jokes from ~2006-2007&hellip;
+    href: misc/jokes/

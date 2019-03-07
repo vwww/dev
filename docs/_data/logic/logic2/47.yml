@@ -1,0 +1,48 @@
+name: School Fair
+desc: >
+  Three girls named Beverly, Julie, and Lucy, as well
+  as two boys named Philip and Warren, each
+  managed a stall at the school fair. The last names of
+  the five children are Brewster, Burger, Glover,
+  Latham, and Standish. The five booths managed
+  were a book stall, a cake stall, a crafts stall, a
+  funny fotos booth, and a penny toss game. The
+  profits made at the booths were $80.00, $65.00,
+  $50.00, $40.00, and $25.00. From the information
+  given, determine the first and last name of each
+  child, the type of booth managed, and the amount
+  of profit made.
+clues:
+- >
+  Beverly and the girl who made the most money
+  did not operate the funny fotos booth.
+- >
+  Lucy made less money than the cake booth but
+  more than the penny toss booth.
+- >
+  Miss Burger made only half as much money as Philip but neither operated the
+  cake or crafts booths.
+- >
+  Warren made more money than the Standish boy but neither operated the funny
+  fotos or penny toss booths.
+- >
+  The kid operating the crafts booth made less money than Miss Glover but more
+  than Miss Latham.
+types:
+  - type: Money_
+    vals: [$80.00, $65.00, $50.00, $40.00, $25.00]
+  - type: Booth
+    vals: [Books, Cakes, Crafts, Funny Fotos, Penny Toss]
+  - type: First (3 F, 2 M)
+    vals: [Beverly, Julie, Lucy, Philip, Warren]
+  - type: Last
+    vals: [Brewster, Burger, Glover, Latham, Standish]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0112"
+  - "1240"
+  - "2034"
+  - "3323"
+  - "4401"

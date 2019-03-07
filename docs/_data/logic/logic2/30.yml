@@ -1,0 +1,43 @@
+name: Rubik's Cube Contest
+desc: >
+  The six top finishers in a Rubik's cube contest
+  solved the cube in 0:29, 0:35, 0:51, 1:10, 1:26, and
+  1:30. Each started by completing a top color. Each
+  one chose a different color to start with: blue, green,
+  orange, red, white, and yellow. Of the six, three
+  were boys named Eric, Oswald, and Wilbur, and
+  three were girls named Gretchen, Lily, and Wendy.
+  From the information given, determine how long it
+  took for each one to solve the cube and what color
+  each one used as a top starting color.
+clues:
+- >
+  Gretchen's time was faster than Lily's time but
+  slower than Eric's time; these three kids, like the
+  girl who won the contest, did not begin with
+  orange or green on top.
+- >
+  The girl who started with red finished later than
+  the kid who started with orange but earlier than
+  the girl who started with blue.
+- >
+  The kid who started with yellow on top finished earlier than Wilbur but not first.
+- >
+  Lily finished the cube earlier than Oswald.
+types:
+  - type: Duration_
+    vals: ["0:29", "0:35", "0:51", "1:10", "1:26", "1:30"]
+  - type: First (3 M, 3 F)
+    vals: [Eric, Gretchen, Lily, Oswald, Wendy, Wilbur]
+  - type: Color
+    vals: [Blue, Green, Orange, Red, White, Yellow]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "044"
+  - "105"
+  - "252"
+  - "313"
+  - "420"
+  - "531"

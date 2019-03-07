@@ -1,0 +1,142 @@
+---
+title: Rules for Rock-Paper-Scissors
+date: "2017-05-16 19:55:19 -0600"
+mdate: 2025-07-01 16:44:00 -0600
+entry: app_game_mp_rps_rules
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'rps') }}
+
+<h1>Calculator</h1>
+{% include 'app.html' %}
+
+<h1>Gameplay</h1>
+<p>New players start with 0 (battle, round) (wins, losses, ties), score, and streak.</p>
+
+<h2>Round</h2>
+
+<p>In a round, these phases occur:</p>
+<ol>
+  <li>Intermission
+  <li>Move selection
+  <li>Damage calculation
+  <li>Battle execution
+  <li>Score calculation
+</ol>
+
+<h3>Intermission</h3>
+<p>A 5-second intermission between rounds allows new players to join and current players to review the previous round's results.</p>
+
+<h3>Move selection</h3>
+<p>Every player has four options: pick <u>Rock</u>, <u>Paper</u>, <u>Scissors</u>, or <u>Auto</u>. If Auto is selected, the game replaces the player's choice: one of the first three is randomly selected, or if the player has a streak bonus, an optimal choice is made automatically.</p>
+
+<h3>Damage calculation</h3>
+<p>When two moves are the same, the result is always a tie.</p>
+
+<p>This phase calculates the results of the other possible move pairs. By default,</p>
+<ul>
+  <li>Rock beats Scissors
+  <li>Scissors beats Paper
+  <li>Paper beats Rock
+</ul>
+
+<p>If <b>Inverted</b> is on, the defaults are reversed. If <b>Count</b> is on, when a pair of moves is chosen by a different number of players, the one with more players never loses (see below for more details).</p>
+
+<h3>Battle execution</h3>
+<p>Unless modified by <b>Team</b> or <b>Survivor</b>, all N(N-1)/2 pairs of N participating players battle each other. After that, players have wins, losses, and ties within the round.</p>
+
+<div class="alert alert-danger">
+  For the mathematically inclined, imagine a complete undirected graph, whose nodes are players and edges are battles.
+</div>
+
+<h3>Score calculation</h3>
+<p>Players win, lose, or tie the round by comparing wins and losses in that round's battles. The table shows the effect on their streak and score.</p>
+
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Wins vs Losses</th>
+      <th>Outcome</th>
+      <th>Effect on Streak</th>
+      <th>Effect on Score</th>
+    </tr>
+  </thead>
+  <tr>
+    <td>Equal</td>
+    <td>the round is a tie</td>
+    <td>none</td>
+    <td>none</td>
+  </tr>
+  <tr>
+    <td>More wins</td>
+    <td>the player wins the round</td>
+    <td>streak becomes 0 if previously negative, and is then incremented</td>
+    <td>gain 1 score point, adjusted by streak bonuses</td>
+  </tr>
+  <tr>
+    <td>More losses</td>
+    <td>the player loses the round</td>
+    <td>streak becomes 0 if previously positive, and is then decremented</td>
+    <td>lose 1 score point</td>
+  </tr>
+</table>
+
+<h2>Streak Bonuses</h2>
+<p>Unless <b>Classic</b> is on, these reward lucky players that win repeatedly, and they also help unlucky players recover from their losses:</p>
+<ul>
+  <li>+3 or higher: score multiplier = (streak - 1)
+  <li>-5 or lower: if no choice is made, an optimal choice is automatically made (not available if Team is active)
+</ul>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 5 seconds, ending early if all players are ready.</p>
+<p>Each round lasts a variable amount of time (3-30 seconds, default 5).</p>
+
+<h1>Options</h1>
+
+<h2>Round Time / s <small>(default: 5, min: 3, max: 30)</small></h2>
+<p>A random move will be made after the round timer expires.</p>
+
+<h2>Bot Balance <small>(default: 0, min: -2<sup>53</sup>, max: 2<sup>53</sup>)</small></h2>
+<p>If negative, balance total players to absolute value; otherwise, add this number of bots.</p>
+
+<h2>Classic <small>(ancient, no streak bonuses, default: off)</small></h2>
+<p>Streak bonuses are not used, but streaks are still calculated as usual.</p>
+
+<h2>Inverted <small>(reverse default damage direction, default: off)</small></h2>
+<p>The default damage direction is reversed. By this new default, rock beats paper, which beats scissors, which beats rock.</p>
+<ul>
+  <li>Rock beats Paper
+  <li>Paper beats Scissors
+  <li>Scissors beats Rock
+</ul>
+
+<h2>Count <small>(larger number never loses, default: off)</small></h2>
+<p>If more people choose a type of move than another one, the loss is negated. If at least twice as many people choose a normally losing move compared to a normally winning move, the damage direction is reversed. Consider these examples:</p>
+<ul>
+  <li>3 players pick rock, and 3 players picks paper: rock loses to paper, as usual.
+  <li>4 players pick rock, and 3 players picks paper: rock ties with paper.
+  <li>5 players pick rock, and 3 players picks paper: rock ties with paper, again.
+  <li>6 players pick rock, and 3 players picks paper: rock beats paper.
+</ul>
+<p>The effects of Count apply after the effects of Inverted.</p>
+<div class="alert alert-warning">
+  Players that collude might be able to ruin this gamemode.
+</div>
+
+<h2><s>Team</s> <small>(default: 0, future feature)</small></h2>
+<p>No pair of players on the same team battle each other; battles apply only to pairs of players on different teams.
+<div class="alert alert-danger">
+  For k teams, a graph representation is a complete k-partite graph.
+</div>
+
+<h2><s>Cancel</s> <small>(reduce common amounts, default: off, future feature)</small></h2>
+<p>Score calculation is done as if 3 players who chose rock, paper, scissors are removed until no move has more than 1 player remaining.</p>
+
+<h2><s>Survivor</s> <small>(elimination rounds, default: off, future feature)</small></h2>
+<ul>
+  <li>Players that just joined recently start with zero health points.
+  <li>Players that just lost a round lose one health point.
+  <li>Players that have zero health points cannot participate.
+  <li>When only one survivor (or zero) remains, all player health points are reset to a positive number.
+</ul>

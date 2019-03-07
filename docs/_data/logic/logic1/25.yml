@@ -1,0 +1,50 @@
+name: Four by Five eMs
+desc: >
+  Five miners from Minnesota--Mike, Mark,
+  Matthew, Malcolm, and Marvin--all man the
+  same mine. Their last names, in no particular
+  order, are MacNab, Miller, Morrison, Murdoch,
+  and Meyers. Their wives' names, also in
+  no particular order, are Mary, Mabel, Martha,
+  Miriam, and Marcia. As it happens they all live
+  on streets with names beginning with the letter
+  "m." The streets are Main, Maple, Market,
+  Mulberry, and Madison. From the clues given,
+  try to determine each man's last name, the name
+  of his wife, and the name of the street on which
+  each couple lives.
+clues:
+- >
+  Martha, Mabel, and Miriam play golf with
+  Mrs. MacNab, but the woman who is married
+  to Mark and lives on Madison does not play.
+- >
+  Matthew, Mike Miller, Marvin, and the man who lives on Madison played
+  poker last night at Mr. Murdoch's house on Market Street.
+- >
+  Mrs. Miller, who lives on Main Street, and the woman who lives on Madison
+  work with Mary in Mr. Morrison's office at the mine, although none of these
+  women is married to him.
+- >
+  Mabel is married to Malcolm, but Miriam is not married to Matthew.
+- >
+  Miriam had dinner last week with the Millers and the couple from Maple
+  Street.
+types:
+  - type: First F (M*)
+    vals: [Mike, Mark, Matthew, Malcolm, Marvin]
+  - type: First M (M*)
+    vals: [Mary, Mabel, Martha, Miriam, Marcia]
+  - type: Last (M*)
+    vals: [MacNab, Miller, Morrison, Murdoch, Meyers]
+  - type: Street (M*)
+    vals: [Main, Maple, Market, Mulberry, Madison]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0201"
+  - "1332"
+  - "2010"
+  - "3423"
+  - "4144"

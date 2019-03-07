@@ -1,0 +1,40 @@
+name: Eye Doctors
+desc: >
+  Five eye doctors named Harlon, Harry, Henry,
+  Herbert, and Horace operate an eye clinic. They
+  each have one of these five unusual names:
+  Eismann, Frayme, Glassman, Lenz, and Rimbaud.
+  They each wear a different type of glasses from
+  among these five: bifocals, contact lenses, reading
+  glasses, regular glasses, and tinted lenses. From the
+  information given, determine the first and last name
+  of each man as well as the type of glasses worn.
+clues:
+- >
+  Harry is not Mr. Glassman and he doesn't wear
+  reading glasses.
+- >
+  Henry, Herbert, and Mr. Lenz do not wear
+  bifocals or regular glasses.
+- >
+  Of Harlon and Herbert, one is named Eismann
+  and one wears tinted lenses.
+- >
+  The man who wears bifocals and Mr. Rimbaud
+  are not named Harry or Horace.
+types:
+  - type: First M
+    vals: [Harlon, Harry, Henry, Herbert, Horace]
+  - type: Last
+    vals: [Eismann, Frayme, Glassman, Lenz, Rimbaud]
+  - type: Glasses
+    vals: [Bifocals, Contacts, Reading, Glasses, Regular, Tinted]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "000"
+  - "131"
+  - "242"
+  - "314"
+  - "423"

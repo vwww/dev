@@ -1,0 +1,42 @@
+name: The Secrets of Five Women
+desc: >
+  Rachel, Lydia, Elvira, Kate, and Vivian, whose
+  last names, in no particular order, are Parsons,
+  Lawrence, Carter, Volpe, and Milligan, all live
+  on the same block in Tinyboro. From the clues
+  given, try to determine the first and last name
+  of each woman and her age. The smallest age
+  difference is 10 years.
+
+  NOTE: After solving, ages are [80, 60, 50, 40, 20]
+clues:
+- >
+  Rachel's name is not Carter.
+- >
+  Kate is twice as old as Mrs. Milligan but
+  only half as old as Lydia.
+- >
+  Elvira is 10 years older than Mrs. Lawrence
+  but 10 years younger than Mrs. Parsons.
+- >
+  Vivian is 20 years older than Kate and 20
+  years younger than Mrs. Volpe.
+- >
+  Kate is 10 years younger than Elvira but 20
+  years older than Rachel.
+types:
+  - type: First F
+    vals: [Rachel, Lydia, Elvira, Kate, Vivian]
+  - type: Last F
+    vals: [Parsons, Lawrence, Carter, Volpe, Milligan]
+  - type: Age__
+    vals: [5, 4, 3, 2, 1]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "044"
+  - "130"
+  - "222"
+  - "313"
+  - "401"

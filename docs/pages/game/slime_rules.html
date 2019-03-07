@@ -1,0 +1,38 @@
+---
+title: Slime Volleyball Multiplayer Rules
+date: "2025-12-27 20:00:00 -0700"
+mdate: 2025-12-28 16:00:00 -0700
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'slime') }}
+
+<h1>Gameplay</h1>
+
+<p>If the ball hits the ground on your side, you lose the round.</p>
+
+<p>To move your player, use the <kbd>mouse</kbd>, <kbd>touchscreen</kbd>, or <kbd>WASD</kbd>/<kbd>arrow</kbd> keys.</p>
+
+<h1>Future features</h1>
+
+<p>
+  This project is still under development. These features are planned:
+  <ul>
+    <li>Bots
+    <li>Client-side Prediction (Extrapolation, and possibly interpolation)
+    <li>Options for game speed, player speed, ball speed, and gravity
+  </ul>
+</p>
+
+<h1>Options</h1>
+
+<h2>Serve</h2>
+<p>A random player serves in the first round. Who serves in later rounds?</p>
+<ul>
+  <li><strong>alternate</strong> <em>(default)</em>: the player who did not serve last round
+  <li><strong>winner</strong>: the winner of the last round
+  <li><strong>loser</strong>: the loser of the last round
+  <li><strong>random</strong>: random
+</ul>
+
+<h2>Intermission Time / s <small>(default: 1, min: 0, max: 3)</small></h2>
+<p>Time between rounds after a point is scored.</p>

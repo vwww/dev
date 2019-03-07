@@ -1,0 +1,42 @@
+name: Where are They Now?
+desc: >
+  Five college friends got together for the wedding of
+  an old, mutual friend. Their current occupations
+  are artist, banker, diplomat, florist, and lawyer.
+  Each one currently resides in a different one of these
+  five cities: Cairo (Egypt), Los Angeles, Paris
+  (France), Philadelphia, and Zurich (Switzerland).
+  The two men are named Silver and White, while the
+  three women are named Black, Brown, and Green.
+  From the information given, determine the current
+  occupation and place of residence of each of the five
+  friends.
+clues:
+- >
+  Ms. Black does not live in Cairo and she is not
+  the woman artist.
+- >
+  Ms. Brown and the diplomat live outside of the
+  U.S. but not in Zurich.
+- >
+  The five friends are: Ms. Black, Mr. White, the
+  lawyer (who lives in the U.S.), the woman who lives in Paris, and the man who
+  lives in L.A.
+- >
+  Mr. Silver is not the banker.
+types:
+  - type: Full (2 M, 3 F)
+    vals: [Mr. Silver, Mr. White, Ms. Black, Ms. Brown, Ms. Green]
+  - type: Occupation
+    vals: [Artist, Banker, Diplomat, Florist, Lawyer]
+  - type: City
+    vals: [Cairo, Los Angeles, Paris, Philadelphia, Zurich]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "031"
+  - "120"
+  - "214"
+  - "302"
+  - "443"

@@ -1,0 +1,42 @@
+name: Long Trip
+desc: >
+  In order to make time during the long ride back to
+  school, five friends traveling in the same car only
+  made one stop, at which time they got gas, had
+  lunch, and used the men's room. When they got
+  back into the car, each man, including the driver,
+  took a seat different from the one he had occupied
+  during the first half of the journey. From the information
+  given, determine where Bruce, Jacob, Neil,
+  Oscar, and Sanford sat during the two halves of the
+  journey.
+clues:
+- >
+  Only one of the five guys was in the front seat of
+  the car for both halves of the trip.
+- >
+  At the stop Oscar switched from the back to the
+  front and Sanford switched from the front to the
+  back.
+- >
+  Jacob and Neil switched positions.
+- >
+  The person who drove for the second half of the trip had been sitting in the
+  center in the back for the first half of the trip at which time Neil was not sitting
+  on his right.
+types:
+  - type: First M
+    vals: [Bruce, Jacob, Neil, Oscar, Sanford]
+  - type: Car Seat 1
+    vals: [Center Rear1, Driver1, Front Pass.1, Left Rear1, Right Rear1]
+  - type: Car Seat 2
+    vals: [Center Rear2, Driver2, Front Pass.2, Left Rear2, Right Rear2]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "012"
+  - "143"
+  - "234"
+  - "301"
+  - "420"

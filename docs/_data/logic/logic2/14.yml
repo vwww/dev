@@ -1,0 +1,36 @@
+name: Top Local Stations
+desc: >
+  The five top local radio stations in the town of
+  Medio are WIGT, WKCK, WLTR, WTBG, and
+  WWZZ. Each station plays a different one of these
+  five types of music: classical, country, jazz, muzak,
+  and rock. From the information given, determine
+  the type of music played on each station as well as
+  its ranking in popularity from one to five.
+clues:
+- >
+  WKCK ranked higher than the jazz station but
+  lower than the station that plays muzak.
+- >
+  WTBG does not play rock or classical music.
+- >
+  The classical station ranked lower than WL TR.
+- >
+  WTBG ranked higher than the station that plays
+  muzak but lower than WWZZ.
+types:
+  - type: Rank_
+    vals: [1, 2, 3, 4, 5]
+  - type: Radio Station
+    vals: [WIGT, WKCK, WLTR, WTBG, WWZZ]
+  - type: Music Type
+    vals: [Classical, Country, Jazz, Muzak, Rock]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "044"
+  - "131"
+  - "223"
+  - "310"
+  - "402"

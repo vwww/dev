@@ -1,0 +1,86 @@
+name: Five Boys and Five Dogs
+desc: >
+  Eric, Bernard, Bart, Sidney, and Ralph have
+  dogs named (in no particular order) Bowser,
+  Fido, Rover, Snoopy, and Spot. These five dogs
+  are (again in no particular order) a poodle, a
+  basset, a terrier, a spaniel and a collie. From
+  the clues given try to determine the name and
+  the breed of each boy's dog.
+clues:
+  - >
+    No dog's name begins with the same letter
+    as that of his master.
+  - Rover is not Bart's or Sidney's dog.
+  - >
+    Spot's master and the owner of the spaniel
+    both have names beginning with the same
+    letter.
+  - >
+    Neither Eric's dog nor Bernard's dog is the
+    basset, nor is Snoopy.
+  - >
+    Bart's dog and the collie are not called Spot
+    or Snoopy.
+  - Ralph's dog is not a terrier.
+
+types:
+  - type: First M Owner
+    vals: [Eric, Bernard, Bart, Sidney, Ralph]
+  - type: Dog Type
+    vals: [Poodle, Basset, Terrier, Spaniel, Collie]
+  - type: Dog First
+    vals: [Bowser, Fido, Rover, Snoopy, Spot]
+rules:
+  - name: Clue 1 B
+    type: '!='
+    a: Bowser
+    b: [Bernard, Bart]
+  - name: Clue 1 S
+    type: '!='
+    a: Sidney
+    b: [Snoopy, Spot]
+  - name: Clue 1 R
+    type: '!='
+    a: Ralph
+    b: Snoopy
+
+  - name: Clue 2
+    type: '!='
+    a: Rover
+    b: [Bart, Sidney]
+
+  - name: Clue 3
+    type: '=OR'
+    a: [Spot, Spaniel]
+    b: [Bernard, Bart]
+  - name: Clue 3
+    type: '!='
+    a: 'Spot'
+    b: 'Spaniel'
+
+  - name: Clue 4
+    type: '!='
+    a: Basset
+    b: [Eric, Bernard, Snoopy]
+
+  - name: Clue 5
+    type: '!='
+    a: Bart
+    b: [Spot, Snoopy, Collie]
+  - name: Clue 5
+    type: '!='
+    a: Collie
+    b: [Spot, Snoopy]
+
+  - name: Clue 6
+    type: '!='
+    a: Ralph
+    b: Terrier
+
+solution:
+  - [Eric, Collie, Rover]
+  - [Bernard, Terrier, Spot]
+  - [Bart, Spaniel, Fido]
+  - [Sidney, Basset, Bowser]
+  - [Ralph, Poodle, Snoopy]

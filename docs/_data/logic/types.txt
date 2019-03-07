@@ -1,0 +1,32 @@
+=
+eq
+a, b...
+for all i, a == b[i]
+
+!=
+neq
+a, b...
+for all i, a != b[i]
+
+=OR
+or, any, some
+a, b...
+for all i, for some j, a[i] == b[j]
+
+D
+distinct
+a, b...
+for all i, for all j, if i != j, then data[i] != data[j]
+
+<
+beforeAtLeast
+a, b, c, n
+c indicates category?
+
+<=
+beforeFixed
+a, b, c, n
+
+<>
+distance
+a, b, c, n

@@ -1,0 +1,63 @@
+---
+title: Blog
+date: "2009-03-01 09:00:00 -0700"
+mdate: 2019-09-30 20:12:00 -0600
+pagination:
+  data: collections.posts
+  size: 8
+  generatePageOnEmptyData: true
+permalink: "/blog/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber + 1 }}/{% endif %}"
+---
+{%- import 'blog.html' as blog -%}
+
+{%- if pagination.pageNumber == 0 %}
+<div class="alert alert-warning" role="alert">
+	These blog posts will eventually be integrated with the rest of the site.
+	With infrequent updates, the <a href="atom.xml">Atom 1.0</a> and <a href="rss.xml">RSS 2.0</a> feeds are less useful.
+	My <a href="software">list of software tools</a> from 2013 is becoming increasingly outdated.
+</div>
+
+<form action="https://encrypted.google.com/search" method="get">
+	<input type="hidden" name="sitesearch" value="victorz.ca/blog">
+	<div class="input-group mb-3">
+		<span class="input-group-text">Search for</span>
+		<input type="text" name="q" class="form-control" placeholder="all of these keywords">
+		<input type="text" name="as_oq" class="form-control" placeholder="any of these keywords">
+		<input type="text" name="as_eq" class="form-control" placeholder="none of these keywords">
+		<button class="btn btn-outline-secondary" type="submit">Go!</button>
+	</div>
+</form>
+{%- endif %}
+
+{{ blog.header(base, page_url) }}
+
+{% set p %}
+{% if pagination.href.previous or pagination.href.next %}
+<nav class="mb-4 text-center">
+	{% if pagination.href.previous %}<a href="{{pagination.href.previous}}" class="btn btn-outline-primary float-start">Prev</a>{% endif %}
+	<span>Page {{ pagination.pageNumber + 1 }} of {{ pagination.pages.length }}</span>
+	{% if pagination.href.next %}<a href="{{pagination.href.next}}" class="btn btn-outline-primary float-end">Next</a>{% endif %}
+</nav>
+{% endif %}
+{% endset %}
+{{ p }}
+
+{%- for post in pagination.items %}
+<div class="card mb-3">
+	<div class="card-body">
+		<h5 class="card-title"><a href="{{ post.data.page_url }}">{{ post.data.title }}</a></h5>
+		<h6 class="card-subtitle mb-2 text-muted">
+			{%- set post_year = post.date.getFullYear() -%}
+			{%- set year_count = collections.postsByYear[post_year].length -%}
+			{%- set read_min = (post.content | wordcount + 90 + 125) // 250 -%}
+			{{ post.date | date(site.format_blog_datetime) }} | {{ blog.tags(base, collections.postsByTag, tags=post.data.blog_tags, categories=post.data.categories, year=post_year, year_count=year_count) }} | Estimated {{read_min}}-min read
+		</h6>
+		{{ post.content | excerpt }}
+		{%- if post.content | has_excerpt %}
+		<a class="card-link" href="{{ post.data.page_url }}">Read more&hellip;</a>
+		{%- endif %}
+	</div>
+</div>
+{%- endfor %}
+
+{{ p }}

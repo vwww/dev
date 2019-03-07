@@ -1,0 +1,46 @@
+name: Amateur Hour
+desc: >
+  The five top finishers in an amateur contest at the
+  local high school in Middletown are named Carl,
+  Derek, James, Milton, and Wendel. Their last
+  names are Cudahy, Donnelly, Jenkins, Marlow,
+  and Wilkins. No contestant has a double-letter
+  monogram. Their five acts were as a juggler,
+  magician, mimic, singer, and violinist. From the
+  information given, determine the order of finish in
+  the contest for each type of performer as well as
+  each one's first and last name.
+clues:
+- >
+  The mimic finished better than James but not as
+  well as Derek.
+- >
+  James is not the juggler.
+- >
+  Mr. Wilkins did better than Mr. Marlow but not
+  as well as Mr. Cudahy who didn't do as well as
+  the magician.
+- >
+  Milton's last name is not Wilkins or Donnelly.
+- >
+  The violinist did not finish as well as Mr. Marlow who didn't do as well as Mr.
+  Donnelly.
+types:
+  - type: Rank_
+    vals: [First, Second, Third, Fourth, Fifth]
+  - type: Act
+    vals: [Juggler, Magician, Mimic, Singer, Violinist]
+  - type: First M
+    vals: [Carl, Derek, James, Milton, Wendel]
+  - type: Last
+    vals: [Cudahy, Donnelly, Jenkins, Marlow, Wilkins]
+# rules:
+# Clue 0: No contestant has a double-letter monogram.
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0101"
+  - "1010"
+  - "2244"
+  - "3323"
+  - "4432"

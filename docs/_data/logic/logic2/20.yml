@@ -1,0 +1,38 @@
+name: Bowling Team Averages
+desc: >
+  The averages of the five men on the Brewery
+  bowling team are 220, 211, 201, 198, and 195. The
+  men are named Dennis, Harmon, Ivan, Jerry, and
+  Willie. In alphabetical order their last names are:
+  Boyce, Cardel, Dugon, Plotsky, and Sutain. From
+  the information given, determine each man's first
+  and last name as well as his bowling average.
+clues:
+- >
+  Of Harmon and Mr. Plotsky, one has the
+  highest average and one has the lowest average.
+- >
+  Jerry's average is lower than that of Mr. Sutain
+  but not the lowest.
+- >
+  Harmon is not Mr. Boyce.
+- >
+  Mr. Dugon is not named Willie but his average
+  is higher than Mr. Sutain's and lower than Ivan's
+  average.
+types:
+  - type: Bowling Score_
+    vals: [220, 211, 201, 198, 195]
+  - type: First M
+    vals: [Dennis, Harmon, Ivan, Jerry, Willie]
+  - type: Last M
+    vals: [Boyce, Cardel, Dugon, Plotsky, Sutain]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "023"
+  - "102"
+  - "244"
+  - "330"
+  - "411"

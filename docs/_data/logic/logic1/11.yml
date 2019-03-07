@@ -1,0 +1,41 @@
+name: A Height and Hair Color Problem
+desc: >
+  Mary, Isobel, Marcia, Grace, and Ruth are on
+  the Grand Avenue Grade School girls' basketball
+  team. Each girl has a different color hair.
+  The hair colors are blond, red, auburn, black,
+  and brunette. As it happens, no two girls on the
+  team are the same height; they are 5'9", 5'8",
+  5'6", 5'5", and 5'4". From the clues given try to
+  determine the hair color and height of each of
+  the girls on the team.
+clues:
+- >
+  Mary is taller than Ruth who is two inches
+  taller than the redhead.
+- >
+  The brunette is not 5'6".
+- >
+  Marcia and Mary are neither the tallest nor
+  the shortest.
+- >
+  The girl with black hair is two inches taller
+  than Ruth.
+- >
+  Isobel is taller than the blond, who is one inch taller than Grace.
+types:
+  - type: First F
+    vals: [Mary, Isobel, Marcia, Grace, Ruth]
+  - type: Hair Color
+    vals: [Blond, Red, Auburn, Black, Brunette]
+  - type: Height_
+    vals: [5'9", 5'8", 5'6", 5'5", 5'4"]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "031"
+  - "140"
+  - "203"
+  - "314"
+  - "422"

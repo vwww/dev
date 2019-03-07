@@ -1,0 +1,71 @@
+name: Prom Dresses
+desc: >
+  Five friends, whose names are Gail, Margery, Nora,
+  Pamela, and Ramona, each wore a different colored
+  dress to the senior prom. The colors of the dresses
+  were blue, green, orange, pink, and yellow. In
+  alphabetical order, the last names of the five girls
+  are Clausen, Jensen, Mathers, Oblinski, and Smith.
+  From the information given, determine the first and
+  last name of each girl as well as the color of the
+  dress that each one wore to the senior prom.
+clues:
+- >
+  The girl who wore a blue dress and Ms. Mathers
+  do not have the first name of Margery or
+  Ramona.
+- >
+  Either Ms. Oblinski or Ms. Smith, who wore an
+  orange dress, is named Pamela.
+- >
+  Margery is not Ms. Smith and she did not wear
+  a pink dress.
+- >
+  Nora, Pamela, and Ms. Clausen did not wear a
+  blue or orange dress.
+- >
+  Of Gail and Pamela, one is Ms. Jensen and one wore a green dress.
+types:
+  - type: First F
+    vals: [Gail, Margery, Nora, Pamela, Ramona]
+  - type: Last
+    vals: [Clausen, Jensen, Mathers, Oblinski, Smith]
+  - type: Color
+    vals: [Blue, Green, Orange, Pink, Yellow]
+rules:
+  - name: Clue 1
+    type: 'D'
+    data: [Blue, Mathers, Margery, Ramona]
+
+  - name: Clue 2
+    type: '='
+    a: Pamela
+    b: [Oblinski, Smith]
+  - name: Clue 2
+    type: '='
+    a: Smith
+    b: Orange
+
+  - name: Clue 3
+    type: '!='
+    a: Margery
+    b: [Smith, Pink]
+
+  - name: Clue 4
+    type: 'D'
+    data: [Nora, Pamela, Clausen, Blue, Orange]
+
+  - name: Clue 5
+    type: '=OR'
+    a: [Jensen, Green]
+    b: [Gail, Pamela]
+  - name: Clue 5
+    type: '!='
+    a: Jensen
+    b: Green
+solution:
+  - [Gail, Jensen, Blue]
+  - [Margery, Clausen, Yellow]
+  - [Nora, Mathers, Pink]
+  - [Pamela, Oblinski, Green]
+  - [Ramona, Smith, Orange]

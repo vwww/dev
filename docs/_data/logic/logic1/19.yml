@@ -1,0 +1,49 @@
+name: The Photo Contest
+desc: >
+  There is a photography contest every year at
+  the County Fair. In last year's contest, the top
+  prizes were awarded to photographs of fish,
+  trees, cats, tenements, flowers, and a bridge.
+  Two of the prizes were won by one man. The
+  men who won the top prizes were Mr. Vee, Mr.
+  Kay, Mr. Jay, Mr. Dee, and Mr. X. From the
+  clues given, try to determine who took each
+  photograph and the prize that each picture
+  won.
+
+    NOTE: Two of the prizes were won by one man.
+clues:
+- >
+  The bridge and tenement photographs were
+  taken by one man and neither picture won
+  first or last prize.
+- >
+  The last name of the man who won first
+  prize is alphabetically behind everyone
+  except the man whose photograph is of trees.
+- >
+  Neither Mr. Jay's photograph nor the photos of the bridge and the tenement
+  came in third.
+- >
+  The tenement photograph, the cat's photograph and Mr. Dee's photograph of
+  flowers finished in that order.
+- >
+  The fish photograph received a higher prize than Mr. Jay's photograph which
+  in turn did better than the flowers photograph.
+types:
+  - type: Last M
+    vals: [Mr. Vee, Mr. Kay, Mr. Jay, Mr. Dee, Mr. X]
+  - type: Painting Object
+    vals: [Fish, Trees, Cats, Tenement, Flowers, A Bridge]
+  - type: Rank_
+    vals: [1, 2, 3, 4, 5, 6]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "000"
+  - "133"
+  - "151"
+  - "224"
+  - "345"
+  - "412"

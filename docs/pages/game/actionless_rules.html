@@ -1,0 +1,24 @@
+---
+title: Rules for Actionless
+date: "2020-01-12 11:06:12 -0700"
+mdate: 2020-09-22 19:48:25 -0600
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'actionless') }}
+
+<h1>Gameplay</h1>
+<p>Each round, players cannot choose to take any action that affects the outcome.</p>
+<p>When the timer expires, the round ends, and one randomly-selected player wins.</p>
+
+<h1>Time Control</h1>
+<p>Intermissions last up to 5 seconds, ending early if all players are ready.</p>
+<p>Each round is 3 seconds long.</p>
+
+<h1>Options</h1>
+
+<h2>Independent <small>(default: off)</small></h2>
+<p>Each player or team has a 50% chance of winning, independently of others.</p>
+
+<h2>Teams <small>(default: 0)</small></h2>
+<p>Players randomly fill teams. If nonzero, this is the number of teams. Otherwise, there is one team per player.</p>
+<p>Team sizes are approximately equal. The size of the largest team is at most one plus the size of the smallest team.</p>

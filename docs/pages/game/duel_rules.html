@@ -1,0 +1,36 @@
+---
+title: Duel Multiplayer Rules
+date: "2025-12-27 20:00:00 -0700"
+mdate: 2025-12-28 12:00:00 -0700
+---
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'duel') }}
+
+<h1>Gameplay</h1>
+
+<p>This game is 20% luck and 80% skill (by default).</p>
+
+<p>
+  It is similar to agar.io: players are circles (or spheres) and can eat other players.
+  However, here, luck sometimes allows smaller players to eat bigger players.
+  The winrate of humans against bots is also increased.
+</p>
+
+<p>This game is still under development.</p>
+
+<h1>Options</h1>
+
+<h2>Bot Balance <small>(default: 16, min: 0, max: 64)</small></h2>
+<p>Balance total players to be at least this number.</p>
+
+<h2>Skill <small>(default: 80%, min: 0%, max: 100%)</small></h2>
+<p>Portion of duel outcome weight given to mass. The remaining portion is random chance.</p>
+
+<h2>Bot Win Rate <small>(default: 90%, min: 0%, max: 100%)</small></h2>
+<p>Portion of duel outcome weight given to auto-win against bots.</p>
+
+<h2>Mass Transfer <small>(default: 75%, min: 0%, max: 100%)</small></h2>
+<p>Portion of loser's mass transferred to the winner.</p>
+
+<h2>Dimensions <small>(default: 2, min: 0, max: 100)</small></h2>
+<p>Number of dimensions (2 = circle, 3 = sphere)</p>

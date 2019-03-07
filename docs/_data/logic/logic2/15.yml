@@ -1,0 +1,42 @@
+name: CB'ers
+desc: >
+  The "handles" of five CB'ers are All 'Round Guy,
+  Big Daddy, Hot Wheels, Lightning, and Shifty. In
+  alphabetical order their real names are Al, Gus,
+  Herb, Ken, and Pete. They are each a different one
+  of these five occupations: delivery man, realtor,
+  repairman, salesman, and trucker. From the
+  information given, determine each man's "handle"
+  and occupation.
+clues:
+- >
+  The salesman is not Pete or Ken and neither of
+  these three is called Shifty.
+- >
+  The realtor is not named Al or Pete and neither
+  of these three goes by the "handle" of All
+  'Round Guy or Shifty.
+- >
+  Big Daddy is not the "handle" of Pete or the
+  realtor.
+- >
+  Of Ken and Herb, one is the trucker and one is named Hot Wheels.
+- >
+  Of the salesman and the repairman, one is Gus and one goes by the "handle" of
+  Lightning.
+types:
+  - type: Nickname
+    vals: [Guy, Big Daddy, Hot Wheels, Lightning, Shifty]
+  - type: First
+    vals: [Al, Gus, Herb, Ken, Pete]
+  - type: Occupation
+    vals: [Delivery Man, Realtor, Repairman, Salesman, Trucker]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "013"
+  - "100"
+  - "231"
+  - "342"
+  - "424"

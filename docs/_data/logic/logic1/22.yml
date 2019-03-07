@@ -1,0 +1,48 @@
+name: Dinner for a Family of Four
+desc: >
+  A family of four--father, mother, sister, and
+  brother--went out to dinner. They each had a
+  different meat, potato and vegetable. The four
+  kinds of meat were steak, ham, pork, and
+  lamb. The four types of potatoes were baked,
+  mashed, french fried, and boiled. The four
+  vegetables were peas, carrots, corn, and
+  spinach. From the clues given, try to determine
+  the meal eaten by each member of the family.
+
+  After solving, seating order is
+    Daughter, Mother, Son, Father (circular table)
+clues:
+- >
+  One child had lamb and the other had french
+  fries.
+- >
+  One of the women had spinach and the other
+  had pork.
+- >
+  The father sat on the right of the person who
+  had corn, who sat on the right of the person
+  who had pork, who sat on the right of the
+  person who had baked potatoes, who sat on the right of the person who had
+  peas.
+- >
+  One parent had boiled potatoes and the other had steak.
+- >
+  One of the men had steak and the other had french fries.
+types:
+  - type: Family
+    vals: [Father, Mother, Sister, Brother]
+  - type: Meat
+    vals: [Steak, Ham, Pork, Lamb]
+  - type: Potato
+    vals: [Baked, Mashed, F.F., Boiled]
+  - type: Vegetable
+    vals: [Peas, Carrots, Corn, Spinach]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0010"
+  - "1231"
+  - "2122"
+  - "3303"

@@ -1,0 +1,46 @@
+name: Arcade Prizes
+desc: >
+  Tony manages the dart-throwing booth in the
+  arcade at the local amusement park. He keeps the
+  prizes available for the rubes to win on a set of five
+  shelves. On each shelf he keeps three different types
+  of prizes. On the left-hand sides of the shelves he
+  keeps ashtrays, electronic games, toy trains,
+  watches, and water pistols. On the right-hand sides
+  of the shelves he keeps blenders, stereos, stuffed
+  animals, TVs, and whistles. On the centers of the
+  shelves he keeps candy, clocks, dolls, toy boats, and
+  wallets. From the information given, determine
+  which prizes he keeps on the center, the left-hand
+  side, and the right-hand side of each of the five
+  shelves.
+clues:
+- >
+  Toy boats are on a lower shelf than the one that
+  holds electronic games and TVs but on a higher
+  shelf than the one that holds water pistols and blenders.
+- >
+  Dolls and TVs are not on the same shelf.
+- >
+  Wallets are on a higher shelf than candy but on a lower shelf than blenders;
+  however, toy trains are not on the same shelf as any of these items.
+- >
+  Watches are on a higher shelf than whistles but on a lower shelf than the stereos.
+types:
+  - type: Shelf Level_
+    vals: [Fifth, Fourth, Third, Second, First]
+  - type: Prize Left
+    vals: [Ashtrays, Games, Toy Trains, Watches, Pistols]
+  - type: Prize Right
+    vals: [Blenders, Stereos, Animals, T.V.'s, Whistles]
+  - type: Prize Center
+    vals: [Candy, Clocks, Dolls, Toy Boats, Wallets]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0113"
+  - "1231"
+  - "2424"
+  - "3342"
+  - "4004"

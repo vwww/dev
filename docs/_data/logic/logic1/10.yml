@@ -1,0 +1,39 @@
+name: The Little Big Top
+desc: >
+  Victor, Virgil, Vincent, Vito, and Vance are
+  brothers performing in a five-man traveling circus
+  known as the Little Big Top. They are, in
+  no particular order, a clown, a juggler, an
+  acrobat, a magician, and a strong man.
+  Whenever they perform, their acts appear in
+  the same order. From the clues given try to
+  determine each brother's act and the order in
+  which they perform.
+clues:
+- >
+  The clown comes on after Victor and Vito
+  but before the magician.
+- >
+  The acrobat comes on third.
+- >
+  Neither the strong man nor Vincent is the
+  first or last to perform.
+- >
+  Virgil, Victor, and Vito perform in that
+  order.
+types:
+  - type: Circus Act
+    vals: [Clown, Juggler, Acrobat, Magician, Strong Man]
+  - type: First M (V*)
+    vals: [Victor, Virgil, Vincent, Vito, Vance]
+  - type: Order_
+    vals: [First, Second, Third, Fourth, Fifth]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution:
+  - [Clown, Vincent, Fourth]
+  - [Juggler, Virgil, First]
+  - [Acrobat, Vito, Third]
+  - [Magician, Vance, Fifth]
+  - [Strong Man, Victor, Second]

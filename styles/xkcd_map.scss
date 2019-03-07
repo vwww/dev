@@ -1,0 +1,42 @@
+@import "~leaflet/dist/leaflet";
+@import "~leaflet-fullscreen/dist/leaflet.fullscreen";
+@import "~leaflet-minimap/src/Control.MiniMap";
+
+html, body {
+	height: 100%;
+}
+
+span#attribution {
+	font-size: 15px;
+}
+
+div#autoclose {
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+}
+
+/* adapted from dividuum's version */
+.leaflet-container img {
+	image-rendering: optimizeSpeed;
+} /* thanks chrismorgan */
+
+body {
+	padding: 0;
+	margin: 0;
+}
+
+div#map {
+	height: 100%;
+}
+
+img#intro {
+	pointer-events: none;
+	position: absolute;
+	left: 50%;
+	margin-left: -262px;
+	z-index: 100000;
+	top: 20px;
+	width: 524px;
+	height: 210px;
+}

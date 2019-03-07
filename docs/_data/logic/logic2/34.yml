@@ -1,0 +1,41 @@
+name: Fish-Raising Kids
+desc: >
+  Five friends enjoy raising tropical fish. They
+  each have a different one of these size tanks: 50
+  gallons, 30 gallons, 25 gallons, 20 gallons, and JO
+  gallons. There are three boys named Arthur,
+  Martin, and Maurice as well as two girls named
+  Alice and Maureen. They each raise a different one
+  of these types of fish: angelfish, cichlids, gouramis,
+  guppies, and neon tetras. From the information
+  given, determine the size of each person's tank and
+  the type of fish raised.
+clues:
+- >
+  Neither Martin nor Alice raise neon tetras and
+  the same is true of the girl with the largest tank
+  of all and the boy with the smallest tank of all.
+- >
+  Maurice does not raise gouramis.
+- >
+  Arthur's tank is larger than the tank in which
+  angelfish are raised which is not the smallest tank.
+- >
+  Martin has a smaller tank than the kid who raises cichlids but a larger one than
+  the tank in which neon tetras are raised.
+types:
+  - type: Volume_
+    vals: [50 gal., 30 gal., 25 gal., 20 gal., 10 gal.]
+  - type: First (3 M, 2 F)
+    vals: [Alice, Arthur, Martin, Maureen, Maurice]
+  - type: Fish Type
+    vals: [Angelfish, Cichlids, Gouramis, Guppies, Neon Tetras]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "031"
+  - "122"
+  - "214"
+  - "300"
+  - "443"

@@ -1,0 +1,41 @@
+name: Wearing of the Green
+desc: >
+  Five Irish-Americans each wore a different article of
+  green clothing on St. Patrick's Day: hat, scarf, shirt,
+  tie, and trousers. The five men are named Brian,
+  Francis, Frank, Liam, and Mike. No man has the
+  same first and last initial, and the last names are
+  Brady, Flanagan, Lynch, Maguire, and Murphy.
+  From the information given, determine each man's
+  first and last name as well as the article of green
+  clothing that he wore on St. Patrick's Day.
+clues:
+- >
+  Francis and Mr. Maguire did not wear a green
+  shirt.
+- >
+  Mr. Flanagan, Mr. Maguire, and Brian did not
+  wear a green hat or scarf.
+- >
+  Mike, Liam, and Mr. Brady did not wear a
+  green shirt or tie.
+- >
+  Mike is not Mr. Flanagan and neither wore a
+  green scarf.
+types:
+  - type: First M
+    vals: [Brian, Francis, Frank, Liam, Mike]
+  - type: Last M
+    vals: [Brady, Flanagan, Lynch, Maguire, Murphy]
+  - type: Clothing
+    vals: [Hat, Scarf, Shirt, Tie, Trousers]
+# rules:
+# Clue 0: No man has the same first and last initial
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "042"
+  - "101"
+  - "233"
+  - "314"
+  - "420"

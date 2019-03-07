@@ -1,0 +1,43 @@
+---js
+{
+	pagination: {
+		data: "collections.all",
+		size: 1,
+		alias: "redirect",
+		before (data) {
+			const redirects = []
+			function process (url_to, url_from) {
+				if (!url_from.endsWith('/')) {
+					url_from += '.html'
+				}
+				redirects.push({ to: url_to, from: url_from })
+			}
+			for (const page of data) {
+				if (Array.isArray(page.data.redirect_from)) {
+					for (const url of page.data.redirect_from) {
+						process(page.data.page_url, url)
+					}
+				} else if (typeof page.data.redirect_from === 'string') {
+					process(page.data.page_url, page.data.redirect_from)
+				}
+			}
+			return redirects
+		},
+		addAllPagesToCollections: false,
+	},
+	layout: null,
+	permalink: "{{ redirect.from }}",
+	eleventyExcludeFromCollections: true,
+}
+---
+<!DOCTYPE html>
+<html lang="en-US">
+	<meta charset="utf-8" />
+	<title>Redirecting&hellip;</title>
+	<link rel="canonical" href="{{ base }}{{ redirect.to }}" />
+	<script>location = '{{ base }}{{ redirect.to }}'</script>
+	<meta http-equiv="refresh" content="0; url={{ base }}{{ redirect.to }}" />
+	<meta name="robots" content="noindex" />
+	<h1>Redirecting&hellip;</h1>
+	<a href="{{ base }}{{ redirect.to }}">Click here if you are not redirected.</a>
+</html>

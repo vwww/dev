@@ -1,0 +1,30 @@
+---
+layout: ~
+permalink: "/{{ page.filePathStem }}"
+# see https://github.com/jekyll/jekyll-feed/blob/master/lib/jekyll-feed/feed.xml
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>{{ blog_data.title | xml_escape }}</title>
+	<link href="{{ blog_data.url }}/"/>
+	<link href="{{ blog_data.url }}/atom.xml" rel="self" type="application/atom+xml"/>
+	<link href="{{ blog_data.url }}/rss.xml" rel="self" type="application/atom+rss"/>
+	<link href="{{ base }}/blog" rel="alternate" type="text/html" hreflang="en"/>
+	<updated>{{ 'now' | date_to_xmlschema }}</updated>
+	<id>{{ blog_data.url }}/</id>
+	<author>
+		<name>{{ blog_data.author.name | strip_html | xml_escape }}</name>
+		<uri>{{ blog_data.author.url | xml_escape }}</uri>
+	</author>
+
+	{%- for post in collections.posts limit: 20 %}
+	<entry>
+		<title type="html">{{ post.data.title | xml_escape }}</title>
+		<link href="{{ blog_data.url }}{{ post.data.page_url }}"/>
+		<updated>{{ post.date | date_to_xmlschema }}</updated>
+		<id>{{ blog_data.url }}{{ post.data.page_url }}</id>
+		<content type="html">{{ post.content | xml_escape }}</content>
+		<summary type="html">{{ post.content | excerpt | xml_escape }}</summary>
+	</entry>
+	{%- endfor %}
+</feed>

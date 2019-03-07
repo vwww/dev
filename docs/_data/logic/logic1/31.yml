@@ -1,0 +1,50 @@
+name: Joyce the Babysitter
+desc: >
+  Joyce is a popular babysitter. Billy, Bobby,
+  Sam, Tommy, and Pete are her charges, and
+  she babysits for each one on a different day of
+  the week. She takes Saturday and Sunday off.
+  As it happens, no two children are the same age
+  and range in age from one to five. The mothers
+  of the boys are Mrs. Clark, Mrs. Jolson, Mrs.
+  Prescott, Mrs. Foster, and Mrs. Waters. From
+  the clues given, try to determine each child's
+  full name and age as well as the day of the
+  week on which Joyce babysits for him.
+clues:
+- >
+  Thursday's child is the oldest and Mrs.
+  Jolson's child is not the youngest.
+- >
+  She sits for Mrs. Foster's son earlier in the
+  week than for Pete but later than she sits for
+  the two-year-old.
+- >
+  She doesn't sit for Billy or Tommy on Monday or Friday but one of them is the
+  one-year-old and the other is the three-year-old.
+- >
+  She sits for Tommy the day before Billy but the day after the Clark baby.
+- >
+  In no particular order the three youngest children are the Monday child, the
+  Tuesday child, and Mrs. Jolson's child.
+- >
+  Mrs. Prescott's son Sam is not the oldest nor is he the child watched on
+  Monday.
+types:
+  - type: Last F
+    vals: [Clark, Jolson, Prescott, Foster, Waters]
+  - type: First M
+    vals: [Billy, Bobby, Sam, Tommy, Pete]
+  - type: Weekday_
+    vals: [Mon, Tues, Wed, Thurs, Fri]
+  - type: Age_
+    vals: [1, 2, 3, 4, 5]
+# rules:
+#   - name: Clue 1
+#     type: '='
+solution2:
+  - "0101"
+  - "1022"
+  - "2243"
+  - "3310"
+  - "4434"

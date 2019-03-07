@@ -1,0 +1,74 @@
+data:
+  areas:
+    base:
+      name: Home
+      pages:
+        - [base, 3D Home]
+    advanced:
+      name: Advanced revit architecture.rvt
+      pages:
+        - [base, Overview]
+        - [balcony, Balcony View]
+        - [courtyard, Building Courtyard]
+        - [floor, 03 - Floor Public - Day Rendering]
+        - [fly, Fly into Building]
+        - [park, From Parking Area]
+    basic:
+      name: Basic revit architecture.rvt
+      pages:
+        - [base, Overview]
+        - [aerial, Aerial]
+        - [fireplace, Fireplace]
+        - [ground, Ground Approach]
+        - [kitchen, Kitchen]
+        - [sectional, Sectional Persp(ective)]
+    coffee:
+      name: Coffee maker.dwg
+      pages:
+        - [base, Overview]
+        - [0, 0 deg cam]
+        - [30, 30 deg cam]
+        - [60, 60 deg cam]
+        - [90, 90 deg cam]
+        - [120, 120 deg cam]
+        - [150, 150 deg cam]
+        - [180, 180 deg cam]
+        - [210, 210 deg cam]
+        - [240, 240 deg cam]
+        - [270, 270 deg cam]
+        - [300, 300 deg cam]
+        - [cam1, Camera1]
+        - [cam2, Camera2]
+    diaphanous:
+      name: Diaphanous house.dwg
+      pages:
+        - [base, Overview]
+        - [east, EXT East]
+        - [ne, EXT NE_Low]
+        - [living, Living Room]
+        - [lvng_1700, LVNG_1700]
+        - [stairs, STAIRS01]
+  environments:
+    none:
+      name: None
+      desc: No environment applied.
+    field:
+      name: Farm Field
+      desc: A field on a farm.
+    crossroads:
+      name: Crossroads
+      desc: A 4-way intersection.
+    boardwalk:
+      name: Boardwalk
+      desc: A bridge on the dock.
+    riverbank:
+      name: Riverbank Pond
+      desc: A pond near a river.
+    seaport:
+      name: Seaport
+      desc: An estate near the sea.
+  legacy_styles:
+    m: Metal
+    g: Green
+    o: Orange
+    b: Brown

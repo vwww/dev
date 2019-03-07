@@ -1,0 +1,34 @@
+---
+layout: ~
+date: "2014-07-30 11:47:04 -0600"
+mdate: 2016-08-20 18:58:00 -0600
+---
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Lazyboard</title>
+		<base href="{{assets}}">
+	</head>
+	<body>
+		<h1>Lazyboard (LOL: Leaderboard of Losers)</h1>
+		<p><strong>Realtime</strong> updates are shown with <strong>ordinal ranking</strong>.</p>
+		<p>This page is called &ldquo;lazyboard&rdquo; as it has no stylesheet and no planned further development.</p>
+		<p>The people on this page are losing the poke war.</p>
+		<table>
+			<thead>
+			<tr>
+				<th>Position</th>
+				<th>Image</th>
+				<th>Name</th>
+				<th>Total Pokes</th>
+				<th>Last Poke</th>
+			</tr>
+			</thead>
+			<tbody id="leaderboard"></tbody>
+		</table>
+		{%- for file in manifest.js.bots_poke_old %}
+		<script src="dist/{{ file }}.js"></script>
+		{%- endfor %}
+		{% include '_scripts.html' %}
+	</body>
+</html>
