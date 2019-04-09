@@ -1,0 +1,46 @@
+---
+title: Unit Converter
+date: "2012-01-29 12:42:20 -0700"
+mdate: "2019-06-21 18:43:20 -0600"
+extra_js: tools_unit
+---
+<div class="row">
+  <div class="col-sm-4">
+    <p>Type</p>
+    <select id="unit_type" class="custom-select" size="12">
+      <option>Loading&hellip;</option>
+    </select>
+  </div>
+  <div class="col-sm-4">
+    <p>From</p>
+    <select id="unit_from" class="custom-select" size="12">
+      <option>Loading&hellip;</option>
+    </select>
+  </div>
+  <div class="col-sm-4">
+    <p>To</p>
+    <select id="unit_to" class="custom-select" size="12">
+      <option>Loading&hellip;</option>
+    </select>    
+  </div>
+
+  <div class="col-sm-6">
+    <div class="input-group">
+      <input id="unit_val1" type="text" class="form-control" value="1337.1" />
+      <div class="input-group-append">
+        <span id="unit_name1" class="input-group-text">units</span>
+      </div>
+    </div>
+    <div id="unit_con2" class="input-group">
+      <input id="unit_val2" type="text" class="form-control" value="0" />
+      <div class="input-group-append">
+        <span id="unit_name2" class="input-group-text">units</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <p><span id="unit_result0">Unknown</span></p>
+    <p><span id="unit_result1">Unknown</span> (<span id="unit_sfn">0</span> significant figure<span id="unit_sfnp">s</span>)</p>
+    <p><span id="unit_result2">Unknown</span> (<span id="unit_dpn">0</span> decimal<span id="unit_dpnp">s</span>)</p>
+  </div>
+</div>

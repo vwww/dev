@@ -6,76 +6,77 @@
 	border-spacing: 10px;
 	margin: auto;
 	margin-bottom: 10px;
+
+	&.w1 { background-color: #008000 }
+	&.w2 { background-color: #ffa07a }
+	&.w3 { background-color: #a9a9a9 }
+
+	/* cells */
+	td {
+		background-color: #98afc7;
+		border-radius: 7px;
+		cursor: pointer;
+		height: 110px;
+		margin: 10px;
+		position: relative;
+		width: 110px;
+	}
+	&.w td {
+		background-color: #696969;
+		cursor: not-allowed;
+	}
+	td:after {
+		bottom: 0;
+		color: white;
+		font-size: 90px;
+		left: 0;
+		line-height: 110px;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		text-align: center;
+		top: 0;
+	}
+
+	td.p0:after { font-size: 75px }
+	td.hlose0,
+	td.hlose1,
+	td.hlose2,
+	td.hlose3,
+	td.hnowin { background-color: #cd5c5c }
+	td.hwin0,
+	td.hwin1,
+	td.hwin2,
+	td.hwin3,
+	td.hnolose { background-color: #20b2aa }
+	td.hnowin,
+	td.hnolose { opacity: 0.5 }
+	td.hlose3:after { content: "-" }
+	td.hlose2:after { content: "-+" }
+	td.hlose1:after { content: "-T" }
+	/* td.hlose0:after { content: "-T+" } */
+	td.hnowin:after { content: "-?" }
+	td.hnolose:after { content: "+?" }
+	/* td.hwin0:after { content: "+T-" } */
+	td.hwin1:after { content: "+T" }
+	td.hwin2:after { content: "+-" }
+	td.hwin3:after { content: "+" }
+	td.htie { background-color: #ffa500 }
+	td.htie:after { content: "T" }
+
+	td.p1,
+	&.n1 td.p0:hover { background-color: #9acd32 }
+	td.p2,
+	&.n2 td.p0:hover { background-color: #ff7f50 }
+
+	td.p1,
+	td.p2 { cursor: auto }
+
+	&.n1 td.p0:hover,
+	&.n2 td.p0:hover { opacity: 0.5 }
+
+	td.p1:after,
+	&.n1 td.p0:hover:after { content: "X" }
+	td.p2:after,
+	&.n2 td.p0:hover:after { content: "O" }
 }
-#t3table.w1 { background-color: #008000 }
-#t3table.w2 { background-color: #ffa07a }
-#t3table.w3 { background-color: #a9a9a9 }
-
-/* cells */
-#t3table td {
-	background-color: #98afc7;
-	border-radius: 7px;
-	cursor: pointer;
-	height: 110px;
-	margin: 10px;
-	position: relative;
-	width: 110px;
-}
-#t3table.w td {
-	background-color: #696969;
-	cursor: not-allowed;
-}
-#t3table td:after {
-	bottom: 0;
-	color: white;
-	font-size: 90px;
-	left: 0;
-	line-height: 110px;
-	pointer-events: none;
-	position: absolute;
-	right: 0;
-	text-align: center;
-	top: 0;
-}
-
-#t3table td.p0:after { font-size: 75px }
-#t3table td.hlose0,
-#t3table td.hlose1,
-#t3table td.hlose2,
-#t3table td.hlose3,
-#t3table td.hnowin { background-color: #cd5c5c }
-#t3table td.hwin0,
-#t3table td.hwin1,
-#t3table td.hwin2,
-#t3table td.hwin3,
-#t3table td.hnolose { background-color: #20b2aa }
-#t3table td.hnowin,
-#t3table td.hnolose { opacity: 0.5 }
-#t3table td.hlose3:after { content: "-" }
-#t3table td.hlose2:after { content: "-+" }
-#t3table td.hlose1:after { content: "-T" }
-/* #t3table td.hlose0:after { content: "-T+" } */
-#t3table td.hnowin:after { content: "-?" }
-#t3table td.hnolose:after { content: "+?" }
-/* #t3table td.hwin0:after { content: "+T-" } */
-#t3table td.hwin1:after { content: "+T" }
-#t3table td.hwin2:after { content: "+-" }
-#t3table td.hwin3:after { content: "+" }
-#t3table td.htie { background-color: #ffa500 }
-#t3table td.htie:after { content: "T" }
-
-#t3table td.p1,
-#t3table.n1 td.p0:hover { background-color: #9acd32 }
-#t3table td.p2,
-#t3table.n2 td.p0:hover { background-color: #ff7f50 }
-
-#t3table td.p1,
-#t3table td.p2 { cursor: auto }
-
-#t3table.n1 td.p0:hover,
-#t3table.n2 td.p0:hover { opacity: 0.5 }
-
-#t3table td.p1:after,
-#t3table.n1 td.p0:hover:after { content: "X" }
-#t3table td.p2:after,
-#t3table.n2 td.p0:hover:after { content: "O" }

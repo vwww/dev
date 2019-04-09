@@ -1,3 +1,4 @@
+import { $idA } from './util'
 import * as theme from './victorz/theme'
 
 // "Uptime" Counter function
@@ -10,14 +11,16 @@ function uptick (): void {
   $('#uptime-years-hex').text(hexTime.slice(0, 7 + hexTime.indexOf('.') + 1))
 }
 
-function init(): void {
+function init (): void {
   // Initialization scripts
   $(function () {
+    const now = new Date()
+
     // Theme Switcher
     theme.init()
 
     // Copyright year (update only once)
-    $('#copyyear').text((new Date()).getFullYear())
+    $('#copyyear').text(now.getFullYear())
 
     // "Uptime" counter
     // Interval for decimal = 315.36ms = 0.00000001 years
@@ -55,13 +58,18 @@ function init(): void {
     console.log("%cThere isn't much point to use this console on my site,", 'font-family:helvetica; font-size:20px')
     console.log("unless you're trying to debug something.")
 
+    // April Fools
+    if (now.getMonth() === 4 && now.getDate() === 1) {
+      $idA('april-fools-joke-menu').classList.remove('d-none')
+    }
+
     // trollDebuggers()
   })
 }
 
 /*
 function trollDebuggers (): void {
-  var ls = window.localStorage
+  const ls = window.localStorage
   if (!ls) return
 
   if (ls.getItem('debuggerTestDone')) return
@@ -70,9 +78,9 @@ function trollDebuggers (): void {
   if (ls.getItem('debuggerTest') !== '1337') return
   ls.removeItem('debuggerTest')
 
-  var lastTime = 0
-  var testInterval = setInterval(function () {
-    var now = +new Date()
+  let lastTime = 0
+  const testInterval = setInterval(function () {
+    const now = Date.now()
     if (lastTime && lastTime < now - 200) {
       ls.setItem('debuggerTestDone', '1')
       document.write('<h1>debugger detected</h1><h2>reload to remove</h2><iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/b1WWpKEPdT4?autoplay=1" frameborder="0" allowfullscreen></iframe>')

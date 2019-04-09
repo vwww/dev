@@ -1,4 +1,6 @@
-canonical: http://victorz.ca
+canonical: https://victorz.ca
+edit_prefix: https://github.com/vwww/dev/blob/master/docs/
+
 timezone: America/Edmonton
 #redcarpet
 

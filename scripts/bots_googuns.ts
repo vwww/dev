@@ -1,6 +1,7 @@
 import * as jsSHA from 'jsSHA'
+import { $idA, $ready } from './util'
 
-document.addEventListener('DOMContentLoaded', function () {
+$ready(function () {
   // Parse v2
   function parse2d0 (msg: string, len: number): void {
     const parts = [
@@ -28,12 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update td text
     for (let i = 0; i < 6; ++i) {
-      $id('f2_' + i).innerText = parts[i]
+      $idA('f2_' + i).innerText = parts[i]
     }
-    $id('d2_c0').innerText = C0 || repStr(16, '?')
+    $idA('d2_c0').innerText = C0 || repStr(16, '?')
 
-    $id('d2_time').innerText = UT
-    $id('d2_time_parsed').innerText = UTD ? UTD.toLocaleString() : 'Unknown'
+    $idA('d2_time').innerText = UT
+    $idA('d2_time_parsed').innerText = UTD ? UTD.toLocaleString() : 'Unknown'
 
     // Update td class
     const V1 = parts[1] === '20'
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update label
     const VA = V1 && V3 && V5 && VT
-    $id('f2_valid').className = (VA ? 'badge badge-success' : 'd-none')
+    $idA('f2_valid').className = (VA ? 'badge badge-success' : 'd-none')
   }
 
   // Parse v1.1
@@ -70,12 +71,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update td text
     for (let i = 0; i < 7; ++i) {
-      $id('f1.1_' + i).innerText = parts[i]
+      $idA('f1.1_' + i).innerText = parts[i]
     }
-    $id('d1.1_c0').innerText = C0 || repStr(64, '?')
-    $id('d1.1_c1').innerText = C1 || repStr(40, '?')
-    $id('d1.1_time').innerText = UT || repStr(16, '?')
-    $id('d1.1_time_parsed').innerText = UTD ? UTD.toLocaleString() : 'Unknown'
+    $idA('d1.1_c0').innerText = C0 || repStr(64, '?')
+    $idA('d1.1_c1').innerText = C1 || repStr(40, '?')
+    $idA('d1.1_time').innerText = UT || repStr(16, '?')
+    $idA('d1.1_time_parsed').innerText = UTD ? UTD.toLocaleString() : 'Unknown'
 
     // Update td class
     const V1 = !!C1 && parts[1] === xorHexStr(C1.slice(0, 2), 'FF')
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update label
     const VA = V1 && V2 && V4 && V6 && VT
-    $id('f1.1_valid').className = (VA ? 'badge badge-success' : 'd-none')
+    $idA('f1.1_valid').className = (VA ? 'badge badge-success' : 'd-none')
   }
 
   // Parse v1
@@ -128,13 +129,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update td text
     for (let i = 0; i < 8; ++i) {
-      $id('f1_' + i).innerText = parts[i]
+      $idA('f1_' + i).innerText = parts[i]
     }
-    $id('d1_c1').innerText = C1 || repStr(40, '?')
-    $id('d1_c2').innerText = C2 || repStr(64, '?')
-    $id('d1_abc').innerText = ABC || repStr(10, '?')
-    $id('d1_time').innerText = UT || repStr(16, '?')
-    $id('d1_time_parsed').innerText = UTD ? UTD.toLocaleString() : 'Unknown'
+    $idA('d1_c1').innerText = C1 || repStr(40, '?')
+    $idA('d1_c2').innerText = C2 || repStr(64, '?')
+    $idA('d1_abc').innerText = ABC || repStr(10, '?')
+    $idA('d1_time').innerText = UT || repStr(16, '?')
+    $idA('d1_time_parsed').innerText = UTD ? UTD.toLocaleString() : 'Unknown'
 
     // Update td class
     const V1 = !!C1 && parts[1] === C1.slice(0, 20)
@@ -150,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update label
     const VA = V1 && V4 && V5 && V7 && VT
-    $id('f1_valid').className = (VA ? 'badge badge-success' : 'd-none')
+    $idA('f1_valid').className = (VA ? 'badge badge-success' : 'd-none')
   }
 
   function parse2 (msg: string): void {
@@ -176,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Listen to changes
-  const $msg = $id('msg') as HTMLTextAreaElement
+  const $msg = $idA<HTMLTextAreaElement>('msg')
   $msg.onchange = function () {
     // Sanitize message
     let msg = $msg.value.toLowerCase().replace(/[^0-9a-f]+/g, '')
@@ -193,9 +194,8 @@ document.addEventListener('DOMContentLoaded', function () {
   parse('')
 
   // Helper functions
-  function $id (x: string): HTMLElement { return document.getElementById(x)! }
   function updateValid (id: string, ok: boolean): void {
-    $id(id).className = (ok ? 'table-success' : 'table-danger')
+    $idA(id).className = (ok ? 'table-success' : 'table-danger')
   }
   function includes (haystack: string, needle: string): boolean { return haystack.indexOf(needle) !== -1 }
   function sha (type: string | number, inHex: string): string {

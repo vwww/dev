@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg viewBox="0.00 0.00 1829.97 568.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g class="graph" transform="scale(1) translate(4 564.8)">
+<title>G</title>
+<polygon points="-4 4 -4 -564.8 1826 -564.8 1826 4" fill="#fff" stroke="transparent"/>
+<g class="cluster">
+<title>cluster_servers</title>
+<polygon points="833.65 -8 833.65 -84.8 1336.6 -84.8 1336.6 -8" fill="none" stroke="#000"/>
+<text x="1085.1482" y="-68.2" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">Servers</text>
+</g>
+<g class="node">
+<title>root</title>
+<ellipse cx="1108.6" cy="-542.8" rx="27" ry="18" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<text x="1108.6482" y="-538.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">.</text>
+</g>
+<g class="node">
+<title>ca</title>
+<ellipse cx="1108.6" cy="-470.8" rx="27" ry="18" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<text x="1108.6482" y="-466.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">ca</text>
+</g>
+<g class="edge">
+<title>root-&gt;ca</title>
+<path d="m1108.6-524.63v35.418" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz</title>
+<a xlink:href="https://victorz.ca" xlink:title="victorz">
+<ellipse cx="1108.6" cy="-398.8" rx="37.699" ry="18" fill="none" stroke="#000"/>
+<text x="1108.6482" y="-394.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">victorz</text>
+</a>
+</g>
+<g class="edge">
+<title>ca-&gt;ca_victorz</title>
+<path d="m1108.6-452.63v35.418" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_</title>
+<ellipse cx="892.65" cy="-326.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="892.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">*</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_</title>
+<path d="m1074.9-390.53c-36.617 9.3938-96.501 26.008-146.24 45.733-4.9366 1.9578-10.115 4.3395-14.956 6.721" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz__dmarc</title>
+<ellipse cx="239.65" cy="-326.8" rx="39.988" ry="18" fill="none" stroke="#000"/>
+<text x="239.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">_dmarc</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz__dmarc</title>
+<path d="m1070.8-397.74c-140.15 4.1357-629.71 20.62-782.18 52.944-6.472 1.372-13.237 3.4252-19.602 5.6595" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz__domainkey</title>
+<ellipse cx="99.648" cy="-326.8" rx="58.554" ry="18" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<text x="99.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">_domainkey</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz__domainkey</title>
+<path d="m1070.4-398.42c-126.13 1.6611-540.49 10.287-879.79 53.617-14.218 1.8157-29.548 4.5445-43.5 7.332" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_acr</title>
+<ellipse cx="666.65" cy="-326.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="666.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">acr</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_acr</title>
+<path d="m1072.2-393.49c-63.131 9.2885-196.93 29.342-309.58 48.689-23.732 4.0758-50.673 9.1682-69.962 12.895" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_cdn</title>
+<ellipse cx="1108.6" cy="-326.8" rx="27" ry="18" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<text x="1108.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">cdn</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_cdn</title>
+<path d="m1108.6-380.63v35.418" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_d</title>
+<ellipse cx="943.65" cy="-182.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="943.6482" y="-178.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">d</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_d</title>
+<path d="m1093.2-382.32c-21.731 23.476-62.036 68.283-92.522 109.52-18.031 24.391-36.353 54.467-47.193 72.934" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_d4</title>
+<ellipse cx="1296.6" cy="-110.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="1296.6482" y="-106.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">d4</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_d4</title>
+<path d="m1145.8-395.14c56.669 6.4332 160.55 21.874 182.88 50.345 51.618 65.82 0.6495 175.33-22.186 217.11" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_d6</title>
+<ellipse cx="1381.6" cy="-110.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="1381.6482" y="-106.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">d6</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_d6</title>
+<path d="m1146-395.54c60.969 6.1149 177.82 21.411 205.61 50.737 57.338 60.492 42.475 172.68 33.967 216.14" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_games</title>
+<ellipse cx="333.65" cy="-326.8" rx="35.914" ry="18" fill="none" stroke="#000"/>
+<text x="333.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">games</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_games</title>
+<path d="m1070.5-397.52c-130.41 4.6176-558.17 21.809-691.9 52.721-6.0666 1.4024-12.386 3.498-18.305 5.769" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_github</title>
+<ellipse cx="1192.6" cy="-182.8" rx="35.937" ry="18" fill="none" stroke="#000"/>
+<text x="1192.6482" y="-178.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">github</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_github</title>
+<path d="m1127.6-382.88c27.811 20.944 77.69 60.924 98.052 110.08 6.123 14.782 5.1926 20.866 0 36-4.7024 13.705-14.462 26.612-22.416 36.368" fill="none" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_github</title>
+<path d="m1135.3-385.85c33.074 19.979 86.948 61.459 108.32 113.05 6.123 14.782 5.1926 20.866 0 36-4.1556 12.112-12.26 23.599-20.923 32.84" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="1225 -201.27 1215.4 -196.76 1220.1 -206.26" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_go</title>
+<ellipse cx="414.65" cy="-326.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="414.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">go</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_go</title>
+<path d="m1070.8-397.31c-121 5.0116-497.29 22.658-615.14 52.512-6.4808 1.6417-13.234 4.2117-19.346 6.9011" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_ilf</title>
+<ellipse cx="964.65" cy="-326.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="964.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">ilf</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_ilf</title>
+<path d="m1082.2-385.59c-27.444 13.722-69.899 34.949-95.585 47.793" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_re</title>
+<ellipse cx="1292.6" cy="-326.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="1292.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">re</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_re</title>
+<path d="m1139-387.88c29.07 10.597 74.114 27.341 112.69 43.08 6.0462 2.4668 12.539 5.2527 18.534 7.8828" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_seizure</title>
+<ellipse cx="809.65" cy="-326.8" rx="38.259" ry="18" fill="none" stroke="#000"/>
+<text x="809.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">seizure</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_seizure</title>
+<path d="m1072.7-392.91c-49.28 8.4901-140.38 25.648-216.09 48.11-5.8637 1.7397-12.035 3.8739-17.907 6.0566" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_sendmail</title>
+<ellipse cx="1459.6" cy="-326.8" rx="45.804" ry="18" fill="none" stroke="#000"/>
+<text x="1459.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">sendmail</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_sendmail</title>
+<path d="m1144.8-393.39c55.268 8.5752 164 26.588 254.9 48.587 7.9276 1.9188 16.36 4.2582 24.321 6.6071" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_vm</title>
+<ellipse cx="489.65" cy="-110.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="489.6482" y="-106.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">vm</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_vm</title>
+<path d="m1070.7-398.28c-131.44 2.7267-563.08 19.722-637.03 125.48-33.081 47.312 16.136 115.95 41.916 146.42" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_soa__</title>
+<polygon points="1577.6 -344.8 1523.6 -344.8 1523.6 -308.8 1577.6 -308.8" fill="none" stroke="#000"/>
+<text x="1550.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">SOA</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_soa__</title>
+<path d="m1146.5-397.92c71.135 2.5367 229.34 12.357 367.16 53.379" fill="none" stroke="#000"/>
+<polygon points="1515 -347.79 1523.5 -341.53 1512.9 -341.09" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_txt__</title>
+<polygon points="1769.3 -344.8 1596 -344.8 1596 -308.8 1775.3 -308.8 1775.3 -338.8" fill="none" stroke="#000"/>
+<polyline points="1769.3 -344.8 1769.3 -338.8" fill="none" stroke="#000"/>
+<polyline points="1775.3 -338.8 1769.3 -338.8" fill="none" stroke="#000"/>
+<text x="1685.6482" y="-322.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">TXT: google site verification</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_txt__</title>
+<path d="m1145.9-395.45c79.096 7.2912 269.67 25.84 440.01 50.601" fill="none" stroke="#000"/>
+<polygon points="1586.5 -348.31 1595.8 -343.4 1585.4 -341.39" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_mx__</title>
+<polygon points="1667.6 -122.8 1625.6 -122.8 1625.6 -98.8 1667.6 -98.8 1679.6 -110.8" fill="none" stroke="#000"/>
+<text x="1652.6482" y="-106.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">MX</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_mx__</title>
+<path d="m1146.6-397.27c141.93 5.9181 634.55 28.149 657.05 52.466 63.038 68.126-53.378 165.66-115.56 210.19" fill="none" stroke="#000"/>
+<polygon points="1689.9 -131.59 1679.7 -128.68 1685.9 -137.31" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_spf__</title>
+<polygon points="1664.3 -272.8 1556.9 -272.8 1556.9 -236.8 1670.3 -236.8 1670.3 -266.8" fill="none" stroke="#000"/>
+<polyline points="1664.3 -272.8 1664.3 -266.8" fill="none" stroke="#000"/>
+<polyline points="1670.3 -266.8 1664.3 -266.8" fill="none" stroke="#000"/>
+<text x="1613.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">TXT: SPF record</text>
+</g>
+<g class="edge">
+<title>ca_victorz-&gt;ca_victorz_spf__</title>
+<path d="m1146.5-397.18c139.29 6.1241 616.32 28.758 638.14 52.384 36.994 40.067-41.938 65.538-104.49 78.795" fill="none" stroke="#000"/>
+<polygon points="1680.8 -262.56 1670.3 -263.98 1679.4 -269.42" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_-&gt;ca_victorz_d</title>
+<path d="m898.9-309.14c8.7559 24.723 24.75 69.882 35.055 98.979" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="937.3 -211.2 937.34 -200.6 930.71 -208.86" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz__dmarc_txt__</title>
+<polygon points="304.33 -272.8 168.96 -272.8 168.96 -236.8 310.33 -236.8 310.33 -266.8" fill="none" stroke="#000"/>
+<polyline points="304.33 -272.8 304.33 -266.8" fill="none" stroke="#000"/>
+<polyline points="310.33 -266.8 304.33 -266.8" fill="none" stroke="#000"/>
+<text x="239.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">TXT: DMARC record</text>
+</g>
+<g class="edge">
+<title>ca_victorz__dmarc-&gt;ca_victorz__dmarc_txt__</title>
+<path d="m239.65-308.63v25.415" fill="none" stroke="#000"/>
+<polygon points="243.15 -283.21 239.65 -273.21 236.15 -283.21" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz__domainkey_</title>
+<ellipse cx="75.648" cy="-254.8" rx="75.797" ry="18" fill="none" stroke="#000"/>
+<text x="75.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">[DKIM selector]</text>
+</g>
+<g class="edge">
+<title>ca_victorz__domainkey-&gt;ca_victorz__domainkey_</title>
+<path d="m93.592-308.63c-3.6104 10.831-8.1812 24.544-11.806 35.418" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz__domainkey_txt__</title>
+<polygon points="133.32 -200.8 11.977 -200.8 11.977 -164.8 139.32 -164.8 139.32 -194.8" fill="none" stroke="#000"/>
+<polyline points="133.32 -200.8 133.32 -194.8" fill="none" stroke="#000"/>
+<polyline points="139.32 -194.8 133.32 -194.8" fill="none" stroke="#000"/>
+<text x="75.6482" y="-178.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">TXT: DKIM record</text>
+</g>
+<g class="edge">
+<title>ca_victorz__domainkey_-&gt;ca_victorz__domainkey_txt__</title>
+<path d="m75.648-236.63v25.415" fill="none" stroke="#000"/>
+<polygon points="79.148 -211.21 75.648 -201.21 72.148 -211.21" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_acr_</title>
+<ellipse cx="702.65" cy="-254.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="702.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">*</text>
+</g>
+<g class="edge">
+<title>ca_victorz_acr-&gt;ca_victorz_acr_</title>
+<path d="m675.36-309.37c5.6601 11.32 13.007 26.014 18.651 37.302" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_acr_forum</title>
+<ellipse cx="550.65" cy="-254.8" rx="34.771" ry="18" fill="none" stroke="#000"/>
+<text x="550.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">forum</text>
+</g>
+<g class="edge">
+<title>ca_victorz_acr-&gt;ca_victorz_acr_forum</title>
+<path d="m646.71-314.42c-20.47 12.705-52.263 32.439-73.605 45.686" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_acr_ms</title>
+<ellipse cx="630.65" cy="-254.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="630.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">ms</text>
+</g>
+<g class="edge">
+<title>ca_victorz_acr-&gt;ca_victorz_acr_ms</title>
+<path d="m657.93-309.37c-5.6601 11.32-13.007 26.014-18.651 37.302" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_acr_play</title>
+<ellipse cx="470.65" cy="-254.8" rx="27.829" ry="18" fill="none" stroke="#000"/>
+<text x="470.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">play</text>
+</g>
+<g class="edge">
+<title>ca_victorz_acr-&gt;ca_victorz_acr_play</title>
+<path d="m641.86-319.6c-31.785 9.4968-88.393 27.303-135.21 46.8-4.6445 1.934-9.5242 4.204-14.139 6.468" fill="none" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_acr-&gt;ca_victorz_github</title>
+<path d="m684.12-312.88c26.521 20.33 79.288 57.717 130.53 76.08 60.492 21.68 246.15 41.492 332.7 49.833" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="1147.8 -190.44 1157.4 -186.01 1147.1 -183.47" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_acr_-&gt;ca_victorz_d</title>
+<path d="m724.96-244.28c5.9964 2.6269 12.528 5.3107 18.687 7.4804 56.327 19.842 123.73 36.663 164.14 46.033" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="908.73 -194.14 917.7 -188.49 907.17 -187.32" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_acr_forum_chat</title>
+<ellipse cx="516.65" cy="-182.8" rx="27.245" ry="18" fill="none" stroke="#000"/>
+<text x="516.6482" y="-178.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">chat</text>
+</g>
+<g class="edge">
+<title>ca_victorz_acr_forum-&gt;ca_victorz_acr_forum_chat</title>
+<path d="m542.24-237c-5.3095 11.244-12.137 25.702-17.405 36.858" fill="none" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_acr_forum-&gt;ca_victorz_vm</title>
+<path d="m555.46-236.96c4.1088 18.858 7.8303 49.016-2.8146 72.16-6.9449 15.1-20.426 27.557-33.142 36.687" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="521.17 -125.01 510.92 -122.33 517.26 -130.82" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_acr_forum_chat-&gt;ca_victorz_vm</title>
+<path d="m509.97-165c-3.0735 8.1958-6.7875 18.1-10.195 27.188" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="503.03 -136.53 496.25 -128.39 496.48 -138.99" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_acr_ms-&gt;ca_victorz_vm</title>
+<path d="m621.79-237.42c-10.413 19.282-29.097 50.581-51.14 72.624-14.885 14.885-34.46 28.069-50.638 37.683" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="521.35 -123.85 510.94 -121.88 517.85 -129.91" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_acr_play-&gt;ca_victorz_vm</title>
+<path d="m472.39-236.49c1.7994 18.211 4.8247 46.933 8.2609 71.692 1.1759 8.4727 2.6374 17.662 4.0383 26.017" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="488.16 -139.21 486.4 -128.76 481.26 -138.03" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_cdn_games</title>
+<ellipse cx="1189.6" cy="-254.8" rx="35.914" ry="18" fill="none" stroke="#000"/>
+<text x="1189.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">games</text>
+</g>
+<g class="edge">
+<title>ca_victorz_cdn-&gt;ca_victorz_cdn_games</title>
+<path d="m1125-312.23c13.591 12.081 32.877 29.224 46.836 41.632" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_cdn_p</title>
+<ellipse cx="1108.6" cy="-254.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="1108.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">p</text>
+</g>
+<g class="edge">
+<title>ca_victorz_cdn-&gt;ca_victorz_cdn_p</title>
+<path d="m1108.6-308.63v35.418" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_cdn_s</title>
+<ellipse cx="1036.6" cy="-254.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="1036.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">s</text>
+</g>
+<g class="edge">
+<title>ca_victorz_cdn-&gt;ca_victorz_cdn_s</title>
+<path d="m1093.4-311.53c-12.219 12.219-29.27 29.27-41.483 41.483" fill="none" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_cdn_games-&gt;ca_victorz_github</title>
+<path d="m1190.4-236.63c0.3208 7.7004 0.7023 16.857 1.0589 25.415" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="1195 -211.35 1191.9 -201.21 1188 -211.06" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_cdn_p-&gt;ca_victorz_github</title>
+<path d="m1125.2-240.58c11.831 10.141 27.969 23.974 41.488 35.562" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="1169 -207.66 1174.3 -198.5 1164.5 -202.35" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_cdn_s-&gt;ca_victorz_d</title>
+<path d="m1018.7-240.92c-13.895 10.758-33.347 25.817-48.968 37.91" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="971.57 -199.99 961.52 -196.64 967.29 -205.53" stroke="#000"/>
+</g>
+<g class="node">
+<title>google</title>
+<ellipse cx="1289.6" cy="-34" rx="39.427" ry="18" fill="none" stroke="#000"/>
+<text x="1289.6482" y="-29.8" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">Google</text>
+</g>
+<g class="edge">
+<title>ca_victorz_d-&gt;google</title>
+<path d="m970.23-178.6c54.492 9.5359 181.3 36.584 271.41 93.803 10.775 6.8414 20.799 16.637 28.87 25.805" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<polygon points="1273.3 -61.098 1277.1 -51.191 1268 -56.594" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_d4-&gt;google</title>
+<path d="m1295-92.6c-0.8281 9.0863-1.8486 20.282-2.7749 30.445" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<polygon points="1295.7 -61.711 1291.3 -52.07 1288.7 -62.346" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_d6-&gt;google</title>
+<path d="m1364.8-96.714c-13.517 11.284-32.735 27.326-48.349 40.361" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<polygon points="1318.6 -53.574 1308.6 -49.852 1314.1 -58.947" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_games-&gt;ca_victorz_vm</title>
+<path d="m335.01-308.6c3.3195 32.453 14.425 100.92 50.633 143.8 17.951 21.258 46.403 35.214 69.014 43.604" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="455.98 -124.44 464.26 -117.83 453.67 -117.84" stroke="#000"/>
+</g>
+<g class="node">
+<title>github</title>
+<ellipse cx="1192.6" cy="-34" rx="40.007" ry="18" fill="none" stroke="#000"/>
+<text x="1192.6482" y="-29.8" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">GitHub</text>
+</g>
+<g class="edge">
+<title>ca_victorz_github-&gt;github</title>
+<path d="m1192.6-164.55v101.88" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<polygon points="1196.1 -62.395 1192.6 -52.395 1189.1 -62.395" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_go-&gt;ca_victorz_vm</title>
+<path d="m407.09-309.37c-12.297 31.232-32.753 97.829-6.4417 144.57 11.657 20.708 34.818 34.389 54.59 42.799" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="456.6 -125.23 464.61 -118.29 454.02 -118.72" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_ilf-&gt;ca_victorz_d</title>
+<path d="m962.03-308.85c-3.584 24.576-10.056 68.953-14.285 97.956" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="951.2 -210.36 946.3 -200.97 944.28 -211.37" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_re-&gt;ca_victorz_github</title>
+<path d="m1295.9-308.71c2.4668 19.339 3.4411 50.154-10.237 71.915-11.985 19.066-33.322 32.154-52.538 40.664" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="1234.2 -192.79 1223.6 -192.21 1231.5 -199.26" stroke="#000"/>
+</g>
+<g class="node">
+<title>ca_victorz_seizure_</title>
+<ellipse cx="850.65" cy="-254.8" rx="27" ry="18" fill="none" stroke="#000"/>
+<text x="850.6482" y="-250.6" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">*</text>
+</g>
+<g class="edge">
+<title>ca_victorz_seizure-&gt;ca_victorz_seizure_</title>
+<path d="m819.57-309.37c6.4462 11.32 14.814 26.014 21.242 37.302" fill="none" stroke="#000"/>
+</g>
+<g class="node">
+<title>seizure</title>
+<ellipse cx="1071.6" cy="-34" rx="62.514" ry="18" fill="none" stroke="#000"/>
+<text x="1071.6482" y="-29.8" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">seizedservers</text>
+</g>
+<g class="edge">
+<title>ca_victorz_seizure-&gt;seizure</title>
+<path d="m806.49-308.76c-2.4152 19.026-3.6035 49.323 8.1555 71.959 12.945 24.919 159.06 132.22 225.03 179.86" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<polygon points="1042 -59.582 1048.1 -50.894 1037.9 -53.904" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_seizure_-&gt;ca_victorz_d</title>
+<path d="m868.58-240.92c13.895 10.758 33.347 25.817 48.968 37.91" fill="none" stroke="#000" stroke-dasharray="5,2"/>
+<polygon points="920.01 -205.53 925.77 -196.64 915.72 -199.99" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_sendmail-&gt;ca_victorz_spf__</title>
+<path d="m1489.3-312.92c21.623 10.11 51.373 24.018 76.347 35.695" fill="none" stroke="#000"/>
+<polygon points="1567.4 -280.28 1575 -272.87 1564.5 -273.93" stroke="#000"/>
+</g>
+<g class="node">
+<title>vm</title>
+<ellipse cx="916.65" cy="-34" rx="74.676" ry="18" fill="none" stroke="#000"/>
+<text x="916.6482" y="-29.8" fill="#000000" font-family="Times,serif" font-size="14" text-anchor="middle">Virtual Machine</text>
+</g>
+<g class="edge">
+<title>ca_victorz_vm-&gt;vm</title>
+<path d="m515.72-106.11c64.706 11.638 234.4 42.159 331.01 59.534" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<polygon points="847.47 -49.998 856.7 -44.783 846.23 -43.108" stroke="#000"/>
+</g>
+<g class="edge">
+<title>ca_victorz_mx__-&gt;google</title>
+<path d="m1625.4-105.03c-61.857 13.087-213.31 45.13-289.85 61.323" fill="none" stroke="#000" stroke-dasharray="1,5"/>
+<polygon points="1336.2 -40.268 1325.7 -41.623 1334.7 -47.117" stroke="#000"/>
+</g>
+</g>
+</svg>

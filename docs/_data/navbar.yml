@@ -1,0 +1,194 @@
+- name: Home
+  href: ""
+- name: Games
+  prefix: game
+  dropdown:
+    - header: Browser
+    - name: Arcade
+      date_added: 2008-09?
+      href_external: https://games.victorz.ca
+    - name: Tic-Tac-Toe Analyzer
+      href: game/t3
+    - name: Fill Solver
+      href: game/fill
+    - name: Logic Grid Puzzles
+      href: game/logic
+      disabled: true
+      badges:
+        - [secondary, TODO]
+    - name: Balanced Tetris
+      href: game/tetris
+      disabled: true
+      badges:
+        - [secondary, TODO]
+    - divider: true
+    - header: Browser (Multiplayer)
+    - name: Slime Volleyball
+      href: game/slime
+      badges:
+        - [secondary, Down]
+        #- [success, NEW]
+    - name: Duel
+      href: game/duel
+      badges:
+        - [secondary, Down]
+        #- [primary, Beta]
+        #- [success, NEW]
+    - name: Actionless
+      href: game/actionless
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - name: Morra
+      href: game/morra
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - name: Rock Paper Scissors
+      href: game/rps
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - name: Blackjack
+      href: game/blackjack
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - name: Cheat
+      href: game/cheat
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - name: President
+      href: game/president
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - name: Tic-Tac-Toe?
+      href: game/t3
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - name: Ultimate Tic-Tac-Toe
+      href: game/ut3
+      disabled: true
+      badges:
+        - [danger, Planning]
+    - divider: true
+    - header: Downloadable
+    - name: AssaultCube Reloaded
+      date_added: 2010-12-24
+      href_external: https://acr.victorz.ca
+      badges:
+        - [primary, Beta]
+    - name: Real Eclipse
+      href_external: https://re.victorz.ca
+      badges:
+        - [danger, Planning]
+# - name: Code
+#   href: code
+#   badges:
+#     - [secondary, TODO]
+- name: Tools
+  prefix: tools
+  dropdown:
+    - name: IP Address
+      href: tools/ip
+    - name: Ping
+      href: tools/ping
+    - divider: true
+    - name: Base Converter
+      href: tools/base
+    - name: GCD/LCM Calculator
+      href: tools/gcd
+    - name: Unit Converter
+      href: tools/unit
+    - name: Letter Counter
+      href: tools/letter_count
+    - name: Encryption Tools
+      href: tools/encrypt
+- name: Misc
+  prefix: misc
+  dropdown:
+    - name: List
+      href: misc/
+      badges:
+        - [secondary, TODO]
+    - divider: true
+    - name: Downloads
+      href: misc/dl
+      badges:
+        - [secondary, TODO]
+    - name: Path
+      href: misc/path
+      badges:
+        - [secondary, TODO]
+    - divider: true
+    - name: "XKCD #1110 Map"
+      href: xkcd_map/
+      badges:
+        - [primary, Fullscreen]    
+    - name: ggroups.exe
+      href: misc/ggroups
+    - divider: true
+    - name: 3D
+      href: misc/3d/
+    - name: Ads
+      href: misc/ads
+    - name: Music
+      href: misc/music
+    - name: Random Video
+      href: misc/rndvid
+    - name: Redirect Loop (Endless)
+      href_external: https://r.victorz.ca
+    - name: Fast Infinite Downloads
+      href: misc/streamdl
+    - name: Seizure Generator
+      href: misc/seizure/
+      badges:
+        - [secondary, TODO]
+    - name: Seizure Domain
+      date_added: 2011-03-28
+      href_external: http://seizure.victorz.ca
+    - divider: true
+    - header: Jokes
+    - name: IQ Test
+      href: misc/jokes/iq
+      badges:
+        - [secondary, TODO]
+    # - name: Coding Contest
+    #   href: misc/coding/
+    - name: Old Jokes
+      href: misc/jokes/
+- name: Bots
+  prefix: bots
+  dropdown:
+    - name: List
+      href: bots/
+      badges:
+        - [secondary, TODO]
+    - divider: true
+    - name: Facebook Poke
+      href: bots/poke
+    - divider: true
+    - header: Twitter
+    - name: Grammar
+      href: bots/grammar
+    - name: Random Words
+      href: bots/random
+      badges:
+        - [warning, Local]
+    - name: Random Words
+      href_external: https://twitter.com/recentideas
+    - name: Prose
+      href_external: https://twitter.com/prosegen
+      badges:
+        - [secondary, TODO]
+    - name: GooGuns Lulz
+      href: bots/googuns
+    - name: Bing Tomorrow
+      href_external: https://twitter.com/BingTomorrow
+    - name: Spelling
+      href_external: https://twitter.com/Bot_Dictionary
+      badges:
+        - [secondary, Down]

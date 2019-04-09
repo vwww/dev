@@ -5,7 +5,7 @@ declare const firebase: typeof import('firebase')
 // Handle updated poke data
 function updateData (data: Record<string, PokeInfo>) {
   // Remove timeago
-  // $('.poke-time').timeago('dispose')
+  $('.poke-time').timeago('dispose')
 
   // Map pokes to array
   const pokes: TaggedPokeInfo[] = []

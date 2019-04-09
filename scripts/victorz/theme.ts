@@ -3,7 +3,7 @@ import { supportsLocalStorage } from './storage'
 export function init (): void {
   $('.theme-switcher').click(function (event) {
     event.preventDefault()
-    var theme = $(this).data('theme')
+    const theme = $(this).data('theme')
     set(theme)
     if (supportsLocalStorage()) localStorage.theme = theme
   })

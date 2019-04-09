@@ -1,3 +1,14 @@
-game/slime: highest priority to fix?
-misc/3d: clean up media
-misc/oxidane: (port to TS)
+game/slime: fix multiplayer
+other multiplayer games
+
+misc/coding: troll contest
+game/tetris: build
+tools/freq: build
+game/fill: test
+
+game/t3: refactor
+bots/googuns: refactor
+
+misc/3d: clean up media, add breadcrumbs
+misc/oxidane: (port to TS?)
+misc/seizure

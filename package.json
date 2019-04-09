@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"webpack -w\" \"sass -w styles:docs/assets/dist --style compressed --sourcemap=none --unix-newlines\" \"cd docs && jekyll s\"",
-    "build": "webpack && sass --update styles:docs/assets/dist --style compressed --sourcemap=none --unix-newlines && cd docs && jekyll b"
+    "build": "webpack && sass --update styles:docs/assets/dist --style compressed --sourcemap=none --unix-newlines && cd docs && jekyll b",
+    "lint": "tslint -c tslint.json 'scripts/**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -19,25 +20,30 @@
   },
   "homepage": "https://github.com/theonlypwner/www_dev#readme",
   "devDependencies": {
-    "concurrently": "^4.1.0",
-    "ts-loader": "^5.3.3",
-    "typescript": "^3.3.3333",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
-  "dependencies": {
-    "@types/jquery": "^3.3.29",
+    "@types/bootstrap": "^4.3.1",
+    "@types/jquery": "^3.3.31",
     "@types/jquery.timeago": "^1.0.29",
     "@types/jssha": "^2.0.0",
-    "@types/leaflet": "^1.4.3",
+    "@types/leaflet": "^1.5.0",
     "@types/packery": "^1.4.31",
-    "@types/plotly.js": "^1.44.0",
+    "@types/plotly.js": "^1.44.10",
+    "concurrently": "^4.1.1",
+    "svelte-loader": "^2.13.6",
+    "ts-loader": "^6.0.4",
+    "tslint": "^5.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.5.3",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
     "bootstrap": "^4.3.1",
-    "firebase": "^5.8.5",
-    "jquery": "^3.3.1",
+    "firebase": "^6.3.5",
+    "jquery": "^3.4.1",
     "jssha": "^2.3.1",
-    "leaflet": "^1.4.0",
+    "leaflet": "^1.5.1",
     "packery": "^2.1.2",
-    "popper.js": "^1.14.7"
+    "popper.js": "^1.15.0",
+    "svelte": "^3.7.1"
   }
 }

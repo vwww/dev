@@ -1,0 +1,40 @@
+---
+title: GCD/LCM Calculator
+date: "2010-11-28 15:30:38 -0700"
+mdate: "2019-06-21 16:23:50 -0600"
+extra_js: tools_gcd
+---
+<p>This is a calculator for the greatest common divisor and least common multiple.</p>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Zero Threshold: </span>
+      </div>
+      <input id="numZero" type="number" class="form-control" value="0.000000001">
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Iteration Limit: </span>
+      </div>
+      <input id="iterLimit" type="number" class="form-control" value="100000">
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Numbers: </span>
+      </div>
+      <input id="nums" type="text" class="form-control" value="0.1337, 0.42">
+      <div class="input-group-append">
+        <span class="input-group-text">(comma-separated)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p id="gcdText"></p>
+<p id="lcmText"></p>

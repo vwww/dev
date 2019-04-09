@@ -1,4 +1,4 @@
-import { $idA, randomArrayItem } from './util'
+import { $idA, $ready, randomArrayItem } from './util'
 
 // User Interface
 const $board = $idA<HTMLTableElement>('t3table')
@@ -37,7 +37,7 @@ function uiMove (row: number, col: number, player: string | number, num: number)
           : canForce ? 'Forcable (' + (canForce === num + 1 ? 'now' : 'on #' + canForce) + ')'
             : canDo ? 'Possible'
               : 'Impossible'
-      $moveTable.rows[num + 1].cells[i].className = 'table-'+ (onlyPossible || canForce ? 'info' : canDo ? 'success' : 'danger')
+      $moveTable.rows[num + 1].cells[i].className = 'table-' + (onlyPossible || canForce ? 'info' : canDo ? 'success' : 'danger')
     }
     const entry = aiMemo[board]
     setWin(2, entry[1] & 1, entry[1] === 1, num & 1 ? -entry[0] : entry[0])
@@ -227,7 +227,8 @@ const enum Winner {
 let board: number
 let mark: number
 let winner: Winner
-let used: number, undoLength: number
+let used: number
+let undoLength: number
 const moveStack = new Array(9)
 
 let playerType: [number, number] = [0, 3]
@@ -272,8 +273,9 @@ function gameMoveBot (botType: Bot): void {
 
 function moveBots (): void {
   // Move bots as needed
-  let botType: number
-  while (gameIsActive() && (botType = playerType[used & 1])) {
+  while (gameIsActive()) {
+    const botType = playerType[used & 1]
+    if (!botType) break
     gameMoveBot([botMoveNice, botMoveRandom, botMoveOptimal][botType - 1])
   }
 }
@@ -299,7 +301,7 @@ function gameUndoMove (): void {
   // Remove winner
   uiWin(winner = 0)
   // Possibly disable undo button
-  uiUndoAllow(--undoLength != 0)
+  uiUndoAllow(--undoLength !== 0)
 }
 
 function gameCanMove (i: Player): boolean { return !(board & (3 << (i << 1))) }
@@ -312,13 +314,13 @@ function gameStart (): void {
 }
 
 // Setup scripts
-document.addEventListener('DOMContentLoaded', function () {
+$ready(function () {
   gameClear()
   setTimeout(function () {
     uiMessage('(Building game tables&hellip; This should take less than a second.)')
-    const start = new Date()
+    const start = Date.now()
     aiBuildTables(0, 1, 0)
-    uiMessage('To build game tables, it took ' + (new Date().getTime() - start.getTime()) + ' ms.')
+    uiMessage('To build game tables, it took ' + (Date.now() - start) + ' ms.')
   }, 1)
 
   // Register event listeners

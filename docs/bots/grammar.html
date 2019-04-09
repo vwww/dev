@@ -1,7 +1,7 @@
 ---
 title: Grammar Bot
 date: "2013-06-15 18:12:00 -0700"
-mdate: "2014-04-21 08:57:00 -0600"
+mdate: "2019-03-25 20:15:00 -0600"
 extra_js_deps: packery.min
 extra_js: packery
 #category: Programming
@@ -34,23 +34,27 @@ extra_js: packery
       <tr>
         <td>Corrections (tweets)</td>
         <td>(<a href="https://twitter.com/_grammar_/with_replies">statuses/user_timeline</a>)</td>
-        <td>or [<a href="https://twitter.com/search?mode=realtime&amp;q=from%3A_grammar_">from:_grammar_</a>] (not recommended)</td>
+        <td>or [<a href="https://twitter.com/search?f=tweets&amp;q=from%3A_grammar_">from:_grammar_</a>] (not recommended)</td>
       </tr>
       <tr>
         <td><mark>Replies</mark></td>
-        <td><mark>[<a href="https://twitter.com/search?mode=realtime&amp;q=to%3A_grammar_">to:_grammar_</a>]</mark></td>
-        <td>or [<a href="https://twitter.com/search?mode=realtime&amp;q=%40_grammar_%20-from%3A_grammar_">@_grammar_ -from:_grammar_</a>] (mentions)</td>
+        <td><mark>[<a href="https://twitter.com/search?f=tweets&amp;q=to%3A_grammar_">to:_grammar_</a>]</mark></td>
+        <td>or [<a href="https://twitter.com/search?f=tweets&amp;q=%40_grammar_+-from%3A_grammar_">@_grammar_ -from:_grammar_</a>] (mentions)</td>
       </tr>
       <tr>
         <td>Mentions without replies</td>
-        <td colspan="2">[ <a href="https://twitter.com/search?mode=realtime&amp;q=%40_grammar_%20-from%3A_grammar_%20-to%3A_grammar_">@_grammar_ -from:_grammar_ -to:_grammar_</a> ]</td>
+        <td colspan="2">[ <a href="https://twitter.com/search?f=tweets&amp;q=%40_grammar_+-from%3A_grammar_+-to%3A_grammar_">@_grammar_ -from:_grammar_ -to:_grammar_</a> ]</td>
       </tr>
       <tr>
         <td colspan="3">This bot used to favorite every reply, but this action has been reversed.</td>
       </tr>
       <tr>
+        <td>Appreciative answers</td>
+        <td colspan="2">[ <a href="https://twitter.com/search?f=tweets&amp;q=to%3A_grammar_+thank+OR+thanks">to:_grammar_ thank OR thanks</a> ]</td>
+      </tr>
+      <tr>
         <td>Raging responses</td>
-        <td colspan="2">[ <a href="https://twitter.com/search?mode=realtime&amp;q=to%3A_grammar_%20fuck">to:_grammar_ fuck</a> ]</td>
+        <td colspan="2">[ <a href="https://twitter.com/search?f=tweets&amp;q=to%3A_grammar_+fuck">to:_grammar_ fuck</a> ]</td>
       </tr>
       <tr>
         <td><mark>Source code</mark></td>
@@ -139,7 +143,7 @@ extra_js: packery
     <div class="card mb-3">
       <div class="card-header"><del>The biography uses poor grammar.</del></div>
       <div class="card-body">
-        <del><blockquote>@victor_zheng, inspired by @StealthMountain, coded me, which am alerting users in whose statuses I detect improper grammar. To publish solecisms abases oneself!</blockquote>
+        <del><blockquote class="blockquote text-right">@victor_zheng, inspired by @StealthMountain, coded me, which am alerting users in whose statuses I detect improper grammar. To publish solecisms abases oneself!</blockquote>
         <p>While it <mark>might have awkward constructions</mark>, it does not have any grammar errors; it is <mark>grammatically valid</mark> and shouldn't've been perceived as incorrect. The 'am' in "me, which am alerting" is simple subject-verb agreement and is also notorious for causing unwarranted criticism.</p>
         <p>Also, here&rsquo;s a nice fact about <mark>the biography: it uses exactly 160 characters, the maximum allowed</mark> by Twitter.</p></del>
 		<p>This issue has been resolved by rewriting the biography for clearer language.</p>
@@ -159,7 +163,7 @@ extra_js: packery
       <div class="card-header">Wasn&rsquo;t this account suspended?</div>
       <div class="card-body">
         It was at one point, so I had to write this to Twitter many many times:
-        <blockquote>
+        <blockquote class="blockquote text-right">
         <p>
           Upon registration, I agreed to the Twitter Terms of Service, Rules, and Privacy Policy.<br>
           My actions do not violate any rules specified those pages. The only prohibited uses of @replies are these two:
@@ -185,7 +189,7 @@ extra_js: packery
         </p>
         </blockquote>
         Their automated system requires me to make a reply before they will consider my request:
-        <blockquote>
+        <blockquote class="blockquote text-right">
           I confirm that the account complies with the Twitter Rules as described in my initial request.
         </blockquote>
       </div>

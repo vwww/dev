@@ -1,6 +1,8 @@
 import { textAsset } from './misc/ggroups_text'
+import { $idA, $ready, shuffle } from './util'
 
-let forumStrings: string[][], forumStringsOrig: string[][]
+let forumStrings: string[][]
+let forumStringsOrig: string[][]
 let allowSecretSystemMessages: boolean = true
 
 forumStringsOrig = textAsset
@@ -78,22 +80,13 @@ function regenerate (): void {
     }
   }
   html += '<hr>' + msgHTML('', 'LEAVING #HACKING', 1) + '<hr>' // "^m7^CzLEAVING #HACKING"
-  document.getElementById('ggroups-main')!.innerHTML = html
+  $idA('ggroups-main').innerHTML = html
 }
 
 function togglePriv (): void {
   allowSecretSystemMessages = !allowSecretSystemMessages
-  document.getElementById('btn-priv')!.className = allowSecretSystemMessages ? 'btn btn-success active' : 'btn btn-warning'
+  $idA('btn-priv').className = allowSecretSystemMessages ? 'btn btn-success active' : 'btn btn-warning'
   regenerate()
-}
-
-function shuffle<T> (a: T[]): void {
-  for (let i = a.length - 1; i; --i) {
-    const j: number = Math.floor(Math.random() * (i + 1))
-    const x: T = a[i]
-    a[i] = a[j]
-    a[j] = x
-  }
 }
 
 function randomize (on?: boolean): void {
@@ -106,9 +99,9 @@ function randomize (on?: boolean): void {
   regenerate()
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('btn-priv')!.addEventListener('click', togglePriv)
-    document.getElementById('btn-order')!.addEventListener('click', () => randomize())
-    document.getElementById('btn-randomize')!.addEventListener('click', () => randomize(true))
-    randomize(true)
+$ready(function () {
+  $idA('btn-priv').addEventListener('click', togglePriv)
+  $idA('btn-order').addEventListener('click', () => randomize())
+  $idA('btn-randomize').addEventListener('click', () => randomize(true))
+  randomize(true)
 })

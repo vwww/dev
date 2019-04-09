@@ -1,6 +1,8 @@
 ---
 title: Slime Volleyball Multiplayer
 date: "2017-05-09 22:33:05 -0600"
+extra_js_deps: PlayerIOClient
+extra_js: game_slime
 ---
 <div class="alert alert-danger" role="alert">The server is down right now.</div>
 
@@ -9,7 +11,7 @@ date: "2017-05-09 22:33:05 -0600"
   Players <mark>alternate service</mark> (in older versions, the winner serves).
 </p>
 
-<p>To move your player, move the <kbd>mouse</kbd>, press the <kbd>touchscreen</kbd>, or press <kbd>WASD</kbd>/<kbd>arrow</kbd> keys.</p>
+<p>To move your player, use the <kbd>mouse</kbd>, <kbd>touchscreen</kbd>, or <kbd>WASD</kbd>/<kbd>arrow</kbd> keys.</p>
 
 <p>
   This project is still under development. These features are planned:
@@ -38,7 +40,7 @@ date: "2017-05-09 22:33:05 -0600"
   </div>
   <div class="col-3 col-sm-2">
     <div class="btn-group btn-group-justified" role="group">
-      <a id="connect" class="btn btn-primary" role="button">Connect</a>
+      <button id="connect" class="btn btn-primary">Connect</button>
     </div>
   </div>
 </div>
@@ -79,8 +81,6 @@ date: "2017-05-09 22:33:05 -0600"
     <canvas id="gameCanvas">
   </div>
 </div>
-
-<script src="slime.src.js"></script>
 
 <style>
 #gameSizer {

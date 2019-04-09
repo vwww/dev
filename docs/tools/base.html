@@ -1,0 +1,42 @@
+---
+title: Base Converter
+date: "2013-02-18 14:11:32 -0700"
+mdate: "2019-06-20 20:35:28 -0600"
+extra_js: tools_base
+---
+<p>This tool converts numbers from one base (radix) to another.</p>
+
+<p>Both bases must be between 2 and 36.</p>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Input: </span>
+      </div>
+      <input id="inNumber" type="text" class="form-control" value="v1337">
+      <div class="input-group-prepend input-group-append">
+        <span class="input-group-text">(base</span>
+      </div>
+      <input id="inBase" type="number" class="form-control" value="36" min="2" max="36" style="max-width: 4em">
+      <div class="input-group-append">
+        <span class="input-group-text">)</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Output: </span>
+        </div>
+      <input id="outNumber" type="text" class="form-control" readonly>
+      <div class="input-group-prepend input-group-append">
+        <span class="input-group-text">(base</span>
+      </div>
+      <input id="outBase" type="number" class="form-control" value="32" min="2" max="36" style="max-width: 4em">
+      <div class="input-group-append">
+        <span class="input-group-text">)</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
-import { TaggedPokeInfo, PokeInfo } from './bots/poke/PokeInfo'
+import { PokeInfo, TaggedPokeInfo } from './bots/poke/PokeInfo'
+import { $idA } from './util'
 import { supportsLocalStorage } from './victorz/storage'
 
 declare const firebase: typeof import('firebase')
@@ -51,18 +52,18 @@ function init (): void {
   function updateLeaderboard (): void {
     if (!data1 || !data2) return
 
-    function entryHTML (entry: TaggedPokeInfo, tie: TieType, rank: number, ranko: number): string {
+    function entryHTML (entry: TaggedPokeInfo, tie: TieType, rank: number, rankOther: number): string {
       const t = new Date(entry.time * 1000)
       return '<li' + (tie > 1 ? ' class="indent">' : '>') +
         '<h1 data-rank="' + rank + (tie ? '" class="tie">' : '">') + formatRank(rank) + '</h1>' +
-        '<h1 class="ranko" data-rank="' + ranko + '">' + formatRank(ranko) + '</h1>' +
+        '<h1 class="ranko" data-rank="' + rankOther + '">' + formatRank(rankOther) + '</h1>' +
         '<img src="https://graph.facebook.com/' + entry.uid + '/picture?width=80&amp;height=80">' +
         '<h2><a href="https://www.facebook.com/' + entry.uid + '">' + entry.name + '</a></h2>' +
         '<h3>' + entry.num.toLocaleString() + '</h3>' +
         '<span title="' + t.toISOString() + '" class="timeago_dynamic">' + t.toString() + '</span></li>'
     }
 
-    // $('.timeago_dynamic').timeago('dispose')
+    $('.timeago_dynamic').timeago('dispose')
 
     const tieBreaker = +$('input[name=leaderboard-tie]:checked').val()!
 
@@ -90,7 +91,7 @@ function init (): void {
       done++
     }
     // $('#leaderboard2').html(buffer)
-    document.getElementById('leaderboard2')!.innerHTML = buffer
+    $idA('leaderboard2').innerHTML = buffer
 
     // Add/restore timeago
     $('.timeago_dynamic').timeago()
@@ -98,13 +99,16 @@ function init (): void {
 
   function computeRanks (): void {
     let rDense = 0
-    let rCompetition = 0, rModified = 0, rFractional = 0
+    let rCompetition = 0
+    let rModified = 0
+    let rFractional = 0
     for (let i = 0; i < data1.length; ++i) {
       const cur = data1[i]
       // check for continued tie
       let tie = 0
-      if (i && cur.num === data1[i - 1].num) tie = 2
-      else {
+      if (i && cur.num === data1[i - 1].num) {
+        tie = 2
+      } else {
         // recompute ranks
         ++rDense
         rCompetition = rModified = i + 1
@@ -157,7 +161,7 @@ function init (): void {
     Plotly.restyle('opponentPlot', {
       x: [xVals, xVals],
       y: [data1.map(x => x.num), data2.map(x => (firstTime - x.time) / 86400)]
-    })
+    }).then().catch()
   }
 
   function updateInfo (pokes: number, ticks: number): void {
@@ -244,12 +248,12 @@ function init (): void {
       { name: 'recent first', type: 'scatter'/*, line: {shape: 'linear'}*/, yaxis: 'y2' }
     ]
     const layout: Partial<Plotly.Layout> = {
-      xaxis: {title: 'rank', type: 'log'},
-      yaxis: {title: 'number of pokes', type: 'log'},
-      yaxis2: {title: 'days before most recent poke', type: 'log', overlaying: 'y', side: 'right'},
+      xaxis: { title: 'rank', type: 'log' },
+      yaxis: { title: 'number of pokes', type: 'log' },
+      yaxis2: { title: 'days before most recent poke', type: 'log', overlaying: 'y', side: 'right' },
       showlegend: false
     }
-    Plotly.newPlot('opponentPlot', data, layout)
+    Plotly.newPlot('opponentPlot', data, layout).then().catch()
   })
 
   // Resize handler

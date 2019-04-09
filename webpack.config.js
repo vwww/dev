@@ -11,9 +11,20 @@ for (let e of [
   'bots_poke_old',
   'bots_random',
   'game_fill',
+  'game_slime',
   'game_t3',
+  'misc_contest',
   'misc_ggroups',
+  'misc_path',
+  'misc_rndvid',
+  'tools_base',
+  'tools_gcd',
+  'tools_ip',
+  'tools_letter_count',
+  'tools_ping',
+  'tools_unit',
   'xkcd_map',
+  'test'
 ]) {
   entry[e] = './scripts/' + e + '.ts'
 }
@@ -26,6 +37,11 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.svelte$/,
+        use: 'svelte-loader',
         exclude: /node_modules/
       }
     ]

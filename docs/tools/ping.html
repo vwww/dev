@@ -1,0 +1,51 @@
+---
+title: Ping
+date: "2019-04-06 10:05:27 -0600"
+mdate: "2019-06-21 22:03:11 -0600"
+extra_js: tools_ping
+---
+<div class="row">
+  <div class="col-12">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Ping URL</span>
+      </div>
+      <input id="pURL" type="url" class="form-control" value="https://google.com" maxlength="20">
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Ping Interval: </span>
+      </div>
+      <input id="numInterval" type="number" class="form-control" placeholder="77ff00" value="1000" min="1" max="10000">
+      <div class="input-group-append">
+        <span class="input-group-text"> ms</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6 col-lg-5">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Max Pings: </span>
+      </div>
+      <input id="maxPing" type="number" class="form-control" placeholder="77ff00" value="100" min="0" max="10000">
+      <div class="input-group-append">
+        <span class="input-group-text"> (0 = unlimited)</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-1">
+    <div class="btn-group btn-group-justified" role="group">
+      <button id="startStop" class="btn btn-primary">Start</button>
+    </div>
+  </div>
+  <div class="col-6">
+    <h3>Ping Stats</h3>
+    <p id="pingStats0">Click Start!</p>
+  </div>
+  <div class="col-6">
+    <h3>Jitter Stats</h3>
+    <p id="pingStats1">Click Start!</p>
+  </div>
+</div>

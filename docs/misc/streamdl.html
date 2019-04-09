@@ -4,7 +4,9 @@ date: "2016-12-26 09:31:23 -0700"
 types: ['gzip', 'zlib']
 ext: ['', '.html', '.js', '.css', '.png', '.mp4', '.txt']
 ---
-<p>These magical files (even though they might have the wrong magic number as their header signatures) can be downloaded at up to 1032&times; your Internet connection speed (CPU and Disk are likely bottlenecks). These files have infinite sizes, so they take infinite time to download.</p>
+<p>At up to 1032&times; your Internet connection speed (CPU and Disk are likely bottlenecks), these magical files can be downloaded quickly (even if they might have the wrong magic number in their header signatures).</p>
+
+<p>These files have infinite sizes, so they take infinite time to download.</p>
 
 <table class="table table-striped table-bordered table-hover">
   <thead>
@@ -20,7 +22,8 @@ ext: ['', '.html', '.js', '.css', '.png', '.mp4', '.txt']
     <tr>
       <td>{{ e }}</td>
       {% for t in page.types %}
-        <td><a href="https://go.victorz.ca/{{ t }}{{ e }}">Download</a></td>
+        <!-- must be HTTP, as this doesn't work over HTTPS with CloudFlare -->
+        <td><a href="http://go.victorz.ca/{{ t }}{{ e }}">Download</a></td>
       {% endfor %}
     </tr>
   {% endfor %}

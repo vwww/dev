@@ -50,30 +50,48 @@
 
       <footer class="footer">
         <div class="container">
-          <p>
+          <div class="mb-3">
           &copy; 2005-<span id="copyyear">{{ site.time | date: "%Y" }}</span> Victor Zheng. All rights reserved.
           {% unless post %}
           {% if page.date %}
-            This page was created <span class="timeago" title="{{ page.date | date_to_xmlschema }}">on {{ page.date | date: site.format_date }} at {{ page.date | date: site.format_time }}</span>.
+            <div class="badge-group mr-2" title="This page was created on {{ page.date | date: site.format_date }} at {{ page.date | date: site.format_time }}">
+              <span class="badge badge-secondary">Created</span>
+              <span class="timeago badge badge-primary" title="{{ page.date | date_to_xmlschema }}"></span>
+            </div>
           {% endif %}
           {% if page.mdate %}
-            This page was modified <span class="timeago" title="{{ page.mdate | date_to_xmlschema }}">on {{ page.mdate | date: site.format_date }} at {{ page.mdate | date: site.format_time }}</span>.
+            <div class="badge-group mr-2" title="This page was modified on {{ page.mdate | date: site.format_date }} at {{ page.mdate | date: site.format_time }}">
+              <span class="badge badge-secondary">Modified</span>
+              <span class="timeago badge badge-primary" title="{{ page.mdate | date_to_xmlschema }}"></span>
+            </div>
           {% endif %}
-        <!-- TODO page_dates | array_to_sentence_string -->
           {% endunless %}
-          </p>
-          <p>
+          </div>
+          <div class="mb-3">
             <script src="//d.victorz.ca/online.js?o=s"></script>
-            <!--<a href="http://victorz.ca"><img src="{{ assets }}a/80-15.png" alt="Victor"/></a>-->
-            This site uses <a href="https://validator.w3.org/check?uri=referer">HTML 5</a> and <a href="https://jigsaw.w3.org/css-validator/check/referer?profile=css3">CSS 3</a>.
-            Running for <strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years, this site was regenerated <span class="timeago" title="{{ site.time | date_to_xmlschema }}">on {{ site.time | date: "%A, %B %d, %Y" }} at {{ site.time | date: site.format_time }}</span>.
-          </p>
+
+            <!--<a href="{{ base }}"><img src="{{ assets }}a/80-15.png" alt="Victor"/></a>-->
+
+            <a href="https://validator.w3.org/check?uri=referer" class="badge badge-primary" title="This site uses HTML5.">HTML5</a>
+
+            <a href="https://jigsaw.w3.org/css-validator/check/referer" class="badge badge-primary" title="This site uses CSS.">CSS</a>
+
+            <div class="badge-group mr-2" title="This site was last regenerated on {{ site.time | date: "%A, %B %d, %Y" }} at {{ site.time | date: site.format_time }}">
+              <span class="badge badge-secondary">Regenerated</span>
+              <span class="timeago badge badge-primary" title="{{ site.time | date_to_xmlschema }}"></span>
+            </div>
+
+            <div class="badge-group mr-2" title="This is how long since my site started to exist.">
+              <span class="badge badge-dark">Age</span>
+              <span class="badge badge-light"><strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
 
     <!-- Scripts -->
-    <script src="{{assets}}js/jquery-3.3.1.min.js"></script>
+    <script src="{{assets}}js/jquery-3.4.1.min.js"></script>
     <script src="{{assets}}bootstrap/bootstrap.min.js"></script>
     <script src="{{assets}}js/jquery.timeago.js"></script>
     {% for script in page.extra_js_deps %}
@@ -83,5 +101,6 @@
     {% for script in page.extra_js %}
     <script src="{{assets}}dist/{{ script }}.js"></script>
     {% endfor %}
+    {% include _scripts.html %}
   </body>
 </html>

@@ -1,0 +1,29 @@
+---
+title: Letter Counter
+date: "2010-12-20 17:32:24 -0700"
+mdate: "2019-06-21 20:40:16 -0600"
+extra_js: tools_letter_count
+---
+<div class="alert alert-info" role="alert">
+  In 2019, the PHP server code has been ported to JavaScript. But this page still uses <strong>Adobe Flash</strong> to display charts, just like the original 2010 version.
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <textarea id="txt" class="form-control" placeholder="Enter your text here&hellip;">This is a test sentence.</textarea>
+  </div>
+  <div class="col-12" id="chart0Parent">
+    <object data="open-flash-chart.swf" width="800" height="300" align="middle">
+      <param name="FlashVars" value="get-data=getChart0">
+      <param name="quality" value="high">
+      <p>You need to get Adobe Flash player if you can&rsquo;t load the &lt;embed&gt; tag above.</p>
+    </object>
+  </div>
+  <div class="col-12" id="chart1Parent">
+    <object data="open-flash-chart.swf" width="800" height="300" align="middle">
+      <param name="FlashVars" value="get-data=getChart1">
+      <param name="quality" value="high">
+      <p>You need to get Adobe Flash player if you can&rsquo;t load the &lt;embed&gt; tag above.</p>
+    </object>
+  </div>
+</div>
