@@ -3,7 +3,7 @@
 - name: Games
   prefix: game
   dropdown:
-    - header: Browser
+    - header: Singleplayer
     - name: Arcade
       date_added: 2008-09?
       href_external: https://games.victorz.ca
@@ -22,7 +22,7 @@
       badges:
         - [secondary, TODO]
     - divider: true
-    - header: Browser (Multiplayer)
+    - header: Multiplayer (Realtime)
     - name: Slime Volleyball
       href: game/slime
       badges:
@@ -34,6 +34,8 @@
         - [secondary, Down]
         #- [primary, Beta]
         #- [success, NEW]
+    - divider: true
+    - header: Multiplayer (Turn-Based)
     - name: Actionless
       href: game/actionless
       disabled: true
