@@ -1,8 +1,8 @@
 ---
 title: ggroups.exe
 date: "2016-09-03 18:17:00 -0600"
-extra_css: misc_ggroups
-extra_js: misc_ggroups
+mdate: 2019-08-24 12:00:00 -0600
+app_route: misc_ggroups
 ---
 <p>This small project shows chat text from the game SUPERHOT. The raw text dump is at the end of this page.</p>
 
@@ -10,16 +10,8 @@ extra_js: misc_ggroups
 
 <hr>
 
-<div class="btn-group d-flex" role="group">
-  <button class="btn btn-success active" id="btn-priv">Privileged Access</button>
-  <button class="btn btn-secondary" id="btn-order">Order</button>
-  <button class="btn btn-primary" id="btn-randomize">Randomize</button>
-</div>
-
-<hr>
-
-<h2>guruGROUPS</h2>
-<div id="ggroups-main" class="container"></div>
+<script src="ggroups_textAsset.js">/* this will execute before the app script */</script>
+{% include app.html %}
 
 <div class="card-group mb-3">
   <div class="card">

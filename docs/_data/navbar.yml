@@ -9,6 +9,10 @@
       href_external: https://games.victorz.ca
     - name: Tic-Tac-Toe Analyzer
       href: game/t3
+    # - name: Clicking Game
+    #   href: game/click
+    #   badges:
+    #     - [secondary, TODO]
     - name: Fill Solver
       href: game/fill
     - name: Logic Grid Puzzles
@@ -38,44 +42,43 @@
     - header: Multiplayer (Turn-Based)
     - name: Actionless
       href: game/actionless
-      disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - name: Morra
       href: game/morra
       disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - name: Rock Paper Scissors
       href: game/rps
       disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - name: Blackjack
       href: game/blackjack
       disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - name: Cheat
       href: game/cheat
       disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - name: President
       href: game/president
       disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - name: Tic-Tac-Toe?
       href: game/t3
       disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - name: Ultimate Tic-Tac-Toe
       href: game/ut3
       disabled: true
       badges:
-        - [danger, Planning]
+        - [secondary, TODO]
     - divider: true
     - header: Downloadable
     - name: AssaultCube Reloaded
@@ -142,7 +145,7 @@
     - name: Random Video
       href: misc/rndvid
     - name: Redirect Loop (Endless)
-      href_external: https://r.victorz.ca
+      href: misc/redirect
     - name: Fast Infinite Downloads
       href: misc/streamdl
     - name: Seizure Generator
@@ -180,7 +183,7 @@
       href: bots/random
       badges:
         - [warning, Local]
-    - name: Random Words
+    - name: Recent Ideas
       href_external: https://twitter.com/recentideas
     - name: Prose
       href_external: https://twitter.com/prosegen

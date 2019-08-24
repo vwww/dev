@@ -1,8 +1,8 @@
 ---
 title: Random Words
-date: 2016-11-13 15:21:42 -0700
-extra_css: bots_random
-extra_js: bots_random
+date: "2016-11-13 15:21:42 -0700"
+mdate: 2019-08-24 20:30:00 -0600
+app_route: bots_random
 ---
 <p>This might become a future Twitter bot. It would tweet a stream of random words, by approximating a Zipf distribution.</p>
 
@@ -10,12 +10,4 @@ extra_js: bots_random
 
 <h2>Local Stream</h2>
 
-<p>In the future, there might be animations for this.</p>
-
-<div class="btn-group d-flex" role="group">
-  <button id="btnRandomize" class="btn btn-primary">Randomize</button>
-</div>
-
-<p></p>
-
-<div id="wordStream"></div>
+{% include app.html %}
