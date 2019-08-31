@@ -621,7 +621,7 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	font-family:Verdana, Geneva, sans-serif;
 	color:#333;
 	font-size:14px;
-	width:105px;
+	/*width:105px;*/
 }
 .game_container {
 	margin-top:20px;
