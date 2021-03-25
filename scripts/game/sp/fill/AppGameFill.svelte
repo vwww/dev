@@ -57,6 +57,38 @@ function loadString (s) {
 }
 
 loadString($gridText)
+
+// dev only
+if (process.env.NODE_ENV !== 'production') {
+  window.test = function () {
+    const testSolver = new Solver(ROWS, COLS)
+    const unsolvable = []
+
+    for (let i = 0; i < BOARDS.length; i++) {
+      testSolver.loadString(BOARDS[i])
+      testSolver.solve()
+
+      const rootUF = testSolver.getRoot()?.solver.ufFind()
+
+      let unsolved = false
+      OUTER:
+      for (let r = 0; r < ROWS; r++) {
+        const row = cells[r]
+        for (let c = 0; c < COLS; c++) {
+          const cell = testSolver.getCell(r, c)
+
+          if (cell.active && rootUF !== cell.solver.ufFind()) {
+            unsolvable.push(i)
+            break OUTER
+          }
+        }
+      }
+    }
+
+    console.log(`${unsolvable.length} unsolved (${BOARDS.length - unsolvable.length}/${BOARDS.length} solved)`)
+    console.log(unsolvable)
+  }
+}
 </script>
 
 <div class="input-group mb-2">
