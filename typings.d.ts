@@ -1,7 +1,3 @@
-interface JQuery {
-  packery: (...args: any[]) => void
-}
-
 interface Timeago {
   (action?: 'init' | 'update' | 'updateFromDOM' | 'dispose'): JQuery
 }
@@ -12,6 +8,6 @@ declare module '*.svelte' {
 }
 
 declare module '*.txt' {
-  const content: string;
-  export default content;
+  const content: string
+  export default content
 }

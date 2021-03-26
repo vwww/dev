@@ -1,4 +1,7 @@
 <script>
+import * as jQuery from 'jquery'
+import 'bootstrap'
+
 import PaginationButtons from '../../common/PaginationButtons.svelte'
 import langList from './languages.json'
 

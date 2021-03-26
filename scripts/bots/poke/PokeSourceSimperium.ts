@@ -1,7 +1,7 @@
 import { PokeInfo } from './PokeInfo'
 import { PokeSource } from './PokeSource'
 
-declare const Simperium: any
+import '../../vendor/simperium-v0.1.js'
 
 export default class PokeSourceSimperium implements PokeSource {
   private simperium: any

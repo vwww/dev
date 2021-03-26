@@ -1,4 +1,4 @@
-export {}
+import * as $ from 'jquery'
 
 $('#highlights .btn').on('mouseover', function () {
   let html = `<strong>${$(this).text()}</strong>`

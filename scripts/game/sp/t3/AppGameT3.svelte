@@ -13,8 +13,8 @@ let playerType = [playerTypes[0][1], playerTypes[4][1]] // TODO persist player t
 const winnerX = pStore('game/sp/t3/winnerX', 1)
 const winnerO = pStore('game/sp/t3/winnerO', 2)
 const winnerTie = pStore('game/sp/t3/winnerTie', 3)
-$: winnerMap = [winnerX, winnerO, winnerTie]
-$: { checkWinner(winnerX, winnerO, winnerTie) } // recheck winner whenever winnerMap changes
+$: winnerMap = [$winnerX, $winnerO, $winnerTie]
+$: { checkWinner($winnerX, $winnerO, $winnerTie) } // recheck winner whenever winnerMap changes
 
 // Game state
 let board // : number
@@ -175,7 +175,7 @@ const PRESETS = [
 <div class="row">
   <div class="col-sm-6">
     <p>{@html currentMessage}</p>
-    <Board {board} {winner} {winnerMap} {mark} {$showHints} {getMemo} onMove={moveHuman} />
+    <Board {board} {winner} {winnerMap} {mark} showHints={$showHints} {getMemo} onMove={moveHuman} />
   </div>
 
   <div class="col-sm-6">
@@ -189,7 +189,7 @@ const PRESETS = [
     <span class="input-group-text">X Wins</span>
   </div>
   {#each SETTINGS_X as s, i}
-    <button on:click={() => { winnerX = i + 1 }} class:active={winnerX === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button on:click={() => { $winnerX = i + 1 }} class:active={$winnerX === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-1" role="group">
@@ -197,7 +197,7 @@ const PRESETS = [
     <span class="input-group-text">O Wins</span>
   </div>
   {#each SETTINGS_O as s, i}
-    <button on:click={() => { winnerO = i + 1 }} class:active={winnerO === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button on:click={() => { $winnerO = i + 1 }} class:active={$winnerO === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-2" role="group">
@@ -205,22 +205,22 @@ const PRESETS = [
     <span class="input-group-text">Board Full</span>
   </div>
   {#each SETTINGS_T as s, i}
-    <button on:click={() => { winnerTie = i + 1 }} class:active={winnerTie === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button on:click={() => { $winnerTie = i + 1 }} class:active={$winnerTie === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-2" role="group">
   <button on:click={() => {
-    winnerX = winnerX === 3 ? 3 : winnerX ^ 3
-    winnerO = winnerO === 3 ? 3 : winnerO ^ 3
-    winnerTie = winnerTie === 3 ? 3 : winnerTie ^ 3
+    $winnerX = $winnerX === 3 ? 3 : $winnerX ^ 3
+    $winnerO = $winnerO === 3 ? 3 : $winnerO ^ 3
+    $winnerTie = $winnerTie === 3 ? 3 : $winnerTie ^ 3
   }} class="w-100 btn btn-outline-secondary">Invert</button>
   <div class="input-group-prepend input-group-append">
     <span class="input-group-text">Presets: X wants</span>
   </div>
   {#each PRESETS as p}
     <button
-      on:click={() => { winnerX = p[0]; winnerO = p[1]; winnerTie = p[2] }}
-      class:active={winnerX === p[0] && winnerO === p[1] && winnerTie === p[2]}
+      on:click={() => { $winnerX = p[0]; $winnerO = p[1]; $winnerTie = p[2] }}
+      class:active={$winnerX === p[0] && $winnerO === p[1] && $winnerTie === p[2]}
       class="w-100 btn btn-outline-{p[3]}">{p[4]}</button>
   {/each}
 </div>

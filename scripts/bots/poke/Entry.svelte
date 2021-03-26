@@ -1,4 +1,7 @@
 <script lang="ts">
+import * as jQuery from 'jquery'
+import 'timeago'
+
 import { onDestroy, onMount } from 'svelte'
 import { EntryInfo, TieType } from './EntryInfo'
 

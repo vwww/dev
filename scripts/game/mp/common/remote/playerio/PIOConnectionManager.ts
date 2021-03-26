@@ -1,3 +1,5 @@
+import '../../../../../vendor/PlayerIOClient'
+
 import { ConnectionManager } from '../ConnectionManager'
 import { PIOClient } from './PIOClient'
 

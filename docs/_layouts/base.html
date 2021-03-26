@@ -91,13 +91,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{assets}}js/jquery-3.5.1.min.js"></script>
-    <script src="{{assets}}js/popper-1.min.js"></script>
-    <script src="{{assets}}js/bootstrap.min.js"></script>
-    <script src="{{assets}}js/jquery.timeago.js"></script>
-    {%- for script in page.extra_js_deps %}
-    <script src="{{assets}}js/{{ script }}.js"></script>
-    {%- endfor %}
     {%- for file in site.data.manifest.js.global %}
       <script src="{{assets}}dist/{{ file }}.js"></script>
     {%- endfor %}

@@ -1,3 +1,6 @@
+import * as $ from 'jquery'
+import 'timeago'
+
 import { PokeInfo, TaggedPokeInfo } from './bots/poke/PokeInfo'
 import { PokeSource } from './bots/poke/PokeSource'
 import PokeSourceFirebase from './bots/poke/PokeSourceFirebase'

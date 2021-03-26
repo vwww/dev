@@ -8,7 +8,7 @@ import PokeSourceFirebase from './PokeSourceFirebase'
 
 import { pStore } from '../../util/svelte'
 
-declare const Plotly: typeof import('plotly.js')
+import * as Plotly from './Plotly'
 
 // Poke entries sorted by pokes then time
 let data1: EntryInfo[] = []

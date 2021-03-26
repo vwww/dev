@@ -55,6 +55,11 @@ module.exports = {
   },
   resolve: {
     extensions: [ '.ts', '.mjs', '.js', '.svelte' ],
+    fallback: {
+      "http": false,
+      "https": false,
+      "url": false,
+    }
   },
   devtool: false,
   plugins: [

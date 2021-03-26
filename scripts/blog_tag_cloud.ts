@@ -1,4 +1,4 @@
-export {}
+import * as $ from 'jquery'
 
 function resizeTagCloud (): void {
   if (!$('.tag-cloud').length) {

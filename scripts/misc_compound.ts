@@ -1,6 +1,8 @@
-export {}
+import * as $ from 'jquery'
+import * as Highcharts from 'highcharts/highstock'
+import Exporting from 'highcharts/modules/exporting'
 
-declare const Highcharts: typeof import('highcharts')
+Exporting(Highcharts)
 
 let series: Highcharts.Series | undefined
 
@@ -123,7 +125,7 @@ $(function () {
       }
     ]
   }
-  $('#container').highcharts('StockChart', options, (chart) => {
+  Highcharts.stockChart('container', options, (chart) => {
     series = chart.series[0]
     addData()
     window.setInterval(function () {

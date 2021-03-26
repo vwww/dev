@@ -1,3 +1,5 @@
+import * as $ from 'jquery'
+
 import { supportsLocalStorage } from './storage'
 
 export function init (): void {

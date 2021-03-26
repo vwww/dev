@@ -1,4 +1,6 @@
 <script>
+import * as jQuery from 'jquery'
+
 import IPInfo from './IPInfo'
 
 const LINES = [
@@ -22,6 +24,6 @@ async function getResult (url) {
   {:then data}
     <IPInfo name={LINE[0]} status={1} {data} />
   {:catch error}
-    <IPInfo name={LINE[0]} status={2} data={error.stack?.() ?? error} />
+    <IPInfo name={LINE[0]} status={2} data={error.stack ?? error} />
   {/await}
 {/each}

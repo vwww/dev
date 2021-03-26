@@ -2,7 +2,7 @@ import { formatHexColor } from '../../../../util'
 import { IConnector, ReadyState } from './IConnector'
 import { IConnectorCallbacks } from './IConnectorCallbacks'
 
-declare const PlayerIO: PlayerIO.PlayerIO
+import '../../../../vendor/PlayerIOClient'
 
 const GAME_ID = 'slime-fd3iliszksmlav83stww'
 const CONNECTION_ID = 'public'

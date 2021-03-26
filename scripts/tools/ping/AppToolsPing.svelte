@@ -1,4 +1,6 @@
 <script>
+import * as jQuery from 'jquery'
+
 import RollingStatsDisplay from './RollingStatsDisplay'
 import RollingStats from '../../util/RollingStats'
 import { pStore } from '../../util/svelte'

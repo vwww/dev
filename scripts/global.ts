@@ -1,3 +1,8 @@
+import 'bootstrap'
+import 'timeago'
+
+import * as $ from 'jquery'
+
 import { $idA } from './util'
 import * as theme from './victorz/theme'
 
