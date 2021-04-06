@@ -76,11 +76,11 @@ function buildTables (state: number, mark: number, depth: number): MemoEntry[] {
   }))
 }
 
-function botGenericMessage (moves: { length: number | string }, used: number): string {
+function botGenericMessage (moves: number, used: number): string {
   return 'The bot ' +
-    (moves.length === 1
+    (moves === 1
       ? 'really had no choice'
-      : 'had ' + moves.length + ' choices') +
+      : 'had ' + moves + ' choices') +
     ' for move #' + used + '.'
 }
 
@@ -96,7 +96,7 @@ function botMoveGoal (state: number, used: number, winnerMap: WinnerMap, goal: s
         ? `The bot is <strong>about to ${goal}</strong>. `
         : `The bot <strong>will ${goal}</strong> within ${pendingWin} moves. `
       : ''
-    ) + botGenericMessage(moves, used + 1)
+    ) + botGenericMessage(moves.length, used + 1)
   ]
 }
 
@@ -126,5 +126,5 @@ function botMoveRandom (state: number, used: number): BotAction {
     }
   }
 
-  return [moves, botGenericMessage(moves, used)]
+  return [moves, botGenericMessage(moves.length, used)]
 }

@@ -1,5 +1,12 @@
 // Partial declaration of PlayerIO library
 
+// .d.ts code by Victor
+// .js code by Player.IO
+//  v3.7.2
+//  released 2020-06-05
+//  PlayerIO SDK.9Pz-Aq4pkyaX6OBK0qb8sA.zip
+//  MIT license without required attribution
+
 declare namespace PlayerIO {
   type MessageEntry = number | string | boolean | ByteArray
   type ByteArray = {

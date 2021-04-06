@@ -71,7 +71,7 @@ function makeMove (loc) {
 }
 
 function checkWinner () {
-  winner = remapWin(checkWin(board, moveLength === 9), winnerMap)
+  winner = remapWin(checkWin(board, moveLength), winnerMap)
 
   if (winner) {
     currentMessage =
