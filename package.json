@@ -4,7 +4,7 @@
   "description": "Victor's Website",
   "private": true,
   "scripts": {
-    "start": "concurrently \"webpack --progress -w\" \"npm run serve\"",
+    "start": "concurrently \"webpack -w\" \"npm run serve\"",
     "serve": "cd docs && jekyll s",
     "build": "webpack --node-env production --progress && npm run build:jekyll",
     "build:dev": "webpack --progress && npm run build:jekyll || cd .",
