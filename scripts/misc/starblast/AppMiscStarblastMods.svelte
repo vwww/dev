@@ -82,12 +82,15 @@ function init (modDataRaw: [ModInfo[]]) {
       let i = 0
       while (t < dEnd) {
         const duration = modData[i].active_duration * 3600000
+        const tEnd = t + duration
 
-        if (t + duration > dStart) {
+        if (tEnd > dStart) {
           const xStart = xScale(t)
-          const xEnd = xScale(t + duration)
+          const xEnd = xScale(tEnd)
 
-          const tooltip = modData[i].title + '\n\n' +
+          const tooltip = modData[i].title + '\n' +
+            `${new Date(t).toLocaleString()}\n` +
+            `${new Date(tEnd).toLocaleString()}\n\n` +
             `_id: ${modData[i]._id}\n` +
             `mod_id: ${modData[i].mod_id}\n` +
             `author: ${modData[i].author}\n` +
