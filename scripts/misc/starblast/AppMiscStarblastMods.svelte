@@ -141,6 +141,7 @@ function init (modDataRaw: [ModInfo[]]) {
         .attr('y', 50)
         .attr('text-anchor', 'middle')
         .attr('fill', '#fff')
+        .style('pointer-events', 'none')
 
     const xNow = xScale(Date.now())
     curTimeLine
@@ -220,10 +221,6 @@ onMount(async function () {
   height: 100px;
   background: whitesmoke;
   cursor: move;
-}
-
-.chart text {
-  pointer-events: none
 }
 </style>
 
