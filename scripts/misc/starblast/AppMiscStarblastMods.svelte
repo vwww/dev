@@ -47,7 +47,7 @@ function init (modDataRaw: [ModInfo[]]) {
 
   // Create scales
   const xScaleOrig = d3.scaleTime()
-    .domain([Date.now(), Date.now() + 86400000])
+    .domain([Date.now() - 86400000, Date.now() + 86400000 * 2])
 
   let xScale = xScaleOrig.copy()
 
