@@ -377,7 +377,7 @@ function handleKey (event, on) {
   Score: {score} | High Score: {$highscore} | Lines cleared: {linesCleared} | Moment: {!moment ? '0' : moment > 0 ? moment + ' CCW' : -moment + ' CW'} ({MOMENT_MAX} max)
 </p>
 
-<table style="transform: rotate({-moment / MOMENT_MAX * 45}deg)">
+<table style="backface-visibility: hidden; transform: rotate({-moment / MOMENT_MAX * 45}deg)">
   {#each grid as row, r}
     <tr>
       {#each row as cell, c}
