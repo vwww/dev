@@ -43,9 +43,9 @@ export default class T3Game extends TPTurnGame<T3Client> {
   protected processRoundInfo (m: ByteReader): void {
     this.reset()
     for (let i = 0; i <= MAX_TURNS; i++) {
+      this.ply.set(i) // applyMove needs correct ply
       const move = m.getInt()
       if (move < 0) {
-        this.ply.set(i)
         break
       }
       this.applyMove(move)
