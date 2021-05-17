@@ -1,6 +1,7 @@
 <script>
 import * as jQuery from 'jquery'
-import 'bootstrap'
+
+import { onMount } from 'svelte'
 
 import PaginationButtons from '../../common/PaginationButtons.svelte'
 import langList from './languages.json'
@@ -79,6 +80,9 @@ function showProblem (num) {
 function downloadBlankFile () {
   location = URL.createObjectURL(new File([], 'submission', { type: 'application/octet-stream' }))
 }
+
+// hack to make Bootstrap's jQuery.fn.tab work
+onMount(() => window.jQuery = window.jQuery || jQuery)
 </script>
 
 <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
