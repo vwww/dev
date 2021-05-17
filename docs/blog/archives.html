@@ -7,7 +7,7 @@ entry: blog_tag_cloud
 {%- assign posts_by_year = site.posts | reverse | group_by_exp: 'post', 'post.date | date: "%Y"' | reverse -%}
 <div class="tag-cloud mb-4">
 	{%- for group in posts_by_year %}
-	<a href="#{{ group.name }}" class="badge badge-secondary">{{ group.name }} <sup>{{ group.size }}</sup></a>
+	<a href="#{{ group.name }}" class="badge bg-secondary">{{ group.name }} <sup>{{ group.size }}</sup></a>
 	{%- endfor %}
 </div>
 

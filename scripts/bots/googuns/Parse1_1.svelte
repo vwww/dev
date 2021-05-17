@@ -39,8 +39,8 @@ $: VA = V1 && V2 && V4 && V6 && VT
   <div class="card">
     <div class="card-header">
       <h4 class="card-title">
-        <a data-toggle="collapse" href="#collapse1_1">
-          <h2>v1.1 Format <span class={(VA ? 'badge badge-success' : 'd-none')}>Valid</span></h2>
+        <a data-bs-toggle="collapse" href="#collapse1_1">
+          <h2>v1.1 Format <span class={(VA ? 'badge bg-success' : 'd-none')}>Valid</span></h2>
         </a>
       </h4>
     </div>

@@ -102,7 +102,7 @@ updateWindowSize()
 <div id="strobeContainer" bind:this={strobeContainer} class:invisible={!running} style="text-align: center" on:dblclick={stop}>
   <img on:click={stop} src="stop.png" alt="Stop">
   <div class="container">
-    <button on:click={stop} class="btn btn-block btn-danger">Secondary Stop</button>
+    <button on:click={stop} class="btn d-block w-100 btn-danger">Secondary Stop</button>
     <div style=" color: white; mix-blend-mode: difference">
       {#if $colorMode < 4}
         <p>You have lasted {formatSeconds(useTime)} seconds!</p>
@@ -118,29 +118,37 @@ updateWindowSize()
 </div>
 
 <div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <div class="input-group-text">
-      <input type="radio" bind:group={$colorMode} value={0}>
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$colorMode} value={0}>
       Black and White
-    </div>
-    <div class="input-group-text">
-      <input type="radio" bind:group={$colorMode} value={1}>
-      Rainbow
-    </div>
-    <div class="input-group-text">
-      <input type="radio" bind:group={$colorMode} value={2}>
-      Translucent BW
-    </div>
-    <div class="input-group-text">
-      <input type="radio" bind:group={$colorMode} value={3}>
-      Translucent Rainbow
-    </div>
-    <div class="input-group-text">
-      <input type="radio" bind:group={$colorMode} value={4}>
-      Fixed-color
-    </div>
+    </label>
   </div>
-  <select bind:value={$userColor} class="custom-select">
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$colorMode} value={1}>
+      Rainbow
+    </label>
+  </div>
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$colorMode} value={2}>
+      Translucent BW
+    </label>
+  </div>
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$colorMode} value={3}>
+      Translucent Rainbow
+    </label>
+  </div>
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$colorMode} value={4}>
+      Fixed-color
+    </label>
+  </div>
+  <select bind:value={$userColor} class="form-select">
     <optgroup label="Extreme">
       <option value="#FFFFFF" style="background-color: #FFFFFF;">White</option>
       <option value="#000000" style="background-color: #000000;color: #FFFFFF;">Black</option>
@@ -167,10 +175,8 @@ updateWindowSize()
 </div>
 
 <div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <label class="input-group-text" for="inputGroupSelectInterval">Interval</label>
-  </div>
-  <select bind:value={$interval} class="custom-select" id="inputGroupSelectInterval">
+  <label class="input-group-text" for="inputGroupSelectInterval">Interval</label>
+  <select bind:value={$interval} class="form-select" id="inputGroupSelectInterval">
     <option value="-1" class="def">ASAP (requestAnimationFrame)</option>
     <optgroup label="Possible Lag">
       <option value="0" class="maxlag">ASAP (0 ms)</option>
@@ -204,7 +210,7 @@ updateWindowSize()
 
 <p>Last usage time: {useTime < 0 ? '(click Start)' : formatSeconds(useTime) + ' s'} (longest {formatSeconds($useTimeMax) + ' s'})</p>
 
-<button on:click={start} class="btn btn-block btn-primary">Start</button>
+<button on:click={start} class="btn d-block w-100 btn-primary">Start</button>
 
 <style>
 #strobeContainer {

@@ -44,9 +44,7 @@ $: canMove = $isActive && $roundState === 2 && $inRound
 
 {#if $roundState === 2 && canMove}
   <div class="btn-group d-flex mb-3" role="group">
-    <div class="input-group-prepend">
-      <span class="input-group-text">Next Move</span>
-    </div>
+    <span class="input-group-text">Next Move</span>
     {#each ['Auto', '\u{1F94C} Rock', '\u{1F4C4} Paper', '\u2702 Scissors'] as move, i}
       <button
         on:click={() => gameState.sendMove(i)}

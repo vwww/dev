@@ -125,15 +125,15 @@ function onResize () {
   <div class="col-4 clearfix">
     <ul class="list-group">
       <li class="list-group-item">
-        <span class="badge badge-secondary">{infoPokes?.toLocaleString() ?? '?'}</span>
+        <span class="badge bg-secondary">{infoPokes?.toLocaleString() ?? '?'}</span>
         Pokes Returned
       </li>
       <li class="list-group-item">
-        <span class="badge badge-secondary">{infoTicks?.toLocaleString() ?? '?'}</span>
+        <span class="badge bg-secondary">{infoTicks?.toLocaleString() ?? '?'}</span>
         Checks
       </li>
       <li class="list-group-item">
-        <span class="badge badge-secondary">{infoPokes == undefined || infoTicks == undefined ? '?' : (infoPokes * 100 / infoTicks).toFixed(4) + '%'}</span>
+        <span class="badge bg-secondary">{infoPokes == undefined || infoTicks == undefined ? '?' : (infoPokes * 100 / infoTicks).toFixed(4) + '%'}</span>
         Duty Cycle
       </li>
     </ul>
@@ -145,21 +145,21 @@ function onResize () {
 
 <h2>Leaderboard of Losers (LOL)</h2>
 
-<div class="form-group">
+<div class="mb-3">
   Show up to
-  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
     {#each [10, 25, 50, 100, 250, 500, 1000, 0] as limit}
       <label class="btn btn-outline-secondary">
-        <input type="radio" bind:group={$leaderboardLimit} value={limit}> {limit || 'all'}
+        <input type="radio" class="btn-check" bind:group={$leaderboardLimit} value={limit}> {limit || 'all'}
       </label>
     {/each}
   </div>
   entries
   using
-  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
     {#each ['dense', 'competition', 'fractional', 'modified', 'ordinal'] as limit, i}
       <label class="btn btn-outline-secondary">
-        <input type="radio" bind:group={$leaderboardTie} value={i}> {limit}
+        <input type="radio" class="btn-check" bind:group={$leaderboardTie} value={i}> {limit}
       </label>
     {/each}
   </div>

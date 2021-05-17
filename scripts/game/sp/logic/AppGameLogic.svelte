@@ -68,12 +68,10 @@ fetch('logic.json').then(resp => resp.json().then(p => {
         <div class="input-group mb-3">
           <div class="input-group">
             <textarea class="form-control" placeholder="Clue {i+1}" bind:value={clue} rows="2" />
-            <div class="input-group-append">
-              <button class="btn btn-danger" on:click={() => {
-                $clues.splice(i, 1)
-                $clues = $clues
-              }}>-</button>
-            </div>
+            <button class="btn btn-danger" on:click={() => {
+              $clues.splice(i, 1)
+              $clues = $clues
+            }}>-</button>
           </div>
         </li>
       {/each}
@@ -148,10 +146,10 @@ fetch('logic.json').then(resp => resp.json().then(p => {
         {#each logicPreset as preset}
           <tr>
             <td>{preset.num}</td>
-            <td title={preset.desc}>{preset.name} <span class="badge badge-secondary" title={preset.clues.join('\n\n')}>{preset.clues.length} clues</span></td>
+            <td title={preset.desc}>{preset.name} <span class="badge bg-secondary" title={preset.clues.join('\n\n')}>{preset.clues.length} clues</span></td>
             <td>
               {#each preset.types as presetType}
-                <span class="badge badge-secondary mr-1" title={presetType.vals.join(', ')}>{presetType.vals.length} {presetType.type}</span>
+                <span class="badge bg-secondary me-1" title={presetType.vals.join(', ')}>{presetType.vals.length} {presetType.type}</span>
               {/each}
             </td>
             <td>

@@ -1,6 +1,6 @@
 {%- include _init.html -%}
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-100">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -42,53 +42,55 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
+  <body class="d-flex flex-column h-100">
     {% include navbar.html %}
 
-    <div class="container">
-      {{ content }}
+    <main class="flex-shrink-0 my-3">
+      <div class="container">
+        {{ content }}
+      </div>
+    </main>
 
-      <footer class="footer">
-        <div class="container">
-          <div class="mb-3">
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <div class="mb-2">
           &copy; 2005-<span id="copyyear">{{ site.time | date: "%Y" }}</span> Victor Zheng. All rights reserved.
           {%- unless post %}
           {%- if page.date %}
-            <div class="badge-group mr-2" title="This page was created on {{ page.date | date: site.format_date }} at {{ page.date | date: site.format_time }}">
-              <span class="badge badge-secondary">Created</span>
-              <span class="timeago badge badge-primary" title="{{ page.date }}"></span>
+            <div class="badge-group me-2" title="This page was created on {{ page.date | date: site.format_date }} at {{ page.date | date: site.format_time }}">
+              <span class="badge bg-secondary">Created</span>
+              <span class="timeago badge bg-primary" title="{{ page.date }}"></span>
             </div>
           {%- endif %}
           {%- if page.mdate %}
-            <div class="badge-group mr-2" title="This page was modified on {{ page.mdate | date: site.format_date }} at {{ page.mdate | date: site.format_time }}">
-              <span class="badge badge-secondary">Modified</span>
-              <span class="timeago badge badge-primary" title="{{ page.mdate }}"></span>
+            <div class="badge-group me-2" title="This page was modified on {{ page.mdate | date: site.format_date }} at {{ page.mdate | date: site.format_time }}">
+              <span class="badge bg-secondary">Modified</span>
+              <span class="timeago badge bg-primary" title="{{ page.mdate }}"></span>
             </div>
           {%- endif %}
           {%- endunless %}
+        </div>
+        <div>
+          <script src="//d.victorz.ca/online.js?o=s"></script>
+
+          <a href="{{ base }}"><img src="{{assets}}a/80-15.png" class="rounded" alt="Victor"/></a>
+
+          <a href="https://validator.w3.org/check?uri=referer" class="badge bg-primary" title="This site uses HTML5.">HTML5</a>
+
+          <a href="https://jigsaw.w3.org/css-validator/check/referer" class="badge bg-primary" title="This site uses CSS.">CSS</a>
+
+          <div class="badge-group me-2" title="This site was last regenerated on {{ site.time | date: site.format_date }} at {{ site.time | date: site.format_time }}">
+            <span class="badge bg-secondary">Regenerated</span>
+            <span class="timeago badge bg-primary" title="{{ site.time }}"></span>
           </div>
-          <div class="mb-3">
-            <script src="//d.victorz.ca/online.js?o=s"></script>
 
-            <a href="{{ base }}"><img src="{{assets}}a/80-15.png" alt="Victor"/></a>
-
-            <a href="https://validator.w3.org/check?uri=referer" class="badge badge-primary" title="This site uses HTML5.">HTML5</a>
-
-            <a href="https://jigsaw.w3.org/css-validator/check/referer" class="badge badge-primary" title="This site uses CSS.">CSS</a>
-
-            <div class="badge-group mr-2" title="This site was last regenerated on {{ site.time | date: site.format_date }} at {{ site.time | date: site.format_time }}">
-              <span class="badge badge-secondary">Regenerated</span>
-              <span class="timeago badge badge-primary" title="{{ site.time }}"></span>
-            </div>
-
-            <div class="badge-group mr-2" title="This is how long it has been since my site started to exist.">
-              <span class="badge badge-dark">Site Age</span>
-              <span class="badge badge-light"><strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years</span>
-            </div>
+          <div class="badge-group me-2" title="This is how long it has been since my site started to exist.">
+            <span class="badge bg-dark">Site Age</span>
+            <span class="badge bg-light text-dark border"><strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years</span>
           </div>
         </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
 
     <!-- Scripts -->
     {%- for file in site.data.manifest.js.global %}

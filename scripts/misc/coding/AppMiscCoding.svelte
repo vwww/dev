@@ -83,29 +83,31 @@ function downloadBlankFile () {
 
 <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+    <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="problems-tab" bind:this={problemsTab} data-toggle="tab" href="#problems" role="tab" aria-controls="problems" aria-selected="false">Problems</a>
+    <a class="nav-link" id="problems-tab" bind:this={problemsTab} data-bs-toggle="tab" href="#problems" role="tab" aria-controls="problems" aria-selected="false">Problems</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="leaderboard-tab" bind:this={leaderboardTab} data-toggle="tab" href="#leaderboard" role="tab" aria-controls="contact" aria-selected="false">Leaderboard</a>
+    <a class="nav-link" id="leaderboard-tab" bind:this={leaderboardTab} data-bs-toggle="tab" href="#leaderboard" role="tab" aria-controls="contact" aria-selected="false">Leaderboard</a>
   </li>
   <li class="nav-item d-none">
-    <a class="nav-link" id="problem-tab" bind:this={problemTab} data-toggle="tab" href="#problem" role="tab" aria-controls="problem" aria-selected="false">Problem</a>
+    <a class="nav-link" id="problem-tab" bind:this={problemTab} data-bs-toggle="tab" href="#problem" role="tab" aria-controls="problem" aria-selected="false">Problem</a>
   </li>
 </ul>
 
 <div class="tab-content">
   <div class="tab-pane show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-    <div class="jumbotron">
-      <h1 class="display-4">BestCoder</h1>
-      <p class="lead">Be the best coder you can be; practice your skills on the most popular* programming contest practice site!</p>
-      <hr class="my-4">
-      <p>*We're probably the most popular with {NUM_PROBLEMS.toLocaleString()} problems and {NUM_USERS.toLocaleString()} users, who submitted {(NUM_PROBLEMS * NUM_USERS).toLocaleString()} solutions.</p>
-      <div class="btn-group d-flex">
-        <button class="btn btn-primary btn-lg w-100" on:click={showProblems}>Get Started</button>
-        <button class="btn btn-secondary w-50" on:click={showLeaderboard}>Top Users</button>
+    <div class="p-5 mb-4 bg-light border rounded-3">
+      <div class="container-fluid py-2">
+        <h1 class="display-4">BestCoder</h1>
+        <p class="lead">Be the best coder you can be; practice your skills on the most popular* programming contest practice site!</p>
+        <hr class="my-4">
+        <p>*We're probably the most popular with {NUM_PROBLEMS.toLocaleString()} problems and {NUM_USERS.toLocaleString()} users, who submitted {(NUM_PROBLEMS * NUM_USERS).toLocaleString()} solutions.</p>
+        <div class="btn-group d-flex">
+          <button class="btn btn-primary btn-lg w-100" on:click={showProblems}>Get Started</button>
+          <button class="btn btn-secondary w-50" on:click={showLeaderboard}>Top Users</button>
+        </div>
       </div>
     </div>
   </div>
@@ -146,13 +148,13 @@ function downloadBlankFile () {
     </div>
     <ul class="nav nav-pills mb-2">
       <li class="nav-item">
-        <a class="nav-link active" data-toggle="pill" href="#leaderboard0">Last Century</a>
+        <a class="nav-link active" data-bs-toggle="pill" href="#leaderboard0">Last Century</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="pill" href="#leaderboard1">Last Millenium</a>
+        <a class="nav-link" data-bs-toggle="pill" href="#leaderboard1">Last Millenium</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="pill" href="#leaderboard2">All Time</a>
+        <a class="nav-link" data-bs-toggle="pill" href="#leaderboard2">All Time</a>
       </li>
     </ul>
     <table class="table table-striped table-bordered table-hover">
@@ -169,7 +171,7 @@ function downloadBlankFile () {
         {#each leaderboardNumbers as i}
           <tr>
             <td>{i.toLocaleString()}</td>
-            <td><a href="#user{i}" on:click={() => userModalUID = i} data-toggle="modal" data-target="#userModal">{userIdToName(i)}</a></td>
+            <td><a href="#user{i}" on:click={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
             <td>{Math.round(NUM_PROBLEMS * PROBLEM_POINTS / i).toLocaleString()}</td>
             <td>{NUM_PROBLEMS.toLocaleString()}</td>
             <td>{NUM_PROBLEMS.toLocaleString()}</td>
@@ -236,25 +238,19 @@ function downloadBlankFile () {
     </div>
 
     {#if problemPageHint === 1}
-      <div class="alert alert-info" role="alert">
-        <button class="close" on:click={() => problemPageHint = 0} aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="alert alert-info alert-dismissible" role="alert">
+        <button class="btn-close" on:click={() => problemPageHint = 0} aria-label="Close"></button>
         Do the simplest thing that could possibly work.
       </div>
     {:else if problemPageHint === 2}
-      <div class="alert alert-danger" role="alert">
-        <button class="close" on:click={() => problemPageHint = 0} aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="alert alert-danger alert-dismissible" role="alert">
+        <button class="btn-close" on:click={() => problemPageHint = 0} aria-label="Close"></button>
         <h4 class="alert-heading">Code size limit exceeded</h4>
         Try to solve this problem without wasting so much space!
       </div>
     {:else if problemPageHint === 3}
-      <div class="alert alert-danger" role="alert">
-        <button class="close" on:click={() => problemPageHint = 0} aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="alert alert-danger alert-dismissible" role="alert">
+        <button class="btn-close" on:click={() => problemPageHint = 0} aria-label="Close"></button>
         <h4 class="alert-heading">Time Limit Exceeded</h4>
         You are too late, after waiting so long that {NUM_USERS.toLocaleString()} users solved it before you!
       </div>
@@ -263,10 +259,10 @@ function downloadBlankFile () {
     <h3>Past Submissions</h3>
     <ul class="nav nav-pills mb-2">
       <li class="nav-item">
-        <a class="nav-link active" data-toggle="pill" href="#problem_newest" on:click={() => problemPageRecent = true}>Newest</a>
+        <a class="nav-link active" data-bs-toggle="pill" href="#problem_newest" on:click={() => problemPageRecent = true}>Newest</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="pill" href="#problem_oldest" on:click={() => problemPageRecent = false}>Oldest</a>
+        <a class="nav-link" data-bs-toggle="pill" href="#problem_oldest" on:click={() => problemPageRecent = false}>Oldest</a>
       </li>
     </ul>
     <table class="table table-striped table-bordered table-hover">
@@ -283,7 +279,7 @@ function downloadBlankFile () {
       <tbody>
         {#each Array.from((problemPageRecent ? numbersOnPageDesc : numbersOnPageAsc)(NUM_USERS, 1, 5)) as i}
           <tr>
-            <td><a href="#user{i}" on:click={() => userModalUID = i} data-toggle="modal" data-target="#userModal">{userIdToName(i)}</a></td>
+            <td><a href="#user{i}" on:click={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
             <td>0.000000</td>
             <td>{new Date(fakeSiteCreated.getTime() + i).toISOString()}</td>
             <td>{langList[((((i + 5 * problemPageNum) * 1103515245 + 12345) >> 16) & 0xFFFF) % langList.length]}</td>
@@ -301,14 +297,14 @@ function downloadBlankFile () {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="userModalTitle">User {userModalUID}: {userIdToName(userModalUID)}</h5>
-        <button class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="media">
-          <img src="https://gravatar.com/avatar/{userModalUID === 1 ? 'bc3ec022d71a5ec8e80990f198f9dc53' : userModalUID}?s=60&d=identicon" class="mr-3" alt="...">
-          <div class="media-body">
+        <div class="d-flex">
+          <div class="flex-shrink-0">
+            <img src="https://gravatar.com/avatar/{userModalUID === 1 ? 'bc3ec022d71a5ec8e80990f198f9dc53' : userModalUID}?s=60&d=identicon" alt="avatar">
+          </div>
+          <div class="flex-grow-1 ms-3">
             <h5 class="mt-0">{userIdToName(userModalUID)}</h5>
             <p>Member since: {fakeSiteCreated.toLocaleString()}</p>
             <p>Submitted: {NUM_PROBLEMS.toLocaleString()}</p>
@@ -321,7 +317,7 @@ function downloadBlankFile () {
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

@@ -3,7 +3,7 @@ export let sender = ''
 export let text = ''
 export let msgClassNum = 0
 
-const floatRightClass = msgClassNum === 1 || msgClassNum === 2 ? '' : ' float-right'
+const floatRightClass = msgClassNum === 1 || msgClassNum === 2 ? '' : ' float-end'
 
 const msgClass =
   msgClassNum === 1 ? 'light'

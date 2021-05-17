@@ -53,11 +53,11 @@ $: boardState = $boardStates[$boardIndex]
 <p>
   You are
   {#if !$myPlayer}
-    <span class="badge badge-secondary">spectating</span>.
+    <span class="badge bg-secondary">spectating</span>.
   {:else if $myPlayer === 1}
-    <span class="badge badge-success">player X</span>.
+    <span class="badge bg-success">player X</span>.
   {:else}
-    <span class="badge badge-danger">player O</span>.
+    <span class="badge bg-danger">player O</span>.
   {/if}
 </p>
 
@@ -77,9 +77,7 @@ $: boardState = $boardStates[$boardIndex]
   </div>
 
   <div class="btn-group d-flex mb-3" role="group">
-    <div class="input-group-prepend">
-      <span class="input-group-text">Navigate</span>
-    </div>
+    <span class="input-group-text">Navigate</span>
     <button class="w-100 btn btn-secondary"
       class:disabled={!$boardIndex}
       on:click={() => gameState.historyGo(0)}>&laquo;</button>
@@ -97,7 +95,7 @@ $: boardState = $boardStates[$boardIndex]
   Moves:
   {#each $moveHistory as move, i}
     <span
-      class={`badge badge-${$boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} mr-1`}
+      class={`badge bg-${$boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1`}
       on:click={() => gameState.historyGo(i + 1)}
       >{move.join('')}</span>
   {:else}
@@ -108,7 +106,7 @@ $: boardState = $boardStates[$boardIndex]
 {#if playing}
   {#if canMove}
     <button
-      class="btn btn-outline-secondary btn-block my-2"
+      class="btn btn-outline-secondary d-block w-100 my-2"
       on:click={() => gameState.sendMoveEnd()}>End Turn (Auto Random)</button>
   {/if}
 

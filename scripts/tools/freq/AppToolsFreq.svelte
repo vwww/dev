@@ -35,9 +35,7 @@ function resetEvents () {
 </div>
 
 <div class="btn-group d-flex mb-3" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Average by</span>
-  </div>
+  <span class="input-group-text">Average by</span>
   <button class="w-100 btn btn-outline-primary"
     class:active={$avgByTime}
     on:click={() => $avgByTime = true}>Time</button>

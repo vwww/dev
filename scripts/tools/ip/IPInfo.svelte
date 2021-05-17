@@ -23,7 +23,7 @@ type IPTransform = {
 </script>
 
 <p>
-  IP ({name}): <span class="badge badge-{
+  IP ({name}): <span class="badge bg-{
     status === 1 ? 'success'
       : status === 2 ? 'danger'
         : 'secondary'

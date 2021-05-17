@@ -139,43 +139,39 @@ function convertVal (uf: Unit | undefined, ut: Unit | undefined, val1: string, v
 </script>
 
 <div class="row">
-  <div class="col-sm-4">
+  <div class="col-sm-4 mb-2">
     <p>Type</p>
-    <select bind:value={curType} on:change={curTypeChanged} class="custom-select" size="12">
+    <select bind:value={curType} on:change={curTypeChanged} class="form-select" size="12">
       {#each Object.keys(UNITS) as cat}
         <option value={cat}>{cat}</option>
       {/each}
     </select>
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-4 mb-2">
     <p>From</p>
-    <select bind:value={curFrom} on:change={curFromChanged} class="custom-select" size="12">
+    <select bind:value={curFrom} on:change={curFromChanged} class="form-select" size="12">
       {#each keys(UNITS[curType]) as unit}
         <option value={unit}>{unit}</option>
       {/each}
     </select>
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-4 mb-2">
     <p>To</p>
-    <select bind:value={curTo} class="custom-select" size="12">
+    <select bind:value={curTo} class="form-select" size="12">
       {#each keys(UNITS[curType]) as unit}
         <option value={unit} class:d-none={unit == curFrom}>{unit}</option>
       {/each}
     </select>
   </div>
 
-  <div class="col-sm-6">
+  <div class="col-sm-6 mb-2">
     <div class="input-group">
       <input bind:value={val1} type="text" class="form-control" />
-      <div class="input-group-append">
-        <span class="input-group-text">{@html uFrom?.[uFrom?.[2] ? 3 : 1] ?? 'units'}</span>
-      </div>
+      <span class="input-group-text">{@html uFrom?.[uFrom?.[2] ? 3 : 1] ?? 'units'}</span>
     </div>
     <div class="input-group" class:d-none={!uFrom?.[2]}>
       <input bind:value={val2} type="text" class="form-control" />
-      <div class="input-group-append">
-        <span class="input-group-text">{@html uFrom?.[1] ?? ''}</span>
-      </div>
+      <span class="input-group-text">{@html uFrom?.[1] ?? ''}</span>
     </div>
   </div>
   <div class="col-sm-6">

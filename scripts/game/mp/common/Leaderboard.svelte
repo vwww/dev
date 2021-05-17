@@ -7,10 +7,10 @@ let showSpect = true
 
 <div class="card mb-3">
   <div class="card-header">
-    <h4 class="float-left">Leaderboard</h4>
-    <label class="custom-control custom-checkbox float-right">
-      <input type="checkbox" class="custom-control-input" bind:checked={showSpect}>
-      <span class="custom-control-label">show spectators</span>
+    <h4 class="float-start">Leaderboard</h4>
+    <label class="form-check float-end">
+      <input type="checkbox" class="form-check-input" bind:checked={showSpect}>
+      <span class="form-check-label">show spectators</span>
     </label>
   </div>
   <div class="table-responsive" style="max-height: 20rem">

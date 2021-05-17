@@ -5,6 +5,6 @@
 {%- if include.categories contains tag -%}
     {%- assign is_cat = true -%}
 {%- endif %}
-<a href="{{base}}/blog/tags#{{ tag }}" class="badge badge-{% if include.tag == tag %}primary{% else %}secondary{% endif %}">{% if is_cat %}<strong>{% endif %}{{ tag }}{% if is_cat %}</strong>{% endif %}<sup>{{ site.tags[tag].size }}</sup></a>
+<a href="{{base}}/blog/tags#{{ tag }}" class="badge bg-{% if include.tag == tag %}primary{% else %}secondary{% endif %}">{% if is_cat %}<strong>{% endif %}{{ tag }}{% if is_cat %}</strong>{% endif %}<sup>{{ site.tags[tag].size }}</sup></a>
 {%- endfor %}
-<a href="{{base}}/blog/archives#{{ include.year }}" class="badge badge-{% if include.is_year %}primary{% else %}secondary{% endif %}">[{{ include.year }}]<sup>{{ include.year_count }}</sup></a>
+<a href="{{base}}/blog/archives#{{ include.year }}" class="badge bg-{% if include.is_year %}primary{% else %}secondary{% endif %}">[{{ include.year }}]<sup>{{ include.year_count }}</sup></a>

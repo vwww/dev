@@ -11,11 +11,11 @@ export let ll
       <b>Survived ({pastGame.survived.length}):</b>
       {#each pastGame.survived as p}
         <br>
-        #{p.rank}: <span class="badge badge-{p.rank > 1 ? 'warning' : 'success'}">{p.name}</span>
-        <span class="badge badge-dark">{getCardName(p.hand, ll)}</span>
+        #{p.rank}: <span class="badge bg-{p.rank > 1 ? 'warning' : 'success'}">{p.name}</span>
+        <span class="badge bg-dark">{getCardName(p.hand, ll)}</span>
         {p.discardSum}
         {#each p.discarded as d}
-          <span class="badge badge-light">{getCardName(d, ll)}</span>
+          <span class="badge bg-light">{getCardName(d, ll)}</span>
         {/each}
       {/each}
       <br>
@@ -23,10 +23,10 @@ export let ll
       {#each pastGame.eliminated as p, i}
         <br>
         #{pastGame.survived.length + i + 1}:
-        <span class="badge badge-danger">{p.name}</span>
+        <span class="badge bg-danger">{p.name}</span>
         {p.discardSum}
         {#each p.discarded as d}
-          <span class="badge badge-light">{getCardName(d, ll)}</span>
+          <span class="badge bg-light">{getCardName(d, ll)}</span>
         {/each}
       {/each}
     </li>

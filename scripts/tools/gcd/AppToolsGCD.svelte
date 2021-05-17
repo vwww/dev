@@ -22,32 +22,24 @@ $: {
 </script>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-6 mb-2">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Zero Threshold: </span>
-      </div>
+      <span class="input-group-text">Zero Threshold: </span>
       <input type="number" class="form-control" bind:value={$zeroThreshold}>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-6 mb-2">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Iteration Limit: </span>
-      </div>
+      <span class="input-group-text">Iteration Limit: </span>
       <input type="number" class="form-control" bind:value={$maxIterations
     }>
     </div>
   </div>
-  <div class="col-12">
+  <div class="col-12 mb-3">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Numbers: </span>
-      </div>
+      <span class="input-group-text">Numbers: </span>
       <input type="text" class="form-control" bind:value={$nums}>
-      <div class="input-group-append">
-        <span class="input-group-text">(comma-separated)</span>
-      </div>
+      <span class="input-group-text">(comma-separated)</span>
     </div>
   </div>
 </div>

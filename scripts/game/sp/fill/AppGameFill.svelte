@@ -92,9 +92,7 @@ if (process.env.NODE_ENV !== 'production') {
 </script>
 
 <div class="input-group mb-2">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Load level</span>
-  </div>
+  <span class="input-group-text">Load level</span>
   <input type="number" on:change={function () { loadString(BOARDS[+this.value - 1]) }} min="1" max={BOARDS.length} bind:value={$gridLevel} class="form-control">
 </div>
 

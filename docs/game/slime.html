@@ -23,23 +23,19 @@ entry: game_slime
 <div class="row">
   <div class="col-sm-6 col-md-7 col-lg-8">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Name</span>
-      </div>
+      <span class="input-group-text">Name</span>
       <input id="pName" type="text" class="form-control" placeholder="unnamed" maxlength="20">
     </div>
   </div>
   <div class="col-9 col-sm-4 col-md-3 col-lg-2">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Color</span>
-      </div>
+      <span class="input-group-text">Color</span>
       <input id="pColor" type="text" class="form-control" placeholder="77ff00" maxlength="6">
     </div>
   </div>
   <div class="col-3 col-sm-2">
-    <div class="btn-group btn-group-justified" role="group">
-      <button id="connect" class="btn btn-primary">Connect</button>
+    <div class="btn-group d-flex" role="group">
+      <button id="connect" class="btn btn-primary w-100">Connect</button>
     </div>
   </div>
 </div>
@@ -49,26 +45,36 @@ entry: game_slime
 <div class="row">
   <div class="col-12">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">
-          <input type="radio" name="p1side" id="notFlipP1" checked> Left
-        </span>
-        <span class="input-group-text">
+      <span class="input-group-text flex-grow-1">
+        <label class="form-check mx-auto">
+          <input type="radio" name="p1side" id="notFlipP1" class="form-check-input" checked>
+          Left
+        </label>
+      </span>
+      <span class="input-group-text flex-grow-1">
+        <label class="mx-auto"> <!-- omit .form-check so that radio is right of label -->
           Right
-          <input type="radio" name="p1side" id="flipP1">
-        </span>
-        <span class="input-group-text">
-          <input id="background" type="checkbox"> Fancy Background
-        </span>
-        <span class="input-group-text">
-          <input id="devMode" type="checkbox"> Dev Mode
-        </span>
-      </div>
-      <div class="input-group-append">
-        <span class="input-group-text">
-          <input id="fullscreen" type="checkbox"> Full-Screen
-        </span>
-      </div>
+          <input type="radio" name="p1side" id="flipP1" class="form-check-input">
+        </label>
+      </span>
+      <span class="input-group-text flex-grow-1">
+        <label class="form-check mx-auto">
+          <input id="background" type="checkbox" class="form-check-input">
+          <span>Fancy Background</span>
+        </label>
+      </span>
+      <span class="input-group-text flex-grow-1">
+        <label class="form-check mx-auto">
+          <input id="devMode" type="checkbox" class="form-check-input">
+          <span class="form-check-label">Dev Mode</span>
+        </label>
+      </span>
+      <span class="input-group-text flex-grow-1">
+        <label class="form-check mx-auto">
+          <input id="fullscreen" type="checkbox" class="form-check-input">
+          <span class="form-check-label">Full-Screen</span>
+        </label>
+      </span>
     </div>
   </div>
 </div>

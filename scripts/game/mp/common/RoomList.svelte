@@ -40,14 +40,14 @@ onDestroy(() => clearTimeout(refreshTimeout))
 
 <div class="card mb-3">
   <div class="card-header">
-    <h4 class="float-left">Rooms (showing {rooms.length}/{rooms.length})</h4>
-    <div class="float-right">
+    <h4 class="float-start">Rooms (showing {rooms.length}/{rooms.length})</h4>
+    <div class="float-end">
       <button class="btn btn-sm btn-secondary" on:click={() => (setRefreshTimeout(), onRefresh())}>
         <div class="spinner-border spinner-border-sm" class:d-none={!isRefreshing}></div>
         Refresh
       </button>
       <button class={`btn btn-sm btn-${collapsed ? 'secondary' : 'warning'}`} on:click={() => collapsed = !collapsed}>{collapsed ? 'Show' : 'Hide'}</button>
-      <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newRoomModal" disabled={disableNew}>New</button>
+      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#newRoomModal" disabled={disableNew}>New</button>
     </div>
   </div>
   <div class="card-body" class:d-none={collapsed} style="overflow-y: scroll; height: 50vh">
@@ -62,16 +62,14 @@ onDestroy(() => clearTimeout(refreshTimeout))
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">New room</h5>
-        <button class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <slot name="newRoom" />
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary" data-dismiss="modal" on:click={onNewRoom}>Create</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" data-bs-dismiss="modal" on:click={onNewRoom}>Create</button>
       </div>
     </div>
   </div>

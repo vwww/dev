@@ -10,7 +10,7 @@ export let results
           FFA:
           {#each pastGame.wins as win}
             {#each win.players as player}
-              <span class="badge mr-1 badge-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
+              <span class="badge me-1 bg-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
             {/each}
           {/each}
         </div>
@@ -19,7 +19,7 @@ export let results
           <div>
             Team {win.id}:
             {#each win.players as player}
-              <span class="badge mr-1 badge-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
+              <span class="badge me-1 bg-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
             {/each}
           </div>
         {/each}

@@ -40,13 +40,11 @@ function formatGameMode ({optDecks}) {
 <NameBox bind:value={$name} />
 
 <div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <div class="input-group-text">
-      <input type="checkbox" bind:checked={$showLLNames}>
-    </div>
-  </div>
-  <span class="input-group-text">
-    Show Love Letter Names
+  <span class="input-group-text flex-grow-1">
+    <label class="form-check mx-auto">
+      <input type="checkbox" class="form-check-input" bind:checked={$showLLNames}>
+      Show Love Letter Names
+    </label>
   </span>
 </div>
 

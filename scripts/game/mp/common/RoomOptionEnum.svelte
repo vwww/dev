@@ -9,9 +9,9 @@ export let store: OptionStoreEnum[1]
   <span>{option[3]}</span>
   <div><small class="text-muted">{option[4]}</small></div>
   {#each option[5] as v, i}
-    <label class="custom-control custom-control-inline custom-radio">
-      <input type="radio" class="custom-control-input" bind:group={$store} value={i}>
-      <span class="custom-control-label">{v}</span>
+    <label class="form-check form-check-inline">
+      <input type="radio" class="form-check-input" bind:group={$store} value={i}>
+      <span class="form-check-label">{v}</span>
     </label>
   {/each}
 </div>

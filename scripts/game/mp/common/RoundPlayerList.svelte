@@ -6,7 +6,7 @@ export let inQueue
 <div>
   In game:
   {#each inGame as roundPlayer}
-    <span class="badge badge-{roundPlayer.ready ? 'info' : 'primary'} mr-1">{roundPlayer.name} ({roundPlayer.cn})</span>
+    <span class="badge bg-{roundPlayer.ready ? 'info' : 'primary'} me-1">{roundPlayer.name} ({roundPlayer.cn})</span>
   {:else}
     nobody
   {/each}
@@ -15,7 +15,7 @@ export let inQueue
 <div>
   Queue:
   {#each inQueue as queuedPlayer}
-    <span class="badge badge-{queuedPlayer.ready ? 'info' : 'secondary'} mr-1">{queuedPlayer.name} ({queuedPlayer.cn})</span>
+    <span class="badge bg-{queuedPlayer.ready ? 'info' : 'secondary'} me-1">{queuedPlayer.name} ({queuedPlayer.cn})</span>
   {:else}
     nobody
   {/each}

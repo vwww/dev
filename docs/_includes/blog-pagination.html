@@ -1,7 +1,7 @@
 {% if paginator.previous_page or paginator.next_page %}
 <nav class="mb-4 text-center">
-	{% if paginator.previous_page %}<a href="{{paginator.previous_page_path}}" class="btn btn-outline-primary float-left">Prev</a>{% endif %}
+	{% if paginator.previous_page %}<a href="{{paginator.previous_page_path}}" class="btn btn-outline-primary float-start">Prev</a>{% endif %}
 	<span>Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
-	{% if paginator.next_page %}<a href="{{paginator.next_page_path}}" class="btn btn-outline-primary float-right">Next</a>{% endif %}
+	{% if paginator.next_page %}<a href="{{paginator.next_page_path}}" class="btn btn-outline-primary float-end">Next</a>{% endif %}
 </nav>
 {% endif %}

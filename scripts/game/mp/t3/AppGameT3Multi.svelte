@@ -38,9 +38,7 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }) {
 </script>
 
 <div class="btn-group d-flex mb-3" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Isomorphism</span>
-  </div>
+  <span class="input-group-text">Isomorphism</span>
   <button class="w-100 btn btn-outline-secondary"
     class:active={!$t3Isomorphism}
     on:click={() => { $t3Isomorphism = 0 }}>Tic-Tac-Toe</button>

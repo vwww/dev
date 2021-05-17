@@ -1,7 +1,8 @@
+// import jQuery before bootstrap
+import * as $ from 'jquery'
+
 import 'bootstrap'
 import 'timeago'
-
-import * as $ from 'jquery'
 
 import { $idA } from './util'
 import * as theme from './victorz/theme'
@@ -22,11 +23,11 @@ function init (): void {
     const now = new Date()
 
     // Keep dropdowns open on CTRL-click
-    $(document).on('click', '.dropdown-menu', function (e) {
-      if (!$(e.target).is('.dropdown-item') || (e.ctrlKey && !e.shiftKey)) {
+    document.addEventListener('click', (e) => {
+      if (e.target && $(e.target).parents('.dropdown-menu').length && (!$(e.target).is('.dropdown-item') || (e.ctrlKey && !e.shiftKey))) {
         e.stopPropagation()
       }
-    })
+    }, true)
 
     // Theme Switcher
     theme.init()

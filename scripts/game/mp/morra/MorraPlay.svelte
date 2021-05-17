@@ -48,7 +48,7 @@ export function randomizeNextNumber () {
 
 {#if $roundState === 2 && canMove}
   <input type="number" class="form-control is-{$pendingMove === nextNumber ? '' : 'in'}valid" bind:value={nextNumber} on:change={gameState.sendMove(nextNumber)} min="0" max="8000000000000">
-  <input type="range" class="custom-range" bind:value={nextNumber} on:change={gameState.sendMove(nextNumber)} min="0" max="8000000000000">
+  <input type="range" class="form-range" bind:value={nextNumber} on:change={gameState.sendMove(nextNumber)} min="0" max="8000000000000">
 {/if}
 
 <RoundPlayerList inGame={$roundPlayers} inQueue={$roundPlayerQueue} />

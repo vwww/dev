@@ -20,7 +20,7 @@ function rankClass (r: PRankType): string {
 }
 
 function rankBadgeClass (r: PRankType): string {
-  return `badge badge-${rankClass(r)}`
+  return `badge bg-${rankClass(r)}`
 }
 </script>
 

@@ -57,40 +57,30 @@ function stop () {
 <div class="row">
   <div class="col-12">
     <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Ping URL</span>
-      </div>
+      <span class="input-group-text">Ping URL</span>
       <input type="url" class="form-control" bind:value={$pingURL} readonly={curInterval} maxlength="20">
     </div>
   </div>
   <div class="col-12 col-md-6">
     <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Ping Interval: </span>
-      </div>
+      <span class="input-group-text">Ping Interval: </span>
       <input type="number" class="form-control" placeholder="77ff00" bind:value={$pingInterval} readonly={curInterval} min="1" max="10000">
-      <div class="input-group-append">
-        <span class="input-group-text"> ms</span>
-      </div>
+      <span class="input-group-text"> ms</span>
     </div>
   </div>
   <div class="col-12 col-md-6 col-lg-5">
     <div class="input-group mb-2">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Max Pings: </span>
-      </div>
+      <span class="input-group-text">Max Pings: </span>
       <input type="number" class="form-control" placeholder="77ff00" bind:value={$pingMax} readonly={curInterval} min="0" max="10000">
-      <div class="input-group-append">
-        <span class="input-group-text"> (0 = unlimited)</span>
-      </div>
+      <span class="input-group-text"> (0 = unlimited)</span>
     </div>
   </div>
   <div class="col-12 col-lg-1">
-    <div class="btn-group btn-group-justified" role="group">
+    <div class="btn-group d-flex" role="group">
       {#if curInterval}
-        <button on:click={stop} class="btn btn-danger">Stop</button>
+        <button on:click={stop} class="btn btn-danger w-100">Stop</button>
       {:else}
-        <button on:click={start} class="btn btn-primary">Start</button>
+        <button on:click={start} class="btn btn-primary w-100">Start</button>
       {/if}
     </div>
   </div>

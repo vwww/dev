@@ -14,40 +14,41 @@ date: "2017-06-05 09:00:00 -0600"
 <div class="row">
   <div class="col-8 col-sm-9 col-md-3 col-lg-4">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Name</span>
-      </div>
+      <span class="input-group-text">Name</span>
       <input id="pName" type="text" class="form-control" placeholder="unnamed" maxlength="20">
     </div>
   </div>
   <div class="col-4 col-sm-3 col-md-2">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Color</span>
-      </div>
+      <span class="input-group-text">Color</span>
       <input id="pColor" type="text" class="form-control" placeholder="42" maxlength="2">
     </div>
   </div>
   <div class="col-3 col-sm-2">
-    <div class="btn-group btn-group-justified" role="group">
-      <button id="connect" class="btn btn-primary">Connect</button>
+    <div class="btn-group d-flex" role="group">
+      <button id="connect" class="btn btn-primary w-100">Connect</button>
     </div>
   </div>
   <div class="col-9 col-sm-10 col-md-5 col-lg-4">
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">
-          <input id="background" type="checkbox" checked disabled> Show FPS
-        </span>
-        <span class="input-group-text">
-          <input id="devMode" type="checkbox" checked disabled> Dev Mode
-        </span>
-      </div>
-      <div class="input-group-append">
-        <span class="input-group-text">
-          <input id="fullscreen" type="checkbox"> Full-Screen
-        </span>
-      </div>
+      <span class="input-group-text flex-grow-1">
+        <label class="form-check">
+          <input id="background" type="checkbox" class="form-check-input" checked disabled>
+          <span class="form-check-label">Show FPS</span>
+        </label>
+      </span>
+      <span class="input-group-text flex-grow-1">
+        <label class="form-check">
+          <input id="devMode" type="checkbox" class="form-check-input" checked disabled>
+          <span class="form-check-label">Dev Mode</span>
+        </label>
+      </span>
+      <span class="input-group-text flex-grow-1">
+        <label class="form-check">
+          <input id="fullscreen" type="checkbox" class="form-check-input">
+          <span class="form-check-label">Full-Screen</span>
+        </label>
+      </span>
     </div>
   </div>
 </div>

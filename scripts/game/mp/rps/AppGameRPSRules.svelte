@@ -126,9 +126,7 @@ const PRESETS = [
 </div>
 
 <div class="btn-group d-flex mb-3" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Presets:</span>
-  </div>
+  <span class="input-group-text">Presets:</span>
   {#each PRESETS as p}
     <button
       on:click={() => { [count[0], count[1], count[2]] = p }}

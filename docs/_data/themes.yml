@@ -10,7 +10,9 @@ bootswatch:
   lux: Lux
   materia: Materia
   minty: Minty
+  morph: Morph
   pulse: Pulse
+  quartz: Quartz
   sandstone: Sandstone
   simplex: Simplex
   sketchy: Sketchy
@@ -19,4 +21,6 @@ bootswatch:
   spacelab: Spacelab
   superhero: Superhero
   united: United
+  vapor: Vapor
   yeti: Yeti
+  zephyr: Zephyr

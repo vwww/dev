@@ -185,68 +185,54 @@ const PRESETS = [
 
 <h2>Rules</h2>
 <div class="btn-group d-flex mb-1" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">X Wins</span>
-  </div>
+  <span class="input-group-text">X Wins</span>
   {#each SETTINGS_X as s, i}
     <button on:click={() => { $winnerX = i + 1 }} class:active={$winnerX === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-1" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">O Wins</span>
-  </div>
+  <span class="input-group-text">O Wins</span>
   {#each SETTINGS_O as s, i}
     <button on:click={() => { $winnerO = i + 1 }} class:active={$winnerO === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-2" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Board Full</span>
-  </div>
+  <span class="input-group-text">Board Full</span>
   {#each SETTINGS_T as s, i}
     <button on:click={() => { $winnerTie = i + 1 }} class:active={$winnerTie === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
-<div class="btn-group d-flex mb-2" role="group">
+<div class="input-group d-flex mb-2" role="group">
   <button on:click={() => {
     $winnerX = $winnerX === 3 ? 3 : $winnerX ^ 3
     $winnerO = $winnerO === 3 ? 3 : $winnerO ^ 3
     $winnerTie = $winnerTie === 3 ? 3 : $winnerTie ^ 3
-  }} class="w-100 btn btn-outline-secondary">Invert</button>
-  <div class="input-group-prepend input-group-append">
-    <span class="input-group-text">Presets: X wants</span>
-  </div>
+  }} class="flex-grow-1 btn btn-outline-secondary">Invert</button>
+  <span class="input-group-text">Presets: X wants</span>
   {#each PRESETS as p}
     <button
       on:click={() => { $winnerX = p[0]; $winnerO = p[1]; $winnerTie = p[2] }}
       class:active={$winnerX === p[0] && $winnerO === p[1] && $winnerTie === p[2]}
-      class="w-100 btn btn-outline-{p[3]}">{p[4]}</button>
+      class="flex-grow-1 btn btn-outline-{p[3]}">{p[4]}</button>
   {/each}
 </div>
 
 <h3>Prefer Outcome Timing</h3>
 
 <div class="btn-group d-flex mb-1" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Win</span>
-  </div>
+  <span class="input-group-text">Win</span>
   <button class="w-100 btn btn-outline-primary active">Earlier</button>
   <button class="w-100 btn btn-outline-warning disabled" title="not implemented yet">Anytime</button>
   <button class="w-100 btn btn-outline-success disabled" title="not implemented yet">Later</button>
 </div>
 <div class="btn-group d-flex mb-1" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Tie</span>
-  </div>
+  <span class="input-group-text">Tie</span>
   <button class="w-100 btn btn-outline-primary disabled" title="not implemented yet">Earlier</button>
   <button class="w-100 btn btn-outline-warning active">Anytime</button>
   <button class="w-100 btn btn-outline-success disabled" title="not implemented yet">Later</button>
 </div>
 <div class="btn-group d-flex mb-3" role="group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Lose</span>
-  </div>
+  <span class="input-group-text">Lose</span>
   <button class="w-100 btn btn-outline-primary disabled" title="not implemented yet">Earlier</button>
   <button class="w-100 btn btn-outline-warning disabled" title="not implemented yet">Anytime</button>
   <button class="w-100 btn btn-outline-success active">Later</button>

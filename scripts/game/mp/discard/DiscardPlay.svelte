@@ -110,53 +110,49 @@ export function getCardName (card, ll) {
     Card Descriptions
     <ul>
       {#each [1, 2, 3, 4, 5, 6, 7, 8] as card}
-        <li class:font-weight-bold={$roundState === 2 && playing && (card === $myHand || (canMove && card === $myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
+        <li class:fw-bold={$roundState === 2 && playing && (card === $myHand || (canMove && card === $myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
       {/each}
     </ul>
   </div>
   {#if $roundState === 2 && playing}
     <div class="col-12">
-      Your hand: <span class="badge badge-dark">{getCardName($myHand, ll)}</span>
+      Your hand: <span class="badge bg-dark">{getCardName($myHand, ll)}</span>
       {#if canMove}
-        <span class="badge badge-dark">{getCardName($myAltMove, ll)}</span>
+        <span class="badge bg-dark">{getCardName($myAltMove, ll)}</span>
       {/if}
     </div>
     {#if canMove}
       <div class="col-12">
         <div class="btn-group d-flex mb-3" role="group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Discard</span>
-          </div>
-          <button class:active={$pendingMoveUseHand} class="font-weight-bold w-100 btn btn-outline-{moveColor($myHand, $myAltMove)}"
+          <span class="input-group-text">Discard</span>
+          <button class:active={$pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor($myHand, $myAltMove)}"
             on:click={() => gameState.sendMoveUseHand(true)}>{getCardName($myHand, ll)}</button>
-          <button class:active={!$pendingMoveUseHand} class="font-weight-bold w-100 btn btn-outline-{moveColor($myAltMove, $myHand)}"
+          <button class:active={!$pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor($myAltMove, $myHand)}"
             on:click={() => gameState.sendMoveUseHand(false)}>{getCardName($myAltMove, ll)}</button>
         </div>
       </div>
-      <div class="col-12 col-sm-6">
-        <div class="form-group">
-          <label>
-            Target<br>
-            <button class="btn btn-outline-{pendingMove !== 4 && pendingMove < 7 ? 'primary' : 'secondary'} dropdown-toggle"
-              id="dropdownMenuButtonTarget" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {$pendingMoveTarget < 0 ? 'auto' : gameState.getNameFromPlayer(gameState.getPlayerInfo($pendingMoveTarget), $pendingMoveTarget)}
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonTarget">
-              <button class="dropdown-item" class:active={$pendingMoveTarget < 0} on:click={() => gameState.sendMoveTarget(-1)}>auto</button>
-              {#each $playerInfo as p, i}
-                <button class="dropdown-item" class:badge-danger={!i && pendingMove !== 5 || p.immune} class:active={$pendingMoveTarget === i}
-                  on:click={() => gameState.sendMoveTarget(i)}>{gameState.getNameFromPlayer(p)}</button>
-              {/each}
-            </div>
-          </label>
-          <small class="form-text text-muted">1, 2, 3, 6 targets others; 5 targets any</small>
-        </div>
+      <div class="col-12 col-sm-6 mb-2">
+        <label>
+          Target<br>
+          <button class="btn btn-outline-{pendingMove !== 4 && pendingMove < 7 ? 'primary' : 'secondary'} dropdown-toggle"
+            id="dropdownMenuButtonTarget" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {$pendingMoveTarget < 0 ? 'auto' : gameState.getNameFromPlayer(gameState.getPlayerInfo($pendingMoveTarget), $pendingMoveTarget)}
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonTarget">
+            <button class="dropdown-item" class:active={$pendingMoveTarget < 0} on:click={() => gameState.sendMoveTarget(-1)}>auto</button>
+            {#each $playerInfo as p, i}
+              <button class="dropdown-item" class:bg-danger={!i && pendingMove !== 5 || p.immune} class:active={$pendingMoveTarget === i}
+                on:click={() => gameState.sendMoveTarget(i)}>{gameState.getNameFromPlayer(p)}</button>
+            {/each}
+          </div>
+        </label>
+        <small class="form-text text-muted">1, 2, 3, 6 targets others; 5 targets any</small>
       </div>
-      <div class="col-12 col-sm-6">
+      <div class="col-12 col-sm-6 mb-3">
         <label>
           Guess<br>
           <button class="btn btn-outline-{pendingMove === 1 ? 'info' : 'secondary'} dropdown-toggle"
-            id="dropdownMenuButtonGuess" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            id="dropdownMenuButtonGuess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {$pendingMoveGuess > 1 ? cardShortNames[$pendingMoveGuess] : 'auto'}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonGuess">
@@ -171,7 +167,7 @@ export function getCardName (card, ll) {
         <small class="form-text text-muted">only for 1</small>
       </div>
       <div class="col-12 mb-2">
-        <button class="btn btn-primary btn-block mb-2" on:click={() => gameState.sendMoveEnd()}>End Move</button>
+        <button class="btn btn-primary d-block w-100 mb-2" on:click={() => gameState.sendMoveEnd()}>End Move</button>
       </div>
     {/if}
   {/if}
@@ -179,25 +175,25 @@ export function getCardName (card, ll) {
     <div class="mb-2">
       <b>Active Players</b>
       {#each $playerInfo as p, i}
-        <br><span class="badge badge-{playerColor(gameState.playerIsMe(p))}">{gameState.getNameFromPlayer(p)}</span>
-        <span class="badge badge-dark">{gameState.playerIsMe(p) ? getCardName($myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
+        <br><span class="badge bg-{playerColor(gameState.playerIsMe(p))}">{gameState.getNameFromPlayer(p)}</span>
+        <span class="badge bg-dark">{gameState.playerIsMe(p) ? getCardName($myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
         {#if !i && roundState === 2}
-          <span class="badge badge-dark">{gameState.playerIsMe(p) ? getCardName($myAltMove, ll) : '?'}</span>
+          <span class="badge bg-dark">{gameState.playerIsMe(p) ? getCardName($myAltMove, ll) : '?'}</span>
         {/if}
-        {#if p.immune}<badge class="badge badge-info">IMMUNE</badge>{/if}
+        {#if p.immune}<badge class="badge bg-info">IMMUNE</badge>{/if}
         {p.discardSum}
         {#each p.discarded as d}
-          <span class="badge badge-light">{d}</span>
+          <span class="badge bg-light">{d}</span>
         {/each}
       {/each}
     </div>
     <div>
       <b>Eliminated</b>
       {#each $playerDiscInfo as p}
-        <br><span class="badge badge-secondary">{p.ownerName}</span>
+        <br><span class="badge bg-secondary">{p.ownerName}</span>
         {p.discardSum}
         {#each p.discarded as d}
-          <span class="badge badge-light">{getCardName(d, ll)}</span>
+          <span class="badge bg-light">{getCardName(d, ll)}</span>
         {/each}
       {/each}
     </div>
