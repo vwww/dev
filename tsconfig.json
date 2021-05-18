@@ -17,6 +17,5 @@
   "include": [
     "scripts",
     "typings.d.ts",
-    "typings.playerio.d.ts",
   ]
 }
