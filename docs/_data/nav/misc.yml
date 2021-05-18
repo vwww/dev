@@ -44,8 +44,6 @@
   - name: Fast Infinite Downloads
     desc: Download faster than your internet speed!
     href: misc/streamdl
-    badges:
-      - [secondary, Down]
   - name: Seizure Generator (Strobe)
     desc: Strobe lights (stroboscopic lamps) flash light between black and white.
     href: misc/seizure/

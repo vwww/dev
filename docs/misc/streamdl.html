@@ -4,10 +4,6 @@ date: "2016-12-26 09:31:23 -0700"
 types: ['gzip', 'zlib']
 ext: ['', '.html', '.js', '.css', '.png', '.mp4', '.txt']
 ---
-<div class="alert alert-danger" role="alert">
-  The server is currently down.
-</div>
-
 <p>At up to 1032&times; your Internet connection speed (CPU and Disk are likely bottlenecks), these magical files can be downloaded quickly (even if they might have the wrong magic number in their header signatures).</p>
 
 <p>These files have infinite sizes, so they take infinite time to download.</p>
@@ -27,8 +23,7 @@ ext: ['', '.html', '.js', '.css', '.png', '.mp4', '.txt']
       <td>{{ e }}</td>
       {%- for t in page.types %}
         <!-- must be HTTP, as this doesn't work over HTTPS with CloudFlare -->
-        <!-- <td><a href="http://go.victorz.ca/{{ t }}{{ e }}">Download</a></td> -->
-        <td>(unavailable)</td>
+        <td><a href="http://xn--59g.victorz.ca/{{ t }}{{ e }}">Download</a></td>
       {%- endfor %}
     </tr>
   {%- endfor %}
