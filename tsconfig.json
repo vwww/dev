@@ -11,7 +11,7 @@
     "target": "ES6",
     // "allowJs": true,
     // "importsNotUsedAsValues": "error",
-    // "isolatedModules": true, // causes bug with `export const enum`?
+    "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
   },
   "include": [
