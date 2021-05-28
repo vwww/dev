@@ -8,7 +8,11 @@ import PokeSourceFirebase from './PokeSourceFirebase'
 
 import { pStore } from '../../util/svelte'
 
-import * as Plotly from './Plotly'
+import Plotly from 'plotly.js/lib/core'
+
+Plotly.register([
+  require('plotly.js/lib/scatter'),
+])
 
 // Poke entries sorted by pokes then time
 let data1: EntryInfo[] = []
