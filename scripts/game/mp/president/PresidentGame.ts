@@ -60,6 +60,29 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   public readonly modePenalizeFinal2 = valueStore(false)
   public readonly modePenalizeFinalJoker = valueStore(false)
 
+  public readonly gamePhase = valueStore(0 as GamePhase)
+
+  public readonly pres = valueStore(0)
+  public readonly scum = valueStore(0)
+  public readonly vicePres = valueStore(0)
+  public readonly viceScum = valueStore(0)
+
+  public readonly lowGive0 = valueStore(0)
+  public readonly lowGive1 = valueStore(0)
+  public readonly hiGive0 = valueStore(0)
+  public readonly hiGive1 = valueStore(0)
+
+  public readonly revolution = valueStore(false)
+  public readonly trickCount = valueStore(0)
+  public readonly trickValue = valueStore(0)
+  public readonly trickMaxed = valueStore(false)
+
+  public readonly cardCountMine = valueStore(newZeroCardCount())
+  public readonly cardCountOthers = valueStore(newZeroCardCount())
+  public readonly cardCountDiscard = valueStore(newZeroCardCount())
+  public readonly cardCountTotal = valueStore(newZeroCardCount())
+  public readonly moveHistory = valueStore([] as PGameHistory[])
+
   public readonly pendingMove = valueStore(0)
   public readonly pendingMoveCount = valueStore(0)
 
@@ -74,8 +97,19 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   sendMove (n: number, c: number): void {
     this.room?.send(new ByteWriter()
       .putInt(TurnC2S.MOVE)
+      .putInt(1)
       .putInt(n)
       .putInt(c)
+      .toArray()
+    )
+  }
+
+  sendMoveTransfer (a: number, b: number): void {
+    this.room?.send(new ByteWriter()
+      .putInt(TurnC2S.MOVE)
+      .putInt(0)
+      .putInt(a)
+      .putInt(b)
       .toArray()
     )
   }
@@ -86,15 +120,41 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   }
 
   protected processPrivateInfo (m: ByteReader): void {
-    throw new Error('Method not implemented.') // my card count
+    switch (m.getInt()) {
+      case 0: // my card count
+        // TODO
+        readCardCount(m)
+        break
+      case 1: // (vice-)scum cards
+        // TODO
+        m.getInt()
+        m.getInt()
+        break
+    }
   }
 
   protected processRoundStartInfo (m: ByteReader): void {
-    throw new Error('Method not implemented.') // rank info?
+    const noPres = m.getBool()
+    if (noPres) {
+      // TODO: go to PLAY state
+    } else {
+      // TODO: go to TRANSFER state
+      const pres = m.getInt()
+      const scum = m.getInt()
+      const vicePres = m.getInt()
+      const viceScum = m.getInt()
+      this.pres.set(pres)
+      this.scum.set(scum)
+      this.vicePres.set(vicePres)
+      this.viceScum.set(viceScum)
+    }
+    // TODO init cards
   }
 
   protected processRoundInfo (m: ByteReader): void {
-    throw new Error('Method not implemented.')
+    // TODO just discard count, calc others?
+    // infer from discarded?
+    // readCardCount(m)
   }
 
   protected processPlayerInfo (m: ByteReader, p: PPlayerInfo): void {
@@ -256,6 +316,12 @@ const enum CardRank {
   _NUM,
 }
 */
+
+const enum GamePhase {
+  GIVE_CARDS,
+  NEW_TRICK,
+  IN_TRICK,
+}
 
 type CardCount = [
   number, number, number, number, number,

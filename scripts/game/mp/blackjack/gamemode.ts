@@ -18,7 +18,7 @@ export const roomCreateOptions = [
   ]],
   ['optSplitNonAce', 'i', 3, 'Split Non-Ace', 'pairs of 2 to 10 can be split N times to make N+1 hands (decreases house edge)', 0, 3],
   ['optSplitAce', 'i', 1, 'Split Ace', 'pairs of aces can be split N times to make N+1 hands (decreases house edge)', 0, 3],
-  ['optHitSplitAce', 'b', true, 'Hit Split Ace', '(decreases house edge) If hit with a 10, the blackjack is not a "natural" blackjack'],
+  ['optHitSplitAce', 'b', true, 'Hit Split Ace', 'if hit with a 10, the blackjack is not a "natural" blackjack (decreases house edge)'],
 ]
 
 export function getGameModeString (): string {

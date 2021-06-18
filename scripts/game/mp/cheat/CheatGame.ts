@@ -1,5 +1,5 @@
 import { clamp } from '../../../util'
-import { ValueStore, valueStore } from '../../../util/svelte'
+import { valueStore } from '../../../util/svelte'
 import { ByteReader } from '../common/game/ByteReader'
 import { ByteWriter } from '../common/game/ByteWriter'
 import { RRTurnClient, RRTurnDiscInfo, RRTurnGame, RRTurnPlayerInfo } from '../common/game/RoundRobinGame'
@@ -17,13 +17,13 @@ interface CheatClient extends RRTurnClient {
 }
 
 interface CheatPlayerInfo extends RRTurnPlayerInfo {
-  discardClaim: CardCount
+  discardClaim: CardCountTotal
   // hand?: CardCount // private
   handSize: number
 }
 
 interface CheatDiscInfo extends RRTurnDiscInfo {
-  discardClaim: CardCount
+  discardClaim: CardCountTotal
   // hand: CardCount // reveal? if not, how to handle claims?
   // handSize: number
 }
@@ -38,13 +38,40 @@ export interface CheatGameHistoryPlayer {
   cn: number
 }
 
-export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, CheatDiscInfo, CheatGameHistory> {
-  public readonly modeCard: ValueStore<OptCardCount> = valueStore(0)
-  public readonly modeTrick: ValueStore<OptTrick> = valueStore(0)
-  public readonly modeRound: ValueStore<OptRound> = valueStore(0)
-  public readonly modePenalty: ValueStore<OptPenalty> = valueStore(0)
+const MAX_DECKS = 166_799_986_198_907
 
-  public readonly pendingMove = valueStore(0)
+export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, CheatDiscInfo, CheatGameHistory> {
+  public readonly modeDecks = valueStore(0)
+  public readonly modeCountSame = valueStore(false)
+  public readonly modeCountMore = valueStore(false)
+  public readonly modeCountLess = valueStore(false)
+  public readonly modeTricks = valueStore(0 as OptTrick)
+  public readonly modeRank0 = valueStore(false)
+  public readonly modeRank1u = valueStore(false)
+  public readonly modeRank1uw = valueStore(false)
+  public readonly modeRank1d = valueStore(false)
+  public readonly modeRank1dw = valueStore(false)
+  public readonly modeRank2u = valueStore(false)
+  public readonly modeRank2uw = valueStore(false)
+  public readonly modeRank2d = valueStore(false)
+  public readonly modeRank2dw = valueStore(false)
+  public readonly modeRankother = valueStore(false)
+
+  public readonly canCallCheat = valueStore(false)
+  public readonly trickCount = valueStore(0)
+  public readonly trickValue = valueStore(0)
+
+  public readonly cardCountHandMine = valueStore(newZeroCardCount())
+  public readonly cardCountAllMine = valueStore(newZeroCardCount())
+  public readonly cardCountAllOthers = valueStore(newZeroCardCount())
+  public readonly cardCountClaimMine = valueStore(newZeroCardCount())
+  public readonly cardCountClaimOthers = valueStore(newZeroCardCount())
+  public readonly cardCountClaimRemain = valueStore(newZeroCardCount())
+  public readonly cardCountTotal = valueStore(newZeroCardCount())
+  public readonly moveHistory = valueStore([] as CheatGameHistory[])
+
+  public readonly pendingMove = valueStore(newZeroCardCount())
+  public readonly pendingMoveClaim = valueStore(0)
 
   protected playersSortProps = [
     (p: CheatClient) => p.score,
@@ -53,55 +80,96 @@ export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, 
   ]
 
   sendMove (n: number, c: number): void {
+    // TODO send actual counts after claim
     this.room?.send(new ByteWriter()
       .putInt(TurnC2S.MOVE)
-      .putInt(n)
+      .putInt(0)
+      .putInt(n) // omit, use actual for count
       .putInt(c)
+      // TODO add actuals
+      .toArray()
+    )
+  }
+
+  sendMoveCheat (): void {
+    this.room?.send(new ByteWriter()
+      .putInt(TurnC2S.MOVE)
+      .putInt(1)
       .toArray()
     )
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMove.set(m.getInt())
+    this.pendingMove.set(readCardCount(m))
+    this.pendingMoveClaim.set(m.getInt())
   }
 
   protected processPrivateInfo (m: ByteReader): void {
-    throw new Error('Method not implemented.')
+    // TODO
+    switch (m.getInt()) {
+      case 0: // my cards
+        this.cardCountHandMine.set(readCardCount(m))
+        break
+    }
   }
 
   protected processRoundStartInfo (m: ByteReader): void {
+    // TODO
     throw new Error('Method not implemented.')
   }
 
   protected processRoundInfo (m: ByteReader): void {
-    throw new Error('Method not implemented.')
+    const cardsRemain = readCardCount(m)
+    const cardsClaim = readCardCount(m)
+    const cardsTotal = newTotalCardCount(1) // TODO use mode count
+    // const cardsClaimRemain = [] // calc from total
+
+    this.cardCountAllOthers.set(cardsRemain)
+    this.cardCountClaimOthers.set(cardsClaim)
+    this.cardCountTotal.set(cardsTotal)
+    // this.cardCountClaimRemain.set(cardsClaimRemain)
   }
 
   protected processPlayerInfo (m: ByteReader, p: CheatPlayerInfo): void {
-    throw new Error('Method not implemented.')
+    p.discardClaim = readCardCount(m)
+    p.handSize = m.getInt()
   }
 
   protected processDiscInfo (m: ByteReader, p: CheatDiscInfo): void {
-    throw new Error('Method not implemented.')
+    p.discardClaim = readCardCount(m)
   }
 
   protected processEliminate (m: ByteReader, d: CheatDiscInfo, p: CheatPlayerInfo): boolean {
+    // TODO
     throw new Error('Method not implemented.')
   }
 
   protected processEndTurn2 (m: ByteReader): undefined {
+    // TODO
     throw new Error('Method not implemented.')
   }
 
   protected processEndRound (m: ByteReader): void {
+    // TODO
     throw new Error('Method not implemented.')
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeCard.set(clamp(m.getInt(), 0, OptCardCount._NUM - 1))
-    this.modeTrick.set(clamp(m.getInt(), 0, OptTrick._NUM - 1))
-    this.modeRound.set(clamp(m.getInt(), 0, OptRound._NUM - 1))
-    this.modePenalty.set(clamp(m.getInt(), 0, OptPenalty._NUM - 1))
+    this.modeDecks.set(clamp(m.getFloat64(), 1, MAX_DECKS))
+    this.modeCountSame.set(m.getBool())
+    this.modeCountMore.set(m.getBool())
+    this.modeCountLess.set(m.getBool())
+    this.modeTricks.set(clamp(m.getInt(), 0, OptTrick._NUM - 1))
+    this.modeRank0.set(m.getBool())
+    this.modeRank1u.set(m.getBool())
+    this.modeRank1uw.set(m.getBool())
+    this.modeRank1d.set(m.getBool())
+    this.modeRank1dw.set(m.getBool())
+    this.modeRank2u.set(m.getBool())
+    this.modeRank2uw.set(m.getBool())
+    this.modeRank2d.set(m.getBool())
+    this.modeRank2dw.set(m.getBool())
+    this.modeRankother.set(m.getBool())
   }
 
   protected processWelcomePlayer (m: ByteReader, p: CheatClient): void {
@@ -137,7 +205,7 @@ export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, 
   protected makePlayerInfo (): CheatPlayerInfo {
     return {
       ...RRTurnGame.DEFAULT_PLAYER_INFO,
-      discardClaim: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      discardClaim: newZeroCardCount(),
       handSize: 0,
     }
   }
@@ -145,7 +213,7 @@ export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, 
   protected makeDiscInfo (): CheatDiscInfo {
     return {
       ...RRTurnGame.DEFAULT_DISC_INFO,
-      discardClaim: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      discardClaim: newZeroCardCount(),
     }
   }
 }
@@ -154,40 +222,51 @@ type CardCount = [
   number, number, number, number, number,
   number, number, number, number, number,
   number, number, number,
+  number,
 ]
+type CardCountTotal = [...CardCount, number]
 
-const enum OptCardCount {
-  ANY,
-  SAME,
-  SAME_INC,
-  INC,
-  SAME_DEC,
-  DIFF,
-  _NUM,
+function newZeroCardCount (): CardCountTotal {
+  return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+}
+
+function newTotalCardCount (decks: number): CardCountTotal {
+  const jokers = decks + decks
+  const normal = jokers + jokers
+  return [
+    normal, normal, normal, normal, normal,
+    normal, normal, normal, normal, normal,
+    normal, normal, normal, jokers, 54 * decks
+  ]
+}
+
+function readCardCount (m: ByteReader): CardCountTotal {
+  const c0 = m.getInt()
+  const c1 = m.getInt()
+  const c2 = m.getInt()
+  const c3 = m.getInt()
+  const c4 = m.getInt()
+  const c5 = m.getInt()
+  const c6 = m.getInt()
+  const c7 = m.getInt()
+  const c8 = m.getInt()
+  const c9 = m.getInt()
+  const c10 = m.getInt()
+  const c11 = m.getInt()
+  const c12 = m.getInt()
+  const c13 = m.getInt()
+  return [
+    c0, c1, c2, c3, c4,
+    c5, c6, c7, c8, c9,
+    c10, c11, c12, c13,
+    c0 + c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11 + c12 + c13,
+  ]
 }
 
 const enum OptTrick {
-  WITHIN_1,
-  WITHIN_2,
-  SAME,
-  CHANGE_1,
-  UP_1,
-  ANY,
-  _NUM,
-}
-
-const enum OptRound {
   SKIP,
   PASS,
   FORCE,
-  _NUM,
-}
-
-const enum OptPenalty {
-  ALL,
-  NEWEST_3,
-  OLDEST_3,
-  RANDOM_3,
   _NUM,
 }
 
@@ -206,6 +285,7 @@ const enum CardRank {
   FJack,
   FQueen,
   FKing,
+  Joker,
   _NUM,
 }
 */

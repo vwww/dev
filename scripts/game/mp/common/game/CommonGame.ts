@@ -1,4 +1,4 @@
-import { ValueStore, valueStore } from '../../../../util/svelte'
+import { valueStore } from '../../../../util/svelte'
 import ChatState from '../ChatState'
 import { BaseGameRoom } from '../remote/BaseGameRoom'
 import { ByteReader } from './ByteReader'
@@ -32,9 +32,9 @@ export abstract class CommonGame<C extends BaseClient, G> {
 
   public readonly inGame = valueStore(false)
   public readonly isActive = valueStore(false)
-  public readonly pastGames: ValueStore<G[]> = valueStore([])
+  public readonly pastGames = valueStore([] as G[])
 
-  public readonly clientsSorted: ValueStore<C[]> = valueStore([])
+  public readonly clientsSorted = valueStore([] as C[])
 
   protected myCn = -1
   protected clients = new Map<number, C>()

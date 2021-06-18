@@ -215,14 +215,14 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
 
   protected processPlayerInfo (m: ByteReader, p: DPlayerInfo): void {
     const discardSize = Math.min(m.getInt(), CARDS_PER_DECK * MAX_DECKS)
-    p.discarded = Array(discardSize).fill(false).map(() => m.getInt())
+    p.discarded = Array(discardSize).fill(undefined).map(() => m.getInt())
     p.immune = m.getBool()
     p.discardSum = sum(p.discarded)
   }
 
   protected processDiscInfo (m: ByteReader, d: DDiscInfo): void {
     const discardSize = Math.min(m.getInt(), CARDS_PER_DECK * MAX_DECKS)
-    d.discarded = Array(discardSize).fill(false).map(() => m.getInt())
+    d.discarded = Array(discardSize).fill(undefined).map(() => m.getInt())
     d.discardSum = sum(d.discarded)
   }
 

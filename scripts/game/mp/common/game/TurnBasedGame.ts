@@ -1,4 +1,4 @@
-import { ValueStore, valueStore } from '../../../../util/svelte'
+import { valueStore } from '../../../../util/svelte'
 import { ByteReader } from './ByteReader'
 import { ByteWriter } from './ByteWriter'
 import { BaseClient, CommonC2S, CommonGame, CommonS2C } from './CommonGame'
@@ -47,8 +47,8 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, G> extends Common
   public readonly roundTimerStart = valueStore(0)
   public readonly roundTimerEnd = valueStore(0)
 
-  public readonly roundPlayers: ValueStore<C[]> = valueStore([])
-  public readonly roundPlayerQueue: ValueStore<C[]> = valueStore([])
+  public readonly roundPlayers = valueStore([] as C[])
+  public readonly roundPlayerQueue = valueStore([] as C[])
 
   protected INTERMISSION_TIME = 30000
   protected ROUND_TIME = 20000

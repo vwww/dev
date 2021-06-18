@@ -35,6 +35,10 @@ function getRoomData () {
   return roomCreateData.length ? Object.fromEntries(roomCreateData.map(([o, s]) => [o[0], s.get()])) : null
 }
 
+function resetRoomOptions () {
+  roomCreateData.forEach((s) => s[1].set(s[0][2]))
+}
+
 let rooms = []
 let isRefreshing = false
 let isConnected = false
@@ -78,6 +82,7 @@ refreshRooms()
 </script>
 
 <RoomList let:room {isRefreshing} {rooms} disableNew={!isConnected} onRefresh={refreshRooms}
+  onResetRoomOptions={resetRoomOptions}
   onNewRoom={() => tryConnect(async (conn) => conn.createJoinRoom(randomAlphaNumeric(50), roomType, true, getRoomData(), joinData))}>
   <div slot="newRoom">
     {#each roomCreateData as optionStore}

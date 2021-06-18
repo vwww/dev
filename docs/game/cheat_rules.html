@@ -9,10 +9,10 @@ mdate: 2020-10-03 14:15:00 -0600
 <p>Cheat is a shedding card game, but players might be dishonest. The minimum player count is 2, but there must be at least 3 players to remove perfect information.</p>
 <p>Each turn, the current player discards some cards and claims that they are cards of the same rank. Players win when they have discarded all of their cards.</p>
 <p>
-  Other players have a chance to call "cheat" and challenge the cards that were just played.
+  Other players have a chance to call "cheat" and challenge the cards that were just played, causing the entire discard pile to go to a player as a penalty.
   If the move was honest (the cards match the claim), penalty cards go to the player who made the claim. Otherwise, penalty cards go to the dishonest player.
-  The winner starts the next round.
-  To allow for a chance to call "cheat", the system will allow at least 2 seconds before the next move is finalized.
+  The winner starts the first trick of the next round.
+  To allow for a chance to call "cheat", the system will allow at least 5 seconds before the next move is finalized.
 </p>
 
 <h2>Ranks</h2>
@@ -31,56 +31,38 @@ mdate: 2020-10-03 14:15:00 -0600
 
 <h1>Options</h1>
 
-<h2>Count</h2>
+<h2>Decks <small>(default: 1, min: 1, max: 166,799,986,198,907)</small></h2>
+<p>Number of decks to use.</p>
+
+<h2>Count (off/on, default: all on)</h2>
 <p>How many cards may be played after the first turn? Any count may be played on the first turn.</p>
+<p>If the current player has fewer cards than required, all of them may be played. If skipping or passing is not allowed, all of them must be played.</p>
+<p>If all options are off, the count is always 1. If decreasing is the one and only option enabled, after playing a single card, the trick ends.</p>
 <ul>
-  <li><strong>any</strong> <em>(default)</em>: any count is allowed
-  <li><strong>same</strong>: same as first in trick
-  <li><strong>nondecreasing</strong>: same + increasing
-  <li><strong>increasing</strong>: more cards than the previous move
-  <li><strong>nonincreasing</strong>: same + decreasing
-  <li><strong>decreasing</strong>: fewer cards than the previous (trick ends if single card is played)
-  <li><strong>change</strong>: different from previous move
-  <li><strong>single</strong>: always 1
+  <li><strong>same</strong>: same count as the previous move
+  <li><strong>more</strong>: more cards than the previous move
+  <li><strong>less</strong>: fewer cards than the previous (trick ends if single card is played)
+<ul>
+
+<h2>Trick Rank (off/on, default: first 5 on)</h2>
+<p>What card ranks may be played after the first turn? Any rank may be played on the first turn of a trick.</p>
+<p>If no card claim is possible, the current player starts a new trick.</p>
+<ul>
+  <li><strong>same</strong>: same rank as previous move</li>
+  <li><strong>up 1</strong>: previous plus one, when not wrapping</li>
+  <li><strong>up 1 wrap</strong>: previous plus one, when wrapping</li>
+  <li><strong>down 1</strong>: previous minus one, when not wrapping</li>
+  <li><strong>down 1 wrap</strong></li>
+  <li><strong>up 2</strong>: previous plus two, when not wrapping</li>
+  <li><strong>up 2 wrap</strong></li>
+  <li><strong>down 2</strong></li>
+  <li><strong>down 2 wrap</strong></li>
+  <li><strong>others</strong>: other ranks not covered above</li>
 </ul>
 
-<h2>Trick Rank</h2>
-<p>What card ranks may be played after the first turn? Any rank may be played on the first turn.</p>
-<p>If no card claim is possible, the last player to move starts a new round.</p>
-<!-- TODO -->
-<ul>
-  <li>same (off/on)</li>
-  <li>up 1 (off, yes with no wrap, yes with wrap)</li>
-  <li>down 1 (off, yes with no wrap, yes with wrap)</li>
-  <li>up 2 (off, yes with no wrap, yes with wrap)</li>
-  <li>down 2 (off, yes with no wrap, yes with wrap)</li>
-  <li>others (off/on)</li>
-</ul>
-
-<ul>
-  <li><strong>within 1</strong> <em>(default)</em>: same + change 1
-  <li><strong>within 2</strong>: within 1 + change 2
-  <li><strong>same</strong>: must be same rank as previous turn
-  <li><strong>change 1</strong>: up 1 + down 1 (one rank lower than previous turn)
-  <li><strong>up 1</strong>: 1 rank higher than previous turn, wrapping around
-  <li><strong>up 2</strong>: 2 ranks higher than previous turn, wrapping around
-  <li><strong>up 1 (strict)</strong>: up 1, no wraparound (playing King starts new round)
-  <li><strong>any</strong>: any rank is allowed
-</ul>
-
-<h2>Rounds</h2>
+<h2>Tricks</h2>
 <ul>
   <li><strong>skip</strong> <em>(default)</em>: play or skip your turn
-  <li><strong>pass</strong>: play or pass; passing prevents playing until next round
-  <li><strong>pass (clear)</strong>: pass, also clears discard pile on new round
+  <li><strong>pass</strong>: play or pass; passing prevents playing until next trick
   <li><strong>forced</strong>: must play every turn
-</ul>
-
-<h2>Penalty</h2>
-<p>What cards go to a penalized player after a challenge?</p>
-<ul>
-  <li><strong>all cards</strong> <em>(default)</em>: all cards in the discard pile
-  <li><strong>new 3</strong>: top (newest) 3 cards from the discard pile
-  <li><strong>old 3</strong>: bottom (oldest) 3 cards from the discard pile
-  <li><strong>random 3</strong>: 3 cards randomly selected from the discard pile
 </ul>

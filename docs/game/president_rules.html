@@ -38,7 +38,8 @@ mdate: 2021-02-23 20:47:00 -0700
 
 <p>The Scum gives the President his 2 best cards. If there are at least 4 players, the High-Scum gives the Vice President his best card.</p>
 <p>After that, the President chooses 2 cards to give to the Scum. If applicable, the Vice President chooses 1 card to give to the High-Scum.</p>
-<p>The Scum starts the first trick.</p>
+<p>If both the President and Vice President leave, this part is skipped. If the Scum leaves, the President directly discards the cards that would be given to the Scum; the same applies to Vice President and High-Scum.</p>
+<p>The Scum, President, or a random player (depending on the rules) starts the first trick.</p>
 
 <h2>Tricks</h2>
 <p>In each trick, the first player plays a combo of N cards, and then each player plays a combo to beat or equalize the previous combo.</p>
@@ -67,7 +68,10 @@ mdate: 2021-02-23 20:47:00 -0700
 <p>Jokers are used as wildcards.</p>
 
 <h2>Revolutions</h2>
-<p>When at least 4 cards of the same value are played at the same time, the rankings are reversed (except jokers) until the end of the round.</p>
+<p>
+  When at least 4 cards of the same value are played at the same time, the rankings are reversed (except jokers) until the end of the round.
+  This effect can stack to cancel out the previous revolution.
+</p>
 <ul>
   <li><strong>off</strong> <em>(default)</em>
   <li><strong>on, strict</strong>: revolution does not occur if any of the cards is a joker

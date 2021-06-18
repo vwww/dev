@@ -1,4 +1,4 @@
-import { ValueStore, valueStore } from '../../../util/svelte'
+import { valueStore } from '../../../util/svelte'
 
 type ChatJoin = {
   type: 'join'
@@ -37,7 +37,7 @@ type SysMessage = {
 type ChatEntry = ChatJoin | ChatLeft | ChatReset | ChatRename | ChatMessage | SysMessage
 
 export default class ChatState {
-  public readonly messages: ValueStore<ChatEntry[]> = valueStore([])
+  public readonly messages = valueStore([] as ChatEntry[])
   public readonly queueLength = valueStore(0)
 
   private readonly messageBuf: ChatEntry[] = []

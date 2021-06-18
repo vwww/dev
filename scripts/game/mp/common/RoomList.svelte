@@ -6,6 +6,7 @@ import { onDestroy } from 'svelte'
 export let onRefresh
 export let isRefreshing
 export let onNewRoom
+export let onResetRoomOptions
 export let rooms
 export let disableNew = false
 export let refreshTimeoutBase = 15000
@@ -68,6 +69,7 @@ onDestroy(() => clearTimeout(refreshTimeout))
         <slot name="newRoom" />
       </div>
       <div class="modal-footer">
+        <button class="btn btn-danger me-auto" on:click={onResetRoomOptions}>Reset</button>
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button class="btn btn-primary" data-bs-dismiss="modal" on:click={onNewRoom}>Create</button>
       </div>

@@ -1,4 +1,4 @@
-import { ValueStore, valueStore } from '../../../../util/svelte'
+import { valueStore } from '../../../../util/svelte'
 import { ByteReader } from './ByteReader'
 import { CommonGame } from './CommonGame'
 import { TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'
@@ -30,7 +30,6 @@ export abstract class RRTurnGame<
   D extends RRTurnDiscInfo,
   G>
   extends TurnBasedGame<C, G> {
-
   protected static DEFAULT_PLAYER: RRTurnClient = TurnBasedGame.DEFAULT_PLAYER
 
   protected static DEFAULT_PLAYER_INFO: RRTurnPlayerInfo = {
@@ -41,8 +40,8 @@ export abstract class RRTurnGame<
     ownerName: '',
   }
 
-  public readonly playerInfo: ValueStore<P[]> = valueStore([])
-  public readonly playerDiscInfo: ValueStore<D[]> = valueStore([])
+  public readonly playerInfo = valueStore([] as P[])
+  public readonly playerDiscInfo = valueStore([] as D[])
 
   getClientFromPlayer (p?: RRTurnPlayerInfo): C | undefined {
     return p && this.clients.get(p.owner)
