@@ -93,7 +93,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 <div class="input-group mb-2">
   <span class="input-group-text">Load level</span>
-  <input type="number" on:change={function () { loadString(BOARDS[+this.value - 1]) }} min="1" max={BOARDS.length} bind:value={$gridLevel} class="form-control">
+  <input type="number" on:change={function () { loadString(BOARDS[+this.value - 101]) }} min="101" max={BOARDS.length + 100} bind:value={$gridLevel} class="form-control">
 </div>
 
 <textarea class="form-control mb-3" bind:value={gridTextTxt} on:change={loadString(gridTextTxt)} maxlength="280" placeholder="Grid string"></textarea>
