@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
 import boards from './boards.txt'
 import { Solver } from './Solver'
+import { MoveType } from './Move'
 import { pStore } from '../../../util/svelte'
 
 const BOARDS = boards.trim().split(/[\r\n]+/)
@@ -12,9 +13,19 @@ const solver = new Solver(ROWS, COLS)
 
 const gridLevel = pStore('game/sp/fill/gridLevel', undefined)
 const gridText = pStore('game/sp/fill/gridText', '')
-let gridTextTxt
-let cells = Array(ROWS).fill().map(r => Array(COLS).fill().map(c => { r, c }))
-let status
+let gridTextTxt = ''
+let cells: CellInfo[][] = Array(ROWS).fill(undefined).map(_ => Array(COLS).fill(undefined).map(_ => undefined as unknown as CellInfo))
+let status: number | undefined
+
+type CellInfo = {
+  r: number
+  c: number
+  isSolved: number
+  reachesRoot: boolean | undefined
+  isRoot: boolean
+  active: boolean
+  moves: MoveType[]
+}
 
 function updateRendering () {
   const root = solver.getRoot()
@@ -24,7 +35,7 @@ function updateRendering () {
     const row = cells[r]
     for (let c = 0; c < COLS; c++) {
       const cell = solver.getCell(r, c)
-      const cellInfo = {
+      const cellInfo: CellInfo = {
         r,
         c,
         isSolved: cell.solver.mYes,
@@ -51,16 +62,22 @@ function recompute () {
   $gridText = gridTextTxt = solver.toString()
 }
 
-function loadString (s) {
+function loadString (s: string) {
   solver.loadString(s)
   recompute()
+}
+
+function loadBoard (b: number) {
+  if (b >= 0 && b < BOARDS.length) {
+    loadString(BOARDS[b])
+  }
 }
 
 loadString($gridText)
 
 // dev only
 if (process.env.NODE_ENV !== 'production') {
-  window.test = function () {
+  (window as any).test = function () {
     const testSolver = new Solver(ROWS, COLS)
     const unsolvable = []
 
@@ -70,10 +87,8 @@ if (process.env.NODE_ENV !== 'production') {
 
       const rootUF = testSolver.getRoot()?.solver.ufFind()
 
-      let unsolved = false
       OUTER:
       for (let r = 0; r < ROWS; r++) {
-        const row = cells[r]
         for (let c = 0; c < COLS; c++) {
           const cell = testSolver.getCell(r, c)
 
@@ -89,14 +104,16 @@ if (process.env.NODE_ENV !== 'production') {
     console.log(unsolvable)
   }
 }
+
+function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
 </script>
 
 <div class="input-group mb-2">
   <span class="input-group-text">Load level</span>
-  <input type="number" on:change={function () { loadString(BOARDS[+this.value - 101]) }} min="101" max={BOARDS.length + 100} bind:value={$gridLevel} class="form-control">
+  <input type="number" on:change={onBoardChange} min="101" max={BOARDS.length + 100} bind:value={$gridLevel} class="form-control">
 </div>
 
-<textarea class="form-control mb-3" bind:value={gridTextTxt} on:change={loadString(gridTextTxt)} maxlength="280" placeholder="Grid string"></textarea>
+<textarea class="form-control mb-3" bind:value={gridTextTxt} on:change={() => loadString(gridTextTxt)} maxlength="280" placeholder="Grid string"></textarea>
 
 {#if !status}
   <div class="alert alert-success" role="alert">
