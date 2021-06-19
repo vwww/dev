@@ -30,6 +30,9 @@
             "processor": "svelte3/svelte3"
         }
     ],
+    "settings": {
+        "svelte3/typescript": true
+    },
     "rules": {
         // TSLint -> ESLint https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/ROADMAP.md
         // TS Lint Standard Plus
