@@ -14,7 +14,7 @@ const {
   Scum [pl] gives the two highest cards to President [pl], who must choose two cards to give back.
   High-Scum [pl] gives the two highest cards to Vice-President [pl], who must choose two cards to give back.
   <!-- scum -->
-  You gave [c0] and [c1] to [pl].
+  You gave [c0] and [c1] to [pl], who will give you back two cards.
 
   <!-- pres -->
   [pl] gave you [c0] and [c1]. Give back two cards:
