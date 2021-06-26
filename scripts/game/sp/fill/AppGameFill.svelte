@@ -93,7 +93,7 @@ if (process.env.NODE_ENV !== 'production') {
           const cell = testSolver.getCell(r, c)
 
           if (cell.active && rootUF !== cell.solver.ufFind()) {
-            unsolvable.push(i)
+            unsolvable.push(i + 101)
             break OUTER
           }
         }

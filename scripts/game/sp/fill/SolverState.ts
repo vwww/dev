@@ -71,23 +71,27 @@ export class SolverState {
   }
 
   ufUnion (other: this): this {
-    let tRoot = this.ufFind()
-    let oRoot = other.ufFind()
+    const tRoot = this.ufFind()
+    const oRoot = other.ufFind()
 
-    if (tRoot === oRoot) return tRoot
-
-    if (tRoot.ufSize < oRoot.ufSize) {
-      [tRoot, oRoot] = [oRoot, tRoot]
+    if (tRoot === oRoot) {
+      return tRoot
+    } else if (tRoot.ufSize < oRoot.ufSize) {
+      return this.ufUnionApply(oRoot, tRoot, other, this)
+    } else {
+      return this.ufUnionApply(tRoot, oRoot, this, other)
     }
+  }
 
-    oRoot.ufParent = tRoot
-    tRoot.ufSize += oRoot.ufSize
-    tRoot.ufEnds = [
-      this !== tRoot.ufEnds[0] ? tRoot.ufEnds[0] : tRoot.ufEnds[1],
-      other !== oRoot.ufEnds[0] ? oRoot.ufEnds[0] : oRoot.ufEnds[1],
+  private ufUnionApply (a: this, b: this, aChild: this, bChild: this): this {
+    // a = big, b = small
+    b.ufParent = a
+    a.ufSize += b.ufSize
+    a.ufEnds = [
+      aChild !== a.ufEnds[0] ? a.ufEnds[0] : a.ufEnds[1],
+      bChild !== b.ufEnds[0] ? b.ufEnds[0] : b.ufEnds[1],
     ]
-    tRoot.ufSourceSink = tRoot.ufSourceSink || oRoot.ufSourceSink
-
-    return tRoot
+    a.ufSourceSink ||= b.ufSourceSink
+    return a
   }
 }

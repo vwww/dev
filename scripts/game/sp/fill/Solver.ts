@@ -73,11 +73,13 @@ export class Solver {
       stack.push([cell.r, cell.c])
     }
 
+    let numActive = 0
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.cols; c++) {
         const cell = this.grid[r][c]
         if (cell.active) {
           queueVisit(cell)
+          numActive++
         }
       }
     }
@@ -101,11 +103,10 @@ export class Solver {
         const tp = solver.ufFind()
         const op = other.solver.ufFind()
 
-        // can't connect to same group (unless forced)
+        // can't connect to same group (unless it finishes the puzzle)
         const disallowed = tp === op ||
           (tp.ufSourceSink && op.ufSourceSink &&
-            solver.mMaybe > solver.remain &&
-            other.solver.mMaybe > other.solver.remain)
+            tp.ufSize + op.ufSize < numActive)
 
         if (disallowed) {
           queueVisit(other)
