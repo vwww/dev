@@ -1,10 +1,8 @@
-/*
 export const enum Player {
   None,
   P1,
   P2,
 }
-*/
 
 export const enum Winner {
   None,

@@ -1,18 +1,18 @@
-<script>
+<script lang="ts">
 import { onMount } from 'svelte'
 import { slide } from 'svelte/transition'
 
 import { randomArrayItemZipf } from '../../util'
 
-let rankedWords
-let tweets = []
+let rankedWords: string[] | undefined
+let tweets: string[] = []
 
-function getWord () {
+function getWord (): string {
   if (!rankedWords) return 'the'
   return randomArrayItemZipf(rankedWords)
 }
 
-function randomSentence (maxLen) {
+function randomSentence (maxLen: number): string {
   const result = []
   do {
     let newWord = getWord()
@@ -30,7 +30,7 @@ function randomSentence (maxLen) {
   return result.join(' ')
 }
 
-function randomTweet (remain = 140) {
+function randomTweet (remain = 140): string {
   const result = []
   while (remain > 1) {
     const newWords = randomSentence(remain)
@@ -41,9 +41,9 @@ function randomTweet (remain = 140) {
   return result.join('&mdash;')
 }
 
-function randomize () {
+function randomize (): void {
   const NUM_TWEETS = 32
-  tweets = new Array(NUM_TWEETS).fill().map(randomTweet)
+  tweets = new Array(NUM_TWEETS).fill(undefined).map(randomTweet)
 }
 
 onMount(async () => {

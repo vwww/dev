@@ -1,12 +1,13 @@
-<script>
+<script lang="ts">
 import fileRoot from './fileList'
+import { NodeBrowse, NodeDirectory } from './nodeTypes'
 
 // File browser
 let curPath = [fileRoot]
 $: curNode = curPath[curPath.length - 1]
 $: curParent = curPath.length > 1 ? curPath[curPath.length - 2] : fileRoot
 
-function up (count) {
+function up (count: number): void {
   count = Math.min(count, curPath.length - 1)
   if (!count) return
 
@@ -15,22 +16,22 @@ function up (count) {
   updateLocationHash()
 }
 
-function enterChild (node) {
+function enterChild (node: NodeDirectory): void {
   curPath = [...curPath, (curNode = node)]
 
   updateLocationHash()
 }
 
-function getPathString (path) {
+function getPathString (path: NodeDirectory[]): string {
   return path.slice(1).map(node => node.name).join('/')
 }
 
-function getChildPath (path, child) {
+function getChildPath (path: NodeDirectory[], child: NodeBrowse): string {
   return path.slice(1).map(node => node.name + '/').join('') + child.name
 }
 
-function formatSize (s, noreduce) {
-  if (s < 0) return s
+function formatSize (s: number, noreduce = false): string {
+  if (s < 0) return s + ''
 
   const p = ['', 'K', 'M'] // prefixes
   const m = noreduce ? 0 : p.length - 1 // maximum...
@@ -42,16 +43,16 @@ function formatSize (s, noreduce) {
   return Math.round(s * 100) / 100 + ' ' + p[i] + 'B'
 }
 
-function formatDateTime (unixTimestamp) {
+function formatDateTime (unixTimestamp: number): string {
   return unixTimestamp ? new Date(unixTimestamp).toISOString() : '-'
 }
 
-function ext (filename) {
+function ext (filename: string): string {
   const i = filename.lastIndexOf('.') + 1
   return i ? filename.slice(i) : ''
 }
 
-function getDownloadPath(path, node) {
+function getDownloadPath (path: NodeDirectory[], node: NodeBrowse): string {
   return '../../assets/victorz/dl/' + getChildPath(path, node)
 }
 
@@ -59,7 +60,7 @@ function getDownloadPath(path, node) {
 let curSort = 'name'
 let curSortReverse = false
 
-function setSort (s) {
+function setSort (s: string): void {
   if (curSort === s) {
     curSortReverse = !curSortReverse
     return
@@ -68,15 +69,15 @@ function setSort (s) {
   curSortReverse = false
 }
 
-function cmp (a, b) {
+function cmp (a: number, b: number): number {
   return a < b ? -1 : a > b ? 1 : 0
 }
 
-function cmpProp(a, b, prop, reverse) {
+function cmpProp(a: any, b: any, prop: string, reverse = false): number {
   return cmp(a[prop], b[prop]) * (reverse ? -1 : 1)
 }
 
-function sortText (isSort, reverse) {
+function sortText (isSort: boolean, reverse: boolean): string {
   return isSort
     ? reverse
       ? ' (desc)'
@@ -85,7 +86,7 @@ function sortText (isSort, reverse) {
 }
 
 // Load from hash
-function updateLocationHash (replaceHash) {
+function updateLocationHash (replaceHash = false) {
   const newHash = getPathString(curPath)
   if (location.hash !== newHash) {
     history[replaceHash ? 'replaceState' : 'pushState'](null, '', location.pathname + '#' + newHash)
@@ -93,12 +94,12 @@ function updateLocationHash (replaceHash) {
   document.title = "Victor's Downloads" + (newHash ? '/' + newHash : '')
 }
 
-function browseToPath (path, replaceHash) {
+function browseToPath (path: string, replaceHash = false) {
   const newPath = [fileRoot]
   let node = fileRoot
   for (const segment of path.split('/')) {
     const nextChild = node.children.find(c => c.name === segment)
-    if (!nextChild) break
+    if (!nextChild || nextChild.type !== 'dir') break
     newPath.push(node = nextChild)
   }
 
@@ -121,7 +122,7 @@ browseLocationHash()
       {#if index + 1 === curPath.length}
         <li class="breadcrumb-item active" aria-current="page">{item.name} ({formatSize(item.size)})</li>
       {:else}
-        <li class="breadcrumb-item"><a href on:click|preventDefault={() => up((curPath.length - 1) - index)}>{item.name}</a></li>
+        <li class="breadcrumb-item"><a href="" on:click|preventDefault={() => up((curPath.length - 1) - index)}>{item.name}</a></li>
       {/if}
     {/each}
   </ol>

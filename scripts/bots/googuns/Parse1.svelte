@@ -1,10 +1,10 @@
-<script>
-import Parse1_0 from './Parse1_0'
-import Parse1_1 from './Parse1_1'
+<script lang="ts">
+import Parse1_0 from './Parse1_0.svelte'
+import Parse1_1 from './Parse1_1.svelte'
 
 import { repStr } from './util'
 
-export let value
+export let value: string
 
 const EXPECTED_LEN = 140
 

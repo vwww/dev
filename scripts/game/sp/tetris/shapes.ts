@@ -1,4 +1,4 @@
-type TetrominoShape = TetrominoShapeOriented[]
+export type TetrominoShape = TetrominoShapeOriented[]
 type TetrominoShapeOriented = [TetrominoRow, TetrominoRow, TetrominoRow, TetrominoRow]
 type TetrominoRow = [number, number, number, number]
 

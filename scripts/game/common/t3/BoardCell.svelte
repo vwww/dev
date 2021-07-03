@@ -1,10 +1,12 @@
-<script>
-export let winner
-export let mark
+<script lang="ts">
+import { Winner } from './game'
+
+export let winner: Winner
+export let mark: number
 export let markHover = 0
 export let hintClass = ''
-export let hintVal
-export let onMove
+export let hintVal: number | undefined
+export let onMove: () => void | undefined
 </script>
 
 <td

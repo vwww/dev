@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { randomHexColor } from '../../../util'
 import { pStore } from '../../../util/svelte'
 
@@ -15,7 +15,7 @@ let cheat = 0
 let score = 0
 let tickDelay = 300
 
-function tick () {
+function tick (): void {
   x += dx / 22
   y += dy / 18.15
 
@@ -30,7 +30,7 @@ function tick () {
   setTimeout(tick, tickDelay)
 }
 
-function clicked () {
+function clicked (): void {
   ++score
   if ($highscore < score) {
     $highscore = score
@@ -43,7 +43,7 @@ function clicked () {
   }
 }
 
-function checkCheat () {
+function checkCheat (): void {
   if (cheat >= 2) {
     clicked()
   }

@@ -1,14 +1,14 @@
-<script>
+<script lang="ts">
 import { pStore } from '../../util/svelte'
 
 const avgByTime = pStore('tool/freq/avgByTime', true)
 
 const intervalCount = pStore('tool/freq/intervalCount', -1)
-const startTime = pStore('tool/freq/startTime')
-const lastTime = pStore('tool/freq/lastTime')
-const lastDelay = pStore('tool/freq/lastDelay')
-const eventTime = pStore('tool/freq/eventTime')
-const eventAvgTime = pStore('tool/freq/eventAvgTime')
+const startTime = pStore('tool/freq/startTime', 0)
+const lastTime = pStore('tool/freq/lastTime', 0)
+const lastDelay = pStore('tool/freq/lastDelay', 0)
+const eventTime = pStore('tool/freq/eventTime', 0)
+const eventAvgTime = pStore('tool/freq/eventAvgTime', 0)
 const eventAvgFreq = pStore('tool/freq/eventAvgFreq', 0)
 
 function addEvent () {

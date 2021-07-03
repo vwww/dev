@@ -1,5 +1,7 @@
-<script>
-export let winner
+<script lang="ts">
+import { Winner } from './game'
+
+export let winner: Winner
 const cellNumbers = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 </script>
 

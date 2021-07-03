@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
 import { pStore } from '../../../util/svelte'
 
 const WIDTH = 10
 const HALF_WIDTH = WIDTH / 2
 const HEIGHT = 20
-const MOMENT_MIN = -MOMENT_MAX
+
 const MOMENT_MAX = 69
+const MOMENT_MIN = -MOMENT_MAX
 
 const POINTS_PER_TICK = 1
 const POINTS_PER_BLOCK_DROPPED = 100
@@ -31,12 +32,10 @@ const COLORS = [
   'orchid'
 ]
 
-import MomentBar from './MomentBar'
+import MomentBar from './MomentBar.svelte'
 
-import { tetrominoShapes } from './shapes'
+import { TetrominoShape, tetrominoShapes } from './shapes'
 import { shuffle } from '../../../util'
-
-import { onMount } from 'svelte'
 
 // game settings
 const showGhost = pStore('game/sp/tetris/showGhost', true)
@@ -48,21 +47,23 @@ const gameBlocks = [...tetrominoShapes]
 let gameBlockIndex = 0
 $: nextBlock = gameBlocks[gameBlockIndex][0]
 let nextColor = ((Math.random() * (COLORS.length - 1)) | 0) + 1
-function getNextBlock () {
+function getNextBlock (): TetrominoShape {
   const block = gameBlocks[gameBlockIndex]
   setNextBlock()
   return block
 }
-function peekNextBlock () {
+/*
+function peekNextBlock (): TetrominoShape {
   return gameBlocks[gameBlockIndex]
 }
-function setNextBlock() {
+*/
+function setNextBlock (): void {
   gameBlockIndex++
   if (gameBlockIndex === gameBlocks.length) {
     resetNextBlock()
   }
 }
-function resetNextBlock () {
+function resetNextBlock (): void {
   gameBlockIndex = 0
   shuffle(gameBlocks)
 }
@@ -70,8 +71,8 @@ function resetNextBlock () {
 // game state
 let gameRunning = false
 let gamePaused = false
-let gameTimeout = false
-let grid = Array(HEIGHT).fill().map(_ => Array(WIDTH).fill(0))
+let gameTimeout = 0
+let grid = Array(HEIGHT).fill(undefined).map(_ => Array(WIDTH).fill(0))
 let moment = 0
 let score = 0
 let linesCleared = 0
@@ -79,18 +80,18 @@ let keyLeft = false
 let keyRight = false
 let keyUp = false
 let keyDown = false
-let intervalTarget
+let intervalTarget = -1
 
 // current block
-let curR
-let curC
-let maxR
-let ghostLines
-let curBlock
-let curBlockIndex
-let curColor
+let curR = -1
+let curC = -1
+let maxR = -1
+let ghostLines = -1
+let curBlock: TetrominoShape
+let curBlockIndex = -1
+let curColor = -1
 
-function newGame () {
+function newGame (): void {
   for (let r = 0; r < HEIGHT; r++) {
     const row = grid[r]
     for (let c = 0; c < WIDTH; c++) {
@@ -107,24 +108,24 @@ function newGame () {
   if (gameTimeout) {
     clearTimeout(gameTimeout)
   }
-  gameTimeout = setTimeout(gameTick, 0)
+  gameTimeout = window.setTimeout(gameTick, 0)
   intervalTarget = INTERVAL_START
 }
 
-function togglePause () {
+function togglePause (): void {
   gamePaused = !gamePaused
   if(!gamePaused && gameRunning) {
     gameTick()
   }
 }
 
-function gameOver () {
+function gameOver (): void {
   gameRunning = false
   clearTimeout(gameTimeout)
-  gameTimeout = undefined
+  gameTimeout = 0
 }
 
-function tryStartNewBlock () {
+function tryStartNewBlock (): void {
   curR = 0
   curC = (Math.random() * (WIDTH - 4 + 1)) | 0
   curBlock = getNextBlock()
@@ -140,7 +141,7 @@ function tryStartNewBlock () {
   }
 }
 
-function canAddBlock () {
+function canAddBlock (): boolean {
   let r = curR
   for (let dr = 0; dr < 4; dr++, r++) {
     const rowOutOfBounds = (r < 0 || r >= HEIGHT)
@@ -158,7 +159,7 @@ function canAddBlock () {
   return true
 }
 
-function isGhost (curBlock, curBlockIndex, maxR, curC, r, c) {
+function isGhost (curBlock: TetrominoShape, curBlockIndex: number, maxR: number, curC: number, r: number, c: number): boolean {
   if (grid[r][c] || !curBlock) return false
 
   const curBlockRows = curBlock[curBlockIndex]
@@ -172,7 +173,7 @@ function isGhost (curBlock, curBlockIndex, maxR, curC, r, c) {
   return !!curBlockCols[gc]
 }
 
-function recalcMaxR () {
+function recalcMaxR (): void {
   const oldR = curR
   do {
     curR++
@@ -195,7 +196,7 @@ function recalcMaxR () {
   curR = oldR
 }
 
-function setBlock(val) {
+function setBlock (val: number): void {
   let r = curR
   for (let dr = 0; dr < 4; dr++, r++) {
     if (r < 0 || r >= HEIGHT) {
@@ -213,15 +214,15 @@ function setBlock(val) {
   }
 }
 
-function addBlock () {
+function addBlock (): void {
   setBlock(curColor)
 }
 
-function removeBlock () {
+function removeBlock (): void {
   setBlock(0)
 }
 
-function addMoment () {
+function addMoment (): void {
   let r = curR
   for (let dr = 0; dr < 4; dr++, r++) {
     if (r < 0 || r >= HEIGHT) {
@@ -239,7 +240,7 @@ function addMoment () {
   }
 }
 
-function gameUpdate () {
+function gameUpdate (): void {
   score += POINTS_PER_TICK
 
   removeBlock()
@@ -257,7 +258,7 @@ function gameUpdate () {
   }
 
   // Try move left/right
-  if (keyLeft ^ keyRight) {
+  if (keyLeft !== keyRight) {
     // Undo when movement is disallowed
     curC += keyLeft ? -1 : 1
     if (!canAddBlock()) {
@@ -318,7 +319,7 @@ function gameUpdate () {
   }
 }
 
-function gameTick () {
+function gameTick (): void {
   if (gamePaused) return
 
   if ($speedup) {
@@ -327,12 +328,12 @@ function gameTick () {
       intervalTarget = INTERVAL_MIN
     }
   }
-  gameTimeout = setTimeout(gameTick, intervalTarget | 0)
+  gameTimeout = window.setTimeout(gameTick, intervalTarget | 0)
 
   gameUpdate()
 }
 
-function handleKey (event, on) {
+function handleKey (event: KeyboardEvent, on: boolean): void {
   if (event.defaultPrevented) return
 
   switch(event.code) {

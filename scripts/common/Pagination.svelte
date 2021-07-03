@@ -1,14 +1,14 @@
-<script>
+<script lang="ts">
 export let showLo = 3
 export let showBehind = 3
 export let showAhead = 3
 export let showHi = 3
-export let pageCur
-export let pageMax
+export let pageCur: number
+export let pageMax: number
 
 $: pageNumbers = Array.from(generatePageNumbers(pageCur, pageMax, showLo, showBehind, showAhead, showHi))
 
-function* generatePageNumbers (pageCur, pageMax, showLo, showBehind, showAhead, showHi) {
+function* generatePageNumbers (pageCur: number, pageMax: number, showLo: number, showBehind: number, showAhead: number, showHi: number) {
   const lo = Math.max(pageCur - showBehind, 1)
   const hi = Math.min(pageCur + showAhead, pageMax)
 

@@ -1,14 +1,14 @@
-<script>
-import DerivedField from './DerivedField'
-import DerivedTable from './DerivedTable'
-import DerivedTimestamp from './DerivedTimestamp'
-import RawField from './RawField'
-import RawTable from './RawTable'
+<script lang="ts">
+import DerivedField from './DerivedField.svelte'
+import DerivedTable from './DerivedTable.svelte'
+import DerivedTimestamp from './DerivedTimestamp.svelte'
+import RawField from './RawField.svelte'
+import RawTable from './RawTable.svelte'
 
 import { fromHex, repStr, rolHex64Str, sha, xorHexStr } from './util'
 
-export let msg
-export let len
+export let msg: string
+export let len: number
 
 $: parts = [
   msg.slice(0, 16),
@@ -123,7 +123,7 @@ $: VA = V1 && V4 && V5 && V7 && VT
           <DerivedField name="hash1 = sha1(data[:8])" hexBytes={C1 || repStr(40, '?')} />
           <DerivedField name="hash2 = sha256(data[:30] + data[62:])" hexBytes={C2 || repStr(64, '?')} />
           <DerivedField name="A + B + C" hexBytes={ABC || repStr(10, '?')} />
-          <DerivedTimestamp hexBytes={UT || repStr(16, '?')} date={UTD} valid={VT} />
+          <DerivedTimestamp hexBytes={UT || repStr(16, '?')} date={UTD || undefined} valid={VT} />
         </DerivedTable>
 
         <pre class="card card-body bg-light">

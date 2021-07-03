@@ -1,7 +1,9 @@
-<script>
-export let playerTypes
-export let playerType
-export let onSelectPlayerType
+<script lang="ts">
+import { Bot, PlayerType } from '../../common/t3/ai'
+
+export let playerTypes: PlayerType[]
+export let playerType: Bot | undefined
+export let onSelectPlayerType: (pt: Bot | undefined) => void
 </script>
 
 <div class="btn-group d-flex mb-2" role="group">

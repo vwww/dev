@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { pStore } from '../../util/svelte'
 
 import gcd from './gcd'

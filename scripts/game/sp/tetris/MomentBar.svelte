@@ -1,6 +1,6 @@
-<script>
-export let moment
-export let momentMax
+<script lang="ts">
+export let moment: number
+export let momentMax: number
 
 $: width = Math.max(moment, 0) / momentMax * 100
 $: className = width <= 20 ? 'bg-success'
@@ -13,6 +13,6 @@ $: className = width <= 20 ? 'bg-success'
 <div class="progress-bar progress-bar-striped progress-bar-animated {className}"
   role="progressbar"
   aria-valuenow={moment}
-  aria-valuemin="0"
+  aria-valuemin={0}
   aria-valuemax={momentMax}
   style="width: {width}%" />

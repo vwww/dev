@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { shuffle } from '../../util'
 
 const questions = [
@@ -26,24 +26,27 @@ const questions = [
 questions.forEach(q => shuffle(q.a))
 shuffle(questions)
 
-let ageStr
+let ageStr = ''
 
 let resultType = 0
 let resultIQ = 0
-let iqRDetails, iqRDesc, iqRColor
+let iqRDetails: string | undefined
+let iqRDesc: string | undefined
+let iqRColor: string | undefined
 
 // code below
 
-function getAnswerValue (q) {
+function getAnswerValue (q: number): number {
   for (const option of document.getElementsByName('q' + q)) {
-    if (option.checked) {
-      return +option.value
+    const opt = option as HTMLInputElement
+    if (opt.checked) {
+      return +opt.value
     }
   }
   return -1
 }
 
-function validateAnswers () {
+function validateAnswers (): void {
   // Process first question
   const q1r = getAnswerValue(0)
   if (q1r < 0) {
@@ -107,18 +110,19 @@ function validateAnswers () {
   }
 }
 
-function resetAnswers () {
+function resetAnswers (): void {
   // reset answers, but not age
   resetAnswer(0)
   resetAnswer(1)
 
   resultType = 0
 
-  function resetAnswer (q) {
+  function resetAnswer (q: number): void {
     document.getElementsByName('q' + q)
-      .forEach(opt => {
+      .forEach((option) => {
+        const opt = option as HTMLInputElement
         opt.checked = false
-        opt.parentNode.classList.remove('active')
+        ;(opt.parentNode as HTMLElement).classList.remove('active')
       })
   }
 }

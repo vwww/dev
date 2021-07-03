@@ -1,12 +1,14 @@
-<script>
-export let boardHistory
-export let moveStack
-export let moveLength
-export let winner
-export let winnerMap
-export let getMemo
+<script lang="ts">
+import { Winner, WinnerMap } from '../../common/t3/game'
+import { GetMemoType } from './AppGameT3.svelte'
+import MoveTableRow from './MoveTableRow.svelte'
 
-import MoveTableRow from './MoveTableRow'
+export let boardHistory: number[]
+export let moveStack: number[]
+export let moveLength: number
+export let winner: Winner
+export let winnerMap: WinnerMap
+export let getMemo: GetMemoType | undefined
 
 const moves = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 </script>

@@ -1,7 +1,5 @@
-<script>
+<script lang="ts">
 import * as jQuery from 'jquery'
-
-import IPInfo from './IPInfo'
 
 const LINES = [
   ['preferred', 'https://d.victorz.ca/ip.json?callback=?'],
@@ -9,21 +7,44 @@ const LINES = [
   ['IPv6-only', 'https://d6.victorz.ca/ip.json?callback=?']
 ]
 
-async function getResult (url) {
+type IPInfo = {
+  ip: string
+  port: number
+  proxy: IPTransform[]
+  delay: number
+}
+
+type IPTransform = {
+  name: string
+  rule: string
+  Why: string
+  old: string
+  new: string
+}
+
+async function getResult (url: string) {
   const startTime = Date.now()
-  const result = await jQuery.getJSON(url)
+  const result: IPInfo = await jQuery.getJSON(url)
   result.delay = Date.now() - startTime
   console.log(result)
   return result
 }
 </script>
 
-{#each LINES as LINE}
-  {#await getResult(LINE[1])}
-    <IPInfo name={LINE[0]} status={0} />
-  {:then data}
-    <IPInfo name={LINE[0]} status={1} {data} />
-  {:catch error}
-    <IPInfo name={LINE[0]} status={2} data={error.stack ?? error} />
-  {/await}
+{#each LINES as [name, url]}
+  <p>
+    IP ({name}):
+    {#await getResult(url)}
+      <span class="badge bg-secondary">fetching</span>
+    {:then data}
+      <span class="badge bg-success">{data.delay} ms</span>
+      {data.ip}
+      {#if data.proxy.length}
+        <span title={data.proxy.map((p) => `${p.name}: ${p.old} -> ${p.new}\n${p.rule}\n${p.Why}`).join('\n\n')}>[proxy count = {data.proxy.length}]</span>
+      {/if}
+    {:catch error}
+      <span class="badge bg-danger">failed</span>
+      {error.stack ?? error}
+    {/await}
+  </p>
 {/each}

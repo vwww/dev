@@ -1,13 +1,13 @@
-<script>
-import Parse1 from './Parse1'
-import Parse2 from './Parse2'
+<script lang="ts">
+import Parse1 from './Parse1.svelte'
+import Parse2 from './Parse2.svelte'
 
 import { tick } from 'svelte'
 import { pStore } from '../../util/svelte'
 
 const value = pStore('bot/googuns/v', '')
 
-async function validate (textbox) {
+async function validate (textbox: HTMLTextAreaElement) {
   const { selectionStart, selectionEnd } = textbox
 
   // Filter message characters and limit to length 280
@@ -18,6 +18,10 @@ async function validate (textbox) {
 
   textbox.selectionStart = selectionStart
   textbox.selectionEnd = selectionEnd
+}
+
+function validateInput (this: HTMLTextAreaElement) {
+  validate(this)
 }
 </script>
 
@@ -43,7 +47,7 @@ async function validate (textbox) {
 
     <p>Copy and paste a tweet:</p>
 
-    <textarea class="form-control" bind:value={$value} on:input={function () { validate(this) }} maxlength="280" placeholder={'0'.repeat(280)} />
+    <textarea class="form-control" bind:value={$value} on:input={validateInput} maxlength="280" placeholder={'0'.repeat(280)} />
   </div>
 </div>
 

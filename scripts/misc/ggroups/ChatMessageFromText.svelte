@@ -1,8 +1,8 @@
-<script>
-import ChatMessage from './ChatMessage'
+<script lang="ts">
+import ChatMessage from './ChatMessage.svelte'
 
-export let allowSecretSystemMessages
-export let rawText
+export let allowSecretSystemMessages: boolean
+export let rawText: string
 
 let msgClassNum = 0
 let sender = ''

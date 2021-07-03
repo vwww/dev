@@ -1,9 +1,9 @@
-<script>
-import Board from './Board'
-import MoveTable from './MoveTable'
-import PlayerTypeSelector from './PlayerTypeSelector'
-import { initMemo, getMemo as getMemoOrig, playerTypes } from '../../common/t3/ai'
-import { checkWin, occupied, remapWin } from '../../common/t3/game'
+<script lang="ts">
+import Board from './Board.svelte'
+import MoveTable from './MoveTable.svelte'
+import PlayerTypeSelector from './PlayerTypeSelector.svelte'
+import { initMemo, getMemo as getMemoOrig, playerTypes, MemoEntry, Bot } from '../../common/t3/ai'
+import { checkWin, occupied, remapWin, Winner, WinnerMap } from '../../common/t3/game'
 import { randomArrayItem } from '../../../util'
 import { pStore } from '../../../util/svelte'
 
@@ -13,23 +13,25 @@ let playerType = [playerTypes[0][1], playerTypes[4][1]] // TODO persist player t
 const winnerX = pStore('game/sp/t3/winnerX', 1)
 const winnerO = pStore('game/sp/t3/winnerO', 2)
 const winnerTie = pStore('game/sp/t3/winnerTie', 3)
-$: winnerMap = [$winnerX, $winnerO, $winnerTie]
-$: { checkWinner($winnerX, $winnerO, $winnerTie) } // recheck winner whenever winnerMap changes
+
+$: winnerMap = [$winnerX, $winnerO, $winnerTie] as WinnerMap
+function checkWinnerWhenNeeded (..._: any[]) { return checkWinner() }
+$: { checkWinnerWhenNeeded($winnerX, $winnerO, $winnerTie) }
 
 // Game state
-let board // : number
-let mark // : number
-let winner // : Winner
-let moveLength // : number
-let undoLength // : number
-let moveStack = new Array(9) // : Player[]
-let boardHistory = new Array(10) // : number[]
+let board: number
+let mark: number
+let winner: Winner
+let moveLength: number
+let undoLength: number
+let moveStack: number[] = new Array(9)
+let boardHistory: number[] = new Array(10)
 let currentMessage = ''
 
 // async loading
-let getMemo
+let getMemo: GetMemoType | undefined
 
-function resetGame () {
+function resetGame (): void {
   board = 0
   mark = 1
   winner = 0
@@ -42,22 +44,22 @@ function resetGame () {
   currentMessage = 'Click to make the first move. It&rsquo;s an exciting new game.'
 }
 
-function startGame () {
+function startGame (): void {
   resetGame()
   moveBots()
 }
 
-function setPlayerType (p, pType) {
+function setPlayerType (p: 0 | 1, pType: Bot | undefined): void {
   playerType[p] = pType
   playerType = playerType
   startGame()
 }
 
-function canMove (loc) {
+function canMove (loc: number): boolean {
   return !(winner || occupied(board, loc))
 }
 
-function makeMove (loc) {
+function makeMove (loc: number): void {
   // Add move to board
   board |= mark << (loc << 1)
   mark ^= 3
@@ -70,7 +72,7 @@ function makeMove (loc) {
   boardHistory = boardHistory
 }
 
-function checkWinner () {
+function checkWinner (): void {
   winner = remapWin(checkWin(board, moveLength), winnerMap)
 
   if (winner) {
@@ -81,7 +83,7 @@ function checkWinner () {
   }
 }
 
-function moveBots () {
+function moveBots (): void {
   // Move bots as needed
   while (!winner) {
     const botType = playerType[moveLength & 1]
@@ -96,7 +98,7 @@ function moveBots () {
   }
 }
 
-function moveHuman (loc) {
+function moveHuman (loc: number): void {
   if (canMove(loc)) {
     currentMessage = 'Click to make a move.' // for next human player, could be overwritten by bot or win message
     makeMove(loc)
@@ -105,12 +107,12 @@ function moveHuman (loc) {
   }
 }
 
-function swapTypes () {
+function swapTypes (): void {
   playerType = [playerType[1], playerType[0]]
   startGame()
 }
 
-function undoMove () {
+function undoMove (): void {
   if (!undoLength) return
 
   do {
@@ -148,7 +150,12 @@ const PRESETS = [
   [1, 1, 2, 'info', 'not Tie'],
   [1, 2, 1, 'primary', 'Last move'],
   [2, 1, 2, 'dark', 'not Last move'],
-]
+] as const
+</script>
+
+<script lang="ts" context="module">
+export type GetMemoType = (state: number) => MemoEntry[] | undefined
+
 </script>
 
 <div class="row">

@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
 import Pagination from './Pagination.svelte'
 
-export let showLo
-export let showBehind
-export let showAhead
-export let showHi
-export let pageCur
-export let pageMax
-export let onSetPage
+export let showLo: number | undefined = undefined
+export let showBehind: number | undefined = undefined
+export let showAhead: number | undefined = undefined
+export let showHi: number | undefined = undefined
+export let pageCur: number
+export let pageMax: number
+export let onSetPage: (page: number) => void
 </script>
 
 <nav>

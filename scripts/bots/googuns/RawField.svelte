@@ -1,9 +1,9 @@
-<script>
-export let offset
-export let length
-export let desc
-export let hexBytes
-export let valid
+<script lang="ts">
+export let offset: number | string
+export let length: number | string
+export let desc: string
+export let hexBytes: string
+export let valid: boolean | undefined = undefined
 </script>
 
 <tr>

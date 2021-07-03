@@ -1,16 +1,46 @@
-<script>
+<script lang="ts">
 import { pStore } from '../../../util/svelte'
 
-let logicPresets = []
+let logicPresets: Preset[][] = []
 
-const title = pStore('game/sp/logic/title')
-const description = pStore('game/sp/logic/desc')
+const title = pStore('game/sp/logic/title', '')
+const description = pStore('game/sp/logic/desc', '')
 const clues = pStore('game/sp/logic/clues', ['', '', ''])
-const puzzleTypes = pStore('game/sp/logic/puzzleTypes')
-const puzzleRules = pStore('game/sp/logic/puzzleRules')
-const solution = pStore('game/sp/logic/solution')
+const puzzleTypes = pStore('game/sp/logic/puzzleTypes', [] as PuzzleType[])
+const puzzleRules = pStore('game/sp/logic/puzzleRules', [] as PuzzleRule[])
+const solution = pStore('game/sp/logic/solution', undefined as string[][] | undefined)
 
-function loadPreset (preset) {
+type PresetCommon = {
+  name: string
+  desc: string
+  clues: string[]
+  types: PuzzleType[]
+  rules: PuzzleRule[]
+}
+
+type PuzzleType = {
+  type: string
+  vals: string[]
+}
+
+type PuzzleRule = {
+  name: string
+  type: string
+  a: string
+  b: string
+}
+
+interface RawPreset extends PresetCommon {
+  solution?: string[][]
+  solution2?: string[]
+}
+
+interface Preset extends PresetCommon {
+  num: string
+  solution?: string[][]
+}
+
+function loadPreset (preset: Preset): void {
   $title = preset.name
   $description = preset.desc
   $clues = preset.clues.slice(0)
@@ -19,35 +49,37 @@ function loadPreset (preset) {
   $solution = preset.solution
 }
 
-fetch('logic.json').then(resp => resp.json().then(p => {
-  const sortedLogicKeys = Object.keys(p).sort()
-  for (const presetKey of sortedLogicKeys) {
-    const preset = p[presetKey]
-    const sortedPuzzleKeys = Object.keys(preset).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+fetch('logic.json')
+  .then(resp => resp.json())
+  .then((p: Record<string, Record<string, RawPreset>>) => {
+    const sortedLogicKeys = Object.keys(p).sort()
+    for (const presetKey of sortedLogicKeys) {
+      const preset = p[presetKey]
+      const sortedPuzzleKeys = Object.keys(preset).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
 
-    const puzzles = []
-    for (const puzzleKey of sortedPuzzleKeys) {
-      const puzzle = preset[puzzleKey]
-      const p = {
-        num: puzzleKey,
-        name: puzzle.name,
-        desc: puzzle.desc.trim(),
-        clues: puzzle.clues.map(c => c.trim()),
-        types: puzzle.types || [],
-        rules: puzzle.rules || [],
-        solution: puzzle.solution,
+      const puzzles: Preset[] = []
+      for (const puzzleKey of sortedPuzzleKeys) {
+        const puzzle: RawPreset = preset[puzzleKey]
+        const p = {
+          num: puzzleKey,
+          name: puzzle.name,
+          desc: puzzle.desc.trim(),
+          clues: puzzle.clues.map(c => c.trim()),
+          types: puzzle.types || [],
+          rules: puzzle.rules || [],
+          solution: puzzle.solution,
+        }
+        if (puzzle.solution2) {
+          p.solution = puzzle.solution2.map((x) => [...x].map((y, i) => p.types[i].vals[+y]))
+        }
+        puzzles.push(p)
       }
-      if (puzzle.solution2) {
-        p.solution = puzzle.solution2.map((x) => [...x].map((y, i) => p.types[i].vals[+y]))
-      }
-      puzzles.push(p)
+
+      logicPresets.push(puzzles)
     }
 
-    logicPresets.push(puzzles)
-  }
-
-  logicPresets = logicPresets
-}))
+    logicPresets = logicPresets
+  })
 </script>
 
 <div class="row">
@@ -153,9 +185,9 @@ fetch('logic.json').then(resp => resp.json().then(p => {
               {/each}
             </td>
             <td>
-              <button on:click={loadPreset({...preset, solution: undefined})} class="btn btn-sm btn-outline-secondary" class:btn-outline-danger={!preset.rules.length}>Puzzle Only</button>
+              <button on:click={() => loadPreset({...preset, solution: undefined})} class="btn btn-sm btn-outline-secondary" class:btn-outline-danger={!preset.rules.length}>Puzzle Only</button>
               {#if preset.solution}
-                <button on:click={loadPreset(preset)} class="btn btn-sm btn-outline-primary">Answer</button>
+                <button on:click={() => loadPreset(preset)} class="btn btn-sm btn-outline-primary">Answer</button>
               {/if}
             </td>
           </tr>

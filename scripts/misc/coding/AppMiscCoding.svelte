@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
 import * as jQuery from 'jquery'
 
 import { onMount } from 'svelte'
 
 import PaginationButtons from '../../common/PaginationButtons.svelte'
-import langList from './languages.json'
+import * as langList from './languages.json'
 
 const NUM_PROBLEMS = 524288 // 2^19
 const NUM_PROBLEMS_PER_PAGE = 10
@@ -25,12 +25,12 @@ let leaderboardPage = 1
 $: problemNumbers = Array.from(numbersOnPageDesc(NUM_PROBLEMS, problemsPage, NUM_PROBLEMS_PER_PAGE))
 $: leaderboardNumbers = Array.from(numbersOnPageAsc(NUM_USERS, leaderboardPage, NUM_USERS_PER_PAGE))
 
-function* range(start, end, step) {
+function* range (start: number, end?: number, step?: number) {
   if (end === undefined) {
     end = start
     start = 0
   }
-  step = step || (start < end ? 1 : -1)
+  step ||= (start < end ? 1 : -1)
 
   for (
     let length = Math.max((end - start) / step, 0);
@@ -40,49 +40,51 @@ function* range(start, end, step) {
   }
 }
 
-function* numbersOnPageAsc (total, page, numPerPage) {
+function* numbersOnPageAsc (total: number, page: number, numPerPage: number) {
   const start = 1 + (page - 1) * numPerPage
   const end = Math.min(start + numPerPage, total)
   yield* range(start, end)
 }
 
-function* numbersOnPageDesc (total, page, numPerPage) {
+function* numbersOnPageDesc (total: number, page: number, numPerPage: number) {
   const start = total - (page - 1) * numPerPage
   const end = Math.max(start - numPerPage, 0)
   yield* range(start, end)
 }
 
-function userIdToName (i) { return i === 1 ? 'Victor' : `user${i}` }
+function userIdToName (i: number): string { return i === 1 ? 'Victor' : `user${i}` }
 
-let problemsTab, leaderboardTab, problemTab
+let problemsTab: HTMLElement
+let leaderboardTab: HTMLElement
+let problemTab: HTMLElement
 
 let problemPageNum = PROBLEM_SPECIAL
-let problemPageTextarea
+let problemPageTextarea: HTMLTextAreaElement
 let problemPageLang = 'Python 3'
 let problemPageHint = 0
 let problemPageRecent = true
 
 let userModalUID = 1
 
-function showProblems () {
+function showProblems (): void {
   jQuery(problemsTab).tab('show')
 }
 
-function showLeaderboard () {
+function showLeaderboard (): void {
   jQuery(leaderboardTab).tab('show')
 }
 
-function showProblem (num) {
+function showProblem (num: number): void {
   problemPageNum = num
   jQuery(problemTab).tab('show')
 }
 
-function downloadBlankFile () {
-  location = URL.createObjectURL(new File([], 'submission', { type: 'application/octet-stream' }))
+function downloadBlankFile (): void {
+  location.assign(URL.createObjectURL(new File([], 'submission', { type: 'application/octet-stream' })))
 }
 
 // hack to make Bootstrap's jQuery.fn.tab work
-onMount(() => window.jQuery = window.jQuery || jQuery)
+onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
 </script>
 
 <ul class="nav nav-tabs nav-fill mb-3" role="tablist">

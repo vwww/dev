@@ -1,6 +1,6 @@
-<script>
-import ChatMessage from './ChatMessage'
-import ChatMessageFromText from './ChatMessageFromText'
+<script lang="ts">
+import ChatMessage from './ChatMessage.svelte'
+import ChatMessageFromText from './ChatMessageFromText.svelte'
 
 import { shuffle } from '../../util'
 
@@ -8,7 +8,7 @@ import { flip } from 'svelte/animate'
 
 let allowSecretSystemMessages = true
 
-const forumStringsOrig = window.textAsset
+const forumStringsOrig = ((window as any).textAsset as string)
   .split(/[\r\n]+-+[\r\n]+/)
   .map(function (currentValue, index) {
     return {
@@ -35,7 +35,7 @@ const forumStringsOrig = window.textAsset
 
 let forumStrings = forumStringsOrig
 
-function randomize (on) {
+function randomize (on = false): void {
   forumStrings = forumStringsOrig
   if (on) {
     forumStrings = forumStrings.slice(0)

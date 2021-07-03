@@ -1,18 +1,18 @@
-<script>
-import Board from '../../common/t3/Board'
-import BoardCell from './BoardCell'
+<script lang="ts">
+import Board from '../../common/t3/Board.svelte'
+import { Player, Winner, WinnerMap } from '../../common/t3/game'
+import { GetMemoType } from './AppGameT3.svelte'
+import BoardCell from './BoardCell.svelte'
 
-export let board
-export let winner
-export let winnerMap
-export let mark
-export let showHints
-export let getMemo
-export let onMove
-
-const cellNumbers = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+export let board: number
+export let winner: Winner
+export let winnerMap: WinnerMap
+export let mark: Player
+export let showHints: boolean
+export let getMemo: GetMemoType | undefined
+export let onMove: (move: number) => void
 </script>
 
-<Board let:i>
+<Board let:i {winner}>
   <BoardCell {i} {board} {winner} {winnerMap} {mark} {showHints} {getMemo} onMove={() => onMove(i)} />
 </Board>

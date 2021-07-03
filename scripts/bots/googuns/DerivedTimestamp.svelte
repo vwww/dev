@@ -1,7 +1,7 @@
-<script>
-export let hexBytes
-export let date
-export let valid
+<script lang="ts">
+export let hexBytes: string
+export let date: Date | undefined | false
+export let valid: boolean
 </script>
 
 <tr>

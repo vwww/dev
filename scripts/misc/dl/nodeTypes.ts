@@ -1,8 +1,8 @@
 import { sum } from '../../util'
 
-type NodeBrowse = NodeFile | NodeDirectory
+export type NodeBrowse = NodeFile | NodeDirectory
 
-type NodeFile = {
+export type NodeFile = {
   type: 'file'
   name: string
   size: number
@@ -10,7 +10,7 @@ type NodeFile = {
   remark: string
 }
 
-type NodeDirectory = {
+export type NodeDirectory = {
   type: 'dir'
   name: string
   size: number

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 export let sender = ''
 export let text = ''
 export let msgClassNum = 0

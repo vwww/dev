@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
 import * as jQuery from 'jquery'
 
-import RollingStatsDisplay from './RollingStatsDisplay'
+import RollingStatsDisplay from './RollingStatsDisplay.svelte'
 import RollingStats from '../../util/RollingStats'
 import { pStore } from '../../util/svelte'
 
@@ -9,9 +9,9 @@ const pingURL = pStore('tool/ping/url', 'https://google.com')
 const pingInterval = pStore('tool/ping/pInt', 1000)
 const pingMax = pStore('tool/ping/pMax', 100)
 
-let curInterval
+let curInterval = 0
 
-let rsPing, rsJitter
+let rsPing: RollingStats, rsJitter: RollingStats
 
 function start () {
   const url = $pingURL
@@ -50,7 +50,7 @@ function start () {
 
 function stop () {
   clearInterval(curInterval)
-  curInterval = undefined
+  curInterval = 0
 }
 </script>
 
@@ -58,20 +58,20 @@ function stop () {
   <div class="col-12">
     <div class="input-group mb-2">
       <span class="input-group-text">Ping URL</span>
-      <input type="url" class="form-control" bind:value={$pingURL} readonly={curInterval} maxlength="20">
+      <input type="url" class="form-control" bind:value={$pingURL} readonly={!!curInterval} maxlength="20">
     </div>
   </div>
   <div class="col-12 col-md-6">
     <div class="input-group mb-2">
       <span class="input-group-text">Ping Interval: </span>
-      <input type="number" class="form-control" placeholder="77ff00" bind:value={$pingInterval} readonly={curInterval} min="1" max="10000">
+      <input type="number" class="form-control" placeholder="77ff00" bind:value={$pingInterval} readonly={!!curInterval} min="1" max="10000">
       <span class="input-group-text"> ms</span>
     </div>
   </div>
   <div class="col-12 col-md-6 col-lg-5">
     <div class="input-group mb-2">
       <span class="input-group-text">Max Pings: </span>
-      <input type="number" class="form-control" placeholder="77ff00" bind:value={$pingMax} readonly={curInterval} min="0" max="10000">
+      <input type="number" class="form-control" placeholder="77ff00" bind:value={$pingMax} readonly={!!curInterval} min="0" max="10000">
       <span class="input-group-text"> (0 = unlimited)</span>
     </div>
   </div>

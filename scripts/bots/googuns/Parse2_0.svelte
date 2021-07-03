@@ -1,14 +1,14 @@
-<script>
-import DerivedField from './DerivedField'
-import DerivedTable from './DerivedTable'
-import DerivedTimestamp from './DerivedTimestamp'
-import RawField from './RawField'
-import RawTable from './RawTable'
+<script lang="ts">
+import DerivedField from './DerivedField.svelte'
+import DerivedTable from './DerivedTable.svelte'
+import DerivedTimestamp from './DerivedTimestamp.svelte'
+import RawField from './RawField.svelte'
+import RawTable from './RawTable.svelte'
 
 import { fromHex, repStr, xorHexStr } from './util'
 
-export let msg
-export let len
+export let msg: string
+export let len: number
 
 $: parts = [
   msg.slice(0, 16),
@@ -20,7 +20,7 @@ $: parts = [
 ]
 
 // Derived
-let C0
+let C0: string | undefined
 $: {
   if (len >= 280) {
     C0 = msg.slice(0, 16)

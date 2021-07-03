@@ -1,16 +1,16 @@
-<script>
+<script lang="ts">
 import { randomHexColor } from '../../util'
 import { pStore } from '../../util/svelte'
 
 const colorMode = pStore('misc/seizure/mode', 0)
-const interval = pStore('misc/seizure/int')
-const userColor = pStore('misc/seizure/color')
+const interval = pStore('misc/seizure/int', -1)
+const userColor = pStore('misc/seizure/color', '#FFFFFF')
 const useTimeMax = pStore('misc/seizure/useTimeMax', 0)
 
 let running = false
-let runBackgroundColorInt
-let runTimeLast
-let runTimeInt
+let runBackgroundColorInt = 0
+let runTimeLast = 0
+let runTimeInt = 0
 let useTime = -1
 
 let winW = 0
@@ -19,10 +19,10 @@ $: winA = winW * winH
 const minWinA = 250000
 let windowIsBlurred = false
 
-let strobeContainer
-let curColor = '#000'
+let strobeContainer: HTMLDivElement
+let curColor: string = '#000'
 
-function nextColor () {
+function nextColor (): void {
   let curOpacity = 1
   if ($colorMode < 4) {
     if (!($colorMode & 1)) {
@@ -39,15 +39,15 @@ function nextColor () {
     curColor = $userColor
   }
   strobeContainer.style.backgroundColor = curColor
-  strobeContainer.style.opacity = curOpacity
+  strobeContainer.style.opacity = curOpacity + ''
 }
 
-function start () {
+function start (): void {
   running = true
 
   useTime = 0
   runTimeLast = Date.now()
-  runTimeInt = setInterval(() => {
+  runTimeInt = window.setInterval(() => {
     const now = Date.now()
     if ($colorMode < 4 && winA >= minWinA && !windowIsBlurred) {
       useTime += now - runTimeLast
@@ -61,11 +61,11 @@ function start () {
       nextColor()
     })()
   } else {
-    runBackgroundColorInt = setInterval(nextColor, $interval)
+    runBackgroundColorInt = window.setInterval(nextColor, $interval)
   }
 }
 
-function stop () {
+function stop (): void {
   running = false
   if (runTimeInt) {
     clearInterval(runTimeInt)
@@ -73,7 +73,7 @@ function stop () {
 
   if (runBackgroundColorInt) {
     ($interval < 0 ? cancelAnimationFrame : clearInterval)(runBackgroundColorInt)
-    runBackgroundColorInt = undefined
+    runBackgroundColorInt = 0
   }
 
   if ($useTimeMax < useTime) {
@@ -81,12 +81,12 @@ function stop () {
   }
 }
 
-function updateWindowSize () {
+function updateWindowSize (): void {
   winW = window.innerWidth || document.body.offsetWidth || document.getElementsByTagName('body')[0].clientWidth
   winH = window.innerHeight || document.body.offsetHeight || document.getElementsByTagName('body')[0].clientHeight
 }
 
-function formatSeconds (ms) {
+function formatSeconds (ms: number): string {
   const s = (ms / 1000).toPrecision(3)
   return s.padEnd(s.indexOf('.')+1+3, '0')
 }
