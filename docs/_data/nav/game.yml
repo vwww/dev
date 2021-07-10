@@ -18,7 +18,7 @@
     desc: Analyze Tic-Tac-Toe in various variants and game states
     href: game/t3
   - name: Fill Solver
-    desc: Solve the game Fill efficiently [abandoned]
+    desc: Solve the game Fill efficiently
     href: game/fill
   - name: Logic Grid Puzzles
     desc: Logical puzzle grid (future) solver with sample solutions

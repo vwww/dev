@@ -6,7 +6,7 @@ import { pStore } from '../../../util/svelte'
 
 const BOARDS = boards.trim().split(/[\r\n]+/)
 
-const ROWS = 8
+const ROWS = 10
 const COLS = 8
 
 const solver = new Solver(ROWS, COLS)
