@@ -23,6 +23,8 @@
   - name: Logic Grid Puzzles
     desc: Logical puzzle grid (future) solver with sample solutions
     href: game/logic
+    badges:
+      - [secondary, TODO]
   - name: Balanced Tetris
     desc: Tetris, but don't let it tip over to one side
     href: game/tetris
