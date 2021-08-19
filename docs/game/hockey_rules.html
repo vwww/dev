@@ -13,15 +13,26 @@ date: "2021-01-28 18:04:28 -0700"
 
 <p>On each team, the first player to completely enter the team's goal crease becomes a goalie (1.25x radius) until he completely leaves.</p>
 
-<p>When the puck enters a team's goal by completely passing the red line into the goal, the other team gets 1 point if the other team is not offside (otherwise 0 points), and a face-off occurs at center ice.</p>
+<p>When the puck enters a team's goal by completely passing the red line into the goal, the other team gets 1 point if the other team is not tainted (otherwise 0 points), and a face-off occurs at center ice.</p>
 
 <p>A face-off after the game begins or after a goal is scored happens at the center. All other face-offs happen at one of the 8 other spots.</p>
 
 <h2>Offside</h2>
-<p>When a player enters the attacking zone, and the puck is not in the attacking zone, "pending offside" for that team appears (offside occurs in strict mode).</p>
-<p>When the puck enters the attacking zone, offside is checked. If the puck was last touched by the attacking team, and an attacking player is in the attacking zone and not the last to touch the puck, the team is offside (offside occurs in immediate mode), and the warning shows "delayed offside". Otherwise, the "pending offside" warning for that team is cleared.</p>
-<p>If a team is offside, and one of its players in the attacking zone touches the puck or a defending player, offside occurs (offside occurs in delayed mode). If a team is offside, and the puck or all of its members leaves the attacking zone, it is no longer offside.</p>
+<p>
+  When a player enters the attacking zone, and the puck is neither in the attacking zone nor controlled by the player, "pending offside" for that team appears (offside occurs in strict mode).
+  If all players on the attacking team leave the attacking zone, the "pending offside" warning for that team is cleared.
+</p>
+<p>
+  When the puck enters the attacking zone, offside is checked.
+  If the puck was last touched by the attacking team, and an attacking player is in the attacking zone and not the last to touch the puck,
+  the team is offside (offside occurs in immediate mode), the warning shows "delayed offside", and the team becomes "tainted" until the puck is touched by the other team.
+</p>
+<p>
+  If a team is offside, and one of its players in the attacking zone touches the puck or a defending player, offside occurs (offside occurs in delayed mode).
+  If a team is offside, and the puck or all of its members leaves the attacking zone, it is no longer offside.
+</p>
 <p>When offside occurs (offside never occurs if disabled), the play is stopped, and a face-off occurs at the face-off dot outside of the attacking zone, closest to the puck.</p>
+<p>If offside is disabled, no warnings will appear, and teams never become tainted.</p>
 
 <h3>Zone Positions</h3>
 <p>A player is in the attacking zone if he no longer touches the blue line and is in the zone with the opponent goal. It is stateless.</p>
