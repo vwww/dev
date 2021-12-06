@@ -9,7 +9,7 @@ export function sha (type: 1 | 256, inHex: string): string {
     shaObj.update(inHex)
     return shaObj.getHash('HEX')
   } catch (e) {
-    return e.message
+    return (e as any)?.message ?? e
   }
 }
 
