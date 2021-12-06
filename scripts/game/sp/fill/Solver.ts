@@ -82,8 +82,6 @@ export class Solver {
           this.solveOnce(forced)
 
           const [unsolved, unsolvable] = this.countUnsolved()
-          console.log(this.grid)
-          console.log(i, unsolved, unsolvable)
           if (!unsolved) {
             // solved, so take solution
             take = 5
@@ -99,7 +97,6 @@ export class Solver {
           }
         }
 
-        console.log(take, takeI, modified)
         if (take === 1) {
           const { r, c } = solver0.cell
           forced.push([r, c, takeI, true])
