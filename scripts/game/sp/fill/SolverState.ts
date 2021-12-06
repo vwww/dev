@@ -52,7 +52,8 @@ export class SolverState {
   }
 
   solveMove (i: number, yes: boolean): void {
-    // assume this.moves[i] === MoveType.MAYBE
+    if (this.moves[i] !== MoveType.MAYBE) return
+
     this.moves[i] = yes ? MoveType.YES : MoveType.NO
     --this.mMaybe
     if (yes) {

@@ -59,10 +59,75 @@ export class Solver {
     return this.grid[r][c]
   }
 
-  solve (): void {
+  solve (maxComplexity: number): void {
+    this.solveOnce()
+
+    if (maxComplexity && this.root && this.countUnsolved()[0]) {
+      const forced: [number, number, number, boolean][] = []
+
+      for (;;) {
+        const rSolver = this.root.solver
+        const rRoot = rSolver.ufFind()
+        const [rA, rB] = rRoot.ufEnds
+        const solver0 = rA === rSolver ? rB : rA
+
+        let take = 0
+        let takeI = -1
+        let modified = false
+        for (let i = 0; i < 4; i++) {
+          const { r, c } = solver0.cell
+          if (!(!forced.some(([r2, c2, d2]) => r2 === r && c2 === c && d2 === i) && solver0.cell.neighbors[i]?.active)) continue
+
+          forced.push([r, c, i, true])
+          this.solveOnce(forced)
+
+          const [unsolved, unsolvable] = this.countUnsolved()
+          console.log(this.grid)
+          console.log(i, unsolved, unsolvable)
+          if (!unsolved) {
+            // solved, so take solution
+            take = 5
+            break
+          } else if (unsolvable) {
+            forced[forced.length - 1][3] = false
+            modified = true
+          } else {
+            if (!take++) {
+              takeI = i
+            }
+            forced.pop()
+          }
+        }
+
+        console.log(take, takeI, modified)
+        if (take === 1) {
+          const { r, c } = solver0.cell
+          forced.push([r, c, takeI, true])
+          continue
+        }
+
+        if (modified) continue
+
+        if (take !== 5) this.solveOnce(forced)
+        break
+      }
+    }
+  }
+
+  solveOnce (forced?: [number, number, number, boolean][]): void {
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.cols; c++) {
         this.grid[r][c].reset()
+      }
+    }
+
+    for (const [r, c, d, y] of forced ?? []) {
+      const a = this.grid[r][c].solver
+      const b = this.grid[r + DELTA[d][0]][c + DELTA[d][1]].solver
+      a.solveMove(d, y)
+      b.solveMove(invMove(d), y)
+      if (y) {
+        a.ufUnion(b)
       }
     }
 
@@ -283,5 +348,28 @@ export class Solver {
 
   private inGrid (r: number, c: number): boolean {
     return r >= 0 && c >= 0 && r < this.rows && c < this.cols
+  }
+
+  private countUnsolved (): [number, boolean] {
+    let unsolved = 0 // number of cells that don't reach root
+    let unsolvable = true // all cells are solved, but not all reach root
+
+    const rootUF = this.root?.solver.ufFind()
+
+    for (let r = 0; r < this.grid.length; r++) {
+      const row = this.grid[r]
+      for (let c = 0; c < row.length; c++) {
+        const cell = row[c]
+        if (cell.active) {
+          if (!cell.solver.mYes || cell.solver.mMaybe) {
+            unsolvable = false
+          }
+          if (rootUF !== cell.solver.ufFind()) {
+            unsolved++
+          }
+        }
+      }
+    }
+    return [unsolved, unsolvable && unsolved !== 0]
   }
 }

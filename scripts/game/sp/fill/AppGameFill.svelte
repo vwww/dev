@@ -13,9 +13,12 @@ const solver = new Solver(ROWS, COLS)
 
 const gridLevel = pStore('game/sp/fill/gridLevel', undefined)
 const gridText = pStore('game/sp/fill/gridText', '')
+const maxComplexity = pStore('game/sp/fill/maxComplexity', 1)
 let gridTextTxt = ''
 let cells: CellInfo[][] = Array(ROWS).fill(undefined).map(_ => Array(COLS).fill(undefined).map(_ => undefined as unknown as CellInfo))
 let status: number | undefined
+let statusUnsolvable = false
+let totalCells = 0
 
 type CellInfo = {
   r: number
@@ -30,6 +33,8 @@ type CellInfo = {
 function updateRendering () {
   const root = solver.getRoot()
   status = 0
+  statusUnsolvable = true
+  totalCells = 0
 
   for (let r = 0; r < ROWS; r++) {
     const row = cells[r]
@@ -44,8 +49,10 @@ function updateRendering () {
         active: cell.active,
         moves: cell.solver.moves,
       }
-      if (cellInfo.active && !cellInfo.reachesRoot) {
-        status++
+      if (cellInfo.active) {
+        totalCells++
+        if (!cellInfo.isSolved) statusUnsolvable = false
+        if (!cellInfo.reachesRoot) status++
       }
       row[c] = cellInfo
     }
@@ -57,7 +64,7 @@ function updateRendering () {
 }
 
 function recompute () {
-  solver.solve()
+  solver.solve($maxComplexity)
   updateRendering()
   $gridText = gridTextTxt = solver.toString()
 }
@@ -83,7 +90,7 @@ if (process.env.NODE_ENV !== 'production') {
 
     for (let i = 0; i < BOARDS.length; i++) {
       testSolver.loadString(BOARDS[i])
-      testSolver.solve()
+      testSolver.solve(1)
 
       const rootUF = testSolver.getRoot()?.solver.ufFind()
 
@@ -118,16 +125,17 @@ function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
 {#if !status}
   <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">Valid solution</h4>
+    Solved: {totalCells}
   </div>
 {:else if status === -1}
   <div class="alert alert-warning" role="alert">
     <h4 class="alert-heading">No start cell</h4>
-    The start cell is not set.
+    The start cell is not set. Total: {totalCells}
   </div>
 {:else}
   <div class="alert alert-danger" role="alert">
     <h4 class="alert-heading">Unsolved</h4>
-    Unsolved count: {status}
+    Unsolved count: {status}/{totalCells}{statusUnsolvable ? ' (Unsolvable)' : ''}
   </div>
 {/if}
 
@@ -160,6 +168,12 @@ function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
     </tr>
   {/each}
 </table>
+
+<div class="btn-group d-flex mt-2 mb-3" role="group">
+  <span class="input-group-text">Maximum complexity</span>
+  <button class="w-100 btn btn-outline-primary" class:active={$maxComplexity === 0} on:click={() => ($maxComplexity = 0, recompute())}>O(n&alpha;(n)) time<br>O(n) space</button>
+  <button class="w-100 btn btn-outline-success" class:active={$maxComplexity === 1} on:click={() => ($maxComplexity = 1, recompute())}>O(n&sup2;&alpha;(n)) time<br>O(n) space</button>
+</div>
 
 <style>
 .fill {
