@@ -137,10 +137,10 @@ function resetAnswers (): void {
         </div>
         <div class="card-body">
           <p>{question.q}</p>
-          <div class="btn-group-vertical btn-group-toggle" data-bs-toggle="buttons">
+          <div class="btn-group-vertical" data-bs-toggle="buttons">
             {#each question.a as answer}
               <label class="btn btn-outline-secondary">
-                <input type="radio" class="btn-check" name="q{i}" value={answer[1]}> {answer[0]}
+                <input type="radio" name="q{i}" value={answer[1]}> {answer[0]}
               </label>
             {/each}
           </div>
@@ -162,9 +162,11 @@ function resetAnswers (): void {
       </div>
     </div>
 
-    <div class="btn-group">
-      <button on:click={validateAnswers} class="btn btn-primary">Validate</button>
-      <button on:click={resetAnswers} disabled={!resultType} class="btn btn-danger">Reset</button>
+    <div class="text-center">
+      <div class="btn-group">
+        <button on:click={validateAnswers} class="btn btn-primary">Validate</button>
+        <button on:click={resetAnswers} disabled={!resultType} class="btn btn-danger">Reset</button>
+      </div>
     </div>
   </div>
 
