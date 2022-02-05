@@ -4,7 +4,8 @@ import * as jQuery from 'jquery'
 import { onMount } from 'svelte'
 
 import PaginationButtons from '../../common/PaginationButtons.svelte'
-import * as langList from './languages.json'
+import * as langListRaw from './languages.json'
+const langList = langListRaw
 
 const NUM_PROBLEMS = 524288 // 2^19
 const NUM_PROBLEMS_PER_PAGE = 10
