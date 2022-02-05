@@ -1,36 +1,41 @@
 import { PokeInfo } from './PokeInfo'
 import { PokeSource } from './PokeSource'
 
-import firebase from 'firebase/app'
-import 'firebase/database'
+import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app'
+import { getDatabase, ref, onValue } from 'firebase/database'
 
 export default class PokeSourceFirebase implements PokeSource {
-  constructor (config: {} = {
+  private readonly firebaseApp: FirebaseApp
+
+  constructor (config: FirebaseOptions = {
     apiKey: 'AIzaSyDzwR0qYbl6QzA4pgw-LF7M6yxG2bWC7xo',
     databaseURL: 'https://victor-poke.firebaseio.com'
   }) {
-    firebase.initializeApp(config)
+    this.firebaseApp = initializeApp(config)
   }
 
   onInfoUpdate (updateInfo: (pokes: number, ticks: number) => void): () => void {
-    const ref = firebase.database().ref('info')
-    const callback = ref.on('value', function (snapshot) {
+    const db = getDatabase(this.firebaseApp)
+    const r = ref(db, 'info')
+
+    return onValue(r, function (snapshot) {
       if (!snapshot) return
-      const val = snapshot.val()
+      const val = snapshot.val() as {
+        pokes: number
+        ticks: number
+      }
       updateInfo(val.pokes, val.ticks)
     })
-
-    return () => ref.off('value', callback)
   }
 
   onPokeUpdate (updatePoke: (pokes: Record<string, PokeInfo>) => void): () => void {
-    const pokeRef = firebase.database().ref('poke')
-    // .orderByChild('time')
-    const callback = pokeRef.on('value', function (snapshot) {
-      if (!snapshot) return
-      updatePoke(snapshot.val())
-    })
+    const db = getDatabase(this.firebaseApp)
+    const pokeRef = ref(db, 'poke')
+    // const pokeQuery = query(pokeRef, orderByChild('time'))
 
-    return () => pokeRef.off('value', callback)
+    return onValue(pokeRef, function (snapshot) {
+      if (!snapshot) return
+      updatePoke(snapshot.val() as Record<string, PokeInfo>)
+    })
   }
 }

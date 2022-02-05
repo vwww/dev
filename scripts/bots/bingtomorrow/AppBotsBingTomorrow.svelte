@@ -1,6 +1,6 @@
 <script lang="ts">
-import firebase from 'firebase/app'
-import 'firebase/database'
+import { initializeApp } from 'firebase/app'
+import { getDatabase, ref, onValue } from 'firebase/database'
 
 const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyDzwR0qYbl6QzA4pgw-LF7M6yxG2bWC7xo',
@@ -10,10 +10,11 @@ const FIREBASE_CONFIG = {
 let bingTomorrowData: any[] = []
 
 function init (): void {
-  firebase.initializeApp(FIREBASE_CONFIG)
+  const firebaseApp = initializeApp(FIREBASE_CONFIG)
 
-  const ref = firebase.database().ref('bingtomorrow')
-  ref.on('value', function (snapshot): void {
+  const db = getDatabase(firebaseApp)
+  const r = ref(db, 'bingtomorrow')
+  onValue(r, function (snapshot): void {
     const data = (snapshot && snapshot.val()) || {}
     const dataKeys = Object.keys(data).sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
     bingTomorrowData = dataKeys.map((id) => ({ ...data[id], id }))
