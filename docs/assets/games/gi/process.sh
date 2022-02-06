@@ -1,1 +1,1 @@
-go run process.go -- out/*
+go run process.go -- orig/*
