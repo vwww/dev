@@ -3,8 +3,8 @@ body {
 	background: linear-gradient(#87e0fd, #05abe0 1200px);
 	font-family: "Lucida Sans Unicode","Lucida Grande",sans-serif;
 	font-size: 14px;
-	min-height: calc(100vh - 8px);
-	margin: 8px 0 0 0;
+	min-height: calc(100vh - 16px);
+	margin: 8px;
 }
 img {
 	border:0px;
