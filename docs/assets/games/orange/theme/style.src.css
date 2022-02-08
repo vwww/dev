@@ -199,7 +199,7 @@ img {
 	font-family:Verdana, Geneva, sans-serif;
 	font-size:14px;
 	color: #999;
-	background: radial-gradient(at 50% 0, #d4e2e5 20%, #dee 40%, transparent 60%) bottom center / 100% 5px  no-repeat;
+	background: radial-gradient(at 50% 0, #d4e2e5 20%, #dee 40%, transparent 60%) bottom center / 100% 5px no-repeat;
 	height: 30px;
 	padding-top: 9px;
 }
@@ -359,24 +359,21 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 }
 .home_cat_heading {
 	text-align: left;
-	padding-left: 12px;
+	padding-left: 5px;
 	padding-top: 7px;
-	margin-left: 10px;
-	border: #fb941e solid 3px;
-	border-bottom: none;
-	border-radius: 8px 8px 0 0;
-	background: #fdf5f2;
-	background: linear-gradient(#fbfcec, #fdf5f2 2px);
 }
 .home_cat {
-	background-color:#fdf6f2;
+	background: #fdf6f2;
 	margin-left: 10px;
-	padding-left: 10px;
-	background: url(./home_cat_back.jpg);
-	width: 664px;
-	background-position: bottom;
-	margin-bottom: 15px;
-	height: 200px;
+	padding-left: 7px;
+	background:
+		linear-gradient(#fbfcec, #fdf5f2 2px, #fff 230px) padding-box,
+		linear-gradient(#fb941e, #fff 230px) border-box;
+	border: 3px solid transparent;
+	border-radius: 8px 8px 0 0;
+	width: 661px;
+	margin-bottom: 9px;
+	height: 231px;
 }
 .home_game {
 	float: left;
@@ -497,7 +494,9 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	margin-left: 10px;
 	margin-top: 20px;
 	padding-left: 7px;
-	background: linear-gradient(#eef7ff 19px,#e1f1ff 20px, #fff) padding-box, linear-gradient(#5cc6ec, #fff) border-box;
+	background:
+		linear-gradient(#eef7ff 19px,#e1f1ff 20px, #fff) padding-box,
+		linear-gradient(#5cc6ec, #fff) border-box;
 	border: 3px solid transparent;
 	border-radius: 8px;
 	border-bottom: 0;
@@ -925,13 +924,16 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 }
 /* CATEGORY PAGE */
 .cat_container {
-	background-color:#fdf6f2;
+	background: #fdf6f2;
 	margin-left: 10px;
 	margin-top: 20px;
-	padding-left: 10px;
-	background: url(./cat_top.png);
-	background-repeat: no-repeat;
-	width: 664px;
+	padding-left: 7px;
+	background:
+		linear-gradient(#fbfcec, #fdf5f2 2px, #fff 242px) padding-box,
+		linear-gradient(#fb941e, #fff 242px) border-box;
+	border: 3px solid transparent;
+	border-radius: 6px;
+	width: 661px;
 	margin-bottom: 15px;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	font-size: 14px;
