@@ -62,63 +62,89 @@ export class Solver {
   solve (maxComplexity: number): void {
     this.solveOnce()
 
-    if (maxComplexity && this.root && this.countUnsolved()[0]) {
-      const forced: [number, number, number, boolean][] = []
+    if (!(maxComplexity && this.root && this.countUnsolved()[0])) {
+      return
+    }
 
-      for (;;) {
-        const rSolver = this.root.solver
-        const rRoot = rSolver.ufFind()
-        const [rA, rB] = rRoot.ufEnds
-        const solver0 = rA === rSolver ? rB : rA
+    // [r, c, d, y]
+    const forced: [number, number, number, boolean][] = []
+    // [r, c, d, maxComplexity, forcedLen]
+    const stack: [number, number, number, number, number][] = []
 
-        let take = 0
-        let takeI = -1
-        let modified = false
+    for (;;) {
+      const rSolver = this.root.solver
+      const rRoot = rSolver.ufFind()
+      const [rA, rB] = rRoot.ufEnds
+      const solver0 = rA === rSolver ? rB : rA
+      const { r, c } = solver0.cell
+
+      let take = 0
+      let takeI = -1
+      let takeFlags = 0
+      let modified = false
+      for (let i = 0; i < 4; i++) {
+        if (!(!forced.some(([r2, c2, d2]) => r2 === r && c2 === c && d2 === i) && solver0.cell.neighbors[i]?.active)) continue
+
+        forced.push([r, c, i, true])
+        this.solveOnce(forced)
+
+        const [unsolved, unsolvable] = this.countUnsolved()
+        if (!unsolved) {
+          // solved, so take solution
+          return
+        } else if (unsolvable) {
+          // mark as unsolvable
+          forced[forced.length - 1][3] = false
+          modified = true
+        } else {
+          // add to possible list
+          if (!take++) {
+            takeI = i
+          }
+          takeFlags |= 1 << i
+          forced.pop()
+        }
+      }
+
+      // follow forced branch
+      if (take === 1) {
+        forced.push([r, c, takeI, true])
+        continue
+      }
+
+      // found invalid branch, so retry
+      if (modified) continue
+
+      // add branches to DFS
+      if (take && maxComplexity > 1) {
         for (let i = 0; i < 4; i++) {
-          const { r, c } = solver0.cell
-          if (!(!forced.some(([r2, c2, d2]) => r2 === r && c2 === c && d2 === i) && solver0.cell.neighbors[i]?.active)) continue
-
-          forced.push([r, c, i, true])
-          this.solveOnce(forced)
-
-          const [unsolved, unsolvable] = this.countUnsolved()
-          if (!unsolved) {
-            // solved, so take solution
-            take = 5
-            break
-          } else if (unsolvable) {
-            forced[forced.length - 1][3] = false
-            modified = true
-          } else {
-            if (!take++) {
-              takeI = i
-            }
-            forced.pop()
+          if (takeFlags & (1 << i)) {
+            stack.push([r, c, i, maxComplexity - 1, forced.length])
           }
         }
-
-        if (take === 1) {
-          const { r, c } = solver0.cell
-          forced.push([r, c, takeI, true])
-          continue
-        }
-
-        if (modified) continue
-
-        if (take !== 5) this.solveOnce(forced)
-        break
       }
+
+      if (!stack.length) {
+        // failed search: reset to known state
+        this.solveOnce(forced)
+        return
+      }
+
+      const [r2, c2, d2, complexity, f] = stack.pop()!
+      maxComplexity = complexity
+      forced.splice(f, forced.length - f, [r2, c2, d2, true])
+      this.solveOnce(forced)
     }
   }
 
-  solveOnce (forced?: [number, number, number, boolean][]): void {
+  solveOnce (forced: [number, number, number, boolean][] = []): void {
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.cols; c++) {
         this.grid[r][c].reset()
       }
     }
 
-    for (const [r, c, d, y] of forced ?? []) {
+    for (const [r, c, d, y] of forced) {
       const a = this.grid[r][c].solver
       const b = this.grid[r + DELTA[d][0]][c + DELTA[d][1]].solver
       a.solveMove(d, y)

@@ -13,7 +13,7 @@ const solver = new Solver(ROWS, COLS)
 
 const gridLevel = pStore('game/sp/fill/gridLevel', undefined)
 const gridText = pStore('game/sp/fill/gridText', '')
-const maxComplexity = pStore('game/sp/fill/maxComplexity', 1)
+const maxComplexity = pStore('game/sp/fill/maxComplexity', 6)
 let gridTextTxt = ''
 let cells: CellInfo[][] = Array(ROWS).fill(undefined).map(_ => Array(COLS).fill(undefined).map(_ => undefined as unknown as CellInfo))
 let status: number | undefined
@@ -84,13 +84,13 @@ loadString($gridText)
 
 // dev only
 if (process.env.NODE_ENV !== 'production') {
-  (window as any).test = function () {
+  (window as any).test = function (maxComplexity = 1) {
     const testSolver = new Solver(ROWS, COLS)
     const unsolvable = []
 
     for (let i = 0; i < BOARDS.length; i++) {
       testSolver.loadString(BOARDS[i])
-      testSolver.solve(1)
+      testSolver.solve(maxComplexity)
 
       const rootUF = testSolver.getRoot()?.solver.ufFind()
 
@@ -169,10 +169,9 @@ function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
   {/each}
 </table>
 
-<div class="btn-group d-flex mt-2 mb-3" role="group">
-  <span class="input-group-text">Maximum complexity</span>
-  <button class="w-100 btn btn-outline-primary" class:active={$maxComplexity === 0} on:click={() => ($maxComplexity = 0, recompute())}>O(n&alpha;(n)) time<br>O(n) space</button>
-  <button class="w-100 btn btn-outline-success" class:active={$maxComplexity === 1} on:click={() => ($maxComplexity = 1, recompute())}>O(n&sup2;&alpha;(n)) time<br>O(n) space</button>
+<div class="input-group mt-2 mb-3">
+  <span class="input-group-text">Maximum Search Depth</span>
+  <input type="number" on:change={recompute} min="0" max="100" bind:value={$maxComplexity} class="form-control">
 </div>
 
 <style>
