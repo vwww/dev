@@ -1,8 +1,9 @@
 body {
 	background: #02b0e6;
-	background: linear-gradient(to bottom, #87e0fd 0, #05abe0 1200px);
+	background: linear-gradient(#87e0fd, #05abe0 1200px);
 	font-family: "Lucida Sans Unicode","Lucida Grande",sans-serif;
 	font-size: 14px;
+	min-height: 100vh;
 }
 img {
 	border:0px;
@@ -28,9 +29,8 @@ img {
 }
 
 #comments ul li {
-	background-color:#d7efff;
-	background-image: url(./profile_comment_back.png);
-	background-repeat: repeat-x;
+	background: #d7efff;
+	background: linear-gradient(#e9f3f8, #d7efff);
 	padding:8px;
 	margin:0px auto;
 	/*color:#FFF;*/
@@ -80,7 +80,7 @@ img {
 }
 .header {
 	background:#ffa84c;
-	background:linear-gradient(to bottom, #ffa84c 0%,#ff7b0d 100%);
+	background:linear-gradient(#ffa84c, #ff7b0d);
 	height:77px;
 	text-align:left;
 }
@@ -139,7 +139,8 @@ img {
 	text-decoration: none;
 }
 .menu_container {
-	background:#484848 url(./cat_menu.png) repeat-x;
+	background: #484848;
+	background: linear-gradient(#7C7C7C, #484848 36px);
 	overflow: auto;
 }
 .categories_menu {
@@ -175,7 +176,8 @@ img {
 	font-size:16px;
 	padding-left:4px;
 	font-style:italic;
-	background: url(./search_box.png);
+	background:#ececec;
+	background:linear-gradient(#dedede, #fafafa);
 }
 .search_contain {
 	float: left;
@@ -236,22 +238,27 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	margin-bottom: 15px;
 }
 .module_header {
-	background-image: url(./module_top.png);
-	width: 246px;
-	height: 29px;
+	height: 28px;
 	color: #03568f;
-	padding: 7px 0px 0px 12px;
+	padding: 4px 0 0 2px;
 	font-family: "Lucida Sans Unicode","Lucida Grande",sans-serif;
 	font-size: 14px;
 	text-align: left;
-	margin: auto;
+	margin: 0 7px;
+	border-bottom: #005990 solid 1px;
 }
 .module {
-	background: url(./module_back.png);
+	border: #5cc6ec solid 3px;
+	border-radius: 8px;
+	background: #e1f1ff;
+	background: linear-gradient(#eef7ff 19px, #e1f1ff 20px);
+	padding-bottom: 5px;
+
 	font-family: "Lucida Sans Unicode","Lucida Grande",sans-serif;
 	font-size: 12px;
-	width: 258px;
+	width: 252px;
 	margin: auto;
+	margin-bottom: 25px;
 }
 .module a {
 	color: #3e3e3e;
@@ -268,8 +275,8 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	padding:4px;
 	border-bottom: 1px solid #c8e8f9;
 	text-align: left;
-	margin-right: 10px;
-	margin-left: 10px;
+	margin-right: 7px;
+	margin-left: 7px;
 }
 .module li a {
 	display: inline-block;
@@ -284,19 +291,12 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 }
 .module li span, .module li span + img {
 	float: right;
+}
+.module li span {
 	padding-right: 3px;
 }
 .module li a.module_extended + span + img {
 	float: none;
-	padding-right: 0;
-}
-.module_bottom {
-	background: url(./module_bottom.png);
-	width: 258px;
-	height: 8px;
-	margin: auto;
-	margin-bottom: 25px;
-	overflow:hidden;
 }
 .content_left {
 	float: left;
@@ -455,7 +455,7 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 .cat_button {
 	width: 123px;
 	height: 23px;
-	background: linear-gradient(to bottom, #ffce96 0%,#ff920a 100%);
+	background: linear-gradient(#ffce96, #ff920a);
 	border-radius: 7px;
 	padding-top: 2px;
 	padding-right: 4px;
@@ -567,7 +567,7 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 .button2 {
 	width: 123px;
 	height: 23px;
-	background: linear-gradient(to bottom, #ffce96 0%,#ff920a 100%);
+	background: linear-gradient(#ffce96, #ff920a);
 	border-radius: 7px;
 	padding-top: 3px;
 	padding-right: 4px;
@@ -646,7 +646,7 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 .comment_header {
 	width: 932px;
 	height: 34px;
-	background: linear-gradient(to bottom, #ffa84c 0%,#ff7b0d 100%);
+	background: linear-gradient(#ffa84c, #ff7b0d);
 	border-radius: 25px;
 	border: 3px solid gold;
 	margin-top: 30px;
@@ -791,7 +791,7 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	margin-top: 8px;
 	padding: 0px 12px 0px 12px;
 	border: 2px solid #ddbf72;
-	-moz-border-radius: 12px;
+	border-radius: 12px;
 }
 .profile_stats {
 	font-size: 14px;
@@ -806,9 +806,8 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	border: 1px solid #cce0e7;
 	border-radius: 8px;
 	box-sizing: content-box;
-	background-color: #FFF;
-	background-image: url(./button_background.png);
-	background-position: bottom;
+	background: #fff;
+	background: linear-gradient(#fff, #daeaf7);
 	height: 22px;
 	font-family:"Lucida Sans Unicode","Lucida Grande",sans-serif;
 	width:150px;
@@ -847,9 +846,8 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	margin-bottom: 20px;
 }
 .user_comment {
-	background-color:#d7efff;
-	background-image: url(./profile_comment_back.png);
-	background-repeat: repeat-x;
+	background: #d7efff;
+	background: linear-gradient(#e9f3f8, #d7efff);
 	padding: 10px;
 	margin-right: 15px;
 	margin-bottom: 20px;
@@ -868,7 +866,8 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 }
 /* EDIT PROFILE */
 .edit_avatar_container {
-	background-image:url(./edit-avatar-back.png);
+	background: #ebebeb;
+	background: linear-gradient(#f3f3f3, #e3e3e3);
 	padding: 10px 0px 10px 10px;
 	margin-bottom: 10px;
 	overflow:auto;
@@ -957,10 +956,10 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 }
 /* NEWS */
 .news_header {
-	background: url(./news_header.png);
+	background: linear-gradient(#e7f4ff, #d4e0fe);
 	border: 1px solid #bbc9fa;
-	width:100%;
-	overflow:auto;
+	width: 100%;
+	overflow: auto;
 }
 .news_image {
 	float: left;
@@ -1039,9 +1038,8 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 }
 
 #news_comments ul li {
-	background-color:#d7efff;
-	background-image: url(./profile_comment_back.png);
-	background-repeat: repeat-x;
+	background: #d7efff;
+	background: linear-gradient(#e9f3f8, #d7efff);
 	padding:8px;
 	margin:0px auto;
 	color:#FFF;
@@ -1053,7 +1051,8 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 
 .news_comments_title {
 	height: 30px;
-	background-image: url(./news_header.png);
+	background: #d4e0fe;
+	background: linear-gradient(#e7f4ff, #d4e0fe);
 	padding-top: 10px;
 	padding-left: 10px;
 }
@@ -1067,7 +1066,7 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 .news_comments_header {
 	width: 932px;
 	height: 34px;
-	background: linear-gradient(to bottom, #ffa84c 0%,#ff7b0d 100%);
+	background: linear-gradient(#ffa84c, #ff7b0d);
 	border-radius: 25px;
 	border: 3px solid gold;
 	margin-top: 30px;
@@ -1372,9 +1371,6 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 
 /* Submit game */
 
-.submit_form_element {
-
-}
 .submit_text_box, .link_text_box {
 	font-family:Verdana, Geneva, sans-serif;
 	font-size:12px;
@@ -1441,7 +1437,8 @@ div.al1, div.al2, div.asmlsqe, div.ab1 {
 	border-right: 1px solid #70c8c7;
 	border-top: 1px solid #70c8c7;
 	border-bottom: 1px solid #70c8c7;
-	background: url(./friend_bg.png);
+	background: #e8f6fd;
+	background: linear-gradient(#e8f6fd, #c6e8fa);
 }
 .friend_avatar {
 	float: left;
