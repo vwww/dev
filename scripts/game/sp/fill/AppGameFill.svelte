@@ -13,7 +13,7 @@ const solver = new Solver(ROWS, COLS)
 
 const gridLevel = pStore('game/sp/fill/gridLevel', undefined)
 const gridText = pStore('game/sp/fill/gridText', '')
-const maxComplexity = pStore('game/sp/fill/maxComplexity', 6)
+const maxComplexity = pStore('game/sp/fill/maxComplexity', 7)
 let gridTextTxt = ''
 let cells: CellInfo[][] = Array(ROWS).fill(undefined).map(_ => Array(COLS).fill(undefined).map(_ => undefined as unknown as CellInfo))
 let status: number | undefined

@@ -71,6 +71,9 @@ export class Solver {
     // [r, c, d, maxComplexity, forcedLen]
     const stack: [number, number, number, number, number][] = []
 
+    let lastCell = this.root
+    let lastMoveType = -1
+
     for (;;) {
       const rSolver = this.root.solver
       const rRoot = rSolver.ufFind()
@@ -78,48 +81,79 @@ export class Solver {
       const solver0 = rA === rSolver ? rB : rA
       const { r, c } = solver0.cell
 
-      let take = 0
-      let takeI = -1
-      let takeFlags = 0
-      let modified = false
-      for (let i = 0; i < 4; i++) {
-        if (!(!forced.some(([r2, c2, d2]) => r2 === r && c2 === c && d2 === i) && solver0.cell.neighbors[i]?.active)) continue
-
-        forced.push([r, c, i, true])
-        this.solveOnce(forced)
-
-        const [unsolved, unsolvable] = this.countUnsolved()
-        if (!unsolved) {
-          // solved, so take solution
-          return
-        } else if (unsolvable) {
-          // mark as unsolvable
-          forced[forced.length - 1][3] = false
-          modified = true
-        } else {
-          // add to possible list
-          if (!take++) {
-            takeI = i
-          }
-          takeFlags |= 1 << i
-          forced.pop()
-        }
-      }
-
-      // follow forced branch
-      if (take === 1) {
-        forced.push([r, c, takeI, true])
-        continue
-      }
-
-      // found invalid branch, so retry
-      if (modified) continue
-
-      // add branches to DFS
-      if (take && maxComplexity > 1) {
+      // pin current path
+      let inconsistent = false
+      while (lastCell !== solver0.cell) {
+        let d = -1
         for (let i = 0; i < 4; i++) {
-          if (takeFlags & (1 << i)) {
-            stack.push([r, c, i, maxComplexity - 1, forced.length])
+          if (i !== lastMoveType && lastCell.solver.moves[i] === MoveType.YES) {
+            if (d !== -1) {
+              d = -1
+              break
+            }
+            d = i
+          }
+        }
+
+        if (d === -1) {
+          inconsistent = true
+          break
+        }
+
+        forced.push([lastCell.r, lastCell.c, d, true])
+        lastCell = lastCell.neighbors[d]!
+        lastMoveType = invMove(d)
+      }
+
+      if (!inconsistent) {
+        let take = 0
+        let takeI = -1
+        let takeFlags = 0
+        let modified = false
+        for (let i = 0; i < 4; i++) {
+          // if (forced.some(([r2, c2, d2]) => r2 === r && c2 === c && d2 === i) || !solver0.cell.neighbors[i]?.active) continue
+          if (solver0.moves[i] === MoveType.NO || i === lastMoveType) continue
+
+          forced.push([r, c, i, true])
+          this.solveOnce(forced)
+
+          const [unsolved, unsolvable] = this.countUnsolved()
+          if (!unsolved) {
+            // solved, so take solution
+            return
+          } else if (unsolvable) {
+            // mark as unsolvable
+            forced[forced.length - 1][3] = false
+            modified = true
+          } else {
+            // add to possible list
+            if (!take++) {
+              takeI = i
+            }
+            takeFlags |= 1 << i
+            forced.pop()
+          }
+          this.solveOnce(forced)
+        }
+
+        // follow forced branch
+        if (take === 1) {
+          forced.push([r, c, takeI, true])
+          lastCell = this.grid[r][c].neighbors[takeI]!
+          lastMoveType = invMove(takeI)
+          this.solveOnce(forced)
+          continue
+        }
+
+        // found invalid branch, so retry
+        if (modified) continue
+
+        // add branches to DFS
+        if (take && maxComplexity > 1) {
+          for (let i = 0; i < 4; i++) {
+            if (takeFlags & (1 << i)) {
+              stack.push([r, c, i, maxComplexity - 1, forced.length])
+            }
           }
         }
       }
@@ -133,6 +167,8 @@ export class Solver {
       const [r2, c2, d2, complexity, f] = stack.pop()!
       maxComplexity = complexity
       forced.splice(f, forced.length - f, [r2, c2, d2, true])
+      lastCell = this.grid[r2][c2].neighbors[d2]!
+      lastMoveType = invMove(d2)
       this.solveOnce(forced)
     }
   }
