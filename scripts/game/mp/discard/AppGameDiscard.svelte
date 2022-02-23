@@ -30,7 +30,7 @@ const {
 } = gameState
 
 let name = pStore('game/mp/_shared/name', '')
-let showLLNames = pStore('game/mp/discard/LL', false)
+let showLLNames = pStore('game/mp/discard/LL', true)
 
 function formatGameMode ({optDecks}) {
   return getGameModeString(+optDecks)
