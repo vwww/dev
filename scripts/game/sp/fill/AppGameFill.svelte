@@ -175,6 +175,11 @@ function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
 </div>
 
 <style>
+#fill-table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .fill {
   width: 10vmin;
   height: 10vmin;
