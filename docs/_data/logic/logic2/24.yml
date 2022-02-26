@@ -26,9 +26,9 @@ clues:
   of these was his highest scoring game but neither of the other two was his lowest
   scoring game.
 types:
-  - type: Order
+  - type: Order_
     vals: [First, Second, Third, Fourth, Fifth]
-  - type: Score
+  - type: Score_
     vals: ["250,000", "200,000", "150,000", "100,000", "50,000"]
   - type: Game Title
     vals: [Hot Rod, Mazerama, Pool Shark, Blaster, Space Wars]

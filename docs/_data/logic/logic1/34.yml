@@ -35,7 +35,7 @@ types:
     vals: [Strand, Bijou, Palace, Capital, Odeon]
   - type: Last (Actor)
     vals: [Christie, Davis, Jackson, Monroe, Hepburn]
-  - type: Weekday
+  - type: Weekday_
     vals: [Mon, Tues, Wed, Thurs, Fri]
   - type: Film Genre
     vals: [Drama, Comedy, Western, Thriller, Mystery]

@@ -27,11 +27,11 @@ clues:
   Mr. Donahue's room number is lower than Ms. Brewster's room number and he
   wishes to be called later than she.
 types:
-  - type: Time
+  - type: Time_
     vals: ['7:00', '7:15', '7:20', '7:30', '7:45']
   - type: First (3 F, 2 M)
     vals: [Brewster, Desmond, Donahue, Farrell, Hendricks]
-  - type: Room Number
+  - type: Room Number_
     vals: [945, 930, 920, 915, 900]
 # rules:
 #   - name: Clue 1

@@ -27,7 +27,7 @@ clues:
   She had lunch with Mr. Newman later in the week than the lunch when she had
   French food.
 types:
-  - type: Weekday
+  - type: Weekday_
     vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
   - type: Last M
     vals: [Farnsworth, Newman, O'Malley, Price, Reynolds]

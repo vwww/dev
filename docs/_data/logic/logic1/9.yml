@@ -24,7 +24,7 @@ types:
     vals: [Earl, Virgil, Lester, Leroy, Ray]
   - type: Full F
     vals: [Betty Lou, Peggy Sue, Mary Jane, Sally Jo, Cindy Lee]
-  - type: Order
+  - type: Order_
     vals: [First, Second, Third, Fourth, Fifth]
 # rules:
 #   - name: Clue 1

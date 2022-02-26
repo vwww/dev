@@ -24,7 +24,7 @@ clues:
   Martin has a smaller tank than the kid who raises cichlids but a larger one than
   the tank in which neon tetras are raised.
 types:
-  - type: Volume
+  - type: Volume_
     vals: [50 gal., 30 gal., 25 gal., 20 gal., 10 gal.]
   - type: First (3 M, 2 F)
     vals: [Alice, Arthur, Martin, Maureen, Maurice]

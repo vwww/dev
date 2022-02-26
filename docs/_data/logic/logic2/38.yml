@@ -31,7 +31,7 @@ clues:
   The first couple to arrive home had not been to L.A., Reno, or Vancouver, and
   neither had the Finns.
 types:
-  - type: Order
+  - type: Order_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: Last
     vals: [Finn, Gersten, Hawkins, O'Malley, Webster]

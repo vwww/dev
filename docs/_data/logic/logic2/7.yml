@@ -24,7 +24,7 @@ clues:
 - >
   Douglas did not get a book as a present.
 types:
-  - type: June Day
+  - type: June Day_
     vals: [June 1, June 7, June 12, June 20, June 29]
   - type: First (3 F, 2 M)
     vals: [Douglas, Elvira, Joan, Mary, Timothy]

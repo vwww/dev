@@ -23,7 +23,7 @@ clues:
   The Liberal did better than Jensen but not as
   well as Hargreaves.
 types:
-  - type: Rank
+  - type: Rank_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: Political Party
     vals: [Conservative, Democrat, Independent, Liberal, Republican]

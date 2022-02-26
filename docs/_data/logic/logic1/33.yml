@@ -32,11 +32,11 @@ clues:
 types:
   - type: First M
     vals: [Norman, Felix, Raymond, Wilbur, Edward]
-  - type: Weekday
+  - type: Weekday_
     vals: [Mon, Tues, Wed, Thurs, Fri]
-  - type: Month
+  - type: Month_
     vals: [January, April, July, Sept, Nov]
-  - type: Year
+  - type: Year_
     vals: [1948, 1950, 1951, 1956, 1957]
 # rules:
 #   - name: Clue 1

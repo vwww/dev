@@ -23,7 +23,7 @@ clues:
   Tom hit a ball farther than Mr. Winslow, whose
   first name is not Marty.
 types:
-  - type: Distance (ft)
+  - type: Distance_ (ft)
     vals: [325, 300, 275, 250, 200]
   - type: First M
     vals: [Biff, Carl, Fred, Marty, Tom]

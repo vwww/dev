@@ -25,7 +25,7 @@ clues:
 - >
   Lily finished the cube earlier than Oswald.
 types:
-  - type: Duration
+  - type: Duration_
     vals: ["0:29", "0:35", "0:51", "1:10", "1:26", "1:30"]
   - type: First (3 M, 3 F)
     vals: [Eric, Gretchen, Lily, Oswald, Wendy, Wilbur]

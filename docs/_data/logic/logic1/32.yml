@@ -36,7 +36,7 @@ types:
     vals: [Smith, Jones, Wilson, McCoy, Larson]
   - type: Color
     vals: [Red, Yellow, Blue, Green, Orange]
-  - type: Rank
+  - type: Rank_
     vals: [First, Second, Third, Fourth, Fifth]
 # rules:
 #   - name: Clue 1

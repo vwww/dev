@@ -36,11 +36,11 @@ clues:
 types:
   - type: First M
     vals: [Vince, Clem, Mort, Phil]
-  - type: Age
+  - type: Age__
     vals: [a4, a3, a2, a1]
-  - type: Height
+  - type: Height__
     vals: [h4, h3, h2, h1]
-  - type: Weight
+  - type: Weight__
     vals: [w4, w3, w2, w1]
 # rules:
 #   - name: Clue 1

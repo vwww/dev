@@ -29,7 +29,7 @@ types:
     vals: [Rachel, Lydia, Elvira, Kate, Vivian]
   - type: Last F
     vals: [Parsons, Lawrence, Carter, Volpe, Milligan]
-  - type: Age
+  - type: Age__
     vals: [5, 4, 3, 2, 1]
 # rules:
 #   - name: Clue 1

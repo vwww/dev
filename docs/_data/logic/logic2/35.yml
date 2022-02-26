@@ -26,7 +26,7 @@ clues:
   was offered as a first choice but later than the month in which a science fiction
   book was offered as a second choice.
 types:
-  - type: Month
+  - type: Month_
     vals: [January, February, March, April, May]
   - type: Book Type 1
     vals: [Mystery1, Romance1, Sci. Fiction1, Thriller1, Western1]

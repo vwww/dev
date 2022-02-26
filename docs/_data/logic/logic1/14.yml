@@ -23,7 +23,7 @@ types:
     vals: [Edison, Marconi, Wright, Franklin, Bell]
   - type: Color
     vals: [Red, Blue, Green, Gray, Brown]
-  - type: Cents
+  - type: Cents_
     vals: [5, 10, 15, 20, 25]
 # rules:
 #   - name: Clue 1

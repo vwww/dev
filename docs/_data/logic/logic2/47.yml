@@ -29,7 +29,7 @@ clues:
   The kid operating the crafts booth made less money than Miss Glover but more
   than Miss Latham.
 types:
-  - type: Money
+  - type: Money_
     vals: [$80.00, $65.00, $50.00, $40.00, $25.00]
   - type: Booth
     vals: [Books, Cakes, Crafts, Funny Fotos, Penny Toss]

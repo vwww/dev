@@ -22,7 +22,7 @@ clues:
   after Wilson, who did not ride the winning
   horse.
 types:
-  - type: Rank
+  - type: Rank_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: Horse
     vals: [Full Sweep, Nightshade, Quartermain, Top Drawer, Whirlaway]

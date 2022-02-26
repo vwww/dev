@@ -30,7 +30,7 @@ types:
     vals: [Father, Mother, Daughter, Son, Aunt]
   - type: TV Show Type
     vals: [Comedy, Western, Drama, Interview, Sports]
-  - type: Weekday
+  - type: Weekday_
     vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
 # rules:
 #   - name: Clue 1

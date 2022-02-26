@@ -35,7 +35,7 @@ types:
     vals: [Mr. Vee, Mr. Kay, Mr. Jay, Mr. Dee, Mr. X]
   - type: Painting Object
     vals: [Fish, Trees, Cats, Tenement, Flowers, A Bridge]
-  - type: Rank
+  - type: Rank_
     vals: [1, 2, 3, 4, 5, 6]
 # rules:
 #   - name: Clue 1

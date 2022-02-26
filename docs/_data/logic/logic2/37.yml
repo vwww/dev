@@ -34,7 +34,7 @@ clues:
   She works at the preschool later in the week than the day when she cleans
   the kitchen floor.
 types:
-  - type: Weekday
+  - type: Weekday_
     vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
   - type: Activity Morning
     vals: [Free, Hospital, Ironing, Laundry, Preschool]

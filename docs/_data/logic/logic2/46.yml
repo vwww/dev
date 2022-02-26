@@ -29,7 +29,7 @@ clues:
   Ms. Heatherton won a higher prize than Ms. Hollyer but a lower prize than the
   house.
 types:
-  - type: Rank
+  - type: Rank_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: Prize
     vals: [Boat, Car, Cash, House, Trip]

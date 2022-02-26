@@ -26,7 +26,7 @@ clues:
 - >
   Ms. Browne does not drive on Tuesday.
 types:
-  - type: Weekday
+  - type: Weekday_
     vals: [Monday, Tuesday, Wednesday, Thursday, Friday]
   - type: Full
     vals: [Mr. Greene, Mr. Grey, Mr. Tann, Ms. Browne, Ms. Whyte]

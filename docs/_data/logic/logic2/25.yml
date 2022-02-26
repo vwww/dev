@@ -27,7 +27,7 @@ clues:
   James was not married to Maybelle and neither of them was a part of the couple
   who were the first or last to get divorced.
 types:
-  - type: Years
+  - type: Years__
     vals: [y4, y3, y2, y1, y0]
   - type: First M
     vals: [James, Jeremy, John, Joseph, Justin]

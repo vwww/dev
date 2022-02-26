@@ -22,7 +22,7 @@ clues:
   The child who is reading is younger than Ryan
   but older than Albert.
 types:
-  - type: Age
+  - type: Age_
     vals: [18, 17, 16, 15, 14]
   - type: First (3 M, 2 F)
     vals: [Albert, Cathy, Daniel, Grace, Ryan]

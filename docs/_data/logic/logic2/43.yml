@@ -27,13 +27,13 @@ clues:
   The crowd when Double Double was the opening act was larger than in
   Cleveland but exactly one half of the crowd at the N.Y.C. concert.
 types:
-  - type: Order
+  - type: Order_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: City
     vals: [Buffalo, Cleveland, K.C., L.A., and N.Y.C]
   - type: Band
     vals: [Crazy Glues, Double Double, Draw Backward, Right Turn, Street Crazed]
-  - type: Count
+  - type: Count_
     vals: ['70,000', '60,000', '50,000', '30,000', '20,000']
 # rules:
 #   - name: Clue 1

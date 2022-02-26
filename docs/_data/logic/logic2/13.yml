@@ -24,9 +24,9 @@ clues:
   The January vacation was longer and after the Tahitian vacation but before their
   vacation to Jamaica.
 types:
-  - type: Month
+  - type: Month_
     vals: [November, December, January, February, March]
-  - type: Duration
+  - type: Duration_
     vals: [Two Weeks, One Week, Five Days, Four Days, Three Days]
   - type: City
     vals: [Bermuda, Hawaii, Jamaica, Puerto Rico, Tahiti]

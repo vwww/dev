@@ -42,7 +42,7 @@ types:
     vals: [Elaine, Joyce, Marcia, Elizabeth, Mildred]
   - type: Last
     vals: [Johnstone, Parker, Watson, Graves, Shearer]
-  - type: Years
+  - type: Years__
     vals: [y1, y2, y3, y4, y5]
 # rules:
 #   - name: Clue 1

@@ -26,7 +26,7 @@ types:
     vals: [Clown, Juggler, Acrobat, Magician, Strong Man]
   - type: First M (V*)
     vals: [Victor, Virgil, Vincent, Vito, Vance]
-  - type: Order
+  - type: Order_
     vals: [First, Second, Third, Fourth, Fifth]
 # rules:
 #   - name: Clue 1

@@ -34,7 +34,7 @@ types:
     vals: [Janet, Lydia, Victoria, Vivian, Doris]
   - type: Pie Type
     vals: [Custard, Peach, Lemon, Apple, Plum]
-  - type: Rank
+  - type: Rank_
     vals: [First, Second, Third, Fourth, Fifth]
 # rules:
 #   - name: Clue 1

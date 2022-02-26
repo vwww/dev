@@ -28,7 +28,7 @@ types:
     vals: [Jane, Jean, Joan, June, Jill]
   - type: First M
     vals: [Leonard, Edward, Harry, Malcolm, David]
-  - type: Month
+  - type: Month_
     vals: [January, February, March, April, May]
 # rules:
 #   - name: Clue 1

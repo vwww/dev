@@ -27,7 +27,7 @@ clues:
   The kid who brought the red toy is older than the girl who brought the rope but
   younger than the girl who brought the blue toy.
 types:
-  - type: Age
+  - type: Age_
     vals: [16, 12, 10, 8, 6]
   - type: First (2 M, 3 F)
     vals: [Alice, Billy, Brenda, Greg, Sally]

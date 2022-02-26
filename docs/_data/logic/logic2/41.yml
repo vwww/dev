@@ -26,7 +26,7 @@ clues:
   The violinist did not finish as well as Mr. Marlow who didn't do as well as Mr.
   Donnelly.
 types:
-  - type: Rank
+  - type: Rank_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: Act
     vals: [Juggler, Magician, Mimic, Singer, Violinist]

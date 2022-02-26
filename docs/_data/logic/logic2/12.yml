@@ -27,7 +27,7 @@ clues:
   The fork to Hornton is not at the same place as the one to Stewartville or
   Tewsbury.
 types:
-  - type: Order
+  - type: Order_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: Town 1
     vals: [Asterly, Hornton, Seattle, Teasdale, Thornberry]

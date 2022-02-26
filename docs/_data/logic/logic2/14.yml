@@ -19,7 +19,7 @@ clues:
   WTBG ranked higher than the station that plays
   muzak but lower than WWZZ.
 types:
-  - type: Rank
+  - type: Rank_
     vals: [1, 2, 3, 4, 5]
   - type: Radio Station
     vals: [WIGT, WKCK, WLTR, WTBG, WWZZ]

@@ -21,7 +21,7 @@ clues:
   is higher than Mr. Sutain's and lower than Ivan's
   average.
 types:
-  - type: Bowling Score
+  - type: Bowling Score_
     vals: [220, 211, 201, 198, 195]
   - type: First M
     vals: [Dennis, Harmon, Ivan, Jerry, Willie]

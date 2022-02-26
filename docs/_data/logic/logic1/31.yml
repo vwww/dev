@@ -35,9 +35,9 @@ types:
     vals: [Clark, Jolson, Prescott, Foster, Waters]
   - type: First M
     vals: [Billy, Bobby, Sam, Tommy, Pete]
-  - type: Weekday
+  - type: Weekday_
     vals: [Mon, Tues, Wed, Thurs, Fri]
-  - type: Age
+  - type: Age_
     vals: [1, 2, 3, 4, 5]
 # rules:
 #   - name: Clue 1

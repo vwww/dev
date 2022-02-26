@@ -29,7 +29,7 @@ types:
     vals: [Queen, Marquis, Duke, Baron, Duchess]
   - type: Last
     vals: [Velve, Brint, Draz, Flard, and Sorn]
-  - type: Age
+  - type: Age_
     vals: [45, 50, 35, 30, 25]
 # rules:
 #   - name: Clue 1

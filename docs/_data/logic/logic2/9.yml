@@ -17,7 +17,7 @@ clues:
 - >
   Stretch is taller than Oscar but not the tallest.
 types:
-  - type: Height
+  - type: Height_
     vals: [6'6", 6'5", 6'3", 6'1", 6']
   - type: Nickname
     vals: [Slats, Stretch, Tiny, Tower, Tree]

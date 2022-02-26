@@ -27,7 +27,7 @@ clues:
 - >
   Watches are on a higher shelf than whistles but on a lower shelf than the stereos.
 types:
-  - type: Shelf Level
+  - type: Shelf Level_
     vals: [Fifth, Fourth, Third, Second, First]
   - type: Prize Left
     vals: [Ashtrays, Games, Toy Trains, Watches, Pistols]

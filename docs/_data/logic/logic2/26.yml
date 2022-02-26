@@ -26,7 +26,7 @@ clues:
   Bakery but lower than the team sponsored by Joe's Florist which is not the team
   that finished first.
 types:
-  - type: Rank
+  - type: Rank_
     vals: [First, Second, Third, Fourth, Fifth]
   - type: Sports Team
     vals: [Bobcats, Cougars, Lions, Panthers, Tigers]

@@ -35,7 +35,7 @@ types:
     vals: [Joe, Jim, John, Jake, Josh]
   - type: Instrument
     vals: [Drums, Guitar, Bass, Piano, Organ]
-  - type: Position
+  - type: Position_
     vals: [1, 2, 3, 4, 5]
 # rules:
 #   - name: Clue 1

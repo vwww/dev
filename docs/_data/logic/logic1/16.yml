@@ -29,9 +29,9 @@ clues:
 types:
   - type: Last M
     vals: [Gardner, Plunkett, Maloney, Phelps, Lopez]
-  - type: Month First
+  - type: Month_ First
     vals: [Jan, Feb, March, April, May]
-  - type: Month Last
+  - type: Month_ Last
     vals: [August, Sept, Oct, Nov, Dec]
 # rules:
 #   - name: Clue 1

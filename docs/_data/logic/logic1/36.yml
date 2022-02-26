@@ -35,7 +35,7 @@ types:
     vals: [Elmer, John, David, Charles, Stewart]
   - type: First F
     vals: [Mary, Hilda, Madalene, Jessica, Marlene]
-  - type: Order
+  - type: Order_
     vals: [First, Second, Third, Fourth, Fifth]
 # rules:
 #   - name: Clue 1

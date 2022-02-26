@@ -28,7 +28,7 @@ types:
   - type: Last M
     vals: [Brady, Flanagan, Lynch, Maguire, Murphy]
   - type: Clothing
-    vals: [hat, scarf, shirt, tie, trousers]
+    vals: [Hat, Scarf, Shirt, Tie, Trousers]
 # rules:
 # Clue 0: No man has the same first and last initial
 #   - name: Clue 1

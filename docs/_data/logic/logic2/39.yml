@@ -26,7 +26,7 @@ clues:
 - >
   Violet is not a schnauzer but lives on a lower floor than Michelle.
 types:
-  - type: Floor Level
+  - type: Floor Level_
     vals: [Fifth, Fourth, Third, Second, First]
   - type: First F
     vals: [Edith, Hannah, Linda, Michelle, Sarah]
