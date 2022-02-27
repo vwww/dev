@@ -46,7 +46,7 @@ function alignv (cell: CellInfo): string {
         {#each cell.moves as move}
           <div class={['', 'fill-m', 'fill-y'][move]}></div>
         {/each}
-        {cell.browseNum}
+        {cell.browseNum ?? ''}
         </td>
       {/each}
     </tr>
