@@ -122,7 +122,7 @@ browseLocationHash()
       {#if index + 1 === curPath.length}
         <li class="breadcrumb-item active" aria-current="page">{item.name} ({formatSize(item.size)})</li>
       {:else}
-        <li class="breadcrumb-item"><a href="" on:click|preventDefault={() => up((curPath.length - 1) - index)}>{item.name}</a></li>
+        <li class="breadcrumb-item"><a href="#{getPathString(curPath.slice(0, index + 1))}" on:click|preventDefault={() => up((curPath.length - 1) - index)}>{item.name}</a></li>
       {/if}
     {/each}
   </ol>
