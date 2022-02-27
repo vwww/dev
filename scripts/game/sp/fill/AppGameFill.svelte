@@ -1,7 +1,9 @@
 <script lang="ts">
 import boards from './boards.txt'
+
+import FillTable, { CellInfo } from './FillTable.svelte'
+
 import { Solver } from './Solver'
-import { MoveType } from './Move'
 import { pStore } from '../../../util/svelte'
 
 const BOARDS = boards.trim().split(/[\r\n]+/)
@@ -19,16 +21,6 @@ let cells: CellInfo[][] = Array(ROWS).fill(undefined).map(_ => Array(COLS).fill(
 let status: number | undefined
 let statusUnsolvable = false
 let totalCells = 0
-
-type CellInfo = {
-  r: number
-  c: number
-  isSolved: number
-  reachesRoot: boolean | undefined
-  isRoot: boolean
-  active: boolean
-  moves: MoveType[]
-}
 
 function updateRendering () {
   const root = solver.getRoot()
@@ -139,77 +131,19 @@ function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
   </div>
 {/if}
 
-<table id="fill-table">
-  {#each cells as row}
-    <tr>
-      {#each row as cell}
-        <td
-          class="fill"
-          class:fill-solved={cell.isSolved}
-          class:fill-to-root={!cell.isRoot && cell.reachesRoot}
-          class:fill-root={cell.isRoot}
-          class:fill-disabled={!cell.active}
-
-          on:click={() => {
-            solver.invertCell(cell.r, cell.c)
-            recompute()
-          }}
-
-          on:contextmenu|preventDefault={() => {
-            solver.setRoot(cell.r, cell.c)
-            recompute()
-            return false
-          }}>
-        {#each cell.moves as move}
-          <div class={['', 'fill-m', 'fill-y'][move]}></div>
-        {/each}
-        </td>
-      {/each}
-    </tr>
-  {/each}
-</table>
+<FillTable
+  {cells}
+  onLeftClickCell={cell => {
+    solver.invertCell(cell.r, cell.c)
+    recompute()
+  }}
+  onRightClickCell={cell => {
+    solver.setRoot(cell.r, cell.c)
+    recompute()
+  }}
+/>
 
 <div class="input-group mt-2 mb-3">
   <span class="input-group-text">Maximum Search Depth</span>
   <input type="number" on:change={recompute} min="0" max="100" bind:value={$maxComplexity} class="form-control">
 </div>
-
-<style>
-#fill-table {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.fill {
-  width: 10vmin;
-  height: 10vmin;
-  border: 0.5vmin solid black;
-  background-color: #aaa;
-  position: relative;
-}
-
-.fill * {
-display: block;
-position: absolute;
-}
-
-.fill :nth-child(1) { width: 30%; height: 50%; left: 35%; top: 0; }
-.fill :nth-child(2) { width: 30%; height: 50%; left: 35%; bottom: 0; }
-.fill :nth-child(3) { width: 50%; height: 30%; left: 0; top: 35%; }
-.fill :nth-child(4) { width: 50%; height: 30%; right: 0; top: 35%; }
-
-.fill .fill-y { background-color: #444; }
-.fill .fill-m { background-color: #888; }
-
-/*
-inspired by
-https://codepen.io/dom111/full/mwJwmM/
-https://github.com/dom111/flow-free/blob/master/flow.css
-*/
-
-.fill-root { background-color: #da8; }
-.fill-solved { background-color: #edc; }
-.fill-solved.fill-to-root { background-color: #cec; }
-.fill-root.fill-solved { background-color: #aea; }
-.fill-disabled { background-color: #eee; }
-</style>
