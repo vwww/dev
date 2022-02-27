@@ -20,6 +20,9 @@
   - name: Fill Solver
     desc: Solve the game Fill efficiently
     href: game/fill
+  - name: Fill Browser
+    desc: Browse the level/stages of Fill v4.7.0
+    href: game/fill_browser
   - name: Logic Grid Puzzles
     desc: Logical puzzle grid (future) solver with sample solutions
     href: game/logic
