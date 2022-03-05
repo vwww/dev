@@ -97,8 +97,9 @@
         <li class="dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mirror</a>
           <ul class="dropdown-menu" role="menu">
-            <li><a class="dropdown-item" href="https://victorz.ca{{page.url}}">victorz.ca</a></li>
-            <li><a class="dropdown-item" href="https://vwww.github.io/new{{page_url}}">github.io</a></li>
+            {%- for mirror in site.mirrors %}
+            <li><a class="dropdown-item" href="{{mirror[1]}}{{page.url}}">{{mirror[0]}}</a></li>
+            {%- endfor %}
           </ul>
         </li>
       </ul>

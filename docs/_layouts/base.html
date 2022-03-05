@@ -20,7 +20,7 @@
     {%- endif %}
 
     {%- comment %}<!-- {{ page.url | replace:'index.html', '.html' | replace:'.html', '' }} -->{% endcomment -%}
-    <link rel="canonical" href="{{ site.canonical }}{{ page.url }}">
+    <link rel="canonical" href="{{ site.mirrors[0][1] }}{{ page.url }}">
 
     <link rel="shortcut icon" type="image/x-icon" href="{{assets}}victorz/favicon.ico">
 
