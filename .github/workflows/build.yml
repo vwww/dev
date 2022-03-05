@@ -26,10 +26,11 @@ jobs:
           git config user.email "theonlypwner@users.noreply.github.com" && \
           git add . && \
           git commit -m "Build ${GITHUB_SHA}" && \
-          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/vwww.github.io.git HEAD && \
-          echo victorz.ca > CNAME && \
+          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/prod.git HEAD && \
+          rm CNAME && \
+          mv robots2.txt robots.txt && \
           git add . && \
           git commit --amend --no-edit && \
-          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/prod.git HEAD
+          git push --force https://theonlypwner:${GH_TOKEN}@github.com/vwww/vwww.github.io.git HEAD
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
