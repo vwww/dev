@@ -15,7 +15,7 @@ let chatMessage = ''
 
 function checkAutoScroll () {
   const newAutoscroll = autoscrollParent &&
-    (autoscrollParent.offsetHeight + autoscrollParent.scrollTop) > (autoscrollParent.scrollHeight - 20)
+    (autoscrollParent.offsetHeight + autoscrollParent.scrollTop) > (autoscrollParent.scrollHeight - 1)
   if (autoscroll !== newAutoscroll) {
     autoscroll = newAutoscroll
     chatState.setHold(!autoscroll)
@@ -94,6 +94,7 @@ function handleKeydown (event) {
         {/if}
       </li>
     {/each}
+    <li class="list-group-item bg-warning text-center" class:d-none={autoscroll}>Scroll down to resume autoscroll</li>
   </ul>
   <div class="card-footer">
     <div class="input-group">
