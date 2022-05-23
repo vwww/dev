@@ -9,6 +9,7 @@ import { getGameModeString, playerColor } from './common'
 
 export let gameState
 export let ll
+export let showCardCount
 
 const {
   isActive,
@@ -203,14 +204,16 @@ export function getCardName (card, ll) {
   </div>
   <div class="col mt-2">
     There {$deckSize === 1 ? 'is 1 card' : `are ${$deckSize} cards`} in the draw pile.
-    <CardCountTable
-      ranks={['1', '2', '3', '4', '5', '6', '7', '8', 'Total']}
-      counts={[
-        ['Unplayed', $cardCountRemain],
-        ['Discarded', $cardCountDiscard],
-        ['Total', $cardCountTotal]
-      ]}
-    />
+    {#if showCardCount}
+      <CardCountTable
+        ranks={['1', '2', '3', '4', '5', '6', '7', '8', 'Total']}
+        counts={[
+          ['Unplayed', $cardCountRemain],
+          ['Discarded', $cardCountDiscard],
+          ['Total', $cardCountTotal]
+        ]}
+      />
+    {/if}
   </div>
 </div>
 

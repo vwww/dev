@@ -31,6 +31,7 @@ const {
 
 let name = pStore('game/mp/_shared/name', '')
 let showLLNames = pStore('game/mp/discard/LL', true)
+let showCardCount = pStore('game/mp/discard/cardCount', true)
 
 function formatGameMode ({optDecks}) {
   return getGameModeString(+optDecks)
@@ -44,6 +45,12 @@ function formatGameMode ({optDecks}) {
     <label class="form-check mx-auto">
       <input type="checkbox" class="form-check-input" bind:checked={$showLLNames}>
       Show Love Letter Names
+    </label>
+  </span>
+  <span class="input-group-text flex-grow-1">
+    <label class="form-check mx-auto">
+      <input type="checkbox" class="form-check-input" bind:checked={$showCardCount}>
+      Show Card Count
     </label>
   </span>
 </div>
@@ -65,7 +72,7 @@ function formatGameMode ({optDecks}) {
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
   onDisconnect={() => gameState.leaveGame()}>
-  <DiscardPlay {gameState} ll={$showLLNames} />
+  <DiscardPlay {gameState} ll={$showLLNames} showCardCount={$showCardCount} />
 </PlayCard>
 
 <div class="row">
