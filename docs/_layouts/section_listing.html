@@ -28,9 +28,9 @@ layout: pages
             {%- if item.href %}
               <a href="{{ base }}/{{ item.href }}" class="btn btn-primary">Go</a>
             {%- endif %}
-            {%- if item.href_external %}
-              <a href="{{ item.href_external }}" target="_blank" class="btn btn-info">Go</a>
-            {%- endif %}
+            {%- for extra in item.hrefs %}
+              <a href="{% unless extra.ext %}{{ base }}/{% endunless %}{{ extra.href }}" {%- if extra.ext %} target="_blank"{% endif %} class="btn btn-{{ extra.class | default: 'info' }}">{{ extra.name | default: 'Go' }}</a>
+            {%- endfor -%}
           </div>
         </div>
       </div>
