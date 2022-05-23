@@ -31,5 +31,3 @@
   - name: Spelling
     desc: "@Bot_Dictionary corrects users' spelling. Its output rate from random searches is quite low."
     href: bots/spelling
-    badges:
-      - [secondary, Down]
