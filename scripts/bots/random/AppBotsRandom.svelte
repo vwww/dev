@@ -30,7 +30,7 @@ function randomSentence (maxLen: number): string {
   return result.join(' ')
 }
 
-function randomTweet (remain = 140): string {
+function randomTweet (remain = 280): string {
   const result = []
   while (remain > 1) {
     const newWords = randomSentence(remain)
