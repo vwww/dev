@@ -4,8 +4,10 @@ import { slide } from 'svelte/transition'
 
 import { randomArrayItemZipf } from '../../util'
 
+type Tweet = [string, string?] // [short, long?]
+
 let rankedWords: string[] | undefined
-let tweets: string[] = []
+let tweets: Tweet[] = []
 
 function getWord (): string {
   if (!rankedWords) return 'the'
@@ -16,9 +18,6 @@ function randomSentence (maxLen: number): string {
   const result = []
   do {
     let newWord = getWord()
-    if (maxLen && maxLen < newWord.length) {
-      newWord = newWord.slice(0, maxLen - 1) + '&hellip;'
-    }
     result.push(newWord)
     if (maxLen) {
       maxLen -= newWord.length + 1
@@ -30,15 +29,21 @@ function randomSentence (maxLen: number): string {
   return result.join(' ')
 }
 
-function randomTweet (remain = 280): string {
+function randomTweet (maxLen = 280): Tweet {
   const result = []
+  let remain = maxLen
   while (remain > 1) {
     const newWords = randomSentence(remain)
     result.push(newWords)
     remain -= newWords.length + 1
   }
 
-  return result.join('&mdash;')
+  const tweet = result.join('\u2014') // '&mdash;'
+  if (tweet.length > maxLen) {
+    const tweetShort = tweet.slice(0, maxLen - 1) + '\u2026' // '&hellip;'
+    return [tweetShort, tweet]
+  }
+  return [tweet]
 }
 
 function randomize (): void {
@@ -71,7 +76,7 @@ p {
 {/if}
 
 <div>
-  {#each tweets as tweet (tweet)}
-    <p transition:slide|local>{@html tweet}</p>
+  {#each tweets as [tweetShort, tweetFull] (tweetShort)}
+    <p transition:slide|local title={tweetFull}>{tweetShort}</p>
   {/each}
 </div>
