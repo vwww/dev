@@ -272,7 +272,6 @@ GEM
     unf_ext (0.0.8.1)
     unicode-display_width (1.8.0)
     wdm (0.1.1)
-    webrick (1.7.0)
     zeitwerk (2.5.4)
 
 PLATFORMS
@@ -283,7 +282,6 @@ DEPENDENCIES
   github-pages (>= 200)
   tzinfo-data
   wdm
-  webrick (~> 1.7)
 
 BUNDLED WITH
    2.3.7
