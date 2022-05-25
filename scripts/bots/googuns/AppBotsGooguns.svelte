@@ -1,4 +1,5 @@
 <script lang="ts">
+import Gen from './Gen.svelte'
 import Parse1 from './Parse1.svelte'
 import Parse2 from './Parse2.svelte'
 
@@ -19,6 +20,8 @@ async function validate (textbox: HTMLTextAreaElement) {
   textbox.selectionStart = selectionStart
   textbox.selectionEnd = selectionEnd
 }
+
+function onMsg (val: string) { $value = val }
 
 function validateInput (this: HTMLTextAreaElement) {
   validate(this)
@@ -53,10 +56,10 @@ function validateInput (this: HTMLTextAreaElement) {
 
 <Parse2 value={$value} />
 <Parse1 value={$value} />
+<Gen {onMsg} />
 
 <h2>Notation</h2>
-<pre class="card card-body bg-light">
-All fields are big endian.
+<pre class="card card-body bg-light">All fields are big endian.
 &lt;&lt;&lt; = rol and &gt;&gt;&gt; = ror (bitwise rotations).
 ^ = bitwise XOR (exclusive OR).
 ~ = bitwise negation.

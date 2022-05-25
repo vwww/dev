@@ -44,6 +44,34 @@ $: VT = UTD && isFinite(+UTD)
 $: VA = V1 && V3 && V5 && VT
 </script>
 
+<script lang="ts" context="module">
+export function generate2_0 (timeHex: string, rHex: string): string {
+  timeHex = timeHex.padStart(16, '0').slice(0, 16)
+  rHex = rHex.padEnd(240, '0')
+
+  const data8_64 = '20' + rHex.slice(0, 110) // version + R55
+  const data72_140 = rHex.slice(110, 240) + '000000' // R65 + zero
+
+  // C = checksum without T field (data[:8] not filled yet)
+  let C = data72_140.slice(128)
+  C += C
+  for (let i = 0; i < 112; i += 16) {
+    C = xorHexStr(C, data8_64.slice(i, i + 16))
+  }
+  for (let i = 0; i < 128; i += 16) {
+    C = xorHexStr(C, data72_140.slice(i, i + 16))
+  }
+
+  // T = timestamp ^ data[61:69]
+  // T[x] will affect T[x+3]
+  let T = xorHexStr(timeHex, data8_64.slice(106) + '0000000000')
+  T = xorHexStr(T, '000000' + C.slice(0, 10)) // T ^= C >> 24
+  T = xorHexStr(T, '000000' + T.slice(0, 6) + xorHexStr(T.slice(6, 10), T.slice(0, 4))) // T ^= (T >> 24) ^ (T >> 48)
+
+  return T + data8_64 + xorHexStr(C, T) + data72_140
+}
+</script>
+
 <div class="card-group mb-3">
   <div class="card">
     <div class="card-header">
@@ -117,7 +145,7 @@ $: VA = V1 && V3 && V5 && VT
             data[120:128] ^ data[128:136] ^ ((data[136:] &lt;&lt; 32) ^ data[136:])
           </code>
         </p>
-	    </div>
+      </div>
     </div>
   </div>
 </div>

@@ -35,6 +35,34 @@ $: VT = UTD && isFinite(+UTD)
 $: VA = V1 && V2 && V4 && V6 && VT
 </script>
 
+<script lang="ts" context="module">
+export function generate1_1 (timeHex: string, rHex: string): string {
+  timeHex = timeHex.padStart(16, '0')
+  rHex = rHex.padEnd(112, '0')
+
+  const R4 = rHex.slice(0, 8)
+  const R52 = rHex.slice(8, 112)
+
+  const data10_70 = R52 + '01' + R4 + '000000'
+
+  const c0 = sha(256, data10_70)
+  const data9 = c0.slice(2, 4)
+
+  const T = xorHexStr(
+    xorHexStr(
+      timeHex,
+      data9 + R52.slice(0, 14), // data[9:17]
+    ),
+    R52.slice(44, 60) // data[32:40]
+  )
+
+  const c1 = sha(1, T)
+  const data8 = xorHexStr('ff', c1.slice(0, 2))
+
+  return T + data8 + data9 + data10_70
+}
+</script>
+
 <div class="card-group mb-3">
   <div class="card">
     <div class="card-header">
