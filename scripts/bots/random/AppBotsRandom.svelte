@@ -4,6 +4,8 @@ import { slide } from 'svelte/transition'
 
 import { randomArrayItemZipf } from '../../util'
 
+const TWEET_LEN = 280
+
 type Tweet = [string, string?] // [short, long?]
 
 let rankedWords: string[] | undefined
@@ -29,7 +31,7 @@ function randomSentence (maxLen: number): string {
   return result.join(' ')
 }
 
-function randomTweet (maxLen = 280): Tweet {
+function randomTweet (maxLen = TWEET_LEN): Tweet {
   const result = []
   let remain = maxLen
   while (remain > 1) {
@@ -77,6 +79,13 @@ p {
 
 <div>
   {#each tweets as [tweetShort, tweetFull] (tweetShort)}
-    <p transition:slide|local title={tweetFull}>{tweetShort}</p>
+    <p transition:slide|local title={tweetFull}>
+      {#if tweetFull}
+        <span class="badge bg-danger">{tweetFull.length}</span>
+      {:else}
+        <span class="badge bg-{tweetShort.length === TWEET_LEN ? 'success' : 'warning'}">{tweetShort.length}</span>
+      {/if}
+      {tweetShort}
+    </p>
   {/each}
 </div>
