@@ -42,7 +42,7 @@ function randomTweet (remain = 280): string {
 }
 
 function randomize (): void {
-  const NUM_TWEETS = 32
+  const NUM_TWEETS = 16
   tweets = new Array(NUM_TWEETS).fill(undefined).map(randomTweet)
 }
 
