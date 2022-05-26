@@ -3,23 +3,17 @@
   items:
   - name: AssaultCube Reloaded
     desc: ACR is a free-and-open-source first-person-shooter.
-    hrefs:
-      - href: https://acr.victorz.ca
-        ext: true
+    href_ext: https://acr.victorz.ca
   - name: Real Eclipse
     desc: Realistic Red Eclipse, set in the present instead of future
-    hrefs:
-      - href: https://re.victorz.ca
-        ext: true
+    href_ext: https://re.victorz.ca
     badges:
       - [secondary, Planning]
 - items:
   - name: Arcade
     desc: my arcade, full of hacked flash games!
     date_added: 2008-09?
-    hrefs:
-      - href: https://games.victorz.ca
-        ext: true
+    href_ext: https://games.victorz.ca
   - name: Tic-Tac-Toe Analyzer
     desc: Analyze Tic-Tac-Toe in various variants and game states
     href: game/t3

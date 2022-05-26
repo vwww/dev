@@ -50,9 +50,7 @@
   - name: Seizure Domain
     desc: This subdomain points to the seizure servers hosted by the U.S. Immigration and Customs Enforcement.
     date_added: 2011-03-28
-    hrefs:
-      - href: http://seizure.victorz.ca
-        ext: true
+    href_ext: http://seizure.victorz.ca
 - name: Jokes
   desc: These are intended as jokes. Don't take them seriously.
   items:
