@@ -72,7 +72,8 @@ td.hlose.noW:after { content: "-T" }
 td.hlose.noT:after { content: "-+" }
 td.hlose.noW.noT:after { content: "-" }
 
-td[data-hintTurn]:before { content: attr(data-hintTurn) }
+/* win by move number (hide if pending) */
+td[data-hintTurn]:not(:hover):before { content: attr(data-hintTurn) }
 
 /* no player can force a win */
 td.htie.noL,
