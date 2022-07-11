@@ -1,6 +1,7 @@
 <script lang="ts">
 import * as d3 from 'd3'
 import { onMount } from 'svelte'
+import { sum } from '../../util'
 
 interface ModInfo {
   _id: string
@@ -32,7 +33,7 @@ let resizeHandler: () => void
 
 function init (modDataRaw: [ModInfo[]]) {
   const modData = modDataRaw[0].filter(m => m.active && !m.featured)
-  const modDataTotal = modData.map((m) => m.active_duration).reduce((a, b) => a + b, 0) * 3600000
+  const modDataTotal = sum(modData.map((m) => m.active_duration)) * 3600000
 
   const chart = d3.select(chartNode)
 
@@ -190,7 +191,7 @@ function init (modDataRaw: [ModInfo[]]) {
       .translateExtent([[xScaleOrig(MIN_TIME), 0], [xScaleOrig(MAX_TIME), 0]])
       .transform(viz, newTransform)
 
-    const transform = d3.zoomTransform(viz.node())
+    const transform = d3.zoomTransform(viz.node()!)
     xScale = transform.rescaleX(xScaleOrig)
 
     render()
