@@ -1,8 +1,9 @@
 import { checkWin, numToWinnerMap, occupied, remapWin, WinnerMap, winnerMapInvert, winnerMapToNum, WINNER_MAP_MAX } from './game'
 
-export type MemoEntryWin = [number, number]
-export type MemoEntryRegular = [number, number, number[]]
-export type MemoEntry = MemoEntryRegular | MemoEntryWin
+export type MemoEntryWin = [number] // value
+export type MemoEntryRegular = [number, number[], number] // [bestValue, moves, countPathForced]
+export type ResultCount = [number, number, number, number]
+export type MemoEntry = [(MemoEntryRegular[] | MemoEntryWin[]), ResultCount] // [typeDep[], countPaths]
 
 export type BotAction = [number[], string]
 export type Bot = (board: number, used: number, winnerMap: WinnerMap) => BotAction
@@ -17,63 +18,107 @@ export const playerTypes: PlayerType[] = [
   ['Optimal', botMoveOptimal]
 ]
 
-const aiMemo: Record<number, MemoEntry[]> = {}
+const aiMemo: Record<number, MemoEntry> = {}
 
 export function initMemo (): void {
   buildTables(0, 1, 0)
 }
 
-export function getMemo (state: number): MemoEntry[] | undefined {
+export function getMemo (state: number): MemoEntry | undefined {
   return aiMemo[state]
 }
 
-function buildTables (state: number, mark: number, depth: number): MemoEntry[] {
+function buildTables (state: number, mark: number, depth: number): MemoEntry {
   if (aiMemo[state]) return aiMemo[state]
 
   const winner = checkWin(state, depth)
 
-  return (aiMemo[state] = [...Array(WINNER_MAP_MAX).keys()].map((gameType) => {
-    if (winner) {
-      // Terminal state
-      const win = remapWin(
-        winner,
-        numToWinnerMap(gameType),
-      )
-      const value = win === 3
-        ? 0
-        : win === mark
-          ? 10 - depth
-          : depth - 10
-      return [value, 1 << (win - 1)]
-    }
+  const countResult: [number, number, number, number] = [0, 0, 0, 0]
 
-    // Pick best move with negamax
-    let bestVal = -2000000000
-    let endFlags = 0
-    let moves: number[] = []
+  let typeDep: MemoEntryRegular[] | MemoEntryWin[]
 
+  if (winner) {
+    // Terminal state
+
+    typeDep = [...Array(WINNER_MAP_MAX).keys()].map((gameType) => {
+        const win = remapWin(
+          winner,
+          numToWinnerMap(gameType),
+        )
+        const value = win === 3
+          ? 0
+          : win === mark
+            ? 10 - depth
+            : depth - 10
+        return [value]
+      }
+    )
+
+    countResult[0]++
+    countResult[winner]++
+  } else {
+    // Not terminal state
     for (let i = 0; i < 9; ++i) {
       if (!occupied(state, i)) {
         const stateNext = state | (mark << (i << 1))
         const markNext = mark ^ 3
         const depthNext = depth + 1
 
-        const opp = buildTables(stateNext, markNext, depthNext)[gameType]
+        const countResultNext = buildTables(stateNext, markNext, depthNext)[1]
 
-        const val = -opp[0]
-        endFlags |= opp[1]
-
-        if (bestVal === val) {
-          moves.push(i)
-        } else if (bestVal < val) {
-          bestVal = val
-          moves = [i]
+        for (let j = 0; j < 4; ++j) {
+          countResult[j] += countResultNext[j]
         }
       }
     }
 
-    return [bestVal, endFlags, moves]
-  }))
+    typeDep = [...Array(WINNER_MAP_MAX).keys()].map((gameType): MemoEntryRegular => {
+      // Pick best move with negamax
+      let bestVal = -2000000000
+      let moves: number[] = []
+      let countPathForcedL = 0
+      let countPathForcedT = 0
+      let countPathForcedW = 0
+
+      for (let i = 0; i < 9; ++i) {
+        if (!occupied(state, i)) {
+          const stateNext = state | (mark << (i << 1))
+          const markNext = mark ^ 3
+          const depthNext = depth + 1
+
+          const opp = buildTables(stateNext, markNext, depthNext)[0][gameType]
+
+          const val = -opp[0]
+
+          if (bestVal === val) {
+            moves.push(i)
+          } else if (bestVal < val) {
+            bestVal = val
+            moves = [i]
+          }
+
+          if (val < 0) {
+            countPathForcedL += opp[2] ?? 1
+          } else if (val > 0) {
+            countPathForcedW += opp[2] ?? 1
+          } else {
+            countPathForcedT += opp[2] ?? 1
+          }
+        }
+      }
+
+      const countPathForced =
+        bestVal < 0
+          ? countPathForcedL
+          : bestVal > 0
+            ? countPathForcedW
+            : countPathForcedT
+
+      return [bestVal, moves, countPathForced]
+    })
+  }
+
+  return (aiMemo[state] = [typeDep, countResult])
 }
 
 function botGenericMessage (moves: number, used: number): string {
@@ -85,10 +130,10 @@ function botGenericMessage (moves: number, used: number): string {
 }
 
 function botMoveGoal (state: number, used: number, winnerMap: WinnerMap, goal: string): BotAction {
-  const entry = aiMemo[state][winnerMapToNum(winnerMap)]
+  const entry = aiMemo[state][0][winnerMapToNum(winnerMap)]
 
   const pendingWin = entry[0] > 0 && ((10 - entry[0] - used) >> 1)
-  const moves = entry[2]!
+  const moves = entry[1]!
 
   return [moves,
     (pendingWin

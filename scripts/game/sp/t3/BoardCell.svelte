@@ -17,15 +17,18 @@ $: boardValue = (board >> (i << 1)) & 3
 function recalc () : [string, number] | undefined {
   if (boardValue || !showHints || winner || !getMemo) return
 
-  const entry = getMemo(board | (mark << (i << 1)))?.[winnerMapToNum(winnerMap)]
-  if (!entry) return
+  const memoEntry = getMemo(board | (mark << (i << 1)))
+  if (!memoEntry) return
 
-  const noTie = !(entry[1] & 4)
-  const noLose = !(entry[1] & (3 ^ mark))
-  const noWin = !(entry[1] & mark)
-  const scoreType = !entry[0] ? 'tie' : entry[0] < 0 ? 'win' : 'lose'
+  const [typeDep, countTypes] = memoEntry
+  const val = typeDep[winnerMapToNum(winnerMap)][0]
 
-  return [`h${scoreType}${noWin ? ' noW' : ''}${noTie ? ' noT' : ''}${noLose ? ' noL': ''}`, entry[0]]
+  const noTie = !(countTypes[3])
+  const noLose = !(countTypes[3 ^ mark])
+  const noWin = !(countTypes[mark])
+  const scoreType = !val ? 'tie' : val < 0 ? 'win' : 'lose'
+
+  return [`h${scoreType}${noWin ? ' noW' : ''}${noTie ? ' noT' : ''}${noLose ? ' noL': ''}`, val]
 }
 
 function recalcWhenNeeded (..._: any[]) {
