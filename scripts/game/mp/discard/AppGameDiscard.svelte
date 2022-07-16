@@ -33,8 +33,8 @@ let name = pStore('game/mp/_shared/name', '')
 let showLLNames = pStore('game/mp/discard/LL', true)
 let showCardCount = pStore('game/mp/discard/cardCount', true)
 
-function formatGameMode ({optDecks}) {
-  return getGameModeString(+optDecks)
+function formatGameMode ({optDecks, optTurnTime}) {
+  return getGameModeString(+optDecks, +optTurnTime)
 }
 </script>
 

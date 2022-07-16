@@ -31,6 +31,7 @@ const {
   pendingMoveUseHand,
   pendingMoveTarget,
   pendingMoveGuess,
+  modeTurnTime,
   modeDeck,
 } = gameState
 
@@ -218,7 +219,7 @@ export function getCardName (card, ll) {
 </div>
 
 <div>
-  Game Mode: {getGameModeString($modeDeck)}
+  Game Mode: {getGameModeString($modeDeck, $modeTurnTime)}
 </div>
 
 <b>Lobby</b>

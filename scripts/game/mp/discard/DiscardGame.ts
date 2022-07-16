@@ -86,6 +86,7 @@ const CARDS_PER_DECK = 15
 const MAX_DECKS = 3
 
 export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscInfo, DGameHistory> {
+  public readonly modeTurnTime = valueStore(0)
   public readonly modeDeck = valueStore(0)
 
   public readonly myHand = valueStore(0)
@@ -397,6 +398,7 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
   }
 
   protected processWelcomeMode (m: ByteReader): void {
+    this.modeTurnTime.set(this.ROUND_TIME = m.getInt())
     this.modeDeck.set(clamp(m.getInt(), 1, MAX_DECKS))
   }
 
