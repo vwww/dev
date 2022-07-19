@@ -122,8 +122,8 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   protected processPrivateInfo (m: ByteReader): void {
     switch (m.getInt()) {
       case 0: // my card count
-        // TODO
-        readCardCount(m)
+        this.cardCountMine.set(readCardCount(m))
+        // this.recalcCards()
         break
       case 1: // (vice-)scum cards
         // TODO
@@ -136,25 +136,30 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   protected processRoundStartInfo (m: ByteReader): void {
     const noPres = m.getBool()
     if (noPres) {
-      // TODO: go to PLAY state
+      this.gamePhase.set(GamePhase.NEW_TRICK)
+      // TODO
     } else {
-      // TODO: go to TRANSFER state
-      const pres = m.getInt()
-      const scum = m.getInt()
-      const vicePres = m.getInt()
-      const viceScum = m.getInt()
-      this.pres.set(pres)
-      this.scum.set(scum)
-      this.vicePres.set(vicePres)
-      this.viceScum.set(viceScum)
+      this.gamePhase.set(GamePhase.GIVE_CARDS)
+      this.processGiveCardInfo(m)
     }
     // TODO init cards
   }
 
   protected processRoundInfo (m: ByteReader): void {
     // TODO just discard count, calc others?
-    // infer from discarded?
-    // readCardCount(m)
+    const phase = m.getInt()
+    this.gamePhase.set(phase)
+    switch (phase) {
+      case GamePhase.GIVE_CARDS:
+        this.processGiveCardInfo(m)
+        break
+      case GamePhase.IN_TRICK:
+      case GamePhase.NEW_TRICK: {
+        const discardCount = readCardCount(m)
+        this.cardCountDiscard.set(discardCount)
+        // TODO infer from discarded?
+      }
+    }
   }
 
   protected processPlayerInfo (m: ByteReader, p: PPlayerInfo): void {
@@ -164,6 +169,7 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
 
   protected processDiscInfo (m: ByteReader, p: PDiscInfo): void {
     p.discarded = readCardCount(m)
+    p.hand = readCardCount(m)
   }
 
   protected processEliminate (m: ByteReader, d: PDiscInfo, p: PPlayerInfo): boolean {
@@ -264,6 +270,17 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
       discarded: newZeroCardCount(),
       hand: newZeroCardCount(),
     }
+  }
+
+  private processGiveCardInfo (m: ByteReader): void {
+    const pres = m.getInt()
+    const scum = m.getInt()
+    const vicePres = m.getInt()
+    const viceScum = m.getInt()
+    this.pres.set(pres)
+    this.scum.set(scum)
+    this.vicePres.set(vicePres)
+    this.viceScum.set(viceScum)
   }
 }
 
