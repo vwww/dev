@@ -106,7 +106,7 @@ $(function () {
             y2: 1
           },
           stops: [
-            [0, colors[0]],
+            [0, colors[0] as string],
             [1, new Highcharts.Color(colors[0]).setOpacity(0).get('rgba') as string]
           ]
         },
