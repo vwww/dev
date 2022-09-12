@@ -53,6 +53,7 @@ function init (modDataRaw: [ModInfo[]]) {
   let xScale = xScaleOrig.copy()
 
   const colorScale = d3.schemeCategory10
+  const firstLastColor = (modData.length % colorScale.length) === 1
 
   // X-axis
   const xAxisGenerator = d3.axisTop(xScale)
@@ -128,7 +129,14 @@ function init (modDataRaw: [ModInfo[]]) {
         .attr('y', 10)
         .attr('width', (d) => d.width)
         .attr('height', 70)
-        .attr('fill', (d) => colorScale[d.i % colorScale.length])
+        .attr('fill', (d) => {
+          const i = d.i % colorScale.length + (firstLastColor && d.i + 1 === modData.length ? 1 : 0)
+          return colorScale[i]
+        })
+        // .attr('stroke', 'rgba(0,0,0,0.3)')
+        // .attr('stroke-width', 4)
+        // .attr('stroke-dasharray', (d) => `70,${d.width}`)
+        // .attr('stroke-dashoffset', 70)
       .selectAll('title')
         .data((d) => [d])
         .join('title')
