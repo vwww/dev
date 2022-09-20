@@ -1,15 +1,17 @@
-<script>
-import Board from '../../common/t3/Board'
-import BoardCell from '../../common/t3/BoardCell'
+<script lang="ts">
+import Board from '../../common/t3/Board.svelte'
+import BoardCell from '../../common/t3/BoardCell.svelte'
 
-import ProgressBar from '../common/ProgressBar'
-import RoundPlayerList from '../common/RoundPlayerList'
-import TwoPlayerEarlyEnd from '../common/TwoPlayerEarlyEnd'
+import T3Game from './T3Game'
+
+import ProgressBar from '../common/ProgressBar.svelte'
+import RoundPlayerList from '../common/RoundPlayerList.svelte'
+import TwoPlayerEarlyEnd from '../common/TwoPlayerEarlyEnd.svelte'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState
-export let t3Isomorphism
+export let gameState: T3Game
+export let t3Isomorphism: number
 
 const {
   isActive,
@@ -35,14 +37,14 @@ const {
 $: playing = $isActive && $roundState === 2 && $inRound
 $: canMove = playing && $myTurn
 
-const isomorphism1 = [[1, 5], [2, 0], [3, 7], [4, 6], [5, 4], [6, 2], [7, 1], [8, 8], [9, 3]]
+const isomorphism1 = [[1, 5], [2, 0], [3, 7], [4, 6], [5, 4], [6, 2], [7, 1], [8, 8], [9, 3]] as const
 const isomorphism2 = [
   ['air', 3], ['bee', 1], ['bits', 4],
   ['book', 7], ['eat', 0], ['less', 2],
   ['lip', 5], ['lot', 8], ['soda', 6]
-]
+] as const
 
-function formatButtonClass (i, boardState, boardBad) {
+function formatButtonClass (i: number, boardState: number, boardBad: number): string {
   const mark = (boardState >> (i << 1)) & 3
   const bad = (boardBad >> i) & 1
   return `${mark ? '' : 'outline-'}${['secondary', 'success', 'primary', 'danger'][mark || (bad ? 3 : 0)]}`

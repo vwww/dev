@@ -19,7 +19,7 @@ export class PIOConnectionManager {
           playerInsightSegments,
           (c) => resolve(new PIOClient(c)),
           reject))
-    return this.cm.connect(makeConnect, undefined)
+    return await this.cm.connect(makeConnect, undefined)
   }
 
   cancel (): void {

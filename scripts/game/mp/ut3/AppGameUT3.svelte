@@ -1,17 +1,17 @@
-<script>
-import Chat from '../common/Chat'
-import GameHistoryCard from '../common/GameHistoryCard'
-import Leaderboard from '../common/Leaderboard'
-import NameBox from '../common/NameBox'
-import PlayCard from '../common/PlayCard'
-import TwoPlayerWinner from '../common/TwoPlayerWinner'
+<script lang="ts">
+import Chat from '../common/Chat.svelte'
+import GameHistoryCard from '../common/GameHistoryCard.svelte'
+import Leaderboard from '../common/Leaderboard.svelte'
+import NameBox from '../common/NameBox.svelte'
+import PlayCard from '../common/PlayCard.svelte'
+import TwoPlayerWinner from '../common/TwoPlayerWinner.svelte'
 
-import PIORoomList from '../common/PIORoomList'
+import PIORoomList from '../common/PIORoomList.svelte'
 
 import ChatState from '../common/ChatState'
 
 import UT3Game from './UT3Game'
-import UT3Play from './UT3Play'
+import UT3Play from './UT3Play.svelte'
 
 import { pStore } from '../../../util/svelte'
 
@@ -31,7 +31,7 @@ const {
 
 let name = pStore('game/mp/_shared/name', '')
 
-function formatGameMode ({optTurnTime, optInverted, optChecked, optQuick}) {
+function formatGameMode ({optTurnTime, optInverted, optChecked, optQuick}: any) {
   return getGameModeString(optInverted === 'true', optChecked === 'true', optQuick === 'true', +optTurnTime)
 }
 </script>

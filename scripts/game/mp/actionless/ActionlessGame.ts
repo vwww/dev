@@ -8,7 +8,7 @@ interface AClient extends OneTurnClient {
   streak: number
 }
 
-interface AGameHistory {
+export interface AGameHistory {
   playerCount: number
   wins: AGameHistoryWin[]
 }

@@ -1,6 +1,6 @@
-<script>
-export let canClear
-export let onClear
+<script lang="ts">
+export let canClear: boolean
+export let onClear: () => void
 </script>
 
 <div class="card mb-3">

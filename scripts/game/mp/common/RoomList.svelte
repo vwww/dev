@@ -1,13 +1,13 @@
-<script>
-import ProgressBar from './ProgressBar'
+<script lang="ts">
+import ProgressBar from './ProgressBar.svelte'
 
 import { onDestroy } from 'svelte'
 
-export let onRefresh
-export let isRefreshing
-export let onNewRoom
-export let onResetRoomOptions
-export let rooms
+export let onRefresh: () => void
+export let isRefreshing: boolean
+export let onNewRoom: () => void
+export let onResetRoomOptions: () => void
+export let rooms: ArrayLike<unknown>
 export let disableNew = false
 export let refreshTimeoutBase = 15000
 export let refreshTimeoutJitter = 15000
@@ -16,7 +16,7 @@ let collapsed = false
 
 let refreshLast = 0
 let refreshNext = 1
-let refreshTimeout
+let refreshTimeout: ReturnType<typeof setTimeout>
 
 function getRefreshDelay () {
   return refreshTimeoutBase + Math.random() * refreshTimeoutJitter

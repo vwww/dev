@@ -18,7 +18,7 @@ export const roomCreateOptions = [
   ['optRank2d', 'b', false, 'Trick Rank (down 2)', 'previous minus two, when not wrapping'],
   ['optRank2dw', 'b', false, 'Trick Rank (down 2 wrap)', 'previous minus two, when wrapping'],
   ['optRankother', 'b', false, 'Trick Rank (others)', 'other ranks not covered above'],
-]
+] as const
 
 export interface CheatOptions {
   decks: number

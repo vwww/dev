@@ -1,12 +1,14 @@
-<script>
-export let results
+<script lang="ts">
+import { TPHistoryEntry } from './game/TwoPlayerGame'
+
+export let results: ArrayLike<TPHistoryEntry>
 export let p0Win = 'X wins'
 export let p1Win = 'O wins'
 export let draw = 'draw'
 export let winEarly = 'by forfeit'
 export let drawEarly = 'by agreement'
 
-function winClass(winner) {
+function winClass (winner: number): string {
   return !winner ? 'success' : winner === 1 ? 'danger' : 'secondary'
 }
 </script>

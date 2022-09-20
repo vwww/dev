@@ -17,7 +17,7 @@ interface RPSClient extends OneTurnClient {
   battleTies: number
 }
 
-interface RPSGameHistory {
+export interface RPSGameHistory {
   local?: RPSGameHistoryLocal
   outcomes: number3
   count: number3

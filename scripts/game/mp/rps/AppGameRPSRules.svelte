@@ -1,19 +1,19 @@
-<script>
-function formatNum (n) {
+<script lang="ts">
+function formatNum (n: number): string {
   return n.toLocaleString()
 }
 
-function formatTimes (times) {
+function formatTimes (times: number): string {
   if (times === 1) return 'once'
   else if (times === 2) return 'twice'
   return formatNum(times) + 'x'
 }
 
-function formatScore (score) {
+function formatScore (score: number): string {
   return (score >= 0 ? '+' : '') + formatNum(score)
 }
 
-function formatResult (score, count, fmt, zero) {
+function formatResult (score: number, count: number, fmt?: (n: number) => string, zero?: string): string {
   // TODO: move HTML-generating function to subcomponent
   if (!count) return (zero || 'N/A')
 
@@ -27,7 +27,7 @@ function formatResult (score, count, fmt, zero) {
   return result
 }
 
-function formatResultClass (result) {
+function formatResultClass (result: number): string {
   if (!result) {
     return 'table-warning'
   } else if (result > 0) {
@@ -40,11 +40,14 @@ function formatResultClass (result) {
 let modeInverted = false
 let modeCount = false
 
+const emptyResult: [string, string] = ['', '']
+const emptyResultRow = [emptyResult, emptyResult, emptyResult]
+
 const names = ['Rock', 'Paper', 'Scissors']
 let count = [1, 2, 3]
 let ltw = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-let pairResults = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-let scores = [0, 0, 0]
+let pairResults = [emptyResultRow, emptyResultRow, emptyResultRow]
+// let scores = [0, 0, 0]
 let totalPlayers = 0
 let totalWins = 0
 let totalLoss = 0
@@ -61,8 +64,8 @@ $: {
   totalRound = 0
   ltw = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-  const battleResult = Array(3).fill().map((_, i) =>
-    Array(3).fill().map((_, j) => {
+  const battleResult = Array(3).fill(undefined).map((_, i) =>
+    Array(3).fill(undefined).map((_, j) => {
       if (i === j) return 0
       const defaultWin = ((i + 1) % 3 === j) === modeInverted
       if (modeCount) {
@@ -108,7 +111,9 @@ $: {
   }
 }
 
-const PRESETS = [
+type Preset = [number, number, number, string]
+
+const PRESETS: Preset[] = [
   [1, 2, 3, '3v2v1'],
   [1, 1, 0, '1v1'],
   [2, 0, 0, '2 same'],

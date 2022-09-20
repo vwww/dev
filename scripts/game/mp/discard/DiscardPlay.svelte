@@ -1,15 +1,17 @@
-<script>
-import CardCountTable from '../common/CardCountTable'
-import ProgressBar from '../common/ProgressBar'
-import RoundPlayerList from '../common/RoundPlayerList'
+<script lang="ts">
+import CardCountTable from '../common/CardCountTable.svelte'
+import ProgressBar from '../common/ProgressBar.svelte'
+import RoundPlayerList from '../common/RoundPlayerList.svelte'
 
-import DiscardMoveHistory from './DiscardMoveHistory'
+import DiscardMoveHistory from './DiscardMoveHistory.svelte'
+
+import DiscardGame from './DiscardGame'
 
 import { getGameModeString, playerColor } from './common'
 
-export let gameState
-export let ll
-export let showCardCount
+export let gameState: DiscardGame
+export let ll: boolean
+export let showCardCount: boolean
 
 const {
   isActive,
@@ -39,7 +41,7 @@ $: playing = $isActive && $roundState === 2 && $inRound
 $: canMove = playing && gameState.playerIsMe($playerInfo[0])
 $: pendingMove = $pendingMoveUseHand ? $myHand : $myAltMove
 
-function getCardDesc (card, ll) {
+function getCardDesc (card: number, ll: boolean): string {
   if (card < 1 || card > 8) return 'unknown'
   return [
     'target another player and guess hand value (not 1); if correct, target discards without effect and loses (5/deck)',
@@ -65,17 +67,17 @@ const cardShortNames = [
   '8 (1/deck)',
 ]
 
-function badMove (a, b) {
+function badMove (a: number, b: number): boolean {
   return a === 8 || b === 7 && (a == 5 || a == 6)
 }
 
-function moveColor (a, b) {
+function moveColor (a: number, b: number): string {
   return badMove(a, b) ? 'danger' : a === 1 ? 'info' : a !== 4 && a < 7 ? 'primary' : 'secondary'
 }
 </script>
 
-<script context="module">
-export function getCardName (card, ll) {
+<script lang="ts" context="module">
+export function getCardName (card: number, ll: boolean): string | number {
   if (ll) {
     return [
       'Guard (1)',

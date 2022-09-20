@@ -1,5 +1,7 @@
-<script>
-export let results
+<script lang="ts">
+import { RPSGameHistory } from './RPSGame'
+
+export let results: ArrayLike<RPSGameHistory>
 
 const outcomePairs = [
   {
@@ -31,7 +33,7 @@ const outcomePairs = [
   },
 ]
 
-function getOutcomeText(text, textBitShift, detRandBits) {
+function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number): T {
   // text.length must be a power of 2
   const mask = text.length - 1
   return text[(detRandBits >> textBitShift) & mask]

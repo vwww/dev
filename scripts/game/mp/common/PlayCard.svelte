@@ -1,12 +1,12 @@
-<script>
+<script lang="ts">
 export let inGame = false
 export let isActive = false
 export let canReady = false
 export let isReady = false
-export let onReset
-export let onDisconnect
-export let onSetActive
-export let onSetReady
+export let onReset: () => void
+export let onDisconnect: () => void
+export let onSetActive: (active: boolean) => void
+export let onSetReady: (ready: boolean) => void
 </script>
 
 <div class:d-none={inGame} class="alert alert-danger" role="alert">

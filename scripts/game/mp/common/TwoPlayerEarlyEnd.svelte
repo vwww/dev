@@ -1,8 +1,8 @@
-<script>
-export let drawOffer
-export let onResign
-export let onDrawOffer
-export let onDrawReject
+<script lang="ts">
+export let drawOffer: number
+export let onResign: () => void
+export let onDrawOffer: () => void
+export let onDrawReject: () => void
 </script>
 
 <div class="btn-group d-flex my-2">

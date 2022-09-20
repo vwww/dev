@@ -1,10 +1,12 @@
-<script>
-import ProgressBar from '../common/ProgressBar'
-import RoundPlayerList from '../common/RoundPlayerList'
+<script lang="ts">
+import ProgressBar from '../common/ProgressBar.svelte'
+import RoundPlayerList from '../common/RoundPlayerList.svelte'
+
+import ActionlessGame from './ActionlessGame'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState
+export let gameState: ActionlessGame
 
 const {
   roundState,

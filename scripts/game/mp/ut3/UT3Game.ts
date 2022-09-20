@@ -8,7 +8,7 @@ import { TPTurnClient, TPTurnGame } from '../common/game/TwoPlayerGame'
 
 interface UT3Client extends TPTurnClient { }
 
-interface BoardState {
+export interface BoardState {
   board: number
   boards: BoardStates
   boardRestrict: BoardStates

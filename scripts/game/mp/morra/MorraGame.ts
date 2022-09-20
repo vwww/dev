@@ -35,7 +35,7 @@ interface MorraGameHistoryPlayer {
 export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
   public readonly modeInverted = valueStore(false)
   public readonly modeAddRandom = valueStore(false)
-  public readonly modeTeam = valueStore(0)
+  public readonly modeTeams = valueStore(0)
 
   public readonly pendingMove = valueStore(0)
 
@@ -123,7 +123,7 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
   protected processWelcomeMode (m: ByteReader): void {
     this.modeInverted.set(m.getBool())
     this.modeAddRandom.set(m.getBool())
-    this.modeTeam.set(m.getInt())
+    this.modeTeams.set(m.getInt())
   }
 
   protected processWelcomePlayer (m: ByteReader, p: MorraClient): void {

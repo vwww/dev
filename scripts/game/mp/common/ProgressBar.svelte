@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 export let start = 0
 export let end = 1
 export let startTime = Date.now()
@@ -10,7 +10,7 @@ let progress = 0
 let remain = '0.0 s'
 
 onMount(() => {
-  let animHandle
+  let animHandle: number
   (function renderLoop () {
     animHandle = requestAnimationFrame(renderLoop)
 

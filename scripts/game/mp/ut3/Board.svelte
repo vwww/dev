@@ -1,11 +1,14 @@
-<script>
-export let boardState
-export let markHover
-export let onMove
+<script lang="ts">
+import { BoardState } from './UT3Game'
+
+// export let winner: number
+export let boardState: BoardState
+export let markHover: number
+export let onMove: (row: number, col: number) => void
 
 const cellNumbers = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 
-function cellClass (board, i, legalMove) {
+function cellClass (board: number, i: number, legalMove: boolean) {
   const v = (board >> (i << 1)) & 3
   return v || (legalMove ? 3 : 0)
 }

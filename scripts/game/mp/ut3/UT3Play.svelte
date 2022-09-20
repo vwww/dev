@@ -1,13 +1,15 @@
-<script>
-import ProgressBar from '../common/ProgressBar'
-import RoundPlayerList from '../common/RoundPlayerList'
-import TwoPlayerEarlyEnd from '../common/TwoPlayerEarlyEnd'
+<script lang="ts">
+import ProgressBar from '../common/ProgressBar.svelte'
+import RoundPlayerList from '../common/RoundPlayerList.svelte'
+import TwoPlayerEarlyEnd from '../common/TwoPlayerEarlyEnd.svelte'
 
-import Board from './Board'
+import UT3Game from './UT3Game'
+
+import Board from './Board.svelte'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState
+export let gameState: UT3Game
 
 const {
   isActive,

@@ -1,19 +1,19 @@
-<script>
+<script lang="ts">
 import { pStore } from '../../../util/svelte'
 
-import Chat from '../common/Chat'
-import GameHistoryCard from '../common/GameHistoryCard'
-import Leaderboard from '../common/Leaderboard'
-import NameBox from '../common/NameBox'
-import PlayCard from '../common/PlayCard'
-import TwoPlayerWinner from '../common/TwoPlayerWinner'
+import Chat from '../common/Chat.svelte'
+import GameHistoryCard from '../common/GameHistoryCard.svelte'
+import Leaderboard from '../common/Leaderboard.svelte'
+import NameBox from '../common/NameBox.svelte'
+import PlayCard from '../common/PlayCard.svelte'
+import TwoPlayerWinner from '../common/TwoPlayerWinner.svelte'
 
-import PIORoomList from '../common/PIORoomList'
+import PIORoomList from '../common/PIORoomList.svelte'
 
 import ChatState from '../common/ChatState'
 
 import T3Game from './T3Game'
-import T3Play from './T3Play'
+import T3Play from './T3Play.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
@@ -32,7 +32,7 @@ const {
 let t3Isomorphism = pStore('game/mp/t3/isomorphism', 0)
 let name = pStore('game/mp/_shared/name', '')
 
-function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }) {
+function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any) {
   return getGameModeString(optInverted === 'true', optChecked === 'true', optQuick === 'true', +optTurnTime)
 }
 </script>

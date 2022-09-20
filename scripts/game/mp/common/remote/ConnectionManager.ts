@@ -13,15 +13,17 @@ export class ConnectionManager<TConn extends Connection, TConnID> {
   }
 
   async connect (makeConnection: () => Promise<TConn>, connId?: TConnID): Promise<TConn> {
-    while (this.curConn && connId && connId === this.curConnId) {
-      // pool pending connects to same resource
-      try {
-        return await this.curConn
-      } catch {
-        // retry
+    if (connId) {
+      while (this.curConn && connId === this.curConnId) {
+        // pool pending connects to same resource
+        try {
+          return await this.curConn
+        } catch {
+          // retry
 
-        // If the call responsible for current connect fails,
-        // another call will exit this while loop.
+          // If the call responsible for current connect fails,
+          // another call will exit this while loop.
+        }
       }
     }
 

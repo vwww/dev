@@ -1,17 +1,17 @@
-<script>
-import Chat from '../common/Chat'
-import GameHistoryCard from '../common/GameHistoryCard'
-import Leaderboard from '../common/Leaderboard'
-import NameBox from '../common/NameBox'
-import PlayCard from '../common/PlayCard'
+<script lang="ts">
+import Chat from '../common/Chat.svelte'
+import GameHistoryCard from '../common/GameHistoryCard.svelte'
+import Leaderboard from '../common/Leaderboard.svelte'
+import NameBox from '../common/NameBox.svelte'
+import PlayCard from '../common/PlayCard.svelte'
 
-import PIORoomList from '../common/PIORoomList'
+import PIORoomList from '../common/PIORoomList.svelte'
 
 import ChatState from '../common/ChatState'
 
 import CheatGame from './CheatGame'
-import CheatHistory from './CheatHistory'
-import CheatPlay from './CheatPlay'
+import CheatHistory from './CheatHistory.svelte'
+import CheatPlay from './CheatPlay.svelte'
 
 import { pStore } from '../../../util/svelte'
 
@@ -31,7 +31,7 @@ const {
 
 let name = pStore('game/mp/_shared/name', '')
 
-function formatGameMode ({optCount, optRank, optRounds, optPenalty}) {
+function formatGameMode ({optCount, optRank, optRounds, optPenalty}: any) {
   return getGameModeString()
 }
 </script>

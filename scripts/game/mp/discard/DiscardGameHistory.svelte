@@ -1,8 +1,10 @@
-<script>
-import { getCardName } from './DiscardPlay'
+<script lang="ts">
+import { DGameHistory } from './DiscardGame'
 
-export let results
-export let ll
+import { getCardName } from './DiscardPlay.svelte'
+
+export let results: ArrayLike<DGameHistory>
+export let ll: boolean
 </script>
 
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">

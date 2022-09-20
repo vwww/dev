@@ -29,7 +29,7 @@ interface DDiscInfo extends RRTurnDiscInfo {
   discardSum: number
 }
 
-interface DGameHistory {
+export interface DGameHistory {
   survived: {
     name: string
     rank: number
@@ -45,7 +45,7 @@ interface DGameHistory {
   }[]
 }
 
-type DiscardMoveInfo =
+export type DiscardMoveInfo =
   | DiscardMoveInfoMove
   | DiscardMoveInfoReveal
   | DiscardMoveInfoCompare
@@ -60,26 +60,27 @@ interface DiscardMoveInfoMove {
   targetIsMe: boolean
   targetIsPlayer: boolean
   targetValid: boolean
-  info?: number
+  info: number
 }
 
 interface DiscardMoveInfoReveal {
   type: 'reveal'
+  playerName: string
   hand: number
 }
 
 interface DiscardMoveInfoCompare {
   type: 'cmp'
+  playerName: string
   ours: number
   theirs: number
-  name: string
 }
 
 interface DiscardMoveInfoTrade {
   type: 'trade'
+  playerName: string
   oldHand: number
   newHand: number
-  name: string
 }
 
 const CARDS_PER_DECK = 15
@@ -151,7 +152,7 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
         const hand = m.getInt()
 
         const player = this.getPlayerInfo(pn)
-        const name = this.getNameFromPlayer(player, pn)
+        const playerName = this.getNameFromPlayer(player, pn)
 
         switch (x) {
           case 2:
@@ -159,7 +160,7 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
               player.hand = hand
               this.updatePlayerInfo()
             }
-            this.moveHistory.update((h) => [...h, { type: 'reveal', name, hand }])
+            this.moveHistory.update((h) => [...h, { type: 'reveal', playerName, hand }])
             break
           case 3: {
             const ours = this.myHand.get()
@@ -167,12 +168,12 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
               player.hand = hand
               this.updatePlayerInfo()
             }
-            this.moveHistory.update((h) => [...h, { type: 'cmp', ours, theirs: hand, name }])
+            this.moveHistory.update((h) => [...h, { type: 'cmp', ours, theirs: hand, playerName }])
             break
           }
           case 6: {
             const oldHand = this.myHand.get()
-            this.moveHistory.update((h) => [...h, { type: 'trade', oldHand, newHand: hand, name }])
+            this.moveHistory.update((h) => [...h, { type: 'trade', oldHand, newHand: hand, playerName }])
             if (player) {
               player.hand = oldHand
               this.updatePlayerInfo()
@@ -260,6 +261,7 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
       targetIsMe: this.playerIsMe(targetInfo),
       targetIsPlayer: targetInfo === p,
       targetValid: !!targetInfo,
+      info: 0,
     }
 
     if (c?.isMe && move === this.myHand.get()) {

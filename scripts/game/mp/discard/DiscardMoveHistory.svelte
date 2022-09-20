@@ -1,8 +1,10 @@
-<script>
-export let moves
-export let ll
+<script lang="ts">
+export let moves: ArrayLike<DiscardMoveInfo>
+export let ll: boolean
 
-import { getCardName } from './DiscardPlay'
+import { DiscardMoveInfo } from './DiscardGame'
+
+import { getCardName } from './DiscardPlay.svelte'
 
 import { playerColor } from './common'
 </script>
@@ -42,12 +44,12 @@ import { playerColor } from './common'
       and lost&#8253;
     {/if}
   {:else if m.type === 'reveal'}
-    <span class="badge bg-secondary">{m.name}</span> has <span class="badge bg-light">{getCardName(m.hand, ll)}</span>!
+    <span class="badge bg-secondary">{m.playerName}</span> has <span class="badge bg-light">{getCardName(m.hand, ll)}</span>!
   {:else if m.type === 'cmp'}
     You have <span class="badge bg-dark">{getCardName(m.ours, ll)}</span>;
-    <span class="badge bg-secondary">{m.name}</span> has <span class="badge bg-light">{getCardName(m.theirs, ll)}</span>.
+    <span class="badge bg-secondary">{m.playerName}</span> has <span class="badge bg-light">{getCardName(m.theirs, ll)}</span>.
   {:else if m.type === 'trade'}
-    <span class="badge bg-secondary">{m.name}</span>
+    <span class="badge bg-secondary">{m.playerName}</span>
     gives you <span class="badge bg-dark">{m.newHand}</span>
     for your <span class="badge bg-light">{m.oldHand}</span>.
   {:else}

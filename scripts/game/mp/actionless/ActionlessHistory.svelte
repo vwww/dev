@@ -1,5 +1,7 @@
-<script>
-export let results
+<script lang="ts">
+import { AGameHistory } from './ActionlessGame'
+
+export let results: AGameHistory[]
 </script>
 
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">

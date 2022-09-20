@@ -76,7 +76,6 @@
                 "lib": "never"
             }
         ],
-        "no-return-await": "error",
         // "return-undefined": "error", // no good equivalent
         "@typescript-eslint/naming-convention": "error",
         // "jsdoc-format": "error", // no good equivalent
@@ -116,6 +115,7 @@
         "@typescript-eslint/indent": "off",
         // Custom
         "comma-dangle": "off",
+        "@typescript-eslint/comma-dangle": "off",
         "no-new": "off",
         "no-self-assign": "off", // svelte and .innerHTML self-assign hack
         "no-sequences": "off",

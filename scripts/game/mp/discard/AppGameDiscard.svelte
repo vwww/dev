@@ -1,17 +1,17 @@
-<script>
-import Chat from '../common/Chat'
-import GameHistoryCard from '../common/GameHistoryCard'
-import Leaderboard from '../common/Leaderboard'
-import NameBox from '../common/NameBox'
-import PlayCard from '../common/PlayCard'
+<script lang="ts">
+import Chat from '../common/Chat.svelte'
+import GameHistoryCard from '../common/GameHistoryCard.svelte'
+import Leaderboard from '../common/Leaderboard.svelte'
+import NameBox from '../common/NameBox.svelte'
+import PlayCard from '../common/PlayCard.svelte'
 
-import PIORoomList from '../common/PIORoomList'
+import PIORoomList from '../common/PIORoomList.svelte'
 
 import ChatState from '../common/ChatState'
 
 import DiscardGame from './DiscardGame'
-import DiscardPlay from './DiscardPlay'
-import DiscardGameHistory from './DiscardGameHistory'
+import DiscardPlay from './DiscardPlay.svelte'
+import DiscardGameHistory from './DiscardGameHistory.svelte'
 
 import { pStore } from '../../../util/svelte'
 
@@ -33,7 +33,7 @@ let name = pStore('game/mp/_shared/name', '')
 let showLLNames = pStore('game/mp/discard/LL', true)
 let showCardCount = pStore('game/mp/discard/cardCount', true)
 
-function formatGameMode ({optDecks, optTurnTime}) {
+function formatGameMode ({optDecks, optTurnTime}: any) {
   return getGameModeString(+optDecks, +optTurnTime)
 }
 </script>

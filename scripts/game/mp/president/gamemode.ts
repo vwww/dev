@@ -20,7 +20,7 @@ export const roomCreateOptions = [
   ['optSingleTurn', 'b', false, 'Single turn', 'treat as passed after playing, player before starter of current trick starts next trick'],
   ['optPenalizeFinal2', 'b', false, 'Penalize final 2', 'playing 2 as last card demotes to scum'],
   ['optPenalizeFinalJoker', 'b', false, 'Penalize final joker', 'playing joker as last card demotes to scum'],
-]
+] as const
 
 export interface PresidentOptions {
   decks: number

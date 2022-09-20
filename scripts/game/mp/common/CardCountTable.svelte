@@ -1,6 +1,6 @@
-<script>
-export let ranks
-export let counts
+<script lang="ts">
+export let ranks: string[]
+export let counts: [string, number[]][]
 </script>
 
 <div class="table-responsive">

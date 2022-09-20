@@ -49,7 +49,7 @@ $: VT = !!UTD && isFinite(+UTD)
 $: VA = V1 && V4 && V5 && V7 && VT
 </script>
 
-<script context="module" lang="ts">
+<script lang="ts" context="module">
 export function generate1_0 (timeHex: string, rHex: string): string {
   timeHex = timeHex.padStart(16, '0')
   rHex = rHex.padEnd(32, '0')

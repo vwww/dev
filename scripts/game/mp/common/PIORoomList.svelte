@@ -1,37 +1,41 @@
-<script>
-import RoomOption from './RoomOption'
-import RoomList from './RoomList'
+<script lang="ts">
+import RoomOption, { OptionsAny, OptionStoreAny } from './RoomOption.svelte'
+import RoomList from './RoomList.svelte'
 
-import { PIOAdapter } from './remote/playerio/PIORoom'
+import { BaseGameRoom } from './remote/BaseGameRoom'
+import { PIOAdapter, PIORoom } from './remote/playerio/PIORoom'
 import { PIOConnectionManager } from './remote/playerio/PIOConnectionManager'
 
 import { randomAlphaNumeric } from '../../../util'
 import { pStore } from '../../../util/svelte'
+    import { PIOClient } from './remote/playerio/PIOClient';
 
-export let gameId
-export let roomType
-export let joinData = null
-export let onJoinedRoom
-export let formatGameMode
-export let columns = [
+type RoomInfoFormatter = (r: PlayerIO.roomInfo) => string
+
+export let gameId: string
+export let roomType: string
+export let joinData: object | null = null
+export let onJoinedRoom: (conn: BaseGameRoom) => void
+export let formatGameMode: (roomData: object) => string
+export let columns: [string, RoomInfoFormatter, RoomInfoFormatter?][] = [
   ['Players', (r) => formatPlayerCount(r)],
   ['ID', (r) => r.id.slice(0, 8) + '…', (r) => r.id],
   ['Game Mode', (r) => formatGameMode(r.roomData)],
 ]
-export let roomCreateOptions // [id, type, defaultValue, name, description, min?, max?]
+export let roomCreateOptions: readonly OptionsAny[]
 
-function formatPlayerCount (r) {
+function formatPlayerCount (r: PlayerIO.roomInfo): string {
   const total = r.onlineUsers
-  const active = +r.roomData.activeCount || 0
+  const active = +(r.roomData as any).activeCount || 0
   const spect = total - active
-  return spect ? `${active}+${spect}` : total
+  return spect ? `${active}+${spect}` : total + ''
 }
 
 const cm = new PIOConnectionManager(gameId)
 
-const roomCreateData = (roomCreateOptions ?? []).map(o => [o, pStore(`game/mp/_roomCreate/${roomType}/${o[0]}`, o[2])])
+const roomCreateData: readonly OptionStoreAny[] = (roomCreateOptions ?? []).map(o => [o, pStore(`game/mp/_roomCreate/${roomType}/${o[0]}`, o[2])])
 
-function getRoomData () {
+function getRoomData (): object | null {
   return roomCreateData.length ? Object.fromEntries(roomCreateData.map(([o, s]) => [o[0], s.get()])) : null
 }
 
@@ -39,7 +43,7 @@ function resetRoomOptions () {
   roomCreateData.forEach((s) => s[1].set(s[0][2]))
 }
 
-let rooms = []
+let rooms: PlayerIO.roomInfo[] = []
 let isRefreshing = false
 let isConnected = false
 
@@ -56,7 +60,7 @@ async function refreshRooms () {
   }
 }
 
-async function tryConnect (makeRoom) {
+async function tryConnect (makeRoom: (conn: PIOClient) => Promise<PIORoom>): Promise<PIORoom | undefined> {
   try {
     const conn = await getConnection()
     const roomConn = await makeRoom(conn)
@@ -72,7 +76,7 @@ async function tryConnect (makeRoom) {
   }
 }
 
-function getConnection () {
+function getConnection (): Promise<PIOClient> {
   const conn = cm.connect()
   isConnected = true
   return conn
@@ -81,7 +85,7 @@ function getConnection () {
 refreshRooms()
 </script>
 
-<RoomList let:room {isRefreshing} {rooms} disableNew={!isConnected} onRefresh={refreshRooms}
+<RoomList {isRefreshing} {rooms} disableNew={!isConnected} onRefresh={refreshRooms}
   onResetRoomOptions={resetRoomOptions}
   onNewRoom={() => tryConnect(async (conn) => conn.createJoinRoom(randomAlphaNumeric(50), roomType, true, getRoomData(), joinData))}>
   <div slot="newRoom">

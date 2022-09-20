@@ -1,6 +1,10 @@
-<script>
-export let players
-export let columns = []
+<script lang="ts">
+import { BaseClient } from './game/CommonGame'
+
+type P = $$Generic<BaseClient>
+
+export let players: ArrayLike<P>
+export let columns: [string, (p: P) => number | string][] = []
 
 let showSpect = true
 </script>

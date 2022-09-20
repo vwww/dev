@@ -1,5 +1,5 @@
 <script lang="ts">
-import Entry from './Entry'
+import Entry from './Entry.svelte'
 
 import { EntryInfo, parseEntry } from './EntryInfo'
 import { PokeInfo } from './PokeInfo'

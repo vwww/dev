@@ -1,6 +1,8 @@
-<script>
-export let inGame
-export let inQueue
+<script lang="ts">
+import { TurnBasedClient } from './game/TurnBasedGame'
+
+export let inGame: ArrayLike<TurnBasedClient>
+export let inQueue: ArrayLike<TurnBasedClient>
 </script>
 
 <div>

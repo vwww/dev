@@ -1,26 +1,26 @@
-<script>
-import Chat from '../common/Chat'
-import GameHistoryCard from '../common/GameHistoryCard'
-import Leaderboard from '../common/Leaderboard'
-import NameBox from '../common/NameBox'
-import PlayCard from '../common/PlayCard'
+<script lang="ts">
+import Chat from '../common/Chat.svelte'
+import GameHistoryCard from '../common/GameHistoryCard.svelte'
+import Leaderboard from '../common/Leaderboard.svelte'
+import NameBox from '../common/NameBox.svelte'
+import PlayCard from '../common/PlayCard.svelte'
 
-import PIORoomList from '../common/PIORoomList'
+import PIORoomList from '../common/PIORoomList.svelte'
 
 import ChatState from '../common/ChatState'
 
 import MorraGame from './MorraGame'
-import MorraHistory from './MorraHistory'
-import MorraPlay from './MorraPlay'
+import MorraHistory from './MorraHistory.svelte'
+import MorraPlay from './MorraPlay.svelte'
 
 import { pStore } from '../../../util/svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
-let play
+let play: MorraPlay
 
 const chatState = new ChatState()
-const gameState = new MorraGame(chatState, () => gameState.sendMove(play.randomizeNextNumber()))
+const gameState: MorraGame = new MorraGame(chatState, () => gameState.sendMove(play.randomizeNextNumber()))
 
 const {
   inGame,
@@ -33,7 +33,7 @@ const {
 
 let name = pStore('game/mp/_shared/name', '')
 
-function formatGameMode ({optInverted, optAddRandom, optTeams}) {
+function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
   return getGameModeString(optInverted === 'true', optAddRandom === 'true', +optTeams)
 }
 </script>
