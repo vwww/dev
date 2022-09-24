@@ -9,7 +9,8 @@
     href_ext: https://re.victorz.ca
     badges:
       - [secondary, Planning]
-- items:
+- name: Browser Games
+  items:
   - name: Arcade
     desc: my arcade, full of hacked flash games!
     date_added: 2008-09?
@@ -17,6 +18,14 @@
   - name: Tic-Tac-Toe Analyzer
     desc: Analyze Tic-Tac-Toe in various variants and game states
     href: game/t3
+  - name: Balanced Tetris
+    desc: Tetris, but don't let it tip over to one side
+    href: game/tetris
+  - name: Clicking Game Remake
+    desc: Modern version of the first game I created
+    href: game/click
+- name: Analysis
+  items:
   - name: Fill Solver
     desc: Solve the game Fill efficiently
     href: game/fill
@@ -28,9 +37,3 @@
     href: game/logic
     badges:
       - [secondary, TODO]
-  - name: Balanced Tetris
-    desc: Tetris, but don't let it tip over to one side
-    href: game/tetris
-  - name: Clicking Game Remake
-    desc: Modern version of the first game I created
-    href: game/click
