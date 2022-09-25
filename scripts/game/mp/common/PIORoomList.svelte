@@ -10,7 +10,7 @@ import { randomAlphaNumeric } from '../../../util'
 import { pStore } from '../../../util/svelte'
     import { PIOClient } from './remote/playerio/PIOClient';
 
-type RoomInfoFormatter = (r: PlayerIO.roomInfo) => string
+type RoomInfoFormatter = (r: PIO.roomInfo) => string
 
 export let gameId: string
 export let roomType: string
@@ -24,7 +24,7 @@ export let columns: [string, RoomInfoFormatter, RoomInfoFormatter?][] = [
 ]
 export let roomCreateOptions: readonly OptionsAny[]
 
-function formatPlayerCount (r: PlayerIO.roomInfo): string {
+function formatPlayerCount (r: PIO.roomInfo): string {
   const total = r.onlineUsers
   const active = +(r.roomData as any).activeCount || 0
   const spect = total - active
@@ -43,7 +43,7 @@ function resetRoomOptions () {
   roomCreateData.forEach((s) => s[1].set(s[0][2]))
 }
 
-let rooms: PlayerIO.roomInfo[] = []
+let rooms: PIO.roomInfo[] = []
 let isRefreshing = false
 let isConnected = false
 

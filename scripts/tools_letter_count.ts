@@ -14,25 +14,25 @@ function update (): void {
   // Count letters
   const txt = $txt.value.trim()
   const chrCount: number[] = new Array(CHARS.length).fill(0)
-  let sum = 0
-  let max = 0
+  let sumCount = 0
+  let maxCount = 0
   for (const c of txt) {
     const i = CHARS.indexOf(c.toUpperCase())
     if (i < 0) continue
 
-    sum += 1
-    if (max < ++chrCount[i]) max = chrCount[i]
+    sumCount += 1
+    if (maxCount < ++chrCount[i]) maxCount = chrCount[i]
   }
 
   // Update charts
-  const labels = []
-  const values = []
+  const c0labels = []
+  const c0values = []
   for (let i = 0; i < chrCount.length; i++) {
     const count = chrCount[i]
     if (!count) continue
     const c = CHARS[i]
-    labels.push(c === ' ' ? '_' : c)
-    values.push({
+    c0labels.push(c === ' ' ? '_' : c)
+    c0values.push({
       top: count,
       tip: c + ' found ' + (count === 1 ? 'once' : count + ' times'),
       color: VOWELS.includes(c) ? '#06799F' : /[A-Z]/.test(c) ? '#FF9F00' : undefined,
@@ -40,7 +40,7 @@ function update (): void {
   }
   chart0 = {
     title: {
-      text: `Letter Count (${sum} total)`,
+      text: `Letter Count (${sumCount} total)`,
       style: '{font-size: 20px; color:#567300; font-family: Verdana; text-align: center;}',
     },
 
@@ -67,7 +67,7 @@ function update (): void {
       stroke: 3,
       colour: '#A66E00',
       grid_colour: '#00ff00',
-      labels: { labels: labels },
+      labels: { labels: c0labels },
     },
 
     y_axis: {
@@ -76,7 +76,7 @@ function update (): void {
       'outline-colour': '#567300',
       'grid_colour': '#00ff00',
       'offset': 0,
-      'max': max,
+      'max': maxCount,
     },
 
     elements: [{
@@ -87,11 +87,11 @@ function update (): void {
       'text': 'Count',
       'font-size': 10,
       'tip': '#x_label# found #val# times',
-      'values': values,
+      'values': c0values,
     }],
   }
 
-  const excludeLine = Math.round(sum * 0.02) // (2% and below) minority is excluded
+  const excludeLine = Math.round(sumCount * 0.02) // (2% and below) minority is excluded
   const valuesFiltered = []
   for (let i = 0; i < chrCount.length; i++) {
     const count = chrCount[i]
@@ -100,9 +100,9 @@ function update (): void {
     const record: Record<string, string | number> = {
       'label': c === ' ' ? '_' : c,
       'value': count,
-      'font-size': Math.round(8 + (count * 12 / max)),
+      'font-size': Math.round(8 + (count * 12 / maxCount)),
     }
-    if (count === 1) record.tip = c + ' found once (' + Math.round(10000 / sum) / 100 + ' %)'
+    if (count === 1) record.tip = c + ' found once (' + Math.round(10000 / sumCount) / 100 + ' %)'
     valuesFiltered.push(record)
   }
   chart1 = {

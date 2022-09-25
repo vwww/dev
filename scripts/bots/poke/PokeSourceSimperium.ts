@@ -4,7 +4,7 @@ import { PokeSource } from './PokeSource'
 import '../../vendor/simperium-v0.1.js'
 
 export default class PokeSourceSimperium implements PokeSource {
-  private simperium: any
+  private readonly simperium: Simperium
 
   constructor (app = 'brake-foods-bc7', token = 'ce4832ce12e24ee6860886d9b4567b12') {
     this.simperium = new Simperium(app, { token })
@@ -18,10 +18,10 @@ export default class PokeSourceSimperium implements PokeSource {
 
   onPokeUpdate (updatePoke: (pokes: Record<string, PokeInfo>) => void): () => void {
     const bucket = this.simperium.bucket('stats')
-    bucket.on('notify', function (id: string, data: any) {
+    bucket.on('notify', function (id: string, data: object) {
       // console.log(id + ' was updated to')
       // console.log(data)
-      if (id === 'p') updatePoke(data)
+      if (id === 'p') updatePoke(data as Record<string, PokeInfo>)
     })
     bucket.start()
 

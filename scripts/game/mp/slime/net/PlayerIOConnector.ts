@@ -10,10 +10,10 @@ const DEVELOPMENT_SERVER = 'localhost:8184'
 
 export class PlayerIOConnector implements IConnector {
   private state = ReadyState.Disconnected
-  private connection?: PlayerIO.connection
+  private connection?: PIO.connection
   private lastKeySent = -1
 
-  constructor (private game: IConnectorCallbacks) {}
+  constructor (private readonly game: IConnectorCallbacks) {}
 
   isConnected (): boolean { return this.readyState() !== ReadyState.Disconnected }
   readyState (): ReadyState { return this.state }
@@ -23,7 +23,7 @@ export class PlayerIOConnector implements IConnector {
 
     this.state = ReadyState.Connecting
 
-    const errorHandler = (error: any): void => {
+    const errorHandler = (error: PIO.PlayerIOError): void => {
       console.log(error)
       this.disconnected()
     }

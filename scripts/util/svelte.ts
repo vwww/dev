@@ -25,7 +25,7 @@ interface PStore<T> extends ValueStore<T> {
 }
 
 export function createPStore<T> (key: string, startValue: T): PStore<T> {
-  const s = valueStore(startValue)
+  const s = valueStore<T>(startValue)
 
   return {
     ...s,
@@ -34,7 +34,7 @@ export function createPStore<T> (key: string, startValue: T): PStore<T> {
 
       const json = localStorage.getItem(key)
       if (json !== null) {
-        s.set(json === 'undefined' ? undefined : JSON.parse(json))
+        s.set((json === 'undefined' ? undefined : JSON.parse(json)) as T)
       }
 
       s.subscribe((current) => {

@@ -5,13 +5,13 @@ import { supportsLocalStorage } from './storage'
 export function init (): void {
   $('.theme-switcher').click(function (event) {
     event.preventDefault()
-    const theme = $(this).data('theme')
+    const theme = $(this).data('theme') as string
     set(theme)
     if (supportsLocalStorage()) localStorage.theme = theme
   })
   if (supportsLocalStorage()) {
     // Restore theme
-    if (localStorage.theme !== undefined) set(localStorage.theme)
+    if (localStorage.theme !== undefined) set(localStorage.theme as string)
     // Remove save warning
     $('#theme-switcher-msg').removeClass('btn-danger').addClass('btn-info')
     $('#theme-switcher-msg-text').text('Can save')

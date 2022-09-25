@@ -34,6 +34,21 @@ export class WebSocketConnector implements IConnector {
     if (this.sock) this.sock.close()
   }
 
+  update (): void {
+    if (!this.sock) return
+
+    // don't bother to send keep-alives
+
+    if (!this.game.shouldSendNetworkUpdate()) return
+
+    const keyFlags = this.game.getKeyFlags()
+    if (this.lastKeySent !== keyFlags) {
+      const buf = new Uint8Array(1)
+      buf[0] = (this.lastKeySent = keyFlags)
+      this.sock.send(buf.buffer)
+    }
+  }
+
   private disconnected (): void {
     this.sock = undefined
     this.game.processServerDisconnect()
@@ -55,6 +70,7 @@ export class WebSocketConnector implements IConnector {
 
   private received (event: MessageEvent): void {
     const data = event.data
+    if (!(data instanceof ArrayBuffer)) return
     const dv = new DataView(data)
 
     const type = dv.getUint8(0)
@@ -109,21 +125,6 @@ export class WebSocketConnector implements IConnector {
       )
     } else if (type === 9 && data.byteLength === 9) {
       this.sock!.send(data.slice(1))
-    }
-  }
-
-  update (): void {
-    if (!this.sock) return
-
-    // don't bother to send keep-alives
-
-    if (!this.game.shouldSendNetworkUpdate()) return
-
-    const keyFlags = this.game.getKeyFlags()
-    if (this.lastKeySent !== keyFlags) {
-      const buf = new Uint8Array(1)
-      buf[0] = (this.lastKeySent = keyFlags)
-      this.sock.send(buf.buffer)
     }
   }
 }

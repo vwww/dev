@@ -33,6 +33,9 @@
     "settings": {
         "svelte3/typescript": true
     },
+    "ignorePatterns": [
+        "scripts/vendor/*.js"
+    ],
     "rules": {
         // TSLint -> ESLint https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/ROADMAP.md
         // TS Lint Standard Plus

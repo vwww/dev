@@ -1,7 +1,8 @@
 const devMode = process.env.NODE_ENV !== 'production'
 
-export default function loadApp (route: any): void {
-  const app = new route({ target: document.getElementById('app') })
+export default function loadApp (Route: any): void {
+  const target = document.getElementById('app')!
+  const app = new Route({ target })
 
   if (devMode) {
     (window as any).app = app // potentially useful for debugging

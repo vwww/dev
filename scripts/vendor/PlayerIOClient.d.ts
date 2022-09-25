@@ -7,7 +7,7 @@
 //  PlayerIO SDK.9Pz-Aq4pkyaX6OBK0qb8sA.zip
 //  MIT license without required attribution
 
-declare namespace PlayerIO {
+declare namespace PIO {
   type MessageEntry = number | string | boolean | ByteArray
   type ByteArray = {
     length: number
@@ -407,4 +407,4 @@ declare namespace PlayerIO {
   interface vaultItem {}
 }
 
-declare const PlayerIO: PlayerIO.PlayerIO
+declare const PlayerIO: PIO.PlayerIO

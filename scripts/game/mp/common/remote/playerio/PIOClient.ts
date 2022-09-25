@@ -7,7 +7,7 @@ import { PIORoom } from './PIORoom'
 export class PIOClient {
   private readonly cm = new ConnectionManager<PIORoom, never>()
 
-  constructor (private readonly client: PlayerIO.client, devServer?: string) {
+  constructor (private readonly client: PIO.client, devServer?: string) {
     this.client.multiplayer.useSecureConnections = true
     if (devServer) {
       this.client.multiplayer.developmentServer = devServer
@@ -34,7 +34,7 @@ export class PIOClient {
         this.client.multiplayer.joinRoom(roomId, joinData, (c) => resolve(new PIORoom(c)), reject)))
   }
 
-  listRooms (roomType: string, searchCriteria = {}, resultLimit = 0, resultOffset = 0): Promise<PlayerIO.roomInfo[]> {
+  listRooms (roomType: string, searchCriteria = {}, resultLimit = 0, resultOffset = 0): Promise<PIO.roomInfo[]> {
     return new Promise(
       (resolve, reject) =>
         this.client.multiplayer.listRooms(roomType, searchCriteria, resultLimit, resultOffset, resolve, reject))

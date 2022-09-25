@@ -1,15 +1,15 @@
-import jsSHA1 from 'jssha/dist/sha1'
-import jsSHA256 from 'jssha/dist/sha256'
+import JSSHA1 from 'jssha/dist/sha1'
+import JSSHA256 from 'jssha/dist/sha256'
 
 export function sha (type: 1 | 256, inHex: string): string {
   try {
     const shaObj = type === 1
-      ? new jsSHA1('SHA-1', 'HEX')
-      : new jsSHA256('SHA-256', 'HEX')
+      ? new JSSHA1('SHA-1', 'HEX')
+      : new JSSHA256('SHA-256', 'HEX')
     shaObj.update(inHex)
     return shaObj.getHash('HEX')
   } catch (e) {
-    return (e as any)?.message ?? e
+    return e instanceof Error ? e.message : String(e)
   }
 }
 

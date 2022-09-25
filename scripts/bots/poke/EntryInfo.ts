@@ -16,6 +16,6 @@ export function parseEntry (entry: PokeInfo, uid: string): EntryInfo {
     ...entry,
     rank: [0, 0, 0, 0, 0, 0],
     tie: TieType.NONE,
-    uid: uid
+    uid
   }
 }

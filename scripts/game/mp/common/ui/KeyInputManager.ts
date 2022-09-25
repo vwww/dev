@@ -1,16 +1,16 @@
 export class KeyInputManager {
-  keys: Record<number, true> = {}
+  keys = new Set<number>()
 
   on (key: number): void {
-    this.keys[key] = true
+    this.keys.add(key)
   }
 
   off (key: number): void {
-    delete this.keys[key]
+    this.keys.delete(key)
   }
 
   isOn (key: number): boolean {
-    return key in this.keys
+    return this.keys.has(key)
   }
 
   attachListeners (target: Window, extraCallback: () => void): void {

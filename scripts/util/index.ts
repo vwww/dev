@@ -51,7 +51,7 @@ export function randomAlphaNumeric (length: number): string {
 }
 
 // Hex colors
-export function formatHexColor (v: number): string {
+export function formatHexColor (v: number | string): string {
   return '#' + ('00000' + v.toString(16)).slice(-6)
 }
 

@@ -14,7 +14,7 @@ export class PIORoom implements Connection {
   send = this.c.send.bind(this)
   sendMessage = this.c.sendMessage.bind(this)
 
-  constructor (private readonly c: PlayerIO.connection) { }
+  constructor (private readonly c: PIO.connection) { }
 
   get connected (): boolean { return this.c.connected }
 
@@ -28,14 +28,14 @@ export class PIOAdapter implements BaseGameRoom {
   private readonly discCallbacks: DiscCallback[] = []
 
   constructor (private readonly room: PIORoom) {
-    const msgCb = (message: PlayerIO.message): void => {
+    const msgCb = (message: PIO.message): void => {
       if (!message.length) {
         console.log('neterr: empty message', message)
         room.disconnect()
         return
       }
 
-      let byteArray: PlayerIO.ByteArray | undefined
+      let byteArray: PIO.ByteArray | undefined
       try {
         byteArray = message.getByteArray(0)
       } catch {

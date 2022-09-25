@@ -72,10 +72,10 @@ export class SlimeUI {
   getInputManager (): SlimeInput { return this.input }
 
   restoreSettings (): void {
-    if (window.localStorage.n) this.game.processUIchangeName((this.$pName.value = window.localStorage.n))
+    if (window.localStorage.n) this.game.processUIchangeName((this.$pName.value = window.localStorage.n as string))
     if (window.localStorage.c) {
       this.game.processUIchangeColor(
-        formatHexColor((this.$pColor.value = window.localStorage.c))
+        formatHexColor((this.$pColor.value = window.localStorage.c as string))
       )
     }
     if (window.localStorage.f === '1') this.game.processUIchangeFlipP1((this.$flipP1.checked = true))

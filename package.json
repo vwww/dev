@@ -10,7 +10,7 @@
     "build:dev": "webpack --progress && npm run build:jekyll || cd .",
     "build:jekyll": "cd docs && jekyll b",
     "clean": "rimraf docs/assets/dist docs/_data/manifest.json docs/_site",
-    "eslint": "eslint scripts --ext .js,.jsx,.ts,.tsx || cd .",
+    "eslint": "eslint scripts || cd .",
     "eslint:fix": "npm run eslint --fix",
     "eslint:dump": "eslint --print-config ./.eslintrc.json",
     "format-fix": "npm run prettier && npm run eslint:fix",
