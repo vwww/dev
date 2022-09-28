@@ -30,7 +30,7 @@
     desc: Some advertisements&hellip;
     href: misc/ads
   - name: Compound Interest
-    desc: Plot a graph of compound interest
+    desc: Plot a graph of compound interest.
     href: misc/compound
   - name: Music
     desc: These pieces of &ldquo;music&rdquo; are more like noise.
