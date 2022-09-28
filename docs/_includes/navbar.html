@@ -15,8 +15,8 @@
         {%- assign prefix = '/' | append: item.prefix %}
         {%- assign prefix_len = prefix | size %}
         {%- assign prefix_check = page.url | slice: 0, prefix_len %}
-        <li class="nav-item dropdown{% if prefix == prefix_check %} active{% endif %}">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link{% if prefix == prefix_check %} active{% endif %} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
           <ul class="dropdown-menu" role="menu">
           {%- assign href2 = item.prefix | append: '/' -%}
             <li><a class="dropdown-item{% if href2 == href_check %} active{% endif %}" href="{{base}}/{{ href2 }}">List</a></li>
@@ -52,7 +52,7 @@
           </ul>
         </li>
 {%- else %}
-        <li class="nav-item{% if href_check == item.href %} active{% endif %}"><a class="nav-link" href="{{base}}/{{item.href}}">{{item.name}}</a></li>
+        <li class="nav-item"><a class="nav-link{% if href_check == item.href %} active{% endif %}" href="{{base}}/{{item.href}}">{{item.name}}</a></li>
 {%- endif %}
 {%- endfor %}
       </ul>
