@@ -29,6 +29,9 @@
   - name: Ads
     desc: Some advertisements&hellip;
     href: misc/ads
+  - name: Basic Calculator
+    desc: Simulate a basic calculator.
+    href: misc/calc
   - name: Compound Interest
     desc: Plot a graph of compound interest.
     href: misc/compound
