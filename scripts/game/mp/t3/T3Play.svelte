@@ -44,10 +44,10 @@ const isomorphism2 = [
   ['lip', 5], ['lot', 8], ['soda', 6]
 ] as const
 
-function formatButtonClass (i: number, boardState: number, boardBad: number): string {
+function formatButtonClass (i: number, boardState: number, boardBad: number, canMove: boolean): string {
   const mark = (boardState >> (i << 1)) & 3
   const bad = (boardBad >> i) & 1
-  return `${mark ? '' : 'outline-'}${['secondary', 'success', 'primary', 'danger'][mark || (bad ? 3 : 0)]}`
+  return `${mark ? '' : 'outline-'}${['secondary', 'success', 'primary', 'danger'][mark || (bad ? 3 : 0)]}${mark || bad || !canMove ? ' disabled' : ''}`
 }
 </script>
 
@@ -80,6 +80,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number): st
   </p>
   <Board let:i winner={$winner}>
     <BoardCell
+      winner={$winner}
       mark={($boardState >> (i << 1)) & 3}
       markHover={canMove && !(($boardBad >> i) & 1) ? $myPlayer : 0}
       hintClass={(($boardState >> (i << 1)) & 3) || !(($boardBad >> i) & 1) ? '' : 'hlose'}
@@ -110,7 +111,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number): st
     <div class="btn-group">
       {#each (t3Isomorphism === 1 ? isomorphism1 : isomorphism2) as [displayText, i]}
         <button
-          class={`btn btn-${formatButtonClass(i, $boardState, $boardBad, $myPlayer)}`}
+          class={`btn btn-${formatButtonClass(i, $boardState, $boardBad, canMove)}`}
           on:click={() => gameState.sendMove(i)}
         >{displayText}</button>
       {/each}

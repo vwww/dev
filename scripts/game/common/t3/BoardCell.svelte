@@ -5,7 +5,7 @@ export let winner: Winner
 export let mark: number
 export let markHover = 0
 export let hintClass = ''
-export let hintVal: number | undefined
+export let hintVal = 0
 export let onMove: () => void | undefined
 </script>
 
@@ -26,8 +26,12 @@ td {
   position: relative;
   width: 7rem;
 }
+
 td.win {
   background-color: #696969;
+}
+
+td.win, td.n0 {
   cursor: not-allowed;
 }
 
