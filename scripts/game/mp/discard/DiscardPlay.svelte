@@ -111,12 +111,24 @@ export function getCardName (card: number, ll: boolean): string | number {
 
 <div class="row">
   <div class="col-12 mt-2 mb-3">
-    Card Descriptions
-    <ul>
-      {#each [1, 2, 3, 4, 5, 6, 7, 8] as card}
-        <li class:fw-bold={$roundState === 2 && playing && (card === $myHand || (canMove && card === $myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
-      {/each}
-    </ul>
+    <div class="card my-2">
+      <div class="card-header">
+        <h4 class="card-title">
+          <a data-bs-toggle="collapse" href="#collapseCardDesc">
+            <small>Card Descriptions</small>
+          </a>
+        </h4>
+      </div>
+      <div id="collapseCardDesc" class="card-collapse collapse show">
+        <div class="card-body">
+          <ul>
+            {#each [1, 2, 3, 4, 5, 6, 7, 8] as card}
+              <li class:fw-bold={$roundState === 2 && playing && (card === $myHand || (canMove && card === $myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
+            {/each}
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
   {#if $roundState === 2 && playing}
     <div class="col-12">
