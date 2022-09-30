@@ -61,10 +61,16 @@ $: boardState = $boardStates[$boardIndex]
   {:else}
     <span class="badge bg-danger">player O</span>.
   {/if}
+  {#if $winner === 1}
+    <span class="badge bg-success">X wins!</span>
+  {:else if $winner === 2}
+    <span class="badge bg-danger">O wins!</span>
+  {:else if $winner === 3}
+    It's a <span class="badge bg-warning">draw</span>!
+  {/if}
 </p>
 
 <Board
-  winner={$winner}
   {boardState}
   markHover={canMove && $boardIndex === $moveHistory.length ? $myPlayer : 0}
   onMove={(i, j) => gameState.sendMove(i, j)}

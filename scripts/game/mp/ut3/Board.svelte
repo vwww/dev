@@ -1,7 +1,6 @@
 <script lang="ts">
 import { BoardState } from './UT3Game'
 
-// export let winner: number
 export let boardState: BoardState
 export let markHover: number
 export let onMove: (row: number, col: number) => void
