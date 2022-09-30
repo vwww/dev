@@ -181,7 +181,7 @@ export function getCardName (card: number, ll: boolean): string | number {
       {#each $playerInfo as p, i}
         <br><span class="badge bg-{playerColor(gameState.playerIsMe(p))}">{gameState.getNameFromPlayer(p)}</span>
         <span class="badge bg-dark">{gameState.playerIsMe(p) ? getCardName($myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
-        {#if !i && roundState === 2}
+        {#if !i && $roundState === 2}
           <span class="badge bg-dark">{gameState.playerIsMe(p) ? getCardName($myAltMove, ll) : '?'}</span>
         {/if}
         {#if p.immune}<badge class="badge bg-info">IMMUNE</badge>{/if}
