@@ -113,7 +113,7 @@ function onKeyDown (event: KeyboardEvent): void {
 
 <svelte:window on:keydown={onKeyDown} />
 
-<div class="container-md">
+<div style="max-width: 576px; margin: auto">
   <div class="row mb-3"><input class="form-control text-center" value={display} readonly></div>
   <div class="row mb-2">
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={clear}>C</button></div>
