@@ -1,10 +1,18 @@
 <script lang="ts">
+const enum NumMode {
+  Mem, // Result from Memory
+  Result, // Result
+  ResultOp, // Result with Operation
+  Entering, // Entering number
+}
+
 let display = '0'
 
-let result = 0n
-let curNum = 0n
+let result = 0
+let curNum = 0
+let memNum = 0
 let op = '\0'
-let isEntering = false
+let numMode = NumMode.Result
 
 function calculate (): void {
   switch (op) {
@@ -15,9 +23,18 @@ function calculate (): void {
       result -= curNum
       break
     case '*':
-      result *= curNum
+      if (numMode === NumMode.Entering) {
+        // left-multiply trick
+        [result, curNum] = [result * curNum, result]
+      } else {
+        result *= curNum
+      }
       break
     case '/':
+      if (numMode === NumMode.ResultOp) {
+        // reciprocal
+        result = 1
+      }
       result /= curNum
       break
     default:
@@ -25,51 +42,94 @@ function calculate (): void {
   }
 
   display = result.toString()
-  isEntering = false
+  numMode = NumMode.Result
 }
 
 function append (s: string): void {
-  if (!isEntering) {
-    isEntering = true
-    display = ''
+  if (numMode !== NumMode.Entering) {
+    numMode = NumMode.Entering
+    display = s
+  } else {
+    if (s === '.' && display.includes('.')) return
+    if (s === '0' && display === '0') return
+
+    display += s
   }
-
-  if (s === '.' && display.includes('.')) return
-  if (s === '0' && display === '0') return
-
-  display += s
 }
 
-function clear (): void {
-  op = '\0'
-  curNum = 0n
-  isEntering = false
+function clearEntry (): void {
+  curNum = 0
+  numMode = NumMode.Result
   display = '0'
 }
 
-function updateCurNum (): void {
+function clear (): void {
+  clearEntry()
+  op = '\0'
+  result = 0
+}
+
+function getNum (): number {
   try {
-    curNum = BigInt(display)
+    return Number(display)
   } catch {
-    curNum = 0n
+    return 0
   }
 }
 
-function calc (): void {
-  if (isEntering) updateCurNum()
+function onClickEqual (): void {
+  if (numMode !== NumMode.Result) {
+    if (numMode === NumMode.ResultOp) {
+      result = curNum
+    }
+    curNum = getNum()
+  }
   calculate()
 }
 
 function doOp (newOp: string): void {
-  if (isEntering) {
-    updateCurNum()
+  if (numMode === NumMode.Entering) {
+    curNum = getNum()
     calculate()
   }
   op = newOp
+  numMode = NumMode.ResultOp
 }
 
 function onClickAppend (this: HTMLElement): void { append(this.innerText) }
 function onClickOperator (this: HTMLElement): void { doOp(this.innerText) }
+
+function onClickSqrt (): void {
+  const r = getNum()
+  display = Math.sqrt(r).toString()
+}
+
+function onClickSqr (): void {
+  const r = getNum()
+  display = (r * r).toString()
+}
+
+function onClickMemRecallClear (): void {
+  if (numMode === NumMode.Mem) {
+    memNum = 0
+    clear()
+  } else {
+    display = (result = memNum).toString()
+    numMode = NumMode.Mem
+  }
+}
+
+function onClickMemAdd (): void {
+  if (numMode > NumMode.Result) onClickEqual()
+  else if (numMode === NumMode.Mem) numMode = NumMode.Result
+  memNum += result
+}
+
+function onClickMemSub (): void {
+  if (numMode > NumMode.Result) onClickEqual()
+  else if (numMode === NumMode.Mem) numMode = NumMode.Result
+  memNum -= result
+}
 
 function onKeyDown (event: KeyboardEvent): void {
   switch (event.key) {
@@ -101,7 +161,7 @@ function onKeyDown (event: KeyboardEvent): void {
       break
     case '=':
     case 'Enter':
-      calc()
+      onClickEqual()
       break
     default:
       return
@@ -118,14 +178,14 @@ function onKeyDown (event: KeyboardEvent): void {
   <div class="row mb-2">
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={clear}>C</button></div>
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" disabled>%</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" disabled>sqrt</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" disabled>sqr</button></div>
+    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickSqrt}>sqrt</button></div>
+    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickSqr}>sqr</button></div>
   </div>
   <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" disabled>MRC</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" disabled>M-</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" disabled>M+</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" disabled>CE</button></div>
+    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickMemRecallClear}>MRC</button></div>
+    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickMemSub}>M-</button></div>
+    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickMemAdd}>M+</button></div>
+    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={clearEntry}>CE</button></div>
   </div>
   <div class="row mb-2">
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickAppend}>1</button></div>
@@ -146,7 +206,7 @@ function onKeyDown (event: KeyboardEvent): void {
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickOperator}>*</button></div>
   </div>
   <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={calc}>=</button></div>
+    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickEqual}>=</button></div>
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickAppend}>0</button></div>
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100"on:click={onClickAppend}>.</button></div>
     <div class="col-3"><button class="btn btn-outline-secondary d-block w-100"on:click={onClickOperator}>/</button></div>
