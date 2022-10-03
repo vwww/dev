@@ -8,6 +8,8 @@ const {
   // isActive,
   gamePhase,
 } = gameState
+
+const canPass = false // temporary
 </script>
 
 {#if !$gamePhase}<!-- global (transfer) -->
