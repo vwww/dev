@@ -124,11 +124,11 @@ function memRecall (): void {
 }
 
 function memAdd (sub?: boolean): void {
-  if (opPending) calculate()
-  else if (numMode === NumMode.ResultMem) numMode = NumMode.Result
-  else if (numMode >= NumMode.Entering) {
-    result = getNum()
-    numMode = NumMode.Entering
+  if (opPending) {
+    calculate()
+  } else {
+    if (numMode >= NumMode.Entering) result = getNum()
+    numMode = NumMode.Result
   }
   memNum += sub ? -result : result
 }
