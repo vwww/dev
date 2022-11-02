@@ -81,7 +81,6 @@ function appendDec (): void {
 function clearEntry (): void {
   if (numMode > NumMode.Result) {
     display = '0'
-    result = 0
     numMode = NumMode.Entering
   }
 }
