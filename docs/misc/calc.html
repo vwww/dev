@@ -3,5 +3,94 @@ title: Basic Calculator Emulator
 date: "2016-04-12 14:14:45 -0600"
 mdate: 2022-10-02 19:30:56 -0600
 entry: app_misc_calc
+examples:
+  - name: Chain Calculation
+    case:
+      - name: (2+5-3)*8/4-7 = 1
+        keys: [C, 2, +, 5, -, 3, '*', 8, /, 4, -, 7, =]
+        disp: 1
+  - name: Constant Calculation
+    case:
+      - name: 12*10 = 120
+        keys: [C, 12, '*', 10, =]
+        disp: 120
+      - name: 12*38 = 456
+        keys: [38, =]
+        disp: 456
+      - name: 16/8 = 2
+        keys: [C, 16, /, 8, =]
+        disp: 2
+      - name: 108/8 = 13.5
+        keys: [108, =]
+        disp: 13.5
+  - name: Exponents
+    case:
+      - name: 3&sup2;*2/5&sup3; = 0.144
+        keys: [C, 3, '*', =, '*', 2, /, 5, =, =, =]
+        disp: 0.144
+  - name: Accumulation Calculation
+    case:
+      - name: 23*7 = 161
+        keys: [MRC, MRC, 23, '*', 7, M+]
+        disp: 161 M
+      - name: +) 12/4 = 3
+        keys: [12, /, 4, M+]
+        disp: 3 M
+      - name: -) 13 * 2 = 26
+        keys: [13, '*', 2, M-]
+        disp: 26 M
+      - name: -) 9/2 = 4.5
+        keys: [9, /, 2, M-]
+        disp: 4.5 M
+      - name: Total = 133.5
+        keys: [MRC]
+        disp: 133.5 M
+  - name: Percentage Calculation
+    case:
+      - name: 360 * 85% = 306
+        keys: [C, 360, '*', 85, '%']
+        disp: 306
+  - name: Percentage Of
+    case:
+      - name: 360 / 4% = 9000
+        keys: [C, 360, /, 4, '%']
+        disp: 9000
+  - name: Percentage Increase
+    case:
+      - name: 360 * (1+2%) = 367.2
+        keys: [C, 360, +, 2, '%']
+        disp: 367.2
+  - name: Percentage Decrease (Discount)
+    case:
+      - name: 360 * (1-15%) = 306
+        keys: [C, 360, -, 15, '%']
+        disp: 306
 ---
 {% include app.html %}
+
+<h2 class="my-3">Examples</h2>
+
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Key Entry</th>
+      <th>Display</th>
+    </tr>
+  </thead>
+  {%- for e in page.examples %}
+  <tr>
+    <td{% if e.case.size > 1 %} rowspan="{{ e.case.size }}"{% endif %}>{{ e.name }}</td>
+  {%- for c in e.case %}
+  {%- unless forloop.first %}
+  </tr>
+  <tr>
+  {%- endunless %}
+    <td>{{ c.name }}</td>
+    <td>{% for k in c.keys %}{% if k contains "" %}<kbd>{{ k }}</kbd>{% else %}{{ k }}{% endif %} {% endfor %}</td>
+    <td>{{ c.disp }}</td>
+  {%- endfor %}
+  </tr>
+  {%- endfor %}
+</table>
