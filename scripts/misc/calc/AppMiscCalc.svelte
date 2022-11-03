@@ -16,7 +16,7 @@ let op = '+'
 let numMode = NumMode.Result
 let opPending = false
 
-function calculate (): void {
+function calculate (percent?: boolean): void {
   const isEntering = numMode > NumMode.Result
 
   if (opPending) {
@@ -46,14 +46,37 @@ function calculate (): void {
       break
     case '*':
       result *= curNum
+      if (percent) result /= 100
       break
     case '/':
       result /= curNum
+      if (percent) result *= 100
   }
 
   display = result.toString()
   numMode = NumMode.Result
   opPending = false
+}
+
+function calculatePercent (): void {
+  switch (op) {
+    case '+':
+    case '-':
+      const isEntering = numMode > NumMode.Result
+      if (!isEntering) return
+
+      if (opPending) curNum = result
+
+      result = curNum + curNum * getNum() / (op === '-' ? -100 : 100)
+
+      display = result.toString()
+      numMode = NumMode.Result
+      opPending = false
+      break
+    case '*':
+    case '/':
+      calculate(true)
+  }
 }
 
 function append (s: string): void {
@@ -122,6 +145,14 @@ function memRecall (): void {
   numMode = NumMode.ResultMem
 }
 
+function memClear (): void {
+  memNum = 0
+}
+
+function memRecallClear (): void {
+  (numMode === NumMode.ResultMem ? memClear : memRecall)()
+}
+
 function memAdd (sub?: boolean): void {
   if (opPending) {
     calculate()
@@ -132,26 +163,10 @@ function memAdd (sub?: boolean): void {
   memNum += sub ? -result : result
 }
 
-// click handlers
+// click handler adapters
 
 function onClickAppend (this: HTMLElement): void { append(this.innerText) }
-const onClickDec = appendDec
 function onClickOperator (this: HTMLElement): void { doOp(this.innerText) }
-const onClickEqual = calculate
-
-function onClickSqrt (): void { applyFunc(Math.sqrt) }
-function onClickSqr (): void { applyFunc((r) => r * r) }
-
-function onClickMemRecallClear (): void {
-  if (numMode === NumMode.ResultMem) {
-    memNum = 0
-  } else {
-    memRecall()
-  }
-}
-
-function onClickMemAdd (): void { memAdd() }
-function onClickMemSub (): void { memAdd(true) }
 
 // keyboard handler
 
@@ -164,7 +179,7 @@ function onKeyDown (event: KeyboardEvent): void {
     case '5': case '6': case '7': case '8': case '9':
     case '.':
     case '+': case '-': case '*': case '/':
-    case '=':
+    case '=': case '%':
       break
     case 'c':
     case 'C':
@@ -176,6 +191,8 @@ function onKeyDown (event: KeyboardEvent): void {
     case 'Enter':
       key = '='
       break
+    case 'Delete':
+      key = 'CE'
     default:
       return
   }
@@ -186,46 +203,58 @@ function onKeyDown (event: KeyboardEvent): void {
 
   event.preventDefault()
 }
+
+const buttons: [string, (this: HTMLButtonElement, event: MouseEvent) => void][][] = [
+  [
+    ['C', clear],
+    ['%', calculatePercent],
+    ['\u221a', () => applyFunc(Math.sqrt)],
+    ['\xb2', () => applyFunc((r) => r * r)],
+  ],
+  [
+    ['MRC', memRecallClear],
+    ['M-', () => memAdd(true)],
+    ['M+', () => memAdd()],
+    ['CE', clearEntry],
+  ],
+  [
+    ['7', onClickAppend],
+    ['8', onClickAppend],
+    ['9', onClickAppend],
+    ['/', onClickOperator],
+  ],
+  [
+    ['4', onClickAppend],
+    ['5', onClickAppend],
+    ['6', onClickAppend],
+    ['*', onClickOperator],
+  ],
+  [
+    ['1', onClickAppend],
+    ['2', onClickAppend],
+    ['3', onClickAppend],
+    ['-', onClickOperator],
+  ],
+  [
+    ['0', onClickAppend],
+    ['.', appendDec],
+    ['=', () => calculate()],
+    ['+', onClickOperator],
+  ],
+]
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
 <div style="max-width: 576px; margin: auto">
   <div class="row mb-3"><input class="form-control text-center" value={`${display}${memNum ? ' M' : ''}`} readonly></div>
-  <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['C']} on:click={clear}>C</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['%']} disabled>%</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickSqrt}>sqrt</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickSqr}>sqr</button></div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickMemRecallClear}>MRC</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickMemSub}>M-</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={onClickMemAdd}>M+</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" on:click={clearEntry}>CE</button></div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['7']} on:click={onClickAppend}>7</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['8']} on:click={onClickAppend}>8</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['9']} on:click={onClickAppend}>9</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['/']} on:click={onClickOperator}>/</button></div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['4']} on:click={onClickAppend}>4</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['5']} on:click={onClickAppend}>5</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['6']} on:click={onClickAppend}>6</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['*']} on:click={onClickOperator}>*</button></div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['1']} on:click={onClickAppend}>1</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['2']} on:click={onClickAppend}>2</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['3']} on:click={onClickAppend}>3</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['-']} on:click={onClickOperator}>-</button></div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['0']} on:click={onClickAppend}>0</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['.']} on:click={onClickDec}>.</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['=']} on:click={onClickEqual}>=</button></div>
-    <div class="col-3"><button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton['+']} on:click={onClickOperator}>+</button></div>
-  </div>
+  {#each buttons as row}
+    <div class="row mb-2">
+      {#each row as button}
+        <div class="col-3">
+          <button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton[button[0]]} on:click={button[1]}>{button[0]}</button>
+        </div>
+      {/each}
+    </div>
+  {/each}
 </div>
