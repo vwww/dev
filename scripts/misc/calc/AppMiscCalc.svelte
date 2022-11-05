@@ -19,64 +19,54 @@ let opPending = false
 function calculate (percent?: boolean): void {
   const isEntering = numMode > NumMode.Result
 
-  if (opPending) {
+  if (percent && (op === '+' || op === '-')) {
+    if (!isEntering) return
+
+    if (opPending) {
+      curNum = result
+      opPending = false
+    }
+
+    result = curNum + curNum * getNum() / (op === '-' ? -100 : 100)
+  } else {
+    if (opPending) {
+      switch (op) {
+        case '*':
+          curNum = result
+          result = getNum()
+          break
+        case '/':
+          curNum = 1
+          // fallthrough
+        case '+':
+        case '-':
+          if (!isEntering) result = curNum
+          curNum = getNum()
+      }
+      opPending = false
+    } else if (isEntering) {
+      result = getNum()
+    }
+
     switch (op) {
+      case '+':
+        result += curNum
+        break
+      case '-':
+        result -= curNum
+        break
       case '*':
-        curNum = result
-        result = getNum()
+        result *= curNum
+        if (percent) result /= 100
         break
       case '/':
-        if (!isEntering) curNum = 1
-        // fallthrough
-      case '+':
-      case '-':
-        if (!isEntering) result = curNum
-        curNum = getNum()
+        result /= curNum
+        if (percent) result *= 100
     }
-  } else if (isEntering) {
-    result = getNum()
-  }
-
-  switch (op) {
-    case '+':
-      result += curNum
-      break
-    case '-':
-      result -= curNum
-      break
-    case '*':
-      result *= curNum
-      if (percent) result /= 100
-      break
-    case '/':
-      result /= curNum
-      if (percent) result *= 100
   }
 
   display = result.toString()
   numMode = NumMode.Result
-  opPending = false
-}
-
-function calculatePercent (): void {
-  switch (op) {
-    case '+':
-    case '-':
-      const isEntering = numMode > NumMode.Result
-      if (!isEntering) return
-
-      if (opPending) curNum = result
-
-      result = curNum + curNum * getNum() / (op === '-' ? -100 : 100)
-
-      display = result.toString()
-      numMode = NumMode.Result
-      opPending = false
-      break
-    case '*':
-    case '/':
-      calculate(true)
-  }
 }
 
 function append (s: string): void {
@@ -207,7 +197,7 @@ function onKeyDown (event: KeyboardEvent): void {
 const buttons: [string, (this: HTMLButtonElement, event: MouseEvent) => void][][] = [
   [
     ['C', clear],
-    ['%', calculatePercent],
+    ['%', () => calculate(true)],
     ['\u221a', () => applyFunc(Math.sqrt)],
     ['\xb2', () => applyFunc((r) => r * r)],
   ],
