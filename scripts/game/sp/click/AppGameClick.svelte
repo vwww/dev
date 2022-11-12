@@ -1,6 +1,6 @@
 <script lang="ts">
-import { randomHexColor } from '../../../util'
-import { pStore } from '../../../util/svelte'
+import { randomHexColor } from '@/util'
+import { pStore } from '@/util/svelte'
 
 const highscore = pStore('game/sp/click/highscore', 0)
 

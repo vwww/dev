@@ -4,7 +4,7 @@ import Parse1 from './Parse1.svelte'
 import Parse2 from './Parse2.svelte'
 
 import { tick } from 'svelte'
-import { pStore } from '../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 const value = pStore('bot/googuns/v', '')
 

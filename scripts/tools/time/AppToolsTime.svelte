@@ -1,7 +1,7 @@
 <script lang="ts">
 import * as d3 from 'd3'
 import { onMount } from 'svelte'
-import { pStore } from '../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 const curAge = pStore('tool/time/ageCur', 30)
 const maxAge = pStore('tool/time/ageMax', 120)

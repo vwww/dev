@@ -1,4 +1,4 @@
-import { sum } from '../../util'
+import { sum } from '@/util'
 
 export type NodeBrowse = NodeFile | NodeDirectory
 

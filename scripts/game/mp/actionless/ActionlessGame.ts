@@ -1,6 +1,6 @@
-import { valueStore } from '../../../util/svelte'
-import { ByteReader } from '../common/game/ByteReader'
-import { OneTurnClient, OneTurnGame } from '../common/game/OneTurnGame'
+import { valueStore } from '@/util/svelte'
+import { ByteReader } from '@gmc/game/ByteReader'
+import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame'
 
 interface AClient extends OneTurnClient {
   wins: number

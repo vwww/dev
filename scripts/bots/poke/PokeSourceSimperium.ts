@@ -1,7 +1,7 @@
 import { PokeInfo } from './PokeInfo'
 import { PokeSource } from './PokeSource'
 
-import '../../vendor/simperium-v0.1.js'
+import '@/vendor/simperium-v0.1.js'
 
 export default class PokeSourceSimperium implements PokeSource {
   private readonly simperium: Simperium

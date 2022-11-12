@@ -1,12 +1,12 @@
 <script lang="ts">
-import Board from '../../common/t3/Board.svelte'
-import BoardCell from '../../common/t3/BoardCell.svelte'
+import Board from '@gc/t3/Board.svelte'
+import BoardCell from '@gc/t3/BoardCell.svelte'
 
 import T3Game from './T3Game'
 
-import ProgressBar from '../common/ProgressBar.svelte'
-import RoundPlayerList from '../common/RoundPlayerList.svelte'
-import TwoPlayerEarlyEnd from '../common/TwoPlayerEarlyEnd.svelte'
+import ProgressBar from '@gmc/ProgressBar.svelte'
+import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
+import TwoPlayerEarlyEnd from '@gmc/TwoPlayerEarlyEnd.svelte'
 
 import { getGameModeString } from './gamemode'
 

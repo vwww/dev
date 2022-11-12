@@ -1,5 +1,5 @@
 <script lang="ts">
-import CardCountTable from '../common/CardCountTable.svelte'
+import CardCountTable from '@gmc/CardCountTable.svelte'
 </script>
 
 <CardCountTable

@@ -1,4 +1,4 @@
-import { valueStore } from '../../../../util/svelte'
+import { valueStore } from '@/util/svelte'
 import { ByteReader } from './ByteReader'
 import { ByteWriter } from './ByteWriter'
 import { CommonGame } from './CommonGame'

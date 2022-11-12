@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-import { ValueStore } from '../../../util/svelte'
+import { ValueStore } from '@/util/svelte'
 
 // [id, type, defaultValue, name, description, min?, max?]
 

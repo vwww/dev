@@ -1,5 +1,5 @@
 <script lang="ts">
-import { pStore } from '../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 const inNumber = pStore('tool/base/iN', 'v1337')
 const inBase = pStore('tool/base/iB', 36)

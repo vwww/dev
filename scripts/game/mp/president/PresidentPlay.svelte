@@ -1,5 +1,5 @@
 <script lang="ts">
-import CardCountTable from '../common/CardCountTable'
+import CardCountTable from '@gmc/CardCountTable.svelte'
 import PresidentGame from './PresidentGame'
 
 export let gameState: PresidentGame

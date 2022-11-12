@@ -2,10 +2,10 @@
 import Board from './Board.svelte'
 import MoveTable from './MoveTable.svelte'
 import PlayerTypeSelector from './PlayerTypeSelector.svelte'
-import { initMemo, getMemo as getMemoOrig, playerTypes, MemoEntry, Bot } from '../../common/t3/ai'
-import { checkWin, occupied, remapWin, Winner, WinnerMap } from '../../common/t3/game'
-import { randomArrayItem } from '../../../util'
-import { pStore } from '../../../util/svelte'
+import { initMemo, getMemo as getMemoOrig, playerTypes, MemoEntry, Bot } from '@gc/t3/ai'
+import { checkWin, occupied, remapWin, Winner, WinnerMap } from '@gc/t3/game'
+import { randomArrayItem } from '@/util'
+import { pStore } from '@/util/svelte'
 
 // Options state
 const showHints = pStore('game/sp/t3/showHints', true)

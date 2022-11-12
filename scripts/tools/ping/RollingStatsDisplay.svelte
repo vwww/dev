@@ -1,5 +1,5 @@
 <script lang="ts">
-import RollingStats from '../../util/RollingStats'
+import RollingStats from '@/util/RollingStats'
 
 export let stats: RollingStats
 </script>

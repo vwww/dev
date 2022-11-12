@@ -1,5 +1,5 @@
 <script lang="ts">
-import { pStore } from '../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 const avgByTime = pStore('tool/freq/avgByTime', true)
 

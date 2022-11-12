@@ -4,7 +4,7 @@ import boards from './boards.txt'
 import FillTable, { CellInfo } from './FillTable.svelte'
 
 import { Solver } from './Solver'
-import { pStore } from '../../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 const BOARDS = boards.trim().split(/[\r\n]+/)
 

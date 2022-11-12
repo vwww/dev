@@ -3,7 +3,7 @@ import * as jQuery from 'jquery'
 
 import { onMount } from 'svelte'
 
-import PaginationButtons from '../../common/PaginationButtons.svelte'
+import PaginationButtons from '@/common/PaginationButtons.svelte'
 import * as langListRaw from './languages.json'
 const langList = langListRaw
 

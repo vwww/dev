@@ -2,7 +2,7 @@
 import { onMount } from 'svelte'
 import { slide } from 'svelte/transition'
 
-import { randomArrayItemZipf } from '../../util'
+import { randomArrayItemZipf } from '@/util'
 
 const TWEET_LEN = 280
 

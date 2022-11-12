@@ -6,7 +6,7 @@ import { PokeInfo } from './PokeInfo'
 import { PokeSource } from './PokeSource'
 import PokeSourceFirebase from './PokeSourceFirebase'
 
-import { pStore } from '../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 import Plotly from 'plotly.js/lib/core'
 

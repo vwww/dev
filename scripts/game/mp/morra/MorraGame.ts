@@ -1,9 +1,9 @@
-import { valueStore } from '../../../util/svelte'
-import ChatState from '../common/ChatState'
-import { ByteReader } from '../common/game/ByteReader'
-import { ByteWriter } from '../common/game/ByteWriter'
-import { OneTurnClient, OneTurnGame } from '../common/game/OneTurnGame'
-import { TurnC2S } from '../common/game/TurnBasedGame'
+import { valueStore } from '@/util/svelte'
+import ChatState from '@gmc/ChatState'
+import { ByteReader } from '@gmc/game/ByteReader'
+import { ByteWriter } from '@gmc/game/ByteWriter'
+import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame'
+import { TurnC2S } from '@gmc/game/TurnBasedGame'
 
 interface MorraClient extends OneTurnClient {
   wins: number

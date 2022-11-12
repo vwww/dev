@@ -1,9 +1,9 @@
-import { clamp, sum } from '../../../util'
-import { valueStore } from '../../../util/svelte'
-import { ByteReader } from '../common/game/ByteReader'
-import { ByteWriter } from '../common/game/ByteWriter'
-import { RRTurnClient, RRTurnDiscInfo, RRTurnGame, RRTurnPlayerInfo } from '../common/game/RoundRobinGame'
-import { TurnC2S } from '../common/game/TurnBasedGame'
+import { clamp, sum } from '@/util'
+import { valueStore } from '@/util/svelte'
+import { ByteReader } from '@gmc/game/ByteReader'
+import { ByteWriter } from '@gmc/game/ByteWriter'
+import { RRTurnClient, RRTurnDiscInfo, RRTurnGame, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame'
+import { TurnC2S } from '@gmc/game/TurnBasedGame'
 
 interface PClient extends RRTurnClient {
   score: number

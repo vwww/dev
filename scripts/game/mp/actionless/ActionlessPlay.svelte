@@ -1,6 +1,6 @@
 <script lang="ts">
-import ProgressBar from '../common/ProgressBar.svelte'
-import RoundPlayerList from '../common/RoundPlayerList.svelte'
+import ProgressBar from '@gmc/ProgressBar.svelte'
+import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 
 import ActionlessGame from './ActionlessGame'
 

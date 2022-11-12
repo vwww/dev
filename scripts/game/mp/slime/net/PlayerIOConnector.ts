@@ -1,8 +1,8 @@
-import { formatHexColor } from '../../../../util'
+import { formatHexColor } from '@/util'
 import { IConnector, ReadyState } from './IConnector'
 import { IConnectorCallbacks } from './IConnectorCallbacks'
 
-import '../../../../vendor/PlayerIOClient'
+import '@/vendor/PlayerIOClient.js'
 
 const GAME_ID = 'slime-fd3iliszksmlav83stww'
 const CONNECTION_ID = 'public'

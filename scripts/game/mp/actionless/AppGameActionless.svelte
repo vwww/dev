@@ -1,19 +1,19 @@
 <script lang="ts">
-import Chat from '../common/Chat.svelte'
-import GameHistoryCard from '../common/GameHistoryCard.svelte'
-import Leaderboard from '../common/Leaderboard.svelte'
-import NameBox from '../common/NameBox.svelte'
-import PlayCard from '../common/PlayCard.svelte'
+import Chat from '@gmc/Chat.svelte'
+import GameHistoryCard from '@gmc/GameHistoryCard.svelte'
+import Leaderboard from '@gmc/Leaderboard.svelte'
+import NameBox from '@gmc/NameBox.svelte'
+import PlayCard from '@gmc/PlayCard.svelte'
 
-import PIORoomList from '../common/PIORoomList.svelte'
+import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '../common/ChatState'
+import ChatState from '@gmc/ChatState'
 
 import ActionlessGame from './ActionlessGame'
 import ActionlessHistory from './ActionlessHistory.svelte'
 import ActionlessPlay from './ActionlessPlay.svelte'
 
-import { pStore } from '../../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 

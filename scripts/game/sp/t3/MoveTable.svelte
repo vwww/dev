@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Winner, WinnerMap } from '../../common/t3/game'
+import { Winner, WinnerMap } from '@gc/t3/game'
 import { GetMemoType } from './AppGameT3.svelte'
 import MoveTableRow from './MoveTableRow.svelte'
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-import Board from '../../common/t3/Board.svelte'
-import { Player, Winner, WinnerMap } from '../../common/t3/game'
+import Board from '@gc/t3/Board.svelte'
+import { Player, Winner, WinnerMap } from '@gc/t3/game'
 import { GetMemoType } from './AppGameT3.svelte'
 import BoardCell from './BoardCell.svelte'
 

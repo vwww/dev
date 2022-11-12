@@ -1,6 +1,6 @@
 <script lang="ts">
-import { MemoEntry } from '../../common/t3/ai'
-import { winnerMapToNum, winnerMapInvert, Winner, WinnerMap } from '../../common/t3/game'
+import { MemoEntry } from '@gc/t3/ai'
+import { winnerMapToNum, winnerMapInvert, Winner, WinnerMap } from '@gc/t3/game'
 import { GetMemoType } from './AppGameT3.svelte'
 
 export let i: number

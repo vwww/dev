@@ -1,4 +1,4 @@
-import { valueStore } from '../../../../util/svelte'
+import { valueStore } from '@/util/svelte'
 import ChatState from '../ChatState'
 import { BaseGameRoom } from '../remote/BaseGameRoom'
 import { ByteReader } from './ByteReader'

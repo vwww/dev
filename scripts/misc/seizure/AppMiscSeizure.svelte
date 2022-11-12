@@ -1,6 +1,6 @@
 <script lang="ts">
-import { randomHexColor } from '../../util'
-import { pStore } from '../../util/svelte'
+import { randomHexColor } from '@/util'
+import { pStore } from '@/util/svelte'
 
 const colorMode = pStore('misc/seizure/mode', 0)
 const interval = pStore('misc/seizure/int', -1)

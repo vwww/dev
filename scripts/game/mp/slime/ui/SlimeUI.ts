@@ -1,5 +1,5 @@
-import { $idA, formatHexColor } from '../../../../util'
-import { CanvasGame } from '../../common/ui/CanvasGame'
+import { $idA, formatHexColor } from '@/util'
+import { CanvasGame } from '@gmc/ui/CanvasGame'
 import { ISlimeUICallbacks } from './IConnectorCallbacks'
 import { SlimeInput } from './SlimeInput'
 

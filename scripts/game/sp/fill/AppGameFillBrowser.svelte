@@ -3,7 +3,7 @@ import * as boards from './boards.json'
 
 import FillTable, { CellInfo } from './FillTable.svelte'
 import { DELTA, MoveType } from './Move'
-import { pStore } from '../../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 const BOARDS = boards
 

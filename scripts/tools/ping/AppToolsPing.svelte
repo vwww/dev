@@ -2,8 +2,8 @@
 import * as jQuery from 'jquery'
 
 import RollingStatsDisplay from './RollingStatsDisplay.svelte'
-import RollingStats from '../../util/RollingStats'
-import { pStore } from '../../util/svelte'
+import RollingStats from '@/util/RollingStats'
+import { pStore } from '@/util/svelte'
 
 const pingURL = pStore('tool/ping/url', 'https://google.com')
 const pingInterval = pStore('tool/ping/pInt', 1000)

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Bot, PlayerType } from '../../common/t3/ai'
+import { Bot, PlayerType } from '@gc/t3/ai'
 
 export let playerTypes: PlayerType[]
 export let playerType: Bot | undefined

@@ -2,7 +2,7 @@
 import ChatMessage from './ChatMessage.svelte'
 import ChatMessageFromText from './ChatMessageFromText.svelte'
 
-import { shuffle } from '../../util'
+import { shuffle } from '@/util'
 
 import { flip } from 'svelte/animate'
 

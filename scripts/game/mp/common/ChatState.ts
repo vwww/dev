@@ -1,4 +1,4 @@
-import { valueStore } from '../../../util/svelte'
+import { valueStore } from '@/util/svelte'
 
 type ChatJoin = {
   type: 'join'

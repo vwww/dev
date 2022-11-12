@@ -6,8 +6,8 @@ import { BaseGameRoom } from './remote/BaseGameRoom'
 import { PIOAdapter, PIORoom } from './remote/playerio/PIORoom'
 import { PIOConnectionManager } from './remote/playerio/PIOConnectionManager'
 
-import { randomAlphaNumeric } from '../../../util'
-import { pStore } from '../../../util/svelte'
+import { randomAlphaNumeric } from '@/util'
+import { pStore } from '@/util/svelte'
     import { PIOClient } from './remote/playerio/PIOClient';
 
 type RoomInfoFormatter = (r: PIO.roomInfo) => string

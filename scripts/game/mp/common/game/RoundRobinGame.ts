@@ -1,4 +1,4 @@
-import { valueStore } from '../../../../util/svelte'
+import { valueStore } from '@/util/svelte'
 import { ByteReader } from './ByteReader'
 import { CommonGame } from './CommonGame'
 import { TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'

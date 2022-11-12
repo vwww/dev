@@ -1,5 +1,5 @@
 <script lang="ts">
-import { pStore } from '../../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 const WIDTH = 10
 const HALF_WIDTH = WIDTH / 2
@@ -35,7 +35,7 @@ const COLORS = [
 import MomentBar from './MomentBar.svelte'
 
 import { TetrominoShape, tetrominoShapes } from './shapes'
-import { shuffle } from '../../../util'
+import { shuffle } from '@/util'
 
 // game settings
 const showGhost = pStore('game/sp/tetris/showGhost', true)

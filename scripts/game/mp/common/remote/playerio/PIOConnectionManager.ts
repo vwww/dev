@@ -1,4 +1,4 @@
-import '../../../../../vendor/PlayerIOClient'
+import '@/vendor/PlayerIOClient.js'
 
 import { ConnectionManager } from '../ConnectionManager'
 import { PIOClient } from './PIOClient'

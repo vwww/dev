@@ -1,5 +1,5 @@
 <script lang="ts">
-import { shuffle } from '../../util'
+import { shuffle } from '@/util'
 
 const questions = [
   {

@@ -1,5 +1,5 @@
-import { KeyInputManager } from '../../common/ui/KeyInputManager'
-import { MouseInputManager } from '../../common/ui/MouseInputManager'
+import { KeyInputManager } from '@gmc/ui/KeyInputManager'
+import { MouseInputManager } from '@gmc/ui/MouseInputManager'
 
 export class SlimeInput {
   private readonly keyManager = new KeyInputManager()

@@ -1,7 +1,7 @@
 <script lang="ts">
-import ProgressBar from '../common/ProgressBar.svelte'
-import RoundPlayerList from '../common/RoundPlayerList.svelte'
-import TwoPlayerEarlyEnd from '../common/TwoPlayerEarlyEnd.svelte'
+import ProgressBar from '@gmc/ProgressBar.svelte'
+import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
+import TwoPlayerEarlyEnd from '@gmc/TwoPlayerEarlyEnd.svelte'
 
 import UT3Game from './UT3Game'
 

@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "baseUrl": "scripts",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"],
+      "@/*": ["scripts/*"],
+      "@gc/*": ["scripts/game/common/*"],
+      "@gmc/*": ["scripts/game/mp/common/*"],
     },
     "outDir": "./tsc_temp",
     "strict": true,

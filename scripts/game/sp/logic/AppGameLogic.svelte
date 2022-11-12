@@ -1,5 +1,5 @@
 <script lang="ts">
-import { pStore } from '../../../util/svelte'
+import { pStore } from '@/util/svelte'
 
 let logicPresets: Preset[][] = []
 

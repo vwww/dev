@@ -1,4 +1,4 @@
-import { formatHexColor } from '../../../../util'
+import { formatHexColor } from '@/util'
 import { IConnector, ReadyState } from './IConnector'
 import { IConnectorCallbacks } from './IConnectorCallbacks'
 

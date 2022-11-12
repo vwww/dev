@@ -1,4 +1,4 @@
-import { sum } from '../../../util'
+import { sum } from '@/util'
 import { Cell } from './Cell'
 import { MoveType } from './Move'
 

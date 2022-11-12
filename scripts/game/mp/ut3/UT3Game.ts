@@ -1,10 +1,10 @@
-import { clamp } from '../../../util'
-import { valueStore } from '../../../util/svelte'
-import { isFull, isNearWin, isWin } from '../../common/t3/game'
-import { ByteReader } from '../common/game/ByteReader'
-import { ByteWriter } from '../common/game/ByteWriter'
-import { TurnC2S } from '../common/game/TurnBasedGame'
-import { TPTurnClient, TPTurnGame } from '../common/game/TwoPlayerGame'
+import { clamp } from '@/util'
+import { valueStore } from '@/util/svelte'
+import { isFull, isNearWin, isWin } from '@gc/t3/game'
+import { ByteReader } from '@gmc/game/ByteReader'
+import { ByteWriter } from '@gmc/game/ByteWriter'
+import { TurnC2S } from '@gmc/game/TurnBasedGame'
+import { TPTurnClient, TPTurnGame } from '@gmc/game/TwoPlayerGame'
 
 interface UT3Client extends TPTurnClient { }
 
