@@ -1,14 +1,17 @@
 <script lang="ts">
 import * as d3 from 'd3'
-import { onMount } from 'svelte'
-import { sum } from '../../util'
 
-interface ModInfo {
+import { onMount } from 'svelte'
+import { gcd, sum } from '@/util'
+
+import * as modDataCached from './modsinfo.json'
+
+interface ModData {
   _id: string
   "mod_id": string
   "author": string
   "title": string
-  "timesplayed": number
+  "timesplayed"?: number
   "max_enter_players": number
   "max_enter_time": number
   "version": string
@@ -17,24 +20,91 @@ interface ModInfo {
   "active_duration": number
   "featured": boolean
   date_created: number
+  date_removed?: number
 }
 
-interface Data {
-  t: number
-  i: number
-  x: number
-  width: number
-  data: ModInfo
-  tooltip: string
+type ModInfo = ModData[]
+
+type ModHistory = [ModInfo, string, string, boolean][]
+
+function generateHistory(raw: ModInfo): ModHistory {
+  interface ModEvent {
+    add: boolean
+    time: number
+    data: ModData
+  }
+
+  const events: ModEvent[] = []
+
+  const createTimes: Partial<Record<string, number>> = {
+    "useries": 1528459800000,
+    "racing": 1529679300000,
+    "battleroyale": 1511530440000,
+  }
+
+  const removeTimes: Partial<Record<string, number>> = {
+    "prototypes": 1578454316626,
+    "racing": 1592486063588,
+  }
+
+  for (const m of raw) {
+    if (m.mod_id === 'none' && m.title === 'Starblast Prototypes') {
+      m.mod_id = 'prototypes'
+    }
+
+    const createTime = createTimes[m.mod_id]
+    const removeTime = removeTimes[m.mod_id]
+
+    if (m.active && !m.featured || createTime || removeTime) {
+      events.push({
+        add: true,
+        time: createTime || m.date_created,
+        data: m,
+      })
+    }
+
+    if (removeTime) {
+      m.date_removed = removeTime
+      events.push({
+        add: false,
+        time: removeTime,
+        data: m,
+      })
+    }
+  }
+
+  // sort oldest to newest
+  events.sort((a, b) => a.time - b.time)
+
+  const history: ModHistory = []
+  let cur: ModInfo = []
+
+  for (const {add, time, data} of events) {
+    cur = add
+      ? [...cur, data]
+      : cur.filter((mod) => mod !== data)
+    history.push([cur, new Date(time).toISOString(), data.mod_id, add])
+  }
+
+  return history.reverse()
 }
+
+function formatTime (t: number): string {
+  return new Date(t).toLocaleString()
+}
+
+let modData: ModInfo
+let modDataTotal = 0
+let modDataTotalText = ''
+let modHistory = [generateHistory((modDataCached as unknown as [ModInfo])[0])]
+let useLive = false
+let loadError: unknown = 'loading'
 
 let chartNode: HTMLDivElement
+let render: () => void
 let resizeHandler: () => void
 
-function init (modDataRaw: [ModInfo[]]) {
-  const modData = modDataRaw[0].filter(m => m.active && !m.featured)
-  const modDataTotal = sum(modData.map((m) => m.active_duration)) * 3600000
-
+function init () {
   const chart = d3.select(chartNode)
 
   // Get chart size
@@ -53,7 +123,6 @@ function init (modDataRaw: [ModInfo[]]) {
   let xScale = xScaleOrig.copy()
 
   const colorScale = d3.schemeCategory10
-  const firstLastColor = (modData.length % colorScale.length) === 1
 
   // X-axis
   const xAxisGenerator = d3.axisTop(xScale)
@@ -69,7 +138,15 @@ function init (modDataRaw: [ModInfo[]]) {
     .style('stroke', 'red')
 
   // Bar generator
-  function render () {
+  render = function () {
+    interface Data {
+      t: number
+      i: number
+      x: number
+      width: number
+      data: ModData
+      tooltip: string
+    }
     const data: Data[] = []
 
     const dStart = xScale.domain()[0] as unknown as number
@@ -83,37 +160,49 @@ function init (modDataRaw: [ModInfo[]]) {
       let t = dStart - dStart % modDataTotal - (dStart < 0 ? modDataTotal : 0)
       let i = 0
       while (t < dEnd) {
-        const duration = modData[i].active_duration * 3600000
+        const mod = modData[i]
+        const duration = mod.active_duration * 3600000
         const tEnd = t + duration
 
         if (tEnd > dStart) {
           const xStart = xScale(t)
           const xEnd = xScale(tEnd)
 
-          const tooltip = modData[i].title + '\n' +
-            `${new Date(t).toLocaleString()}\n` +
-            `${new Date(tEnd).toLocaleString()}\n\n` +
-            `_id: ${modData[i]._id}\n` +
-            `mod_id: ${modData[i].mod_id}\n` +
-            `author: ${modData[i].author}\n` +
-            `title: ${modData[i].title}\n` +
-            `timesplayed: ${modData[i].timesplayed}\n` +
-            `max_enter_players: ${modData[i].max_enter_players}\n` +
-            `max_enter_time: ${modData[i].max_enter_time}\n` +
-            `version: ${modData[i].version}\n` +
-            `active: ${modData[i].active}\n` +
-            `new: ${modData[i].new}\n` +
-            `active_duration: ${modData[i].active_duration}\n` +
-            `featured: ${modData[i].featured}\n` +
-            `date_created: ${new Date(modData[i].date_created).toLocaleString()}`
+          const tooltipLines = [
+            mod.title,
+            formatTime(t),
+            formatTime(tEnd),
+            ''
+          ]
+
+          for (const k of [
+            '_id',
+            'mod_id',
+            'author',
+            'title',
+            'timesplayed',
+            'max_enter_players',
+            'max_enter_time',
+            'version',
+            'active',
+            'new',
+            'active_duration',
+            'featured',
+            'date_created',
+            'date_removed',
+          ] as const) {
+            if (mod[k]) {
+              tooltipLines.push(`${k}: ${k === 'date_created' || k === 'date_removed' ? formatTime(mod[k]!) : mod[k]}`)
+            }
+          }
 
           data.push({
             t,
             i,
             x: xStart,
             width: xEnd - xStart,
-            data: modData[i],
-            tooltip,
+            data: mod,
+            tooltip: tooltipLines.join('\n'),
           })
         }
 
@@ -121,6 +210,8 @@ function init (modDataRaw: [ModInfo[]]) {
         if (++i === modData.length) i = 0
       }
     }
+
+    const firstLastColor = (modData.length % colorScale.length) === 1
 
     barGroup.selectAll('rect')
       .data(data)
@@ -208,10 +299,30 @@ function init (modDataRaw: [ModInfo[]]) {
   resizeHandler()
 }
 
+function setModData (m: ModInfo) {
+  modData = m
+  const totalHours = sum(modData.map((m) => m.active_duration))
+  modDataTotal = totalHours * 3600000
+
+  const g = gcd(totalHours, 24, 0, 1337)
+  modDataTotalText = `Total time = ${totalHours} h, gcd(${totalHours}, 24) = ${g}, lcm(${totalHours}, 24) = ${24 / g * totalHours} (${totalHours / g} d, ${24 / g} run)`
+}
+
 onMount(async function () {
-  const resp = await fetch('https://starblast.io/modsinfo.json')
-  const respJson = await resp.json()
-  init(respJson)
+  setModData(modHistory[0][0][0])
+  init()
+
+  try {
+    const resp = await fetch('https://starblast.io/modsinfo.json')
+    const respJson = await resp.json()
+
+    loadError = undefined
+    useLive = true
+    setModData((modHistory[1] = generateHistory(respJson[0]))[0][0])
+    render()
+  } catch (e) {
+    console.error(loadError = e)
+  }
 })
 </script>
 
@@ -235,4 +346,37 @@ onMount(async function () {
 
 <svelte:window on:resize={() => resizeHandler?.()} />
 
-<div class="chart_container"><div class="chart" bind:this={chartNode}></div></div>
+<div class="chart_container mb-3"><div class="chart" bind:this={chartNode}></div></div>
+
+<p>{modDataTotalText}</p>
+
+<div class="btn-group mb-2 d-flex">
+  <span class="input-group-text">Info Source</span>
+	<button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => useLive = false}>Offline (Cached)</button>
+  <button class="btn btn-outline-primary w-100" class:active={useLive} on:click={() => useLive = true}>Online</button>
+</div>
+
+{#if useLive && loadError}
+  <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error</h4>
+    {loadError}
+  </div>
+{:else}
+  <div class="list-group">
+    {#each modHistory[useLive ? 1 : 0] as modInfo}
+      <button class="list-group-item list-group-item-action"
+        class:active={modData === modInfo[0]}
+        on:click={() => (setModData(modInfo[0]), render())}>
+          {modInfo[1]}
+          <span
+            class={`badge bg-${modInfo[3] ? 'success' : 'danger'}`}>
+              {modInfo[3] ? 'add' : 'del'}
+          </span>
+          {modInfo[2]}
+        </button>
+    {/each}
+  </div>
+  <div class="alert alert-warning mt-2" role="alert">
+    The history feature is <span class="badge bg-secondary">NEW</span> and not reliable. It does not handle changes to <code>active_duration</code>.
+  </div>
+{/if}

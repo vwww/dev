@@ -1,7 +1,6 @@
 <script lang="ts">
-import { pStore } from '../../util/svelte'
-
-import gcd from './gcd'
+import { gcd } from '@/util'
+import { pStore } from '@/util/svelte'
 
 const zeroThreshold = pStore('tool/gcd/zero', 0.000000001)
 const maxIterations = pStore('tool/gcd/maxIter', 100000)

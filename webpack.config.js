@@ -1,6 +1,7 @@
 const fg = require('fast-glob')
 const path = require('path')
 
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
@@ -54,6 +55,7 @@ module.exports = {
     ],
   },
   resolve: {
+    plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })],
     extensions: [ '.ts', '.mjs', '.js', '.svelte' ],
     fallback: {
       "http": false,

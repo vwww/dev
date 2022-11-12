@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "scripts",
+    "paths": {
+      "@/*": ["*"],
+    },
     "outDir": "./tsc_temp",
     "strict": true,
     // "forceConsistentCasingInFileNames": true,
