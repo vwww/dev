@@ -15,6 +15,7 @@ export function init (): void {
     // Remove save warning
     $('#theme-switcher-msg').removeClass('btn-danger').addClass('btn-info')
     $('#theme-switcher-msg-text').text('Can save')
+    $('.theme-switcher-msg').remove()
   }
 }
 

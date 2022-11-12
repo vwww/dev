@@ -61,6 +61,8 @@
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Theme</a>
           <ul class="dropdown-menu" role="menu">
+            <li><a href="{{base}}/site/theme" class="dropdown-item">Theme Switcher</a></li>
+            <li class="dropdown-divider"></li>
             <li id="theme-switcher-msg" class="btn-danger">
               <a class="dropdown-item disabled" href="#" id="theme-switcher-msg-text">Cannot save</a>
             </li>
@@ -70,7 +72,7 @@
             <li class="dropdown-divider"></li>
             <li class="dropdown-header">Bootswatch</li>
             {%- for theme in site.data.themes.bootswatch %}
-            <li><a class="dropdown-item theme-switcher" href="#" data-theme="bootswatch-{{ theme[0] }}">{{ theme[1] }}</a></li>
+            <li><a class="dropdown-item theme-switcher" href="#" data-theme="bootswatch-{{ theme[0] }}" title="{{ theme[1][1] }}">{{ theme[1][0] }}</a></li>
             {%- endfor %}
           </ul>
         </li>
@@ -103,6 +105,6 @@
           </ul>
         </li>
       </ul>
-    </div><!--/.nav-collapse -->
+    </div>
   </div>
 </nav>
