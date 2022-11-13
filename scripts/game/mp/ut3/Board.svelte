@@ -13,16 +13,16 @@ function cellClass (board: number, i: number, legalMove: boolean) {
 }
 </script>
 
-<table class={`outerGrid m${markHover}`}>
+<table class="outerGrid m{markHover}">
   {#each cellNumbers as row}
     <tr>
     {#each row as i}
       <td>
-        <table class={`innerGrid p${cellClass(boardState.board, i, boardState.boardMustMove < 0 || boardState.boardMustMove === i)}`}>
+        <table class="innerGrid p{cellClass(boardState.board, i, boardState.boardMustMove < 0 || boardState.boardMustMove === i)}">
           {#each cellNumbers as row}
             <tr>
             {#each row as j}
-              <td class={`innerCell p${cellClass(boardState.boards[i], j, !((boardState.boardRestrict[i] >> j) & 1))}`}
+              <td class="innerCell p{cellClass(boardState.boards[i], j, !((boardState.boardRestrict[i] >> j) & 1))}"
                 class:canMove={markHover}
                 on:click={() => onMove(i, j)} />
             {/each}

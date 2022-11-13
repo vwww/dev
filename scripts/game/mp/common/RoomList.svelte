@@ -47,7 +47,7 @@ onDestroy(() => clearTimeout(refreshTimeout))
         <div class="spinner-border spinner-border-sm" class:d-none={!isRefreshing}></div>
         Refresh
       </button>
-      <button class={`btn btn-sm btn-${collapsed ? 'secondary' : 'warning'}`} on:click={() => collapsed = !collapsed}>{collapsed ? 'Show' : 'Hide'}</button>
+      <button class="btn btn-sm btn-{collapsed ? 'secondary' : 'warning'}" on:click={() => collapsed = !collapsed}>{collapsed ? 'Show' : 'Hide'}</button>
       <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#newRoomModal" disabled={disableNew}>New</button>
     </div>
   </div>

@@ -79,7 +79,7 @@ $: boardState = $boardStates[$boardIndex]
 <div>
   <div class="progress mb-2">
     <div
-      class={`progress-bar progress-bar-striped ${canMove ? $boardIndex < $moveHistory.length ? 'bg-warning' : 'bg-success' : ''}`}
+      class="progress-bar progress-bar-striped {canMove ? $boardIndex < $moveHistory.length ? 'bg-warning' : 'bg-success' : ''}"
       style="width:{($boardIndex + 1) / ($moveHistory.length + 1) * 100}%"
     >Ply {$boardIndex}{#if $boardIndex < $moveHistory.length}/{$moveHistory.length}{/if}</div>
   </div>
@@ -103,7 +103,7 @@ $: boardState = $boardStates[$boardIndex]
   Moves:
   {#each $moveHistory as move, i}
     <span
-      class={`badge bg-${$boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1`}
+      class="badge bg-{$boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1"
       on:click={() => gameState.historyGo(i + 1)}
       >{move.join('')}</span>
   {:else}

@@ -237,7 +237,7 @@ const buttons: [string, (this: HTMLButtonElement, event: MouseEvent) => void][][
 <svelte:window on:keydown={onKeyDown} />
 
 <div style="max-width: 576px; margin: auto">
-  <div class="row mb-3"><input class="form-control text-center" value={`${display}${memNum ? ' M' : ''}`} readonly></div>
+  <div class="row mb-3"><input class="form-control text-center" value="{display}{memNum ? ' M' : ''}" readonly></div>
   {#each buttons as row}
     <div class="row mb-2">
       {#each row as button}

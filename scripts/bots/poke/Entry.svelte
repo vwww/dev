@@ -46,8 +46,8 @@ $: entry.time, timeAgoStop(), timeAgoStart()
 <li class:indent={tie > 1}>
   <h1 data-rank={rank} class:tie>{rank}<sup>{rankSuffix(rank)}</sup></h1>
   <h1 class="ranko" data-rank={rankOther}>{rankOther}<sup>{rankSuffix(rankOther)}</sup></h1>
-  <img src={`https://graph.facebook.com/${entry.uid}/picture?width=80&height=80`} alt="">
-  <h2><a href={'https://www.facebook.com/' + entry.uid}>{entry.name}</a></h2>
+  <img src="https://graph.facebook.com/{entry.uid}/picture?width=80&height=80" alt="">
+  <h2><a href="https://www.facebook.com/{entry.uid}">{entry.name}</a></h2>
   <h3>{entry.num.toLocaleString()}</h3>
   <span title={time.toISOString()} bind:this={timeAgoElement}>{time.toString()}</span>
 </li>

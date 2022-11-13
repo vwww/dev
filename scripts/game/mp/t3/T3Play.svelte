@@ -90,7 +90,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   <div>
     Moves:
     {#each $moveHistory as move, i}
-      <span class={`badge bg-${(i & 1) ? 'danger' : 'success'} me-1`}>{move}</span>
+      <span class="badge bg-{(i & 1) ? 'danger' : 'success'} me-1">{move}</span>
     {:else}
       (none)
     {/each}
@@ -111,7 +111,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
     <div class="btn-group">
       {#each (t3Isomorphism === 1 ? isomorphism1 : isomorphism2) as [displayText, i]}
         <button
-          class={`btn btn-${formatButtonClass(i, $boardState, $boardBad, canMove)}`}
+          class="btn btn-{formatButtonClass(i, $boardState, $boardBad, canMove)}"
           on:click={() => gameState.sendMove(i)}
         >{displayText}</button>
       {/each}

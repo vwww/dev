@@ -443,14 +443,14 @@ onMount(async function () {
         on:click={() => (setModData(modInfo.info), render())}>
           {modInfo.timeStr}
           {#if modInfo.add}
-            <span class={`badge bg-${modInfo.mod_id ? 'success' : 'info'}`}>{modInfo.mod_id ? 'add' : 'init'}</span>
+            <span class="badge bg-{modInfo.mod_id ? 'success' : 'info'}">{modInfo.mod_id ? 'add' : 'init'}</span>
             {modInfo.mod_id ?? ''}
           {:else}
-            <span class={`badge bg-${modInfo.prop === 'active'
+            <span class="badge bg-{modInfo.prop === 'active'
                 ? modInfo.oldVal ? 'danger' : 'primary'
                 : modInfo.prop === 'active_duration'
                   ? 'warning'
-                  : 'secondary'}`}>
+                  : 'secondary'}">
               {modInfo.prop}
             </span>
             {modInfo.mod_id}: <code>{modInfo.oldVal}</code> to <code>{modInfo.info.filter(m => m.mod_id === modInfo.mod_id)[0]?.[modInfo.prop]}</code>
