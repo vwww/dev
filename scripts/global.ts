@@ -1,5 +1,5 @@
 // import jQuery before bootstrap
-import * as $ from 'jquery'
+import $ from 'jquery'
 
 import 'bootstrap'
 import 'timeago'

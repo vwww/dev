@@ -1,5 +1,5 @@
-import * as $ from 'jquery'
-import * as Highcharts from 'highcharts/highstock'
+import $ from 'jquery'
+import Highcharts from 'highcharts/highstock'
 import Exporting from 'highcharts/modules/exporting'
 
 Exporting(Highcharts)

@@ -1,6 +1,6 @@
 import { $idA } from './util'
 
-import * as svgPanZoom from 'svg-pan-zoom'
+import svgPanZoom from 'svg-pan-zoom'
 
 const $pathSVG = $idA('pathSVG')
 $pathSVG.addEventListener('load', () => {

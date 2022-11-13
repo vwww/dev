@@ -1,5 +1,5 @@
 <script lang="ts">
-import * as jQuery from 'jquery'
+import jQuery from 'jquery'
 import 'timeago'
 
 import { onDestroy, onMount } from 'svelte'

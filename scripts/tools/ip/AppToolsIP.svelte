@@ -1,5 +1,5 @@
 <script lang="ts">
-import * as jQuery from 'jquery'
+import jQuery from 'jquery'
 
 const LINES = [
   ['preferred', 'https://d.victorz.ca/ip.json?callback=?'],

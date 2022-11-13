@@ -1,10 +1,10 @@
 <script lang="ts">
-import * as jQuery from 'jquery'
+import jQuery from 'jquery'
 
 import { onMount } from 'svelte'
 
 import PaginationButtons from '@/common/PaginationButtons.svelte'
-import * as langListRaw from './languages.json'
+import langListRaw from './languages.json'
 const langList = langListRaw
 
 const NUM_PROBLEMS = 524288 // 2^19

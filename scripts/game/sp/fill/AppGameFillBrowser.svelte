@@ -1,5 +1,5 @@
 <script lang="ts">
-import * as boards from './boards.json'
+import boards from './boards.json'
 
 import FillTable, { CellInfo } from './FillTable.svelte'
 import { DELTA, MoveType } from './Move'

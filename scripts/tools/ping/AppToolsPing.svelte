@@ -1,5 +1,5 @@
 <script lang="ts">
-import * as jQuery from 'jquery'
+import jQuery from 'jquery'
 
 import RollingStatsDisplay from './RollingStatsDisplay.svelte'
 import RollingStats from '@/util/RollingStats'

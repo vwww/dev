@@ -1,4 +1,4 @@
-import * as $ from 'jquery'
+import $ from 'jquery'
 import 'timeago'
 
 import { PokeInfo, TaggedPokeInfo } from './bots/poke/PokeInfo'

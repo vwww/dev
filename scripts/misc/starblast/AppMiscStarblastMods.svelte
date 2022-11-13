@@ -4,7 +4,7 @@ import * as d3 from 'd3'
 import { onMount } from 'svelte'
 import { gcd, sum } from '@/util'
 
-import * as modDataCached from './modsinfo.json'
+import modDataCached from './modsinfo.json'
 
 interface ModData {
   _id: string
