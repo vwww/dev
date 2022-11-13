@@ -29,11 +29,7 @@ title: Theme Switcher
   <div class="col-sm-6 col-md-4 col-xl-3 mb-3 grid-item">
   <div class="card">
     <div class="card-header">{{ theme[1][0] }}</div>
-    <div class="image">
-      <a href="#" class="theme-switcher" data-theme="bootswatch-{{ theme[0] }}">
-        <img src="https://bootswatch.com/{{ theme[0] }}/thumbnail.png" class="img-fluid">
-      </a>
-    </div>
+    <img src="https://bootswatch.com/{{ theme[0] }}/thumbnail.png" style="cursor: pointer" class="theme-switcher" data-theme="bootswatch-{{ theme[0] }}">
     <div class="card-body text-center">
       <p class="card-text">{{ theme[1][1] }}</p>
       <button class="btn btn-outline-primary theme-switcher" data-theme="bootswatch-{{ theme[0] }}">Select</button>

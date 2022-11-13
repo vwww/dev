@@ -89,7 +89,7 @@ function sortText (isSort: boolean, reverse: boolean): string {
 function updateLocationHash (replaceHash = false) {
   const newHash = getPathString(curPath)
   if (location.hash !== newHash) {
-    history[replaceHash ? 'replaceState' : 'pushState'](null, '', location.pathname + '#' + newHash)
+    history[replaceHash ? 'replaceState' : 'pushState'](null, '', `${location.pathname}#${newHash}`)
   }
   document.title = "Victor's Downloads" + (newHash ? '/' + newHash : '')
 }
@@ -140,7 +140,8 @@ browseLocationHash()
   <tbody>
     {#if curPath.length > 2}
       <tr on:click={() => up(curPath.length - 1)}>
-        <td><a on:click|preventDefault href={'#'} class="file-root">. (root)</a></td>
+        <!-- svelte-ignore a11y-invalid-attribute We actually want this to set the hash to # -->
+        <td><a on:click|preventDefault href="#" class="file-root">. (root)</a></td>
         <td title={formatSize(fileRoot.size, true)}>{formatSize(fileRoot.size)}</td>
         <td>Go to the top!</td>
         <td>{formatDateTime(fileRoot.mtime)}</td>
@@ -164,6 +165,7 @@ browseLocationHash()
         </tr>
       {:else}
         <tr>
+          <!-- svelte-ignore security-anchor-rel-noreferrer (goes to external domain but still controlled by us) -->
           <td><a href={getDownloadPath(curPath, child)} target="_blank" class="file-file" data-ext={ext(child.name)}>{child.name}</a></td>
           <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
           <td>{child.remark}</td>

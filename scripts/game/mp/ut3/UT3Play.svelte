@@ -102,6 +102,7 @@ $: boardState = $boardStates[$boardIndex]
 
   Moves:
   {#each $moveHistory as move, i}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <span
       class="badge bg-{$boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1"
       on:click={() => gameState.historyGo(i + 1)}

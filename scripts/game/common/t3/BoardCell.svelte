@@ -9,6 +9,7 @@ export let hintVal = 0
 export let onMove: () => void | undefined
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <td
   class="p{mark} n{winner ? 0 : markHover} {hintClass}"
   class:win={winner}

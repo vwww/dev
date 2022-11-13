@@ -32,6 +32,7 @@ function alignv (cell: CellInfo): string {
   {#each cells as row}
     <tr>
       {#each row as cell}
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
         <td
           class="fill"
           class:fill-solved={cell.isSolved}

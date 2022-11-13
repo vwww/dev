@@ -22,6 +22,7 @@ function cellClass (board: number, i: number, legalMove: boolean) {
           {#each cellNumbers as row}
             <tr>
             {#each row as j}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
               <td class="innerCell p{cellClass(boardState.boards[i], j, !((boardState.boardRestrict[i] >> j) & 1))}"
                 class:canMove={markHover}
                 on:click={() => onMove(i, j)} />

@@ -16,7 +16,7 @@
         {%- assign prefix_len = prefix | size %}
         {%- assign prefix_check = page.url | slice: 0, prefix_len %}
         <li class="nav-item dropdown">
-          <a class="nav-link{% if prefix == prefix_check %} active{% endif %} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
+          <a class="nav-link{% if prefix == prefix_check %} active{% endif %} dropdown-toggle" href="#nav/{{ item.dropdown }}" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
           <ul class="dropdown-menu" role="menu">
           {%- assign href2 = item.prefix | append: '/' -%}
             <li><a class="dropdown-item{% if href2 == href_check %} active{% endif %}" href="{{base}}/{{ href2 }}">List</a></li>
@@ -59,45 +59,45 @@
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link" href="{{site.edit_prefix}}{{page.path}}">Edit</a></li>
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Theme</a>
+          <a href="#nav/theme" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Theme</a>
           <ul class="dropdown-menu" role="menu">
             <li><a href="{{base}}/site/theme" class="dropdown-item">Theme Switcher</a></li>
             <li class="dropdown-divider"></li>
             <li id="theme-switcher-msg" class="btn-danger">
-              <a class="dropdown-item disabled" href="#" id="theme-switcher-msg-text">Cannot save</a>
+              <button class="dropdown-item disabled" id="theme-switcher-msg-text">Cannot save</button>
             </li>
             <li class="dropdown-divider"></li>
-            <li><a class="dropdown-item theme-switcher" href="#" data-theme="bootstrap">Bootstrap</a></li>
-            <li><a class="dropdown-item theme-switcher active" href="#" data-theme="bootstrap2">Bootstrap Theme</a></li>
+            <li><button class="dropdown-item theme-switcher" data-theme="bootstrap">Bootstrap</button></li>
+            <li><button class="dropdown-item theme-switcher active" data-theme="bootstrap2">Bootstrap Theme</button></li>
             <li class="dropdown-divider"></li>
             <li class="dropdown-header">Bootswatch</li>
             {%- for theme in site.data.themes.bootswatch %}
-            <li><a class="dropdown-item theme-switcher" href="#" data-theme="bootswatch-{{ theme[0] }}" title="{{ theme[1][1] }}">{{ theme[1][0] }}</a></li>
+            <li><button class="dropdown-item theme-switcher" data-theme="bootswatch-{{ theme[0] }}" title="{{ theme[1][1] }}">{{ theme[1][0] }}</button></li>
             {%- endfor %}
           </ul>
         </li>
 
         <li id="april-fools-joke-menu" class="dropdown d-none">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language <span class="badge bg-warning">NEW</span></a>
+          <a class="nav-link dropdown-toggle" href="#nav/language" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language <span class="badge bg-warning">NEW</span></a>
           <ul class="dropdown-menu" role="menu">
             <li class="dropdown-header">10 languages</li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
-            <li><a class="dropdown-item" href="#" onclick="return false">English</a></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
+            <li><button class="dropdown-item" onclick="return false">English</button></li>
             <li class="dropdown-divider"></li>
             <li class="dropdown-header">April Fools!</li>
           </ul>
         </li>
 
         <li class="dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mirror</a>
+          <a class="nav-link dropdown-toggle" href="#nav/mirror" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mirror</a>
           <ul class="dropdown-menu" role="menu">
             {%- for mirror in site.mirrors %}
             <li><a class="dropdown-item" href="{{mirror[1]}}{{page.url}}">{{mirror[0]}}</a></li>
