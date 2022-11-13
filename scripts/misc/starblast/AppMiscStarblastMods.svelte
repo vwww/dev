@@ -20,7 +20,6 @@ interface ModData {
   "active_duration": number
   "featured": boolean
   date_created: number
-  date_removed?: number
 }
 
 type ModInfo = readonly ModData[]
@@ -47,7 +46,7 @@ type ModHistory = ModEvent[]
 
 function generateHistory(raw: ModInfo): ModHistory {
   type ModEventTimed = ModEventBase & { time: number }
-  type ModEventTimedSpec = ModEventBase & { time: number, mod_id: string }
+  type ModEventTimedSpec = ModEventTimed & { mod_id: string }
 
   const overrides: Partial<Record<string, ModEventTimed[]>> = {
     "useries": [{ type: ModEventType.Add, time: 1528459800000 }],
@@ -248,10 +247,9 @@ function init () {
             'active_duration',
             'featured',
             'date_created',
-            'date_removed',
           ] as const) {
             if (mod[k] !== undefined) {
-              tooltipLines.push(`${k}: ${k === 'date_created' || k === 'date_removed' ? formatTime(mod[k]!) : mod[k]}`)
+              tooltipLines.push(`${k}: ${k === 'date_created' ? formatTime(mod[k]) : mod[k]}`)
             }
           }
 
@@ -363,7 +361,7 @@ function setModData (m: ModInfo) {
   const totalHours = sum(modData.map((m) => m.active_duration))
   modDataTotal = totalHours * 3600000
 
-  const g = gcd(totalHours, 24, 0, 1337)
+  const g = gcd(totalHours, 24, 0, 24)
   modDataTotalText = `Total time = ${totalHours} h, gcd(${totalHours}, 24) = ${g}, lcm(${totalHours}, 24) = ${24 / g * totalHours} (${totalHours / g} d, ${24 / g} run)`
 }
 
