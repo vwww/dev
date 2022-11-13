@@ -4,7 +4,11 @@ import * as d3 from 'd3'
 import { onMount } from 'svelte'
 import { gcd, sum } from '@/util'
 
-import modDataCached from './modsinfo.json'
+import modsinfo from './modsinfo.json'
+
+const SB_INIT_TIME = 1479772800000
+const SB_CACHE_TIME = 1668000000000
+const modDataCached: ModInfo = modsinfo[0]
 
 interface ModData {
   _id: string
@@ -22,94 +26,123 @@ interface ModData {
   date_created: number
 }
 
+const ModDataKeys = [
+  '_id',
+  'mod_id',
+  'author',
+  'title',
+  'timesplayed',
+  'max_enter_players',
+  'max_enter_time',
+  'version',
+  'active',
+  'new',
+  'active_duration',
+  'featured',
+  'date_created',
+] as const
+
 type ModInfo = readonly ModData[]
 
-const enum ModEventType {
-  Add,
-  Modify,
-  Remove,
-  Initial,
-}
-
 type ModEventBase =
-  | { type: ModEventType.Add | ModEventType.Remove | ModEventType.Initial }
-  | { type: ModEventType.Modify, prop: keyof ModData, oldVal: unknown }
+  | { add: true }
+  | { add?: false, prop: keyof ModData, oldVal: unknown }
 
 type ModEvent = ModEventBase & {
   time: number
   timeStr: string
-  mod_id: string
+  mod_id?: string
   info: ModInfo
 }
 
 type ModHistory = ModEvent[]
 
-function generateHistory(raw: ModInfo): ModHistory {
+function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
   type ModEventTimed = ModEventBase & { time: number }
   type ModEventTimedSpec = ModEventTimed & { mod_id: string }
 
   const overrides: Partial<Record<string, ModEventTimed[]>> = {
-    "useries": [{ type: ModEventType.Add, time: 1528459800000 }],
-    "battleroyale": [{ type: ModEventType.Add, time: 1511530440000 }],
+    "useries": [{ add: true, time: 1528459800000 }],
+    "battleroyale": [{ add: true, time: 1511530440000 }],
     "racing": [
-      { time: 1529679300000, type: ModEventType.Add },
-      { time: 1592486063588, type: ModEventType.Remove },
+      { time: 1529679300000, add: true },
+      { time: 1592486063588, prop: 'active', oldVal: true },
     ],
     "prototypes": [
-      { time: 1553777807000, type: ModEventType.Add },
-      { time: 1578454316626, type: ModEventType.Remove },
+      { time: 1553777807000, add: true },
+      { time: 1578454316626, prop: 'active', oldVal: true },
     ],
     "rumble": [
-      { time: 1599209592000, type: ModEventType.Add },
-      { time: 1615100000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 }, // unknown timestamp
-      { time: 1634902500000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 6 },
-      { time: 1668000000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 },
+      { time: 1599209592000, add: true },
+      { time: 1615100000000, prop: 'active_duration', oldVal: 8 }, // unknown timestamp
+      { time: 1634902500000, prop: 'active_duration', oldVal: 6 },
     ],
     "ctf": [
-      { time: 1602235325000, type: ModEventType.Add },
-      { time: 1625000000000, type: ModEventType.Remove }, // unknown timestamp
-      { time: 1634902400000, type: ModEventType.Add }, // unknown timestamp
-      { time: 1634902500000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 },
-      { time: 1648729800000, type: ModEventType.Modify, prop: 'author', oldVal: '45rfew and Bhpsngum' },
-      { time: 1668000000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 4 },
+      { time: 1602235325000, add: true },
+      { time: 1625000000000, prop: 'active', oldVal: true }, // unknown timestamp
+      { time: 1634902400000, prop: 'active', oldVal: false }, // unknown timestamp
+      { time: 1634902500000, prop: 'active_duration', oldVal: 8 },
+      { time: 1648729800000, add: undefined, prop: 'author', oldVal: '45rfew and Bhpsngum' },
     ],
     "mcst": [
-      { time: 1612516370000, type: ModEventType.Add },
-      { time: 1637498700000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 4 },
-      { time: 1668000000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 },
+      { time: 1612516370000, add: true },
+      { time: 1637498700000, prop: 'active_duration', oldVal: 4 },
     ],
   }
 
-  const events: ModEventTimedSpec[] = raw.flatMap((m) => {
+  const rawBaseMap = Object.fromEntries((rawBase ?? []).map((d) => [d.mod_id, d]))
+  const events: ModEventTimedSpec[] = []
+  for (const m of raw) {
     if (m.mod_id === 'none' && m.title === 'Starblast Prototypes') {
       m.mod_id = 'prototypes'
     }
 
-    const override = overrides[m.mod_id]
-    if (override || m.active && !m.featured) {
-      return (override || [{ type: ModEventType.Add, time: m.date_created }])
-        .map(e => ({
+    const { mod_id } = m
+
+    const override = overrides[mod_id]
+    if (override) {
+      events.push(...override.map(e => ({
           ...e,
-          mod_id: m.mod_id,
-        }))
+          mod_id,
+        })))
+    } else {
+      events.push({
+        add: true,
+        time: m.date_created,
+        mod_id,
+      })
     }
 
-    return []
-  })
+    if (rawBase) {
+      // check for changed props
+      for (const prop of ModDataKeys) {
+        if (prop === 'timesplayed') continue
+
+        const oldVal = rawBaseMap[mod_id][prop]
+        if (oldVal === m[prop])  continue
+
+        events.push({
+          time: SB_CACHE_TIME,
+          mod_id,
+          prop,
+          oldVal,
+        })
+      }
+    }
+  }
 
   // sort newest to oldest, reverse order of equal items if stable sort is supported
   events.sort((a, b) => a.time - b.time).reverse()
 
   const history: ModHistory = []
-  let info: ModInfo = raw.filter((m) => m.active && !m.featured)
+  let info: ModInfo = raw
   const curMods = Object.fromEntries(raw.map((m) => [m.mod_id, m]))
-  const origIndex = Object.fromEntries(raw.map((m, i) => [m.mod_id, i]))
 
   for (const event of events) {
-    const { type, time, mod_id } = event
+    const { add, time, mod_id } = event
 
     const data = curMods[mod_id]
-    if (type === ModEventType.Modify && data[event.prop] === event.oldVal) continue
+    if (!add && data[event.prop] === event.oldVal) continue
 
     history.push({
       ...event,
@@ -118,29 +151,19 @@ function generateHistory(raw: ModInfo): ModHistory {
     })
 
     // revert event
-    switch (type) {
-      case ModEventType.Add:
-        info = info.filter((mod) => mod !== data)
-        break
-      case ModEventType.Remove:
-        let insertIndex = 0
-        while (insertIndex < info.length && origIndex[info[insertIndex].mod_id] < origIndex[mod_id]) insertIndex++
-        info = [...info.slice(0, insertIndex), data, ...info.slice(insertIndex)]
-        break
-      case ModEventType.Modify:
-        const newData = { ...data, [event.prop]: event.oldVal }
-        curMods[mod_id] = newData
-        info = info.map((i) => i === data ? newData : i)
-        break
+    if (add) {
+      info = info.filter((mod) => mod !== data)
+    } else {
+      const newData = { ...data, [event.prop]: event.oldVal }
+      curMods[mod_id] = newData
+      info = info.map((i) => i === data ? newData : i)
     }
   }
 
-  const SB_INIT_TIME = 1479772800000
   history.push({
-      type: ModEventType.Initial,
+      add: true,
       time: SB_INIT_TIME,
       timeStr: new Date(SB_INIT_TIME).toISOString(),
-      mod_id: '',
       info,
     })
 
@@ -152,9 +175,10 @@ function formatTime (t: number): string {
 }
 
 let modData: ModInfo
+let modDataRaw: ModInfo
 let modDataTotal = 0
 let modDataTotalText = ''
-let modHistory = [generateHistory((modDataCached as unknown as [ModInfo])[0])]
+let modHistory = [generateHistory(modDataCached)]
 let useLive = false
 let loadError: unknown = 'loading'
 
@@ -233,21 +257,7 @@ function init () {
             ''
           ]
 
-          for (const k of [
-            '_id',
-            'mod_id',
-            'author',
-            'title',
-            'timesplayed',
-            'max_enter_players',
-            'max_enter_time',
-            'version',
-            'active',
-            'new',
-            'active_duration',
-            'featured',
-            'date_created',
-          ] as const) {
+          for (const k of ModDataKeys) {
             if (mod[k] !== undefined) {
               tooltipLines.push(`${k}: ${k === 'date_created' ? formatTime(mod[k]) : mod[k]}`)
             }
@@ -357,7 +367,7 @@ function init () {
 }
 
 function setModData (m: ModInfo) {
-  modData = m
+  modData = (modDataRaw = m).filter((d) => d.active && !d.featured)
   const totalHours = sum(modData.map((m) => m.active_duration))
   modDataTotal = totalHours * 3600000
 
@@ -375,7 +385,7 @@ onMount(async function () {
 
     loadError = undefined
     useLive = true
-    setModData((modHistory[1] = generateHistory(respJson[0]))[0].info)
+    setModData((modHistory[1] = generateHistory(respJson[0], modDataCached))[0].info)
     render()
   } catch (e) {
     console.error(loadError = e)
@@ -422,22 +432,21 @@ onMount(async function () {
   <div class="list-group">
     {#each modHistory[useLive ? 1 : 0] as modInfo}
       <button class="list-group-item list-group-item-action"
-        class:active={modData === modInfo.info}
+        class:active={modDataRaw === modInfo.info}
         on:click={() => (setModData(modInfo.info), render())}>
           {modInfo.timeStr}
-          {#if modInfo.type === ModEventType.Add}
-            <span class="badge bg-success">add</span>
-            {modInfo.mod_id}
-          {:else if modInfo.type === ModEventType.Modify}
-            <span class={`badge bg-${modInfo.prop === 'active_duration' ? 'warning' : 'secondary'}`}>
-              modify
-            </span>
-            {modInfo.mod_id}/{modInfo.prop} from <code>{modInfo.oldVal}</code> to <code>{modInfo.info.filter(m => m.mod_id === modInfo.mod_id)[0]?.[modInfo.prop] ?? '(unknown)'}</code>
-          {:else if modInfo.type === ModEventType.Remove}
-            <span class="badge bg-danger">del</span>
-            {modInfo.mod_id}
+          {#if modInfo.add}
+            <span class={`badge bg-${modInfo.mod_id ? 'success' : 'info'}`}>{modInfo.mod_id ? 'add' : 'init'}</span>
+            {modInfo.mod_id ?? ''}
           {:else}
-            <span class="badge bg-info">empty</span>
+            <span class={`badge bg-${modInfo.prop === 'active'
+                ? modInfo.oldVal ? 'danger' : 'primary'
+                : modInfo.prop === 'active_duration'
+                  ? 'warning'
+                  : 'secondary'}`}>
+              {modInfo.prop}
+            </span>
+            {modInfo.mod_id}: <code>{modInfo.oldVal}</code> to <code>{modInfo.info.filter(m => m.mod_id === modInfo.mod_id)[0]?.[modInfo.prop]}</code>
           {/if}
         </button>
     {/each}
