@@ -23,70 +23,129 @@ interface ModData {
   date_removed?: number
 }
 
-type ModInfo = ModData[]
+type ModInfo = readonly ModData[]
 
-type ModHistory = [ModInfo, string, string, boolean][]
+const enum ModEventType {
+  Add,
+  Modify,
+  Remove,
+  Initial,
+}
+
+type ModEventBase =
+  | { type: ModEventType.Add | ModEventType.Remove | ModEventType.Initial }
+  | { type: ModEventType.Modify, prop: keyof ModData, oldVal: unknown }
+
+type ModEvent = ModEventBase & {
+  time: number
+  timeStr: string
+  mod_id: string
+  info: ModInfo
+}
+
+type ModHistory = ModEvent[]
 
 function generateHistory(raw: ModInfo): ModHistory {
-  interface ModEvent {
-    add: boolean
-    time: number
-    data: ModData
+  type ModEventTimed = ModEventBase & { time: number }
+  type ModEventTimedSpec = ModEventBase & { time: number, mod_id: string }
+
+  const overrides: Partial<Record<string, ModEventTimed[]>> = {
+    "useries": [{ type: ModEventType.Add, time: 1528459800000 }],
+    "battleroyale": [{ type: ModEventType.Add, time: 1511530440000 }],
+    "racing": [
+      { time: 1529679300000, type: ModEventType.Add },
+      { time: 1592486063588, type: ModEventType.Remove },
+    ],
+    "prototypes": [
+      { time: 1553777807000, type: ModEventType.Add },
+      { time: 1578454316626, type: ModEventType.Remove },
+    ],
+    "rumble": [
+      { time: 1599209592000, type: ModEventType.Add },
+      { time: 1615100000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 }, // unknown timestamp
+      { time: 1634902500000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 6 },
+      { time: 1668000000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 },
+    ],
+    "ctf": [
+      { time: 1602235325000, type: ModEventType.Add },
+      { time: 1625000000000, type: ModEventType.Remove }, // unknown timestamp
+      { time: 1634902400000, type: ModEventType.Add }, // unknown timestamp
+      { time: 1634902500000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 },
+      { time: 1648729800000, type: ModEventType.Modify, prop: 'author', oldVal: '45rfew and Bhpsngum' },
+      { time: 1668000000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 4 },
+    ],
+    "mcst": [
+      { time: 1612516370000, type: ModEventType.Add },
+      { time: 1637498700000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 4 },
+      { time: 1668000000000, type: ModEventType.Modify, prop: 'active_duration', oldVal: 8 },
+    ],
   }
 
-  const events: ModEvent[] = []
-
-  const createTimes: Partial<Record<string, number>> = {
-    "useries": 1528459800000,
-    "racing": 1529679300000,
-    "battleroyale": 1511530440000,
-  }
-
-  const removeTimes: Partial<Record<string, number>> = {
-    "prototypes": 1578454316626,
-    "racing": 1592486063588,
-  }
-
-  for (const m of raw) {
+  const events: ModEventTimedSpec[] = raw.flatMap((m) => {
     if (m.mod_id === 'none' && m.title === 'Starblast Prototypes') {
       m.mod_id = 'prototypes'
     }
 
-    const createTime = createTimes[m.mod_id]
-    const removeTime = removeTimes[m.mod_id]
-
-    if (m.active && !m.featured || createTime || removeTime) {
-      events.push({
-        add: true,
-        time: createTime || m.date_created,
-        data: m,
-      })
+    const override = overrides[m.mod_id]
+    if (override || m.active && !m.featured) {
+      return (override || [{ type: ModEventType.Add, time: m.date_created }])
+        .map(e => ({
+          ...e,
+          mod_id: m.mod_id,
+        }))
     }
 
-    if (removeTime) {
-      m.date_removed = removeTime
-      events.push({
-        add: false,
-        time: removeTime,
-        data: m,
-      })
-    }
-  }
+    return []
+  })
 
-  // sort oldest to newest
-  events.sort((a, b) => a.time - b.time)
+  // sort newest to oldest, reverse order of equal items if stable sort is supported
+  events.sort((a, b) => a.time - b.time).reverse()
 
   const history: ModHistory = []
-  let cur: ModInfo = []
+  let info: ModInfo = raw.filter((m) => m.active && !m.featured)
+  const curMods = Object.fromEntries(raw.map((m) => [m.mod_id, m]))
+  const origIndex = Object.fromEntries(raw.map((m, i) => [m.mod_id, i]))
 
-  for (const {add, time, data} of events) {
-    cur = add
-      ? [...cur, data]
-      : cur.filter((mod) => mod !== data)
-    history.push([cur, new Date(time).toISOString(), data.mod_id, add])
+  for (const event of events) {
+    const { type, time, mod_id } = event
+
+    const data = curMods[mod_id]
+    if (type === ModEventType.Modify && data[event.prop] === event.oldVal) continue
+
+    history.push({
+      ...event,
+      timeStr: new Date(time).toISOString(),
+      info,
+    })
+
+    // revert event
+    switch (type) {
+      case ModEventType.Add:
+        info = info.filter((mod) => mod !== data)
+        break
+      case ModEventType.Remove:
+        let insertIndex = 0
+        while (insertIndex < info.length && origIndex[info[insertIndex].mod_id] < origIndex[mod_id]) insertIndex++
+        info = [...info.slice(0, insertIndex), data, ...info.slice(insertIndex)]
+        break
+      case ModEventType.Modify:
+        const newData = { ...data, [event.prop]: event.oldVal }
+        curMods[mod_id] = newData
+        info = info.map((i) => i === data ? newData : i)
+        break
+    }
   }
 
-  return history.reverse()
+  const SB_INIT_TIME = 1479772800000
+  history.push({
+      type: ModEventType.Initial,
+      time: SB_INIT_TIME,
+      timeStr: new Date(SB_INIT_TIME).toISOString(),
+      mod_id: '',
+      info,
+    })
+
+  return history
 }
 
 function formatTime (t: number): string {
@@ -309,7 +368,7 @@ function setModData (m: ModInfo) {
 }
 
 onMount(async function () {
-  setModData(modHistory[0][0][0])
+  setModData(modHistory[0][0].info)
   init()
 
   try {
@@ -318,7 +377,7 @@ onMount(async function () {
 
     loadError = undefined
     useLive = true
-    setModData((modHistory[1] = generateHistory(respJson[0]))[0][0])
+    setModData((modHistory[1] = generateHistory(respJson[0]))[0].info)
     render()
   } catch (e) {
     console.error(loadError = e)
@@ -365,18 +424,27 @@ onMount(async function () {
   <div class="list-group">
     {#each modHistory[useLive ? 1 : 0] as modInfo}
       <button class="list-group-item list-group-item-action"
-        class:active={modData === modInfo[0]}
-        on:click={() => (setModData(modInfo[0]), render())}>
-          {modInfo[1]}
-          <span
-            class={`badge bg-${modInfo[3] ? 'success' : 'danger'}`}>
-              {modInfo[3] ? 'add' : 'del'}
-          </span>
-          {modInfo[2]}
+        class:active={modData === modInfo.info}
+        on:click={() => (setModData(modInfo.info), render())}>
+          {modInfo.timeStr}
+          {#if modInfo.type === ModEventType.Add}
+            <span class="badge bg-success">add</span>
+            {modInfo.mod_id}
+          {:else if modInfo.type === ModEventType.Modify}
+            <span class={`badge bg-${modInfo.prop === 'active_duration' ? 'warning' : 'secondary'}`}>
+              modify
+            </span>
+            {modInfo.mod_id}/{modInfo.prop} from <code>{modInfo.oldVal}</code> to <code>{modInfo.info.filter(m => m.mod_id === modInfo.mod_id)[0]?.[modInfo.prop] ?? '(unknown)'}</code>
+          {:else if modInfo.type === ModEventType.Remove}
+            <span class="badge bg-danger">del</span>
+            {modInfo.mod_id}
+          {:else}
+            <span class="badge bg-info">empty</span>
+          {/if}
         </button>
     {/each}
   </div>
   <div class="alert alert-warning mt-2" role="alert">
-    The history feature is <span class="badge bg-secondary">NEW</span> and not reliable. It does not handle changes to <code>active_duration</code>.
+    The history feature is a work-in-progress and might be missing some events.
   </div>
 {/if}
