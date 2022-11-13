@@ -250,7 +250,7 @@ function init () {
             'date_created',
             'date_removed',
           ] as const) {
-            if (mod[k]) {
+            if (mod[k] !== undefined) {
               tooltipLines.push(`${k}: ${k === 'date_created' || k === 'date_removed' ? formatTime(mod[k]!) : mod[k]}`)
             }
           }
