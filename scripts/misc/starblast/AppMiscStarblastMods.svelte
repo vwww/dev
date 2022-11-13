@@ -180,6 +180,7 @@ let modDataTotal = 0
 let modDataTotalText = ''
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
+let loading = false
 let loadError: unknown = 'loading'
 
 let chartNode: HTMLDivElement
@@ -375,10 +376,8 @@ function setModData (m: ModInfo) {
   modDataTotalText = `Total time = ${totalHours} h, gcd(${totalHours}, 24) = ${g}, lcm(${totalHours}, 24) = ${24 / g * totalHours} (${totalHours / g} d, ${24 / g} run)`
 }
 
-onMount(async function () {
-  setModData(modHistory[0][0].info)
-  init()
-
+async function loadInfo () {
+  loading = true
   try {
     const resp = await fetch('https://starblast.io/modsinfo.json')
     const respJson = await resp.json()
@@ -389,7 +388,15 @@ onMount(async function () {
     render()
   } catch (e) {
     console.error(loadError = e)
+  } finally {
+    loading = false
   }
+}
+
+onMount(async function () {
+  setModData(modHistory[0][0].info)
+  init()
+  return loadInfo()
 })
 </script>
 
@@ -420,7 +427,7 @@ onMount(async function () {
 <div class="btn-group mb-2 d-flex">
   <span class="input-group-text">Info Source</span>
 	<button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => useLive = false}>Offline (Cached)</button>
-  <button class="btn btn-outline-primary w-100" class:active={useLive} on:click={() => useLive = true}>Online</button>
+  <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : useLive = true}>{loading ? '[Loading]' : 'Online'}</button>
 </div>
 
 {#if useLive && loadError}
