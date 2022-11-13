@@ -90,7 +90,7 @@ function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
     ],
   }
 
-  const rawBaseMap = Object.fromEntries((rawBase ?? []).map((d) => [d.mod_id, d]))
+  const rawBaseMap: Partial<Record<string, ModData>> = Object.fromEntries((rawBase ?? []).map((d) => [d.mod_id, d]))
   const events: ModEventTimedSpec[] = []
   for (const m of raw) {
     if (m.mod_id === 'none' && m.title === 'Starblast Prototypes') {
@@ -113,12 +113,13 @@ function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
       })
     }
 
-    if (rawBase) {
-      // check for changed props
+    // check for changed props
+    const oldM = rawBaseMap[mod_id]
+    if (oldM) {
       for (const prop of ModDataKeys) {
         if (prop === 'timesplayed') continue
 
-        const oldVal = rawBaseMap[mod_id][prop]
+        const oldVal = oldM[prop]
         if (oldVal === m[prop])  continue
 
         events.push({
