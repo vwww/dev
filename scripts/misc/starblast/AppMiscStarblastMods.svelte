@@ -57,6 +57,14 @@ type ModEvent = ModEventBase & {
 
 type ModHistory = ModEvent[]
 
+function formatTimeLocal (t: number): string {
+  return new Date(t).toLocaleString()
+}
+
+function formatTimeISO (t: number): string {
+  return new Date(t).toISOString().replace('.000Z', 'Z')
+}
+
 function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
   type ModEventTimed = ModEventBase & { time: number }
   type ModEventTimedSpec = ModEventTimed & { mod_id: string }
@@ -82,7 +90,7 @@ function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
       { time: 1625000000000, prop: 'active', oldVal: true }, // unknown timestamp
       { time: 1634902400000, prop: 'active', oldVal: false }, // unknown timestamp
       { time: 1634902500000, prop: 'active_duration', oldVal: 8 },
-      { time: 1648729800000, add: undefined, prop: 'author', oldVal: '45rfew and Bhpsngum' },
+      { time: 1648729800000, prop: 'author', oldVal: '45rfew and Bhpsngum' },
     ],
     "mcst": [
       { time: 1612516370000, add: true },
@@ -110,6 +118,16 @@ function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
         add: true,
         time: m.date_created,
         mod_id,
+      })
+    }
+
+    if (!m.featured) {
+      events.push({
+        add: false,
+        time: (override?.[0].time ?? m.date_created) + 1000,
+        mod_id,
+        prop: 'featured',
+        oldVal: true,
       })
     }
 
@@ -147,7 +165,7 @@ function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
 
     history.push({
       ...event,
-      timeStr: new Date(time).toISOString(),
+      timeStr: formatTimeISO(time),
       info,
     })
 
@@ -164,19 +182,16 @@ function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
   history.push({
       add: true,
       time: SB_INIT_TIME,
-      timeStr: new Date(SB_INIT_TIME).toISOString(),
+      timeStr: formatTimeISO(SB_INIT_TIME),
       info,
     })
 
   return history
 }
 
-function formatTime (t: number): string {
-  return new Date(t).toLocaleString()
-}
-
 let modData: ModInfo
-let modDataRaw: ModInfo
+let modDataRotation: ModInfo
+let modDataFeatured: ModInfo
 let modDataTotal = 0
 let modDataTotalText = ''
 let modHistory = [generateHistory(modDataCached)]
@@ -184,7 +199,12 @@ let useLive = false
 let loading = false
 let loadError: unknown = 'loading'
 
+const MIN_TIME = +new Date('-010001-12-31T00:00Z')
+const MAX_TIME = +new Date('+010000-01-02T00:00Z')
+
 let chartNode: HTMLDivElement
+let viz: d3.Selection<SVGSVGElement, unknown, null, undefined>
+let pan: d3.ZoomBehavior<SVGSVGElement, unknown>
 let render: () => void
 let resizeHandler: () => void
 
@@ -196,9 +216,10 @@ function init () {
   let height = 100
 
   // Create SVG
-  const viz = chart.append('svg')
+  viz = chart.append('svg')
 
   const barGroup = viz.append('g')
+  const barTextGroup = viz.append('g')
 
   // Create scales
   const xScaleOrig = d3.scaleTime()
@@ -224,27 +245,29 @@ function init () {
   // Bar generator
   render = function () {
     interface Data {
-      t: number
-      i: number
       x: number
+      y: number
       width: number
-      data: ModData
+      height: number
+      color: string
+      label: string
       tooltip: string
     }
     const data: Data[] = []
 
-    const dStart = xScale.domain()[0] as unknown as number
-    const dEnd = xScale.domain()[1] as unknown as number
+    const [dStart, dEnd] = xScale.domain() as unknown as number[]
 
     const showBars = dEnd - dStart <= 7200000 * width
     const showText = dEnd - dStart <= 600000 * width
     const showTextFull = dEnd - dStart <= 150000 * width
 
+    const firstLastColor = (modDataRotation.length % colorScale.length) === 1
+
     if (showBars) {
       let t = dStart - dStart % modDataTotal - (dStart < 0 ? modDataTotal : 0)
       let i = 0
       while (t < dEnd) {
-        const mod = modData[i]
+        const mod = modDataRotation[i]
         const duration = mod.active_duration * 3600000
         const tEnd = t + duration
 
@@ -254,45 +277,63 @@ function init () {
 
           const tooltipLines = [
             mod.title,
-            formatTime(t),
-            formatTime(tEnd),
+            formatTimeLocal(t),
+            formatTimeLocal(tEnd),
             ''
           ]
 
           for (const k of ModDataKeys) {
             if (mod[k] !== undefined) {
-              tooltipLines.push(`${k}: ${k === 'date_created' ? formatTime(mod[k]) : mod[k]}`)
+              tooltipLines.push(`${k}: ${k === 'date_created' ? formatTimeLocal(mod[k]) : mod[k]}`)
             }
           }
 
           data.push({
-            t,
-            i,
             x: xStart,
+            y: 0,
             width: xEnd - xStart,
-            data: mod,
-            tooltip: tooltipLines.join('\n'),
+            height: modDataFeatured.length ? 40 : 70,
+            color: colorScale[i % colorScale.length + (firstLastColor && i + 1 === modDataRotation.length ? 1 : 0)],
+            label: showText ? showTextFull ? mod.title : mod.mod_id : '',
+            tooltip: tooltipLines.join('\n').trimEnd(),
           })
         }
 
         t += duration
-        if (++i === modData.length) i = 0
+        if (++i === modDataRotation.length) i = 0
       }
+    } else {
+      data.push({
+        x: 0,
+        y: 0,
+        width: xScale.range()[1],
+        height: modDataFeatured.length ? 40 : 70,
+        color: colorScale[1],
+        label: '[zoom in to see details]',
+        tooltip: '',
+      })
     }
 
-    const firstLastColor = (modData.length % colorScale.length) === 1
+    if (modDataFeatured.length) {
+      data.push({
+        x: 0,
+        y: 40,
+        width: xScale.range()[1],
+        height: 30,
+        color: '#555',
+        label: modDataFeatured.map((m) => m.title).join(', '),
+        tooltip: '',
+      })
+    }
 
     barGroup.selectAll('rect')
       .data(data)
       .join('rect')
         .attr('x', (d) => d.x)
-        .attr('y', 10)
+        .attr('y', (d) => d.y + 10)
         .attr('width', (d) => d.width)
-        .attr('height', 70)
-        .attr('fill', (d) => {
-          const i = d.i % colorScale.length + (firstLastColor && d.i + 1 === modData.length ? 1 : 0)
-          return colorScale[i]
-        })
+        .attr('height', (d) => d.height)
+        .attr('fill', (d) => d.color)
         // .attr('stroke', 'rgba(0,0,0,0.3)')
         // .attr('stroke-width', 4)
         // .attr('stroke-dasharray', (d) => `70,${d.width}`)
@@ -302,12 +343,12 @@ function init () {
         .join('title')
         .text((d) => d.tooltip)
 
-    barGroup.selectAll('text')
-      .data(showText ? data : [])
+    barTextGroup.selectAll('text')
+      .data(data.filter((d) => d.label))
       .join('text')
-        .text((d) => showTextFull ? d.data.title : d.data.mod_id)
+        .text((d) => d.label)
         .attr('x', (d) => (Math.max(d.x, 0) + Math.min(d.x + d.width, width)) / 2)
-        .attr('y', 50)
+        .attr('y', (d) => 10 + 5 + d.y + d.height / 2)
         .attr('text-anchor', 'middle')
         .attr('fill', '#fff')
         .style('pointer-events', 'none')
@@ -323,10 +364,8 @@ function init () {
   }
 
   // Zoom/Pan behavior
-  const MIN_TIME = +new Date('-010001-12-31T00:00Z')
-  const MAX_TIME = +new Date('+010000-01-02T00:00Z')
-  const pan = d3.zoom<SVGSVGElement, unknown>()
-    .scaleExtent([86400000 / (MAX_TIME - MIN_TIME), Number.POSITIVE_INFINITY])
+  pan = d3.zoom<SVGSVGElement, unknown>()
+    .scaleExtent([86400000 / (MAX_TIME - MIN_TIME), Infinity])
     .on('zoom', function (e) {
       xScale = e.transform.rescaleX(xScaleOrig)
       render()
@@ -369,8 +408,11 @@ function init () {
 }
 
 function setModData (m: ModInfo) {
-  modData = (modDataRaw = m).filter((d) => d.active && !d.featured)
-  const totalHours = sum(modData.map((m) => m.active_duration))
+  modData = m
+  modDataRotation = modData.filter((d) => d.active && !d.featured)
+  modDataFeatured = modData.filter((d) => d.active && d.featured)
+
+  const totalHours = sum(modDataRotation.map((m) => m.active_duration))
   modDataTotal = totalHours * 3600000
 
   const g = gcd(totalHours, 24, 0, 24)
@@ -440,15 +482,15 @@ onMount(async function () {
   <div class="list-group">
     {#each modHistory[useLive ? 1 : 0] as modInfo}
       <button class="list-group-item list-group-item-action"
-        class:active={modDataRaw === modInfo.info}
+        class:active={modData === modInfo.info}
         on:click={() => (setModData(modInfo.info), render())}>
           {modInfo.timeStr}
           {#if modInfo.add}
             <span class="badge bg-{modInfo.mod_id ? 'success' : 'info'}">{modInfo.mod_id ? 'add' : 'init'}</span>
             {modInfo.mod_id ?? ''}
           {:else}
-            <span class="badge bg-{modInfo.prop === 'active'
-                ? modInfo.oldVal ? 'danger' : 'primary'
+            <span class="badge bg-{modInfo.prop === 'active' || modInfo.prop === 'featured'
+                ? modInfo.oldVal == (modInfo.prop === 'active') ? 'danger' : 'primary'
                 : modInfo.prop === 'active_duration'
                   ? 'warning'
                   : 'secondary'}">
