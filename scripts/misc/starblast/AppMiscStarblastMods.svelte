@@ -206,6 +206,7 @@ let chartNode: HTMLDivElement
 let viz: d3.Selection<SVGSVGElement, unknown, null, undefined>
 let pan: d3.ZoomBehavior<SVGSVGElement, unknown>
 let render: () => void
+let panShift: (n: number) => void
 let resizeHandler: () => void
 
 function init () {
@@ -222,8 +223,7 @@ function init () {
   const barTextGroup = viz.append('g')
 
   // Create scales
-  const xScaleOrig = d3.scaleTime()
-    .domain([Date.now() - 86400000, Date.now() + 86400000 * 2])
+  const xScaleOrig = d3.scaleTime().domain([0, 86400000])
 
   let xScale = xScaleOrig.copy()
 
@@ -371,11 +371,30 @@ function init () {
       render()
     })
 
+  function resetPan (width: number) {
+    const k = 1 / 4
+    const tx = -((Date.now() - 86400000) * width / 86400000) * k
+    const newTransform = new d3.ZoomTransform(k, tx, 0)
+    pan.transform(viz, newTransform)
+  }
+
   pan(viz)
+  resetPan(1)
+
+  panShift = function (s: number) {
+    const width = xScaleOrig.range()[1]
+    if (s) {
+      pan.translateBy(viz, -s * width * modDataTotal / 86400000, 0)
+    } else {
+      resetPan(width)
+    }
+
+    render()
+  }
 
   // Update sizes
   resizeHandler = function () {
-    const rect = chart.node()!.getBoundingClientRect()
+    const rect = chartNode.getBoundingClientRect()
     width = rect.width
     height = rect.height
 
@@ -389,15 +408,17 @@ function init () {
     xScaleOrig
       .range([0, width])
 
-    const s = xScale.domain().map(xScaleOrig)
-    const newTransform = d3.zoomIdentity
-      .scale(width / (s[1] - s[0]))
-      .translate(-s[0], 0)
+    // set transform such that old domain maps to new range
+    const d = xScale.domain() as unknown as number[]
+    const k = 86400000 / (d[1] - d[0])
+    const tx = d[0] / (d[0] - d[1]) * width
+    const newTransform = new d3.ZoomTransform(k, tx, 0)
 
     pan
       .translateExtent([[xScaleOrig(MIN_TIME), 0], [xScaleOrig(MAX_TIME), 0]])
       .transform(viz, newTransform)
 
+    // xScale should now map old domain to new range
     const transform = d3.zoomTransform(viz.node()!)
     xScale = transform.rescaleX(xScaleOrig)
 
@@ -464,6 +485,17 @@ onMount(async function () {
 <svelte:window on:resize={() => resizeHandler?.()} />
 
 <div class="chart_container mb-3"><div class="chart" bind:this={chartNode}></div></div>
+
+<div class="btn-group d-flex mb-3" role="group">
+  <span class="input-group-text">Navigate</span>
+
+  <button class="w-100 btn btn-outline-secondary"
+    on:click={() => panShift(-1)}>&lsaquo;</button>
+  <button class="w-100 btn btn-outline-secondary"
+    on:click={() => panShift(0)}>Reset</button>
+  <button class="w-100 btn btn-outline-secondary"
+    on:click={() => panShift(1)}>&rsaquo;</button>
+</div>
 
 <p>{modDataTotalText}</p>
 
