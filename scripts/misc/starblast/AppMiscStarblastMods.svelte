@@ -193,6 +193,7 @@ let modData: ModInfo
 let modDataRotation: ModInfo
 let modDataFeatured: ModInfo
 let modDataTotal = 0
+let modDataPeriod = 0
 let modDataTotalText = ''
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
@@ -437,7 +438,10 @@ function setModData (m: ModInfo) {
   modDataTotal = totalHours * 3600000
 
   const g = gcd(totalHours, 24, 0, 24)
-  modDataTotalText = `Total time = ${totalHours} h, gcd(${totalHours}, 24) = ${g}, lcm(${totalHours}, 24) = ${24 / g * totalHours} (${totalHours / g} d, ${24 / g} run)`
+  const lcm = 24 / g * totalHours
+  const modDataPeriodDay = totalHours / g
+  modDataPeriod = 24 / g
+  modDataTotalText = `Total time = ${totalHours} h, gcd(${totalHours}, 24) = ${g}, lcm(${totalHours}, 24) = ${lcm} (${modDataPeriodDay} d, ${modDataPeriod} run)`
 }
 
 async function loadInfo () {
@@ -489,12 +493,16 @@ onMount(async function () {
 <div class="btn-group d-flex mb-3" role="group">
   <span class="input-group-text">Navigate</span>
 
-  <button class="w-100 btn btn-outline-secondary"
+  <button class="w-50 btn btn-outline-secondary"
+    on:click={() => panShift(-modDataPeriod)}>&laquo;</button>
+  <button class="w-75 btn btn-outline-secondary"
     on:click={() => panShift(-1)}>&lsaquo;</button>
   <button class="w-100 btn btn-outline-secondary"
     on:click={() => panShift(0)}>Reset</button>
-  <button class="w-100 btn btn-outline-secondary"
+  <button class="w-75 btn btn-outline-secondary"
     on:click={() => panShift(1)}>&rsaquo;</button>
+  <button class="w-50 btn btn-outline-secondary"
+    on:click={() => panShift(modDataPeriod)}>&raquo;</button>
 </div>
 
 <p>{modDataTotalText}</p>
