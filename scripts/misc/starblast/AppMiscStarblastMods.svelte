@@ -4,190 +4,11 @@ import * as d3 from 'd3'
 import { onMount } from 'svelte'
 import { gcd, sum } from '@/util'
 
+import { generateHistory } from './history'
+import { generateData, ModInfo } from './modinfo'
 import modsinfo from './modsinfo.json'
 
-const SB_INIT_TIME = 1479772800000
-const SB_CACHE_TIME = 1668000000000
 const modDataCached: ModInfo = modsinfo[0]
-
-interface ModData {
-  _id: string
-  "mod_id": string
-  "author": string
-  "title": string
-  "timesplayed"?: number
-  "max_enter_players": number
-  "max_enter_time": number
-  "version": string
-  "active": boolean
-  "new": boolean
-  "active_duration": number
-  "featured": boolean
-  date_created: number
-}
-
-const ModDataKeys = [
-  '_id',
-  'mod_id',
-  'author',
-  'title',
-  'timesplayed',
-  'max_enter_players',
-  'max_enter_time',
-  'version',
-  'active',
-  'new',
-  'active_duration',
-  'featured',
-  'date_created',
-] as const
-
-type ModInfo = readonly ModData[]
-
-type ModEventBase =
-  | { add: true }
-  | { add?: false, prop: keyof ModData, oldVal: unknown }
-
-type ModEvent = ModEventBase & {
-  time: number
-  timeStr: string
-  mod_id?: string
-  info: ModInfo
-}
-
-type ModHistory = ModEvent[]
-
-function formatTimeLocal (t: number): string {
-  return new Date(t).toLocaleString()
-}
-
-function formatTimeISO (t: number): string {
-  return new Date(t).toISOString().replace('.000Z', 'Z')
-}
-
-function generateHistory(raw: ModInfo, rawBase?: ModInfo): ModHistory {
-  type ModEventTimed = ModEventBase & { time: number }
-  type ModEventTimedSpec = ModEventTimed & { mod_id: string }
-
-  const overrides: Partial<Record<string, ModEventTimed[]>> = {
-    "useries": [{ add: true, time: 1528459800000 }],
-    "battleroyale": [{ add: true, time: 1511530440000 }],
-    "racing": [
-      { time: 1529679300000, add: true },
-      { time: 1592486063588, prop: 'active', oldVal: true },
-    ],
-    "prototypes": [
-      { time: 1553777807000, add: true },
-      { time: 1578454316626, prop: 'active', oldVal: true },
-    ],
-    "rumble": [
-      { time: 1599209592000, add: true },
-      { time: 1615100000000, prop: 'active_duration', oldVal: 8 }, // unknown timestamp
-      { time: 1634902500000, prop: 'active_duration', oldVal: 6 },
-    ],
-    "ctf": [
-      { time: 1602235325000, add: true },
-      { time: 1625000000000, prop: 'active', oldVal: true }, // unknown timestamp
-      { time: 1634902400000, prop: 'active', oldVal: false }, // unknown timestamp
-      { time: 1634902500000, prop: 'active_duration', oldVal: 8 },
-      { time: 1648729800000, prop: 'author', oldVal: '45rfew and Bhpsngum' },
-    ],
-    "mcst": [
-      { time: 1612516370000, add: true },
-      { time: 1637498700000, prop: 'active_duration', oldVal: 4 },
-    ],
-  }
-
-  const rawBaseMap: Partial<Record<string, ModData>> = Object.fromEntries((rawBase ?? []).map((d) => [d.mod_id, d]))
-  const events: ModEventTimedSpec[] = []
-  for (const m of raw) {
-    if (m.mod_id === 'none' && m.title === 'Starblast Prototypes') {
-      m.mod_id = 'prototypes'
-    }
-
-    const { mod_id } = m
-
-    const override = overrides[mod_id]
-    if (override) {
-      events.push(...override.map(e => ({
-          ...e,
-          mod_id,
-        })))
-    } else {
-      events.push({
-        add: true,
-        time: m.date_created,
-        mod_id,
-      })
-    }
-
-    if (!m.featured) {
-      events.push({
-        add: false,
-        time: (override?.[0].time ?? m.date_created) + 1000,
-        mod_id,
-        prop: 'featured',
-        oldVal: true,
-      })
-    }
-
-    // check for changed props
-    const oldM = rawBaseMap[mod_id]
-    if (oldM) {
-      for (const prop of ModDataKeys) {
-        if (prop === 'timesplayed') continue
-
-        const oldVal = oldM[prop]
-        if (oldVal === m[prop])  continue
-
-        events.push({
-          time: SB_CACHE_TIME,
-          mod_id,
-          prop,
-          oldVal,
-        })
-      }
-    }
-  }
-
-  // sort newest to oldest, reverse order of equal items if stable sort is supported
-  events.sort((a, b) => a.time - b.time).reverse()
-
-  const history: ModHistory = []
-  let info: ModInfo = raw
-  const curMods = Object.fromEntries(raw.map((m) => [m.mod_id, m]))
-
-  for (const event of events) {
-    const { add, time, mod_id } = event
-
-    const data = curMods[mod_id]
-    if (!add && data[event.prop] === event.oldVal) continue
-
-    history.push({
-      ...event,
-      timeStr: formatTimeISO(time),
-      info,
-    })
-
-    // revert event
-    if (add) {
-      info = info.filter((mod) => mod !== data)
-    } else {
-      const newData = { ...data, [event.prop]: event.oldVal }
-      curMods[mod_id] = newData
-      info = info.map((i) => i === data ? newData : i)
-    }
-  }
-
-  history.push({
-      add: true,
-      time: SB_INIT_TIME,
-      timeStr: formatTimeISO(SB_INIT_TIME),
-      info,
-    })
-
-  return history
-}
 
 let modData: ModInfo
 let modDataRotation: ModInfo
@@ -228,8 +49,6 @@ function init () {
 
   let xScale = xScaleOrig.copy()
 
-  const colorScale = d3.schemeCategory10
-
   // X-axis
   const xAxisGenerator = d3.axisTop(xScale)
 
@@ -245,87 +64,13 @@ function init () {
 
   // Bar generator
   render = function () {
-    interface Data {
-      x: number
-      y: number
-      width: number
-      height: number
-      color: string
-      label: string
-      tooltip: string
-    }
-    const data: Data[] = []
-
     const [dStart, dEnd] = xScale.domain() as unknown as number[]
 
-    const showBars = dEnd - dStart <= 7200000 * width
-    const showText = dEnd - dStart <= 600000 * width
-    const showTextFull = dEnd - dStart <= 150000 * width
-
-    const firstLastColor = (modDataRotation.length % colorScale.length) === 1
-
-    if (showBars) {
-      let t = dStart - dStart % modDataTotal - (dStart < 0 ? modDataTotal : 0)
-      let i = 0
-      while (t < dEnd) {
-        const mod = modDataRotation[i]
-        const duration = mod.active_duration * 3600000
-        const tEnd = t + duration
-
-        if (tEnd > dStart) {
-          const xStart = xScale(t)
-          const xEnd = xScale(tEnd)
-
-          const tooltipLines = [
-            mod.title,
-            formatTimeLocal(t),
-            formatTimeLocal(tEnd),
-            ''
-          ]
-
-          for (const k of ModDataKeys) {
-            if (mod[k] !== undefined) {
-              tooltipLines.push(`${k}: ${k === 'date_created' ? formatTimeLocal(mod[k]) : mod[k]}`)
-            }
-          }
-
-          data.push({
-            x: xStart,
-            y: 0,
-            width: xEnd - xStart,
-            height: modDataFeatured.length ? 40 : 70,
-            color: colorScale[i % colorScale.length + (firstLastColor && i + 1 === modDataRotation.length ? 1 : 0)],
-            label: showText ? showTextFull ? mod.title : mod.mod_id : '',
-            tooltip: tooltipLines.join('\n').trimEnd(),
-          })
-        }
-
-        t += duration
-        if (++i === modDataRotation.length) i = 0
-      }
-    } else {
-      data.push({
-        x: 0,
-        y: 0,
-        width: xScale.range()[1],
-        height: modDataFeatured.length ? 40 : 70,
-        color: colorScale[1],
-        label: '[zoom in to see details]',
-        tooltip: '',
-      })
-    }
-
-    if (modDataFeatured.length) {
-      data.push({
-        x: 0,
-        y: 40,
-        width: xScale.range()[1],
-        height: 30,
-        color: '#555',
-        label: modDataFeatured.map((m) => m.title).join(', '),
-        tooltip: '',
-      })
-    }
+    const data = generateData(
+      dStart, dEnd, width,
+      modDataRotation, modDataTotal, modDataFeatured,
+      xScale,
+    )
 
     barGroup.selectAll('rect')
       .data(data)
@@ -406,22 +151,24 @@ function init () {
     xAxis
       .attr('transform', 'translate(0, ' + height + ')')
 
+    // set transform such that old domain maps to new range
+    const oldWidth = xScaleOrig.range()[1]
+    const transform = d3.zoomTransform(viz.node()!)
+    const newTransform = new d3.ZoomTransform(
+      transform.k,
+      transform.x * (width / oldWidth),
+      transform.y,
+    )
+
     xScaleOrig
       .range([0, width])
-
-    // set transform such that old domain maps to new range
-    const d = xScale.domain() as unknown as number[]
-    const k = 86400000 / (d[1] - d[0])
-    const tx = d[0] / (d[0] - d[1]) * width
-    const newTransform = new d3.ZoomTransform(k, tx, 0)
 
     pan
       .translateExtent([[xScaleOrig(MIN_TIME), 0], [xScaleOrig(MAX_TIME), 0]])
       .transform(viz, newTransform)
 
     // xScale should now map old domain to new range
-    const transform = d3.zoomTransform(viz.node()!)
-    xScale = transform.rescaleX(xScaleOrig)
+    xScale = newTransform.rescaleX(xScaleOrig)
 
     render()
   }
