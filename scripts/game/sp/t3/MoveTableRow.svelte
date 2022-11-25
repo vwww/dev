@@ -11,7 +11,7 @@ export let winner: Winner
 export let winnerMap: WinnerMap
 export let getMemo: GetMemoType | undefined
 
-type Entry = [string, string?, string?]
+type Entry = [text: string, className?: string, title?: string]
 
 function winInfo (memo: MemoEntry, result: number, gameType: number): Entry {
   const canDo = memo[1][result]

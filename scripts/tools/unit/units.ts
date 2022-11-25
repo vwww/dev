@@ -1,8 +1,8 @@
-export type UnitVal = [number] // [val]
-  | [number, number] // [val, add]
+export type UnitVal = [val: number]
+  | [val: number, add: number]
 
-export type Unit = [UnitVal, string] // [UnitVal, unit1]
-  | [UnitVal, string, number, string] // [UnitVal, unit1, mod, unit2]
+export type Unit = [u: UnitVal, val: string]
+  | [u: UnitVal, unit1: string, mod: number, unit2: string]
 
 // Map of (unit type name) to (map of (unit name) to (Unit))
 export const UNITS: Record<string, Record<string, Unit>> = {

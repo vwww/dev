@@ -1,14 +1,14 @@
 import { checkWin, numToWinnerMap, occupied, remapWin, WinnerMap, winnerMapInvert, winnerMapToNum, WINNER_MAP_MAX } from './game'
 
-export type MemoEntryWin = [number] // value
-export type MemoEntryRegular = [number, number[], number] // [bestValue, moves, countPathForced]
+export type MemoEntryWin = [value: number]
+export type MemoEntryRegular = [bestValue: number, moves: number[], countPathForced: number]
 export type ResultCount = [number, number, number, number]
-export type MemoEntry = [(MemoEntryRegular[] | MemoEntryWin[]), ResultCount] // [typeDep[], countPaths]
+export type MemoEntry = [typeDep: MemoEntryRegular[] | MemoEntryWin[], countPaths: ResultCount]
 
-export type BotAction = [number[], string]
+export type BotAction = [moves: number[], msg: string]
 export type Bot = (board: number, used: number, winnerMap: WinnerMap) => BotAction
 
-export type PlayerType = [string] | [string, Bot]
+export type PlayerType = [nameHuman: string] | [nameBot: string, bot: Bot]
 
 export const playerTypes: PlayerType[] = [
   ['Human'],

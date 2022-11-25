@@ -6,7 +6,7 @@ import { randomArrayItemZipf } from '@/util'
 
 const TWEET_LEN = 280
 
-type Tweet = [string, string?] // [short, long?]
+type Tweet = [short: string, long?: string]
 
 let rankedWords: string[] | undefined
 let tweets: Tweet[] = []

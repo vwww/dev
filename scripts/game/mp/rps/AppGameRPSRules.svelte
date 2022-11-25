@@ -111,7 +111,8 @@ $: {
   }
 }
 
-type Preset = [number, number, number, string]
+type number3 = [r: number, p: number, s: number]
+type Preset = [...n: number3, desc: string]
 
 const PRESETS: Preset[] = [
   [1, 2, 3, '3v2v1'],
