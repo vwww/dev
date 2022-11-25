@@ -24,155 +24,146 @@ let loadError: unknown = 'loading'
 const MIN_TIME = +new Date('-010001-12-31T00:00Z')
 const MAX_TIME = +new Date('+010000-01-02T00:00Z')
 
+type d3Sel<T extends d3.BaseType> = d3.Selection<T, unknown, null, undefined>
+
 let chartNode: HTMLDivElement
-let viz: d3.Selection<SVGSVGElement, unknown, null, undefined>
-let pan: d3.ZoomBehavior<SVGSVGElement, unknown>
-let render: () => void
-let panShift: (n: number) => void
-let resizeHandler: () => void
+let viz: d3Sel<SVGSVGElement>
+let barGroup: d3Sel<SVGGElement>
+let barTextGroup: d3Sel<SVGGElement>
+let xAxis: d3Sel<SVGGElement>
+let curTimeLine: d3Sel<SVGLineElement>
+
+let width = 100
+let height = 100
+
+const xScaleOrig = d3.scaleTime().domain([0, 86400000])
+let xScale = xScaleOrig.copy()
+const xAxisGenerator = d3.axisTop(xScale)
+
+let pan = d3.zoom<SVGSVGElement, unknown>()
+  .scaleExtent([86400000 / (MAX_TIME - MIN_TIME), Infinity])
+  .on('zoom', function (e) {
+    xScale = e.transform.rescaleX(xScaleOrig)
+    render()
+  })
+
+function render (): void {
+  const [dStart, dEnd] = xScale.domain() as unknown as number[]
+
+  const data = generateData(
+    dStart, dEnd, width,
+    modDataRotation, modDataTotal, modDataFeatured,
+    xScale,
+  )
+
+  barGroup.selectAll('rect')
+    .data(data)
+    .join('rect')
+      .attr('x', (d) => d.x)
+      .attr('y', (d) => d.y + 10)
+      .attr('width', (d) => d.width)
+      .attr('height', (d) => d.height)
+      .attr('fill', (d) => d.color)
+      // .attr('stroke', 'rgba(0,0,0,0.3)')
+      // .attr('stroke-width', 4)
+      // .attr('stroke-dasharray', (d) => `70,${d.width}`)
+      // .attr('stroke-dashoffset', 70)
+    .selectAll('title')
+      .data((d) => [d])
+      .join('title')
+      .text((d) => d.tooltip)
+
+  barTextGroup.selectAll('text')
+    .data(data.filter((d) => d.label))
+    .join('text')
+      .text((d) => d.label)
+      .attr('x', (d) => (Math.max(d.x, 0) + Math.min(d.x + d.width, width)) / 2)
+      .attr('y', (d) => 10 + 5 + d.y + d.height / 2)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#fff')
+      .style('pointer-events', 'none')
+
+  const xNow = xScale(Date.now())
+  curTimeLine
+    .attr('x1', xNow)
+    .attr('x2', xNow)
+
+  xAxisGenerator
+    .scale(xScale)
+    (xAxis)
+}
+
+function resetPan (width: number): void {
+  const k = 1 / 4
+  const tx = -((Date.now() - 86400000) * width / 86400000) * k
+  const newTransform = new d3.ZoomTransform(k, tx, 0)
+  pan.transform(viz, newTransform)
+}
+
+function panShift (s: number): void {
+  const width = xScaleOrig.range()[1]
+  if (s) {
+    pan.translateBy(viz, -s * width * modDataTotal / 86400000, 0)
+  } else {
+    resetPan(width)
+  }
+
+  render()
+}
+
+function resizeHandler (): void {
+  const rect = chartNode.getBoundingClientRect()
+  width = rect.width
+  height = rect.height
+
+  viz
+    .attr('width', width)
+    .attr('height',  height)
+
+  xAxis
+    .attr('transform', 'translate(0, ' + height + ')')
+
+  // set transform such that old domain maps to new range
+  const oldWidth = xScaleOrig.range()[1]
+  const transform = d3.zoomTransform(viz.node()!)
+  const newTransform = new d3.ZoomTransform(
+    transform.k,
+    transform.x * (width / oldWidth),
+    transform.y,
+  )
+
+  xScaleOrig
+    .range([0, width])
+
+  pan
+    .translateExtent([[xScaleOrig(MIN_TIME), 0], [xScaleOrig(MAX_TIME), 0]])
+    .transform(viz, newTransform)
+
+  // xScale should now map old domain to new range
+  xScale = newTransform.rescaleX(xScaleOrig)
+
+  render()
+}
 
 function init () {
   const chart = d3.select(chartNode)
 
-  // Get chart size
-  let width = 100
-  let height = 100
-
-  // Create SVG
   viz = chart.append('svg')
 
-  const barGroup = viz.append('g')
-  const barTextGroup = viz.append('g')
+  barGroup = viz.append('g')
+  barTextGroup = viz.append('g')
 
-  // Create scales
-  const xScaleOrig = d3.scaleTime().domain([0, 86400000])
-
-  let xScale = xScaleOrig.copy()
-
-  // X-axis
-  const xAxisGenerator = d3.axisTop(xScale)
-
-  const xAxis = viz.append('g')
+  xAxis = viz.append('g')
     .classed('axis', true)
     .call(xAxisGenerator)
 
-  // Current time line
-  const curTimeLine = viz.append('line')
+  curTimeLine = viz.append('line')
     .attr('y1', 0)
     .attr('y2', 100)
     .style('stroke', 'red')
 
-  // Bar generator
-  render = function () {
-    const [dStart, dEnd] = xScale.domain() as unknown as number[]
-
-    const data = generateData(
-      dStart, dEnd, width,
-      modDataRotation, modDataTotal, modDataFeatured,
-      xScale,
-    )
-
-    barGroup.selectAll('rect')
-      .data(data)
-      .join('rect')
-        .attr('x', (d) => d.x)
-        .attr('y', (d) => d.y + 10)
-        .attr('width', (d) => d.width)
-        .attr('height', (d) => d.height)
-        .attr('fill', (d) => d.color)
-        // .attr('stroke', 'rgba(0,0,0,0.3)')
-        // .attr('stroke-width', 4)
-        // .attr('stroke-dasharray', (d) => `70,${d.width}`)
-        // .attr('stroke-dashoffset', 70)
-      .selectAll('title')
-        .data((d) => [d])
-        .join('title')
-        .text((d) => d.tooltip)
-
-    barTextGroup.selectAll('text')
-      .data(data.filter((d) => d.label))
-      .join('text')
-        .text((d) => d.label)
-        .attr('x', (d) => (Math.max(d.x, 0) + Math.min(d.x + d.width, width)) / 2)
-        .attr('y', (d) => 10 + 5 + d.y + d.height / 2)
-        .attr('text-anchor', 'middle')
-        .attr('fill', '#fff')
-        .style('pointer-events', 'none')
-
-    const xNow = xScale(Date.now())
-    curTimeLine
-      .attr('x1', xNow)
-      .attr('x2', xNow)
-
-    xAxisGenerator
-      .scale(xScale)
-      (xAxis)
-  }
-
-  // Zoom/Pan behavior
-  pan = d3.zoom<SVGSVGElement, unknown>()
-    .scaleExtent([86400000 / (MAX_TIME - MIN_TIME), Infinity])
-    .on('zoom', function (e) {
-      xScale = e.transform.rescaleX(xScaleOrig)
-      render()
-    })
-
-  function resetPan (width: number) {
-    const k = 1 / 4
-    const tx = -((Date.now() - 86400000) * width / 86400000) * k
-    const newTransform = new d3.ZoomTransform(k, tx, 0)
-    pan.transform(viz, newTransform)
-  }
-
   pan(viz)
   resetPan(1)
-
-  panShift = function (s: number) {
-    const width = xScaleOrig.range()[1]
-    if (s) {
-      pan.translateBy(viz, -s * width * modDataTotal / 86400000, 0)
-    } else {
-      resetPan(width)
-    }
-
-    render()
-  }
-
-  // Update sizes
-  resizeHandler = function () {
-    const rect = chartNode.getBoundingClientRect()
-    width = rect.width
-    height = rect.height
-
-    viz
-      .attr('width', width)
-      .attr('height',  height)
-
-    xAxis
-      .attr('transform', 'translate(0, ' + height + ')')
-
-    // set transform such that old domain maps to new range
-    const oldWidth = xScaleOrig.range()[1]
-    const transform = d3.zoomTransform(viz.node()!)
-    const newTransform = new d3.ZoomTransform(
-      transform.k,
-      transform.x * (width / oldWidth),
-      transform.y,
-    )
-
-    xScaleOrig
-      .range([0, width])
-
-    pan
-      .translateExtent([[xScaleOrig(MIN_TIME), 0], [xScaleOrig(MAX_TIME), 0]])
-      .transform(viz, newTransform)
-
-    // xScale should now map old domain to new range
-    xScale = newTransform.rescaleX(xScaleOrig)
-
-    render()
-  }
-
   resizeHandler()
 }
 
