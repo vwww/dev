@@ -50,7 +50,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
       const modDataFeatured = modData.some((d) => d.active && d.featured)
 
       const modDataTotal = sum(modDataRotation.map((m) => m.active_duration)) * HOUR
-      const firstLastColor = (modDataRotation.length % colorScale.length) === 1
+      const firstLastColor = modDataRotation.length > 1 && (modDataRotation.length % colorScale.length) === 1
 
       let tModStart = tStart - tStart % modDataTotal - (tStart < 0 ? modDataTotal : 0)
       let j = 0
@@ -86,7 +86,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
             y: 0,
             width,
             height: modDataFeatured ? 40 : 70,
-            color: colorScale[j % colorScale.length + (firstLastColor && j + 1 === modDataRotation.length ? 1 : 0)],
+            color: colorScale[firstLastColor && j + 1 === modDataRotation.length ? 1 : j % colorScale.length],
             label:
               width >= TEXT_WIDTH_ESTIMATE * mod.title.length
                 ? mod.title
