@@ -37,7 +37,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   }
 
   traverseHistory(dStart, dEnd, modHistory,
-    (event) => !event.add || (event.mod?.active && !(event.mod.featured && event.infoFeatured.length)),
+    (event, prevEvent) => !event.add || (event.mod?.active && !(event.mod.featured && prevEvent.infoFeatured.length)),
     (tStart, tEnd, curHistory, nextHistory) => {
       const active = curHistory.infoActive
       const total = curHistory.infoActiveHours * 3600000
@@ -56,7 +56,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
           if (tModStart < tStart && tStart > dStart) {
             tModStart = tStart
           }
-          if (tModEnd > tEnd && tEnd < dEnd && !(nextHistory.minor && nextHistory.mod?.mod_id !== mod.mod_id)) {
+          if (tModEnd > tEnd && tEnd < dEnd && !(nextHistory?.minor && nextHistory.mod?.mod_id !== mod.mod_id)) {
             tModEnd = tEnd
           }
 
@@ -115,12 +115,15 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
       const width = xScale(tEnd) - x
 
       if (curHistory.infoFeatured.length) {
-        const tooltipLines = [
-          formatTimeLocal(curHistory.time),
-          formatTimeLocal(nextHistory.time),
-          '',
-          ...curHistory.infoFeatured.map((m) => `${m.title} (${m.mod_id})`),
-        ]
+        const tooltipLines = []
+        if (modHistory.length > 1) {
+          tooltipLines.push(formatTimeLocal(curHistory.time))
+          if (nextHistory) {
+            tooltipLines.push(formatTimeLocal(nextHistory.time))
+          }
+          tooltipLines.push('')
+        }
+        tooltipLines.push(...curHistory.infoFeatured.map((m) => `${m.title} (${m.mod_id})`))
 
         data.push({
           x,
@@ -141,14 +144,14 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 }
 
 function traverseHistory (dStart: number, dEnd: number, modHistory: ModHistory,
-  isEventRelevant: (event: ModEvent) => boolean | undefined,
-  processRange: (tStart: number, tEnd: number, curEvent: ModEvent, nextEvent: ModEvent) => number | undefined
+  isEventRelevant: (event: ModEvent, prevEvent: ModEvent) => boolean | undefined,
+  processRange: (tStart: number, tEnd: number, curEvent: ModEvent, nextEvent?: ModEvent) => number | undefined
 ): void {
   let t = dStart
   let i = modHistory.length - 2
 
   while (t < dEnd) {
-    while (i >= 0 && (modHistory[i].time <= t || !isEventRelevant(modHistory[i]))) {
+    while (i >= 0 && (modHistory[i].time <= t || !isEventRelevant(modHistory[i], modHistory[i + 1]))) {
       i--
     }
 
