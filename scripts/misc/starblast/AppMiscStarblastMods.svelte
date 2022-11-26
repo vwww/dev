@@ -3,17 +3,23 @@ import * as d3 from 'd3'
 
 import { onMount } from 'svelte'
 import { gcd, sum } from '@/util'
+import { pStore } from '@/util/svelte'
 
-import { generateHistory } from './history'
-import { generateData, ModInfo } from './modinfo'
+import { ModInfo } from './modinfo'
+import { generateHistory, ModEvent } from './history'
+import { generateData } from './data'
+
 import modsinfo from './modsinfo.json'
+
+const autoHistory = pStore('misc/starblast/autoHistory', true)
+const hideMinor = pStore('misc/starblast/hideMinor', false)
 
 const modDataCached: ModInfo = modsinfo[0]
 
-let modData: ModInfo
-let modDataTotal = 0
-let modDataLCM = 0
-let modDataTotalText = ''
+let modEvent: ModEvent
+let modEventTotal = 0
+let modEventLCM = 0
+let modEventTotalText = ''
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
 let loading = false
@@ -30,6 +36,7 @@ let barGroup: d3Sel<SVGGElement>
 let barTextGroup: d3Sel<SVGGElement>
 let xAxis: d3Sel<SVGGElement>
 let curTimeLine: d3Sel<SVGLineElement>
+let updateTimeLine: d3Sel<SVGLineElement>
 
 let width = 100
 let height = 100
@@ -46,11 +53,9 @@ let pan = d3.zoom<SVGSVGElement, unknown>()
   })
 
 function render (): void {
-  const [dStart, dEnd] = xScale.domain() as unknown as number[]
-
   const data = generateData(
-    dStart, dEnd, width,
-    modData, xScale,
+    xScale,
+    $autoHistory ? modHistory[useLive ? 1 : 0] : [modEvent],
   )
 
   barGroup.selectAll('rect')
@@ -85,6 +90,11 @@ function render (): void {
     .attr('x1', xNow)
     .attr('x2', xNow)
 
+  const xUpdate = xScale(modEvent.time)
+  updateTimeLine
+    .attr('x1', xUpdate)
+    .attr('x2', xUpdate)
+
   xAxisGenerator
     .scale(xScale)
     (xAxis)
@@ -95,6 +105,11 @@ function resetPan (width: number): void {
   const tx = -((Date.now() - 86400000) * width / 86400000) * k
   const newTransform = new d3.ZoomTransform(k, tx, 0)
   pan.transform(viz, newTransform)
+}
+
+function panTo (t: number): void {
+  pan.translateTo(viz, xScaleOrig(t), 0)
+  render()
 }
 
 function panShift (hours: number): void {
@@ -159,21 +174,26 @@ function init () {
     .attr('y2', 100)
     .style('stroke', 'red')
 
+  updateTimeLine = viz.append('line')
+    .attr('y1', 0)
+    .attr('y2', 100)
+    .style('stroke', 'blue')
+
   pan(viz)
   resetPan(1)
   resizeHandler()
 }
 
-function setModData (m: ModInfo) {
-  modData = m
-  modDataTotal = sum(modData.map((m) => m.active && !m.featured ? m.active_duration : 0))
+function setModEvent (m: ModEvent) {
+  modEvent = m
+  modEventTotal = sum(modEvent.info.map((e) => e.active && !e.featured ? e.active_duration : 0))
 
-  const g = gcd(modDataTotal, 24, 0, 24)
+  const g = gcd(modEventTotal, 24, 0, 24)
   const modDataPeriod = 24 / g
-  const modDataPeriodDay = modDataTotal / g
-  modDataLCM = modDataPeriod * modDataTotal
+  const modDataPeriodDay = modEventTotal / g
+  modEventLCM = modDataPeriod * modEventTotal
 
-  modDataTotalText = `Total time = ${modDataTotal} h, gcd(${modDataTotal}, 24) = ${g}, lcm(${modDataTotal}, 24) = ${modDataLCM} (${modDataPeriodDay} d, ${modDataPeriod} run)`
+  modEventTotalText = `Total time = ${modEventTotal} h, gcd(${modEventTotal}, 24) = ${g}, lcm(${modEventTotal}, 24) = ${modEventLCM} (${modDataPeriodDay} d, ${modDataPeriod} run)`
 }
 
 async function loadInfo () {
@@ -184,7 +204,7 @@ async function loadInfo () {
 
     loadError = undefined
     useLive = true
-    setModData((modHistory[1] = generateHistory(respJson[0], modDataCached))[0].info)
+    setModEvent((modHistory[1] = generateHistory(respJson[0], modDataCached))[0])
     render()
   } catch (e) {
     console.error(loadError = e)
@@ -194,7 +214,7 @@ async function loadInfo () {
 }
 
 onMount(async function () {
-  setModData(modHistory[0][0].info)
+  setModEvent(modHistory[0][0])
   init()
   return loadInfo()
 })
@@ -226,23 +246,34 @@ onMount(async function () {
   <span class="input-group-text">Navigate</span>
 
   <button class="w-50 btn btn-outline-secondary"
-    on:click={() => panShift(-modDataLCM)}>&laquo;</button>
+    on:click={() => panShift(-modEventLCM)}>&laquo;</button>
   <button class="w-75 btn btn-outline-secondary"
-    on:click={() => panShift(-modDataTotal)}>&lsaquo;</button>
+    on:click={() => panShift(-modEventTotal)}>&lsaquo;</button>
   <button class="w-100 btn btn-outline-secondary"
     on:click={() => panShift(0)}>Reset</button>
   <button class="w-75 btn btn-outline-secondary"
-    on:click={() => panShift(modDataTotal)}>&rsaquo;</button>
+    on:click={() => panShift(modEventTotal)}>&rsaquo;</button>
   <button class="w-50 btn btn-outline-secondary"
-    on:click={() => panShift(modDataLCM)}>&raquo;</button>
+    on:click={() => panShift(modEventLCM)}>&raquo;</button>
 </div>
 
-<p>{modDataTotalText}</p>
+<p>{modEventTotalText}</p>
 
 <div class="btn-group mb-2 d-flex">
   <span class="input-group-text">Info Source</span>
 	<button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => useLive = false}>Offline (Cached)</button>
   <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : useLive = true}>{loading ? '[Loading]' : 'Online'}</button>
+</div>
+
+<div class="mb-2">
+  <label class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" bind:checked={$autoHistory} on:change={render}>
+    <span class="form-check-label">Render effective history</span>
+  </label>
+  <label class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" bind:checked={$hideMinor}>
+    <span class="form-check-label">Hide minor revisions</span>
+  </label>
 </div>
 
 {#if useLive && loadError}
@@ -252,28 +283,30 @@ onMount(async function () {
   </div>
 {:else}
   <div class="list-group">
-    {#each modHistory[useLive ? 1 : 0] as modInfo}
-      <button class="list-group-item list-group-item-action"
-        class:active={modData === modInfo.info}
-        on:click={() => (setModData(modInfo.info), render())}>
-          {modInfo.timeStr}
-          {#if modInfo.add}
-            <span class="badge bg-{modInfo.mod_id ? 'success' : 'info'}">{modInfo.mod_id ? 'add' : 'init'}</span>
-            {modInfo.mod_id ?? ''}
-          {:else}
-            <span class="badge bg-{modInfo.prop === 'active' || modInfo.prop === 'featured'
-                ? modInfo.oldVal == (modInfo.prop === 'active') ? 'danger' : 'primary'
-                : modInfo.prop === 'active_duration'
-                  ? 'warning'
-                  : 'secondary'}">
-              {modInfo.prop}
-            </span>
-            {modInfo.mod_id}: <code>{modInfo.oldVal}</code> to <code>{modInfo.info.filter(m => m.mod_id === modInfo.mod_id)[0]?.[modInfo.prop]}</code>
-          {/if}
-        </button>
+    {#each modHistory[useLive ? 1 : 0] as h}
+      {#if !$hideMinor || !h.minor || modEvent === h}
+        <button class="list-group-item list-group-item-action"
+          class:active={modEvent === h}
+          on:click={() => modEvent === h ? panTo(h.time) : (setModEvent(h), render())}>
+            {h.timeStr}
+            {#if h.add}
+              <span class="badge bg-{h.mod ? 'success' : 'info'}">{h.mod ? 'add' : 'init'}</span>
+              {h.mod?.mod_id ?? ''}
+            {:else}
+              <span class="badge bg-{h.prop === 'active' || h.prop === 'featured'
+                  ? h.oldVal == (h.prop === 'active') ? 'danger' : 'primary'
+                  : h.prop === 'active_duration'
+                    ? 'warning'
+                    : 'secondary'}">
+                {h.prop}
+              </span>
+              {h.mod?.mod_id}: <code>{h.oldVal}</code> to <code>{h.mod?.[h.prop]}</code>
+            {/if}
+          </button>
+        {/if}
     {/each}
   </div>
   <div class="alert alert-warning mt-2" role="alert">
-    The history feature is a work-in-progress and might be missing some events.
+    The history feature is a work-in-progress. Some events might be missing or have the wrong timestamp.
   </div>
 {/if}

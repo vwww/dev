@@ -11,8 +11,9 @@ export type ModEventBase =
 export type ModEvent = ModEventBase & {
   time: number
   timeStr: string
-  mod_id?: string
   info: ModInfo
+  mod?: ModData
+  minor: boolean
 }
 
 export type ModHistory = ModEvent[]
@@ -80,7 +81,7 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
     if (!m.featured) {
       events.push({
         add: false,
-        time: (override?.[0].time ?? m.date_created) + 1000,
+        time: (override?.[0].time ?? m.date_created) + 28 * 86400000,
         mod_id,
         prop: 'featured',
         oldVal: true,
@@ -119,10 +120,17 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
     const data = curMods[mod_id]
     if (!add && data[event.prop] === event.oldVal) continue
 
+    const minor = !add &&
+      event.prop !== 'active' &&
+      event.prop !== 'active_duration' &&
+      event.prop !== 'featured'
+
     history.push({
       ...event,
       timeStr: formatTimeISO(time),
       info,
+      mod: data,
+      minor,
     })
 
     // revert event
@@ -140,6 +148,7 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
     time: SB_INIT_TIME,
     timeStr: formatTimeISO(SB_INIT_TIME),
     info,
+    minor: false,
   })
 
   return history
