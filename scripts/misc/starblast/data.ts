@@ -105,6 +105,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   )
 
   // featured
+  let featuredColor = 1
   traverseHistory(dStart, dEnd, modHistory,
     (event) => event.add
       ? event.mod?.active && event.mod.featured
@@ -126,7 +127,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
           y: 40,
           width,
           height: 30,
-          color: '#555',
+          color: ['#555', '#777'][featuredColor ^= 1],
           label: curHistory.infoFeatured.map((m) => m.title).join(', '),
           tooltip: tooltipLines.join('\n'),
         })
