@@ -31,7 +31,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
       width,
       height: 70,
       color: colorScale[1],
-      label: '[zoom in to see details]',
+      label: '[zoom in for details]',
       tooltip: '',
     }]
   }
@@ -109,11 +109,18 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
     (event) => event.add
       ? event.mod?.active && event.mod.featured
       : event.prop === 'featured' || (event.prop === 'active' && event.mod!.featured),
-    (tStart, tEnd, curHistory) => {
+    (tStart, tEnd, curHistory, nextHistory) => {
       const x = xScale(tStart)
       const width = xScale(tEnd) - x
 
       if (curHistory.infoFeatured.length) {
+        const tooltipLines = [
+          formatTimeLocal(curHistory.time),
+          formatTimeLocal(nextHistory.time),
+          '',
+          ...curHistory.infoFeatured.map((m) => `${m.title} (${m.mod_id})`),
+        ]
+
         data.push({
           x,
           y: 40,
@@ -121,7 +128,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
           height: 30,
           color: '#555',
           label: curHistory.infoFeatured.map((m) => m.title).join(', '),
-          tooltip: '',
+          tooltip: tooltipLines.join('\n'),
         })
       }
 
