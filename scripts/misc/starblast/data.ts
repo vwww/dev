@@ -39,17 +39,17 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   traverseHistory(dStart, dEnd, modHistory,
     (event) => !event.add || (event.mod?.active && !(event.mod.featured && event.infoFeatured.length)),
     (tStart, tEnd, curHistory, nextHistory) => {
-      const HOUR = 3600000
-
       const active = curHistory.infoActive
-      const total = curHistory.infoActiveHours * HOUR
+      const total = curHistory.infoActiveHours * 3600000
       const firstLastColor = active.length > 1 && (active.length % colorScale.length) === 1
+
+      if (!total) return
 
       let tModStart = tStart - tStart % total - (tStart < 0 ? total : 0)
       let j = 0
       while (tModStart < tEnd) {
         const mod = active[j]
-        const duration = mod.active_duration * HOUR
+        const duration = mod.active_duration * 3600000
         let tModEnd = tModStart + duration
 
         if (tModEnd > tStart) {
@@ -107,7 +107,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   // featured
   traverseHistory(dStart, dEnd, modHistory,
     (event) => event.add
-      ? (event.mod?.active && event.mod.featured) ?? false
+      ? event.mod?.active && event.mod.featured
       : event.prop === 'featured' || (event.prop === 'active' && event.mod!.featured),
     (tStart, tEnd, curHistory) => {
       const x = xScale(tStart)
@@ -124,6 +124,8 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
           tooltip: '',
         })
       }
+
+      return undefined
     }
   )
 
@@ -132,7 +134,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 
 function traverseHistory (dStart: number, dEnd: number, modHistory: ModHistory,
   isEventRelevant: (event: ModEvent) => boolean | undefined,
-  processRange: (tStart: number, tEnd: number, curEvent: ModEvent, nextEvent: ModEvent) => number | void
+  processRange: (tStart: number, tEnd: number, curEvent: ModEvent, nextEvent: ModEvent) => number | undefined
 ): void {
   let t = dStart
   let i = modHistory.length - 2
