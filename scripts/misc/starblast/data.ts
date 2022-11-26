@@ -1,7 +1,5 @@
 import { schemeCategory10 as colorScale } from 'd3'
 
-import { sum } from '@/util'
-
 import { ModEvent, ModHistory } from './history'
 import { ModDataKeys } from './modinfo'
 
@@ -39,29 +37,28 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   }
 
   traverseHistory(dStart, dEnd, modHistory,
-    (event) => event.add
-      ? event.mod?.active
-      : event.prop === 'active' /* || event.mod?.mod_id == lastModId */ || (event.mod?.active && (event.prop === 'active_duration' || event.prop === 'featured')),
-    (tStart, tEnd, curHistory) => {
+    (event) => !event.add || (event.mod?.active && !(event.mod.featured && event.infoFeatured.length)),
+    (tStart, tEnd, curHistory, nextHistory) => {
       const HOUR = 3600000
 
-      const modData = curHistory.info
-      const modDataRotation = modData.filter((d) => d.active && !d.featured)
-      const modDataFeatured = modData.some((d) => d.active && d.featured)
+      const active = curHistory.infoActive
+      const total = curHistory.infoActiveHours * HOUR
+      const firstLastColor = active.length > 1 && (active.length % colorScale.length) === 1
 
-      const modDataTotal = sum(modDataRotation.map((m) => m.active_duration)) * HOUR
-      const firstLastColor = modDataRotation.length > 1 && (modDataRotation.length % colorScale.length) === 1
-
-      let tModStart = tStart - tStart % modDataTotal - (tStart < 0 ? modDataTotal : 0)
+      let tModStart = tStart - tStart % total - (tStart < 0 ? total : 0)
       let j = 0
       while (tModStart < tEnd) {
-        const mod = modDataRotation[j]
+        const mod = active[j]
         const duration = mod.active_duration * HOUR
         let tModEnd = tModStart + duration
 
         if (tModEnd > tStart) {
-          if (tModStart < tStart && tStart > dStart) tModStart = tStart
-          if (tModEnd > tEnd && tEnd < dEnd) tModEnd = tEnd
+          if (tModStart < tStart && tStart > dStart) {
+            tModStart = tStart
+          }
+          if (tModEnd > tEnd && tEnd < dEnd && !(nextHistory.minor && nextHistory.mod?.mod_id !== mod.mod_id)) {
+            tModEnd = tEnd
+          }
 
           const xStart = xScale(tModStart)
           const xEnd = xScale(tModEnd)
@@ -85,8 +82,8 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
             x: xStart,
             y: 0,
             width,
-            height: modDataFeatured ? 40 : 70,
-            color: colorScale[firstLastColor && j + 1 === modDataRotation.length ? 1 : j % colorScale.length],
+            height: curHistory.infoFeatured.length ? 40 : 70,
+            color: colorScale[firstLastColor && j + 1 === active.length ? 1 : j % colorScale.length],
             label:
               width >= TEXT_WIDTH_ESTIMATE * mod.title.length
                 ? mod.title
@@ -100,8 +97,10 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
         }
 
         tModStart = tModEnd
-        if (++j === modDataRotation.length) j = 0
+        if (++j === active.length) j = 0
       }
+
+      return tModStart
     }
   )
 
@@ -110,19 +109,18 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
     (event) => event.add
       ? (event.mod?.active && event.mod.featured) ?? false
       : event.prop === 'featured' || (event.prop === 'active' && event.mod!.featured),
-    (t, tEnd, curHistory) => {
-      const x = xScale(t)
+    (tStart, tEnd, curHistory) => {
+      const x = xScale(tStart)
       const width = xScale(tEnd) - x
 
-      const featured = curHistory.info.filter((d) => d.active && d.featured)
-      if (featured.length) {
+      if (curHistory.infoFeatured.length) {
         data.push({
           x,
           y: 40,
           width,
           height: 30,
           color: '#555',
-          label: featured.map((m) => m.title).join(', '),
+          label: curHistory.infoFeatured.map((m) => m.title).join(', '),
           tooltip: '',
         })
       }
@@ -133,27 +131,21 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 }
 
 function traverseHistory (dStart: number, dEnd: number, modHistory: ModHistory,
-  isEventRelevant: (e: ModEvent) => boolean | undefined,
-  processRange: (a: number, b: number, cur: ModEvent, next: ModEvent) => void
+  isEventRelevant: (event: ModEvent) => boolean | undefined,
+  processRange: (tStart: number, tEnd: number, curEvent: ModEvent, nextEvent: ModEvent) => number | void
 ): void {
   let t = dStart
   let i = modHistory.length - 2
 
   while (t < dEnd) {
-    while (i >= 0) {
-      const event = modHistory[i]
-
-      if (event.time > t && isEventRelevant(event)) break
-
+    while (i >= 0 && (modHistory[i].time <= t || !isEventRelevant(modHistory[i]))) {
       i--
     }
 
-    const tChange = i < 0 ? dEnd : modHistory[i].time
-
-    if (tChange > t) {
-      processRange(t, tChange, modHistory[i + 1], modHistory[i])
+    const tStart = t
+    t = i < 0 ? dEnd : modHistory[i].time
+    if (t > tStart) {
+      t = processRange(tStart, t, modHistory[i + 1], modHistory[i]) ?? t
     }
-
-    t = tChange
   }
 }

@@ -2,7 +2,7 @@
 import * as d3 from 'd3'
 
 import { onMount } from 'svelte'
-import { gcd, sum } from '@/util'
+import { gcd } from '@/util'
 import { pStore } from '@/util/svelte'
 
 import { ModInfo } from './modinfo'
@@ -17,7 +17,6 @@ const hideMinor = pStore('misc/starblast/hideMinor', false)
 const modDataCached: ModInfo = modsinfo[0]
 
 let modEvent: ModEvent
-let modEventTotal = 0
 let modEventLCM = 0
 let modEventTotalText = ''
 let modHistory = [generateHistory(modDataCached)]
@@ -186,14 +185,14 @@ function init () {
 
 function setModEvent (m: ModEvent) {
   modEvent = m
-  modEventTotal = sum(modEvent.info.map((e) => e.active && !e.featured ? e.active_duration : 0))
 
-  const g = gcd(modEventTotal, 24, 0, 24)
-  const modDataPeriod = 24 / g
-  const modDataPeriodDay = modEventTotal / g
-  modEventLCM = modDataPeriod * modEventTotal
+  const total = modEvent.infoActiveHours
+  const g = gcd(total, 24, 0, 24)
+  const periodRun = 24 / g
+  const periodDay = total / g
+  modEventLCM = periodRun * total
 
-  modEventTotalText = `Total time = ${modEventTotal} h, gcd(${modEventTotal}, 24) = ${g}, lcm(${modEventTotal}, 24) = ${modEventLCM} (${modDataPeriodDay} d, ${modDataPeriod} run)`
+  modEventTotalText = `Total time = ${total} h, gcd(${total}, 24) = ${g}, lcm(${total}, 24) = ${modEventLCM} (${periodDay} d, ${periodRun} run)`
 }
 
 async function loadInfo () {
@@ -248,11 +247,11 @@ onMount(async function () {
   <button class="w-50 btn btn-outline-secondary"
     on:click={() => panShift(-modEventLCM)}>&laquo;</button>
   <button class="w-75 btn btn-outline-secondary"
-    on:click={() => panShift(-modEventTotal)}>&lsaquo;</button>
+    on:click={() => panShift(-modEvent.infoActiveHours)}>&lsaquo;</button>
   <button class="w-100 btn btn-outline-secondary"
     on:click={() => panShift(0)}>Reset</button>
   <button class="w-75 btn btn-outline-secondary"
-    on:click={() => panShift(modEventTotal)}>&rsaquo;</button>
+    on:click={() => panShift(modEvent.infoActiveHours)}>&rsaquo;</button>
   <button class="w-50 btn btn-outline-secondary"
     on:click={() => panShift(modEventLCM)}>&raquo;</button>
 </div>

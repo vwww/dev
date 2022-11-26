@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { ModData, ModDataKeys, ModInfo } from './modinfo'
+import { sum } from '@/util'
+import { getActive, getFeatured, ModData, ModDataKeys, ModInfo } from './modinfo'
 
 const SB_INIT_TIME = 1479772800000
 const SB_CACHE_TIME = 1668000000000
@@ -12,6 +13,9 @@ export type ModEvent = ModEventBase & {
   time: number
   timeStr: string
   info: ModInfo
+  infoActive: ModInfo
+  infoActiveHours: number
+  infoFeatured: ModInfo
   mod?: ModData
   minor: boolean
 }
@@ -125,10 +129,14 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
       event.prop !== 'active_duration' &&
       event.prop !== 'featured'
 
+    const infoActive = getActive(info)
     history.push({
       ...event,
       timeStr: formatTimeISO(time),
       info,
+      infoActive,
+      infoActiveHours: sum(infoActive.map((m) => m.active_duration)),
+      infoFeatured: getFeatured(info),
       mod: data,
       minor,
     })
@@ -143,11 +151,15 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
     }
   }
 
+  const infoActive = getActive(info)
   history.push({
     add: true,
     time: SB_INIT_TIME,
     timeStr: formatTimeISO(SB_INIT_TIME),
     info,
+    infoActive: getActive(info),
+    infoActiveHours: sum(infoActive.map((m) => m.active_duration)),
+    infoFeatured: getFeatured(info),
     minor: false,
   })
 

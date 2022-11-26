@@ -31,3 +31,11 @@ export const ModDataKeys = [
 ] as const
 
 export type ModInfo = readonly ModData[]
+
+export function getActive (info: ModInfo): ModInfo {
+  return info.filter((d) => d.active && !d.featured)
+}
+
+export function getFeatured (info: ModInfo): ModInfo {
+  return info.filter((d) => d.active && d.featured)
+}
