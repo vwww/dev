@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"webpack -w\" \"npm run serve\"",
     "serve": "cd docs && jekyll s",
-    "build": "webpack --define-process-env-node-env production production --progress && npm run build:jekyll",
+    "build": "webpack --define-process-env-node-env production --progress && npm run build:jekyll",
     "build:dev": "webpack --progress && npm run build:jekyll || cd .",
     "build:jekyll": "cd docs && jekyll b",
     "clean": "rimraf docs/assets/dist docs/_data/manifest.json docs/_site",
