@@ -1,20 +1,19 @@
-/* eslint-disable @typescript-eslint/quotes */
-
-import * as d3 from 'd3'
+import { sum } from '@/util'
+import { schemeCategory10 as colorScale } from 'd3'
 
 export interface ModData {
   _id: string
-  "mod_id": string
-  "author": string
-  "title": string
-  "timesplayed"?: number
-  "max_enter_players": number
-  "max_enter_time": number
-  "version": string
-  "active": boolean
-  "new": boolean
-  "active_duration": number
-  "featured": boolean
+  mod_id: string
+  author: string
+  title: string
+  timesplayed?: number
+  max_enter_players: number
+  max_enter_time: number
+  version: string
+  active: boolean
+  new: boolean
+  active_duration: number
+  featured: boolean
   date_created: number
 }
 
@@ -51,23 +50,26 @@ function formatTimeLocal (t: number): string {
 }
 
 export function generateData (dStart: number, dEnd: number, width: number,
-  modDataRotation: ModInfo, modDataTotal: number, modDataFeatured: ModInfo,
-  xScale: d3.ScaleTime<number, number>): Data[] {
+  modData: ModInfo, xScale: (v: number) => number): Data[] {
   const data: Data[] = []
 
+  const modDataRotation = modData.filter((d) => d.active && !d.featured)
+  const modDataFeatured = modData.filter((d) => d.active && d.featured)
+
   const showBars = dEnd - dStart <= 7200000 * width
-  const showText = dEnd - dStart <= 600000 * width
-  const showTextFull = dEnd - dStart <= 150000 * width
-
-  const colorScale = d3.schemeCategory10
-  const firstLastColor = (modDataRotation.length % colorScale.length) === 1
-
   if (showBars) {
+    const showText = dEnd - dStart <= 600000 * width
+    const showTextFull = dEnd - dStart <= 150000 * width
+
+    const HOUR = 3600000
+    const modDataTotal = sum(modDataRotation.map((m) => m.active_duration)) * HOUR
+    const firstLastColor = (modDataRotation.length % colorScale.length) === 1
+
     let t = dStart - dStart % modDataTotal - (dStart < 0 ? modDataTotal : 0)
     let i = 0
     while (t < dEnd) {
       const mod = modDataRotation[i]
-      const duration = mod.active_duration * 3600000
+      const duration = mod.active_duration * HOUR
       const tEnd = t + duration
 
       if (tEnd > dStart) {
@@ -105,7 +107,7 @@ export function generateData (dStart: number, dEnd: number, width: number,
     data.push({
       x: 0,
       y: 0,
-      width: xScale.range()[1],
+      width,
       height: modDataFeatured.length ? 40 : 70,
       color: colorScale[1],
       label: '[zoom in to see details]',

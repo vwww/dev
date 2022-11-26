@@ -66,9 +66,9 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
     const override = overrides[mod_id]
     if (override) {
       events.push(...override.map((e) => ({
-          ...e,
-          mod_id,
-        })))
+        ...e,
+        mod_id,
+      })))
     } else {
       events.push({
         add: true,
@@ -136,11 +136,11 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
   }
 
   history.push({
-      add: true,
-      time: SB_INIT_TIME,
-      timeStr: formatTimeISO(SB_INIT_TIME),
-      info,
-    })
+    add: true,
+    time: SB_INIT_TIME,
+    timeStr: formatTimeISO(SB_INIT_TIME),
+    info,
+  })
 
   return history
 }

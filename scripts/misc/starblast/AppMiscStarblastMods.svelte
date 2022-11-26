@@ -11,10 +11,8 @@ import modsinfo from './modsinfo.json'
 const modDataCached: ModInfo = modsinfo[0]
 
 let modData: ModInfo
-let modDataRotation: ModInfo
-let modDataFeatured: ModInfo
 let modDataTotal = 0
-let modDataPeriod = 0
+let modDataLCM = 0
 let modDataTotalText = ''
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
@@ -52,8 +50,7 @@ function render (): void {
 
   const data = generateData(
     dStart, dEnd, width,
-    modDataRotation, modDataTotal, modDataFeatured,
-    xScale,
+    modData, xScale,
   )
 
   barGroup.selectAll('rect')
@@ -100,10 +97,10 @@ function resetPan (width: number): void {
   pan.transform(viz, newTransform)
 }
 
-function panShift (s: number): void {
+function panShift (hours: number): void {
   const width = xScaleOrig.range()[1]
-  if (s) {
-    pan.translateBy(viz, -s * width * modDataTotal / 86400000, 0)
+  if (hours) {
+    pan.translateBy(viz, -hours * width * 3600000 / 86400000, 0)
   } else {
     resetPan(width)
   }
@@ -169,17 +166,14 @@ function init () {
 
 function setModData (m: ModInfo) {
   modData = m
-  modDataRotation = modData.filter((d) => d.active && !d.featured)
-  modDataFeatured = modData.filter((d) => d.active && d.featured)
+  modDataTotal = sum(modData.map((m) => m.active && !m.featured ? m.active_duration : 0))
 
-  const totalHours = sum(modDataRotation.map((m) => m.active_duration))
-  modDataTotal = totalHours * 3600000
+  const g = gcd(modDataTotal, 24, 0, 24)
+  const modDataPeriod = 24 / g
+  const modDataPeriodDay = modDataTotal / g
+  modDataLCM = modDataPeriod * modDataTotal
 
-  const g = gcd(totalHours, 24, 0, 24)
-  const lcm = 24 / g * totalHours
-  const modDataPeriodDay = totalHours / g
-  modDataPeriod = 24 / g
-  modDataTotalText = `Total time = ${totalHours} h, gcd(${totalHours}, 24) = ${g}, lcm(${totalHours}, 24) = ${lcm} (${modDataPeriodDay} d, ${modDataPeriod} run)`
+  modDataTotalText = `Total time = ${modDataTotal} h, gcd(${modDataTotal}, 24) = ${g}, lcm(${modDataTotal}, 24) = ${modDataLCM} (${modDataPeriodDay} d, ${modDataPeriod} run)`
 }
 
 async function loadInfo () {
@@ -232,15 +226,15 @@ onMount(async function () {
   <span class="input-group-text">Navigate</span>
 
   <button class="w-50 btn btn-outline-secondary"
-    on:click={() => panShift(-modDataPeriod)}>&laquo;</button>
+    on:click={() => panShift(-modDataLCM)}>&laquo;</button>
   <button class="w-75 btn btn-outline-secondary"
-    on:click={() => panShift(-1)}>&lsaquo;</button>
+    on:click={() => panShift(-modDataTotal)}>&lsaquo;</button>
   <button class="w-100 btn btn-outline-secondary"
     on:click={() => panShift(0)}>Reset</button>
   <button class="w-75 btn btn-outline-secondary"
-    on:click={() => panShift(1)}>&rsaquo;</button>
+    on:click={() => panShift(modDataTotal)}>&rsaquo;</button>
   <button class="w-50 btn btn-outline-secondary"
-    on:click={() => panShift(modDataPeriod)}>&raquo;</button>
+    on:click={() => panShift(modDataLCM)}>&raquo;</button>
 </div>
 
 <p>{modDataTotalText}</p>
