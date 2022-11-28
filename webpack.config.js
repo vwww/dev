@@ -28,7 +28,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.svelte$/,
@@ -38,7 +38,7 @@ module.exports = {
             preprocess: require('svelte-preprocess')({})
           }
         },
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.s[ac]ss$/i,
@@ -61,7 +61,7 @@ module.exports = {
       "http": false,
       "https": false,
       "url": false,
-    }
+    },
   },
   devtool: false,
   plugins: [
@@ -84,7 +84,7 @@ module.exports = {
           }
 
           if (entryJS.length) js[k] = entryJS
-          if (entryUnknown.length) entryUnknown.push([k, entryUnknown])
+          if (entryUnknown.length) unknown.push([k, entryUnknown])
         }
 
         return {
