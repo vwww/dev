@@ -5,7 +5,7 @@ import { onMount } from 'svelte'
 import { gcd } from '@/util'
 import { pStore } from '@/util/svelte'
 
-import { ModInfo } from './modinfo'
+import { ModData, ModInfo } from './modinfo'
 import { generateHistory, ModEvent } from './history'
 import { generateData } from './data'
 
@@ -19,6 +19,7 @@ const modDataCached: ModInfo = modsinfo[0]
 let modEvent: ModEvent
 let modEventLCM = 0
 let modEventTotalText = ''
+let modEventTimetable: [mod: ModData, timings: string, className?: string][] = []
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
 let loading = false
@@ -193,6 +194,33 @@ function setModEvent (m: ModEvent) {
   modEventLCM = periodRun * total
 
   modEventTotalText = `Total time = ${total} h, gcd(${total}, 24) = ${g}, lcm(${total}, 24) = ${modEventLCM} (${periodDay} d, ${periodRun} run)`
+
+  modEventTimetable = []
+  let offset = 0
+  for (const mod of modEvent.info) {
+    if (!mod.active) {
+      modEventTimetable.push([mod, 'disabled', 'table-danger'])
+      continue
+    }
+
+    if (mod.featured) {
+      modEventTimetable.push([mod, 'featured', 'table-success'])
+      continue
+    }
+
+    const hours = []
+    for (let i = 0; i < periodRun; i++) {
+      hours.push(offset)
+      offset = (offset + total) % 24
+    }
+
+    modEventTimetable.push([
+      mod,
+      hours.join(', '),
+    ])
+
+    offset = (offset + mod.active_duration) % 24
+  }
 }
 
 async function loadInfo () {
@@ -239,7 +267,9 @@ onMount(async function () {
 
 <svelte:window on:resize={() => resizeHandler?.()} />
 
-<div class="chart_container mb-3"><div class="chart" bind:this={chartNode}></div></div>
+<h2>Timeline</h2>
+
+<div class="chart_container my-3"><div class="chart" bind:this={chartNode}></div></div>
 
 <div class="btn-group d-flex mb-3" role="group">
   <span class="input-group-text">Navigate</span>
@@ -258,13 +288,15 @@ onMount(async function () {
 
 <p>{modEventTotalText}</p>
 
-<div class="btn-group mb-2 d-flex">
+<h2>History</h2>
+
+<div class="btn-group my-2 d-flex">
   <span class="input-group-text">Info Source</span>
 	<button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => useLive = false}>Offline (Cached)</button>
   <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : useLive = true}>{loading ? '[Loading]' : 'Online'}</button>
 </div>
 
-<div class="mb-2">
+<div class="my-2">
   <label class="form-check form-check-inline">
     <input type="checkbox" class="form-check-input" bind:checked={$autoHistory} on:change={render}>
     <span class="form-check-label">Render effective history</span>
@@ -309,3 +341,23 @@ onMount(async function () {
     The history feature is a work-in-progress. Some events might be missing or have the wrong timestamp.
   </div>
 {/if}
+
+<h2>Timetable</h2>
+
+<table class="table table-striped table-bordered my-2">
+  <thead>
+    <tr>
+      <th colspan=2>Mod</th>
+      <th>UTC Hours</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each modEventTimetable as [{ mod_id, title }, timings, className]}
+      <tr>
+        <td>{title}</td>
+        <td>{mod_id}</td>
+        <td class={className}>{timings}</td>
+      </tr>
+    {/each}
+  </tbody>
+</table>
