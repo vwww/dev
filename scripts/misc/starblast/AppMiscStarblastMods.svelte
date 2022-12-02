@@ -19,7 +19,7 @@ const modDataCached: ModInfo = modsinfo[0]
 let modEvent: ModEvent
 let modEventLCM = 0
 let modEventTotalText = ''
-let modEventTimetable: [mod: ModData, timings: string, className?: string][] = []
+let modEventTimetable: [mod: ModData, timings: string | number[], className?: string][] = []
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
 let loading = false
@@ -123,6 +123,15 @@ function panShift (hours: number): void {
   render()
 }
 
+function panNext (offset: number): void {
+  const curHour = +xScale.domain()[0] / 3600000
+
+  let toShift = offset - (curHour % modEventLCM)
+  if (toShift < 0) toShift += modEventLCM
+
+  if (toShift) panShift(toShift)
+}
+
 function resizeHandler (): void {
   const rect = chartNode.getBoundingClientRect()
   width = rect.width
@@ -196,7 +205,7 @@ function setModEvent (m: ModEvent) {
   modEventTotalText = `Total time = ${total} h, gcd(${total}, 24) = ${g}, lcm(${total}, 24) = ${modEventLCM} (${periodDay} d, ${periodRun} run)`
 
   modEventTimetable = []
-  let offset = 0
+  let modOffset = 0
   for (const mod of modEvent.info) {
     if (!mod.active) {
       modEventTimetable.push([mod, 'disabled', 'table-danger'])
@@ -208,18 +217,18 @@ function setModEvent (m: ModEvent) {
       continue
     }
 
-    const hours = []
-    for (let i = 0; i < periodRun; i++) {
-      hours.push(offset)
-      offset = (offset + total) % 24
+    const timing = []
+    for (let i = 0, offset = modOffset; i < periodRun; i++) {
+      timing.push(offset)
+      offset += total
     }
 
     modEventTimetable.push([
       mod,
-      hours.join(', '),
+      timing,
     ])
 
-    offset = (offset + mod.active_duration) % 24
+    modOffset += mod.active_duration
   }
 }
 
@@ -292,7 +301,7 @@ onMount(async function () {
 
 <div class="btn-group my-2 d-flex">
   <span class="input-group-text">Info Source</span>
-	<button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => useLive = false}>Offline (Cached)</button>
+  <button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => useLive = false}>Offline (Cached)</button>
   <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : useLive = true}>{loading ? '[Loading]' : 'Online'}</button>
 </div>
 
@@ -356,7 +365,15 @@ onMount(async function () {
       <tr>
         <td>{title}</td>
         <td>{mod_id}</td>
-        <td class={className}>{timings}</td>
+        <td class={className}>
+          {#if typeof timings == 'string'}
+            {timings}
+          {:else}
+            {#each timings as t, i}
+              {#if i}, {/if}<a href="#next_{mod_id}_{t}" on:click|preventDefault={() => panNext(t)}>{t % 24}</a>
+            {/each}
+          {/if}
+        </td>
       </tr>
     {/each}
   </tbody>
