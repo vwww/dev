@@ -60,8 +60,10 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
             tModEnd = tEnd
           }
 
-          const xStart = xScale(tModStart)
-          const xEnd = xScale(tModEnd)
+          const maxX = xScale.range()[1]
+
+          const xStart = Math.max(xScale(tModStart), 0)
+          const xEnd = Math.min(xScale(tModEnd), maxX)
           const width = xEnd - xStart
 
           const tooltipLines = [
