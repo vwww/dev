@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { sum } from '@/util'
+import { formatTimeISO } from './data'
 import { getActive, getFeatured, ModData, ModDataKeys, ModInfo } from './modinfo'
 
 const SB_INIT_TIME = 1479772800000
@@ -21,10 +22,6 @@ export type ModEvent = ModEventBase & {
 }
 
 export type ModHistory = ModEvent[]
-
-function formatTimeISO (t: number): string {
-  return new Date(t).toISOString().replace('.000Z', 'Z')
-}
 
 export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
   type ModEventTimed = ModEventBase & { time: number }

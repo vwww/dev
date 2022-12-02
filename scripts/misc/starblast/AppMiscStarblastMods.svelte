@@ -7,7 +7,7 @@ import { pStore } from '@/util/svelte'
 
 import { ModData, ModInfo } from './modinfo'
 import { generateHistory, ModEvent } from './history'
-import { generateData } from './data'
+import { formatTimeISO, formatTimeLocal, generateData } from './data'
 
 import modsinfo from './modsinfo.json'
 
@@ -16,10 +16,12 @@ const hideMinor = pStore('misc/starblast/hideMinor', false)
 
 const modDataCached: ModInfo = modsinfo[0]
 
+type ModTiming = [offset: number, mod: ModData]
+
 let modEvent: ModEvent
 let modEventLCM = 0
 let modEventTotalText = ''
-let modEventTimetable: [mod: ModData, timings: string | number[], className?: string][] = []
+let modEventTimetable: [mod: ModData, timings: string | ModTiming[], className?: string][] = []
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
 let loading = false
@@ -27,6 +29,8 @@ let loadError: unknown = 'loading'
 
 const MIN_TIME = +new Date('-010001-12-31T00:00Z')
 const MAX_TIME = +new Date('+010000-01-02T00:00Z')
+const HOUR_MS = 3600000
+const DAY_MS = 86400000
 
 type d3Sel<T extends d3.BaseType> = d3.Selection<T, unknown, null, undefined>
 
@@ -41,12 +45,12 @@ let updateTimeLine: d3Sel<SVGLineElement>
 let width = 100
 let height = 100
 
-const xScaleOrig = d3.scaleTime().domain([0, 86400000])
+const xScaleOrig = d3.scaleTime().domain([0, DAY_MS])
 let xScale = xScaleOrig.copy()
 const xAxisGenerator = d3.axisTop(xScale)
 
 let pan = d3.zoom<SVGSVGElement, unknown>()
-  .scaleExtent([86400000 / (MAX_TIME - MIN_TIME), Infinity])
+  .scaleExtent([DAY_MS / (MAX_TIME - MIN_TIME), Infinity])
   .on('zoom', function (e) {
     xScale = e.transform.rescaleX(xScaleOrig)
     render()
@@ -102,7 +106,7 @@ function render (): void {
 
 function resetPan (width: number): void {
   const k = 1 / 4
-  const tx = -((Date.now() - 86400000) * width / 86400000) * k
+  const tx = -((Date.now() - DAY_MS) * width / DAY_MS) * k
   const newTransform = new d3.ZoomTransform(k, tx, 0)
   pan.transform(viz, newTransform)
 }
@@ -115,7 +119,7 @@ function panTo (t: number): void {
 function panShift (hours: number): void {
   const width = xScaleOrig.range()[1]
   if (hours) {
-    pan.translateBy(viz, -hours * width * 3600000 / 86400000, 0)
+    pan.translateBy(viz, -hours * width * HOUR_MS / DAY_MS, 0)
   } else {
     resetPan(width)
   }
@@ -123,13 +127,19 @@ function panShift (hours: number): void {
   render()
 }
 
-function panNext (offset: number): void {
-  const curHour = +xScale.domain()[0] / 3600000
+function panNext (offset: number, data: ModData): void {
+  const [a, b] = xScale.domain()
+  const modulo = modEventLCM * HOUR_MS
 
-  let toShift = offset - (curHour % modEventLCM)
-  if (toShift < 0) toShift += modEventLCM
+  let toShift = (offset * HOUR_MS) - (+a % modulo)
+  if (toShift < 0) toShift += modulo
 
-  if (toShift) panShift(toShift)
+  const shift = (toShift - (+b - +a - data.active_duration * HOUR_MS) / 2) / HOUR_MS
+  if (!shift) return
+  panShift(shift)
+
+  const targetTime = +a + toShift
+  window.alert(`Jumped to next occurrence of ${data.mod_id}:\n${formatTimeISO(targetTime)}\n${formatTimeLocal(targetTime)}`)
 }
 
 function resizeHandler (): void {
@@ -217,9 +227,9 @@ function setModEvent (m: ModEvent) {
       continue
     }
 
-    const timing = []
+    const timing: ModTiming[] = []
     for (let i = 0, offset = modOffset; i < periodRun; i++) {
-      timing.push(offset)
+      timing.push([offset, mod])
       offset += total
     }
 
@@ -370,7 +380,7 @@ onMount(async function () {
             {timings}
           {:else}
             {#each timings as t, i}
-              {#if i}, {/if}<a href="#next_{mod_id}_{t}" on:click|preventDefault={() => panNext(t)}>{t % 24}</a>
+              {#if i}, {/if}<a href="#next_{mod_id}_{t[0]}" on:click|preventDefault={() => panNext(...t)}>{t[0] % 24}</a>
             {/each}
           {/if}
         </td>

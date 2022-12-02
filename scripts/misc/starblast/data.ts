@@ -13,7 +13,11 @@ export interface Data {
   tooltip: string
 }
 
-function formatTimeLocal (t: number): string {
+export function formatTimeISO (t: number): string {
+  return new Date(t).toISOString().replace('.000Z', 'Z').replace(':00Z', 'Z')
+}
+
+export function formatTimeLocal (t: number): string {
   return new Date(t).toLocaleString()
 }
 
@@ -68,8 +72,8 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 
           const tooltipLines = [
             mod.title,
-            formatTimeLocal(tModStart),
-            formatTimeLocal(tModEnd),
+            `${formatTimeISO(tModStart)} ${formatTimeLocal(tModStart)}`,
+            `${formatTimeISO(tModEnd)} ${formatTimeLocal(tModEnd)}`,
             ''
           ]
 
