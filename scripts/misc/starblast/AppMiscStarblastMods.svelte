@@ -7,7 +7,7 @@ import { pStore } from '@/util/svelte'
 
 import { ModData, ModInfo } from './modinfo'
 import { generateHistory, ModEvent } from './history'
-import { formatTimeISO, formatTimeLocal, generateData } from './data'
+import { formatTime, generateData } from './data'
 
 import modsinfo from './modsinfo.json'
 
@@ -139,7 +139,7 @@ function panNext (offset: number, data: ModData): void {
   panShift(shift)
 
   const targetTime = +a + toShift
-  window.alert(`Jumped to next occurrence of ${data.mod_id}:\n${formatTimeISO(targetTime)}\n${formatTimeLocal(targetTime)}`)
+  window.alert(`Jumped to next occurrence of ${data.mod_id} at ${formatTime(targetTime)}`)
 }
 
 function resizeHandler (): void {

@@ -21,6 +21,10 @@ export function formatTimeLocal (t: number): string {
   return new Date(t).toLocaleString()
 }
 
+export function formatTime (t: number): string {
+  return `${formatTimeISO(t)} (${formatTimeLocal(t)})`
+}
+
 export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: ModHistory): Data[] {
   const data: Data[] = []
 
@@ -72,14 +76,14 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 
           const tooltipLines = [
             mod.title,
-            `${formatTimeISO(tModStart)} | ${formatTimeLocal(tModStart)}`,
-            `${formatTimeISO(tModEnd)} | ${formatTimeLocal(tModEnd)}`,
+            formatTime(tModStart),
+            formatTime(tModEnd),
             ''
           ]
 
           for (const k of ModDataKeys) {
             if (mod[k] !== undefined) {
-              tooltipLines.push(`${k}: ${k === 'date_created' ? formatTimeLocal(mod[k]) : mod[k] as string}`)
+              tooltipLines.push(`${k}: ${k === 'date_created' ? formatTime(mod[k]) : mod[k] as string}`)
             }
           }
 
@@ -123,9 +127,9 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
       if (curHistory.infoFeatured.length) {
         const tooltipLines = []
         if (modHistory.length > 1) {
-          tooltipLines.push(formatTimeLocal(curHistory.time))
+          tooltipLines.push(formatTime(curHistory.time))
           if (nextHistory) {
-            tooltipLines.push(formatTimeLocal(nextHistory.time))
+            tooltipLines.push(formatTime(nextHistory.time))
           }
           tooltipLines.push('')
         }
