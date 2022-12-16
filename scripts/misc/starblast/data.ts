@@ -72,8 +72,8 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 
           const tooltipLines = [
             mod.title,
-            `${formatTimeISO(tModStart)} ${formatTimeLocal(tModStart)}`,
-            `${formatTimeISO(tModEnd)} ${formatTimeLocal(tModEnd)}`,
+            `${formatTimeISO(tModStart)} | ${formatTimeLocal(tModStart)}`,
+            `${formatTimeISO(tModEnd)} | ${formatTimeLocal(tModEnd)}`,
             ''
           ]
 
