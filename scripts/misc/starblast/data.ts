@@ -72,7 +72,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 
           const xStart = Math.max(xScale(tModStart), 0)
           const xEnd = Math.min(xScale(tModEnd), maxX)
-          const width = xEnd - xStart
+          const width = xEnd - xStart + 1
 
           const tooltipLines = [
             mod.title,
@@ -122,7 +122,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
       : event.prop === 'featured' || (event.prop === 'active' && event.mod!.featured),
     (tStart, tEnd, curHistory, nextHistory) => {
       const x = xScale(tStart)
-      const width = xScale(tEnd) - x
+      const width = xScale(tEnd) - x + 1
 
       if (curHistory.infoFeatured.length) {
         const tooltipLines = []
