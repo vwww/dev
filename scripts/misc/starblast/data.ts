@@ -29,14 +29,14 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   const data: Data[] = []
 
   const [dStart, dEnd] = xScale.domain().map(Number)
-  const width = xScale.range()[1]
+  const xWidth = xScale.range()[1]
 
-  const showBars = dEnd - dStart <= 7200000 * width
+  const showBars = dEnd - dStart <= 7200000 * xWidth
   if (!showBars) {
     return [{
       x: 0,
       y: 0,
-      width,
+      width: xWidth,
       height: 70,
       color: colorScale[1],
       label: '[zoom in for details]',
@@ -68,10 +68,8 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
             tModEnd = tEnd
           }
 
-          const maxX = xScale.range()[1]
-
           const xStart = Math.max(xScale(tModStart), 0)
-          const xEnd = Math.min(xScale(tModEnd), maxX)
+          const xEnd = Math.min(xScale(tModEnd), xWidth)
           const width = xEnd - xStart + 1
 
           const tooltipLines = [
@@ -87,21 +85,13 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
             }
           }
 
-          const TEXT_WIDTH_ESTIMATE = 10
           data.push({
             x: xStart,
             y: 0,
             width,
             height: curHistory.infoFeatured.length ? 40 : 70,
             color: colorScale[firstLastColor && j + 1 === active.length ? 1 : j % colorScale.length],
-            label:
-              width >= TEXT_WIDTH_ESTIMATE * mod.title.length
-                ? mod.title
-                : width >= TEXT_WIDTH_ESTIMATE * mod.mod_id.length
-                  ? mod.mod_id
-                  : width >= 2 * TEXT_WIDTH_ESTIMATE
-                    ? mod.mod_id.slice(0, width / TEXT_WIDTH_ESTIMATE - 1) + '\u2026'
-                    : '',
+            label: adjustLabel(width, mod.title, mod.mod_id),
             tooltip: tooltipLines.join('\n').trimEnd(),
           })
         }
@@ -121,8 +111,9 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
       ? event.mod?.active && event.mod.featured
       : event.prop === 'featured' || (event.prop === 'active' && event.mod!.featured),
     (tStart, tEnd, curHistory, nextHistory) => {
-      const x = xScale(tStart)
-      const width = xScale(tEnd) - x + 1
+      const xStart = Math.max(xScale(tStart), 0)
+      const xEnd = Math.min(xScale(tEnd), xWidth)
+      const width = xEnd - xStart + 1
 
       if (curHistory.infoFeatured.length) {
         const tooltipLines = []
@@ -136,12 +127,12 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
         tooltipLines.push(...curHistory.infoFeatured.map((m) => `${m.title} (${m.mod_id})`))
 
         data.push({
-          x,
+          x: xStart,
           y: 40,
           width,
           height: 30,
           color: ['#555', '#777'][featuredColor ^= 1],
-          label: curHistory.infoFeatured.map((m) => m.title).join(', '),
+          label: adjustLabel(width, curHistory.infoFeatured.map((m) => m.title).join(', ')),
           tooltip: tooltipLines.join('\n'),
         })
       }
@@ -171,4 +162,21 @@ function traverseHistory (dStart: number, dEnd: number, modHistory: ModHistory,
       t = processRange(tStart, t, modHistory[i + 1], modHistory[i]) ?? t
     }
   }
+}
+
+function adjustLabel (width: number, ...labels: string[]): string {
+  const TEXT_WIDTH_ESTIMATE = 10
+  if (labels.length) {
+    for (const label of labels) {
+      if (width >= TEXT_WIDTH_ESTIMATE * label.length) {
+        return label
+      }
+    }
+
+    if (width >= 2 * TEXT_WIDTH_ESTIMATE) {
+      const lastLabel = labels[labels.length - 1]
+      return lastLabel.slice(0, width / TEXT_WIDTH_ESTIMATE - 1) + '\u2026'
+    }
+  }
+  return ''
 }
