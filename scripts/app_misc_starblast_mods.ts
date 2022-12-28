@@ -1,4 +1,4 @@
-import AppMiscStarblastMods from './misc/starblast/AppMiscStarblastMods.svelte'
+import AppMiscStarblastMods from './misc/starblast/mods/AppMiscStarblastMods.svelte'
 
 import loadApp from './victorz/app'
 

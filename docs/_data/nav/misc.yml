@@ -21,6 +21,9 @@
   - name: Starblast Mods Schedule
     desc: scrollable Starblast schedule
     href: misc/starblast_mods
+  - name: Starblast Upgrade Optimizer
+    desc: Starblast ship upgrade optimizer
+    href: misc/starblast_upgrade
 - desc: Many unsorted items go here!
   items:
   - name: 3D
