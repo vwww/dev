@@ -11,7 +11,7 @@
       - [secondary, Planning]
 - name: Browser Games
   items:
-  - name: Arcade
+  - name: Flash Arcade
     desc: my arcade, full of hacked flash games!
     date_added: 2008-09?
     href_ext: https://games.victorz.ca

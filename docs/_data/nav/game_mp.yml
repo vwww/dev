@@ -1,4 +1,4 @@
-- name: Realtime
+- name: Realtime Multiplayer
   desc: These multiplayer games have continuous realtime actions.
   items:
   - name: Slime Volleyball
@@ -31,7 +31,7 @@
         class: secondary
     badges:
       - [secondary, TODO]
-- name: Turn-Based
+- name: Turn-Based Multiplayer
   desc: These multiplayer games have discrete turns.
   items:
   - name: Actionless
