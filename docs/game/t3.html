@@ -1,7 +1,7 @@
 ---
 title: Tic-Tac-Toe Analyzer
 date: "2016-10-23 11:00:00 -0600"
-mdate: 2023-01-07 22:02:50 -7600
+mdate: 2023-01-08 14:28:00 -7600
 entry: app_game_t3
 ---
 {% include app.html %}
@@ -14,11 +14,11 @@ entry: app_game_t3
 <p><strong>Optimal</strong> bot tries to win as soon as possible, tie, and then lose as late as possible. If it chooses all of its moves, it never loses.</p>
 
 <h2>Table Results</h2>
-<p><strong>Forcable</strong> means the current player can force the result. <strong>Forced</strong> paths are those that allow the current player to keep the result forcable (positive expected value). <strong>Untaken</strong> paths are those that optimal players would not take.</p>
+<p><strong>Forcable</strong> means the current player can force the desired result. <strong>Forced</strong> paths are those that allow the current player to keep the result forcable. <strong>Untaken</strong> paths are those that optimal players would not take.</p>
 
-<p><strong>Preventable</strong> means the result is possible, but the opponent can force a loss for the current player. <strong>Lost</strong> paths are those that are Forced for the opponent (negative expected value).</p>
+<p><strong>Preventable</strong> means the result is possible, but the opponent can force a different result. <strong>Lost</strong> paths are those that allow the opponent to force a different result.</p>
 
-<p><strong>Possible</strong> means that the result is possible. <strong>Neutral</strong> paths are those that are not Forced or Lost (zero expected value).</p>
+<p><del><strong>Possible</strong> means that the result is possible, and the opponent cannot force a different result. <strong>Neutral</strong> paths are those that are neither Forced nor Lost.</del></p>
 
 <p><strong>Impossible</strong> means that the result is not possible.</p>
 
