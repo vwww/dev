@@ -1,9 +1,9 @@
 import { checkWin, numToWinnerMap, occupied, remapWin, WinnerMap, winnerMapInvert, winnerMapToNum, WINNER_MAP_MAX } from './game'
 
 export type MemoEntryWin = [value: number]
-export type MemoEntryRegular = [bestValue: number, moves: number[], countPathForced: number]
-export type ResultCount = [number, number, number, number]
-export type MemoEntry = [typeDep: MemoEntryRegular[] | MemoEntryWin[], countPaths: ResultCount]
+export type MemoEntryRegular = [bestValue: number, moves: number[], countPathForced: number, countPathUntaken: number]
+export type PathCount = [total: number, p1: number, p2: number, tie: number]
+export type MemoEntry = [typeDep: MemoEntryRegular[] | MemoEntryWin[], countPaths: PathCount]
 
 export type BotAction = [moves: number[], msg: string]
 export type Bot = (board: number, used: number, winnerMap: WinnerMap) => BotAction
@@ -33,7 +33,7 @@ function buildTables (state: number, mark: number, depth: number): MemoEntry {
 
   const winner = checkWin(state, depth)
 
-  const countResult: [number, number, number, number] = [0, 0, 0, 0]
+  const countResult: PathCount = [0, 0, 0, 0]
 
   let typeDep: MemoEntryRegular[] | MemoEntryWin[]
 
@@ -76,9 +76,10 @@ function buildTables (state: number, mark: number, depth: number): MemoEntry {
       // Pick best move with negamax
       let bestVal = -2000000000
       let moves: number[] = []
-      let countPathForcedL = 0
-      let countPathForcedT = 0
-      let countPathForcedW = 0
+
+      let bestValSign = -1
+      let countPathForced = 0
+      let countPathUntaken = 0
 
       for (let i = 0; i < 9; ++i) {
         if (!occupied(state, i)) {
@@ -90,6 +91,7 @@ function buildTables (state: number, mark: number, depth: number): MemoEntry {
 
           const val = -opp[0]
 
+          // Update best move
           if (bestVal === val) {
             moves.push(i)
           } else if (bestVal < val) {
@@ -97,24 +99,24 @@ function buildTables (state: number, mark: number, depth: number): MemoEntry {
             moves = [i]
           }
 
-          if (val < 0) {
-            countPathForcedL += opp[2] ?? 1
-          } else if (val > 0) {
-            countPathForcedW += opp[2] ?? 1
-          } else {
-            countPathForcedT += opp[2] ?? 1
+          // Update path count
+          const valSign = Math.sign(val)
+          if (bestValSign < valSign) {
+            bestValSign = valSign
+            countPathUntaken += countPathForced
+            countPathForced = 0
           }
+
+          if (bestValSign === valSign) {
+            countPathForced += opp[2] ?? 1
+          } else {
+            countPathUntaken += opp[2] ?? 1
+          }
+          countPathUntaken += opp[3] ?? 0
         }
       }
 
-      const countPathForced =
-        bestVal < 0
-          ? countPathForcedL
-          : bestVal > 0
-            ? countPathForcedW
-            : countPathForcedT
-
-      return [bestVal, moves, countPathForced]
+      return [bestVal, moves, countPathForced, countPathUntaken]
     })
   }
 

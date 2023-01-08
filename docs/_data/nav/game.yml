@@ -15,9 +15,6 @@
     desc: my arcade, full of hacked flash games!
     date_added: 2008-09?
     href_ext: https://games.victorz.ca
-  - name: Tic-Tac-Toe Analyzer
-    desc: Analyze Tic-Tac-Toe in various variants and game states
-    href: game/t3
   - name: Balanced Tetris
     desc: Tetris, but don't let it tip over to one side
     href: game/tetris
@@ -26,6 +23,9 @@
     href: game/click
 - name: Analysis
   items:
+  - name: Tic-Tac-Toe Analyzer
+    desc: Analyze Tic-Tac-Toe in various variants and game states
+    href: game/t3
   - name: Fill Solver
     desc: Solve the game Fill efficiently
     href: game/fill
