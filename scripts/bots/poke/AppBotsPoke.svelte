@@ -114,6 +114,10 @@ function onResize () {
 
 <svelte:window on:load={onReady} on:resize={onResize} />
 
+<div class="alert alert-secondary" role="alert">
+  The bot is down. It will be fixed when I get a chance.
+</div>
+
 <div class="row">
   <div class="col-8">
     <div class="alert alert-info" role="alert">
@@ -122,7 +126,7 @@ function onResize () {
     </div>
     <p>The <a href="poke_old" class="alert-link">old leaderboard</a> has less formatting and is more lightweight.</p>
     <div class="alert alert-warning" role="alert">
-      The leaderboard includes only recent pokes (since <span class="timeago" title="2014-07-30T04:15:43.000Z">the end of July 2014</span>).
+      The leaderboard includes only pokes since <span class="timeago" title="2014-07-30T04:15:43.000Z">the end of July 2014</span>.
       <!-- Stale entries may be pruned over time. -->
     </div>
   </div>
