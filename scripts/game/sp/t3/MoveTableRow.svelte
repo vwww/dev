@@ -1,5 +1,5 @@
 <script lang="ts">
-import { MemoEntry, PathCount } from '@gc/t3/ai'
+import { MemoEntry, PathCount, remapPathCount } from '@gc/t3/ai'
 import { winnerMapToNum, Winner, WinnerMap } from '@gc/t3/game'
 import { GetMemoType } from './AppGameT3.svelte'
 
@@ -10,14 +10,6 @@ export let moveLength: number
 export let winner: Winner
 export let winnerMap: WinnerMap
 export let getMemo: GetMemoType | undefined
-
-function remapPathCount (p: PathCount, winnerMap: WinnerMap): PathCount {
-  const result: PathCount = [p[0], 0, 0, 0]
-  for (let w = 1; w <= 3; w++) {
-    result[winnerMap[w - 1]] += p[w]
-  }
-  return result
-}
 
 function memoTitle (memo: MemoEntry, winnerMap: WinnerMap): string {
   const countPathsRaw = memo[1]
@@ -49,7 +41,7 @@ function winInfo (memo: MemoEntry, result: number, winnerMap2: WinnerMap): Entry
 
   const text =
     canForce ? `${onlyPossible ? 'Result' : 'Forcable'} (${canForce === i + 1 ? 'now' : 'by #' + canForce})`
-      : canDo ? val < 0 ? 'Preventable' : 'Possible' : 'Impossible'
+      : canDo ? 'Possible' : 'Impossible'
 
   const className = `table-${canForce ? 'info' : canDo ? 'success' : 'danger'}`
 
@@ -60,7 +52,7 @@ function winInfo (memo: MemoEntry, result: number, winnerMap2: WinnerMap): Entry
     const countPathForced = entry[2]
     if (countPathForced) {
       const countPathUntaken = entry[3] ?? 0
-      title += `\n\n${val > 0 ? 'Forced' : val < 0 ? 'Lost' : 'Neutral'}: ${countPathForced.toLocaleString()}` +
+      title += `\n\n${val > 0 ? 'Forced' : 'Lost'}: ${countPathForced.toLocaleString()}` +
         `\nUntaken: ${countPathUntaken.toLocaleString()}` +
         `\nTotal: ${(countPathForced + countPathUntaken).toLocaleString()}`
     }

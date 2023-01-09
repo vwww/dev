@@ -1,6 +1,9 @@
 <script lang="ts">
-import BoardCell from '@gc/t3/BoardCell.svelte'
+import { remapPathCount } from '@gc/t3/ai'
 import { Player, Winner, WinnerMap, winnerMapToNum } from '@gc/t3/game'
+
+import BoardCell from '@gc/t3/BoardCell.svelte'
+
 import { GetMemoType } from './AppGameT3.svelte'
 
 export let i: number
@@ -20,12 +23,13 @@ function recalc () : [string, number] | undefined {
   const memoEntry = getMemo(board | (mark << (i << 1)))
   if (!memoEntry) return
 
-  const [typeDep, countTypes] = memoEntry
+  const [typeDep, countPathsRaw] = memoEntry
   const val = typeDep[winnerMapToNum(winnerMap)][0]
+  const countPaths = remapPathCount(countPathsRaw, winnerMap)
 
-  const noTie = !(countTypes[3])
-  const noLose = !(countTypes[3 ^ mark])
-  const noWin = !(countTypes[mark])
+  const noTie = !countPaths[3]
+  const noLose = !countPaths[3 ^ mark]
+  const noWin = !countPaths[mark]
   const scoreType = !val ? 'tie' : val < 0 ? 'win' : 'lose'
 
   return [`h${scoreType}${noWin ? ' noW' : ''}${noTie ? ' noT' : ''}${noLose ? ' noL': ''}`, val]

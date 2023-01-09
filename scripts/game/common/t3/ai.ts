@@ -28,6 +28,14 @@ export function getMemo (state: number): MemoEntry | undefined {
   return aiMemo[state]
 }
 
+export function remapPathCount (p: PathCount, winnerMap: WinnerMap): PathCount {
+  const result: PathCount = [p[0], 0, 0, 0]
+  for (let w = 1; w <= 3; w++) {
+    result[winnerMap[w - 1]] += p[w]
+  }
+  return result
+}
+
 function buildTables (state: number, mark: number, depth: number): MemoEntry {
   if (aiMemo[state]) return aiMemo[state]
 
