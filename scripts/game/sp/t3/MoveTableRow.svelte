@@ -27,36 +27,30 @@ function memoTitle (memo: MemoEntry, winnerMap: WinnerMap): string {
 
 type Entry = [text: string, className?: string, title?: string]
 
-function winInfo (memo: MemoEntry, result: number, winnerMap2: WinnerMap): Entry {
+function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winner): Entry {
   const [memoEntry, countPathsRaw] = memo
   const countPaths = remapPathCount(countPathsRaw, winnerMap)
-  const countPathPossible = countPaths[result]
+  const countPath = countPaths[result]
 
-  const canDo = countPathPossible
-  const onlyPossible = canDo && !((result !== 1 && countPaths[1]) || (result !== 2 && countPaths[2]) || (result !== 3 && countPaths[3]))
-  const entry = memoEntry[winnerMapToNum(winnerMap2)]
+  const otherPossible = !((result !== 1 && countPaths[1]) || (result !== 2 && countPaths[2]) || (result !== 3 && countPaths[3]))
+  const entry = memoEntry[winnerMapToNum(winnerMap.map((w) => ((i ^ (w === result ? 0 : 1)) & 1) + 1) as WinnerMap)]
 
   const val = entry[0]
   const canForce = val > 0 ? (10 - val) : 0
 
   const text =
-    canForce ? `${onlyPossible ? 'Result' : 'Forcable'} (${canForce === i + 1 ? 'now' : 'by #' + canForce})`
-      : canDo ? 'Possible' : 'Impossible'
+    canForce ? `${otherPossible ? 'Forcable' : 'Result'} (${canForce === i + 1 ? 'now' : 'by #' + canForce})`
+      : countPath ? 'Possible' : 'Impossible'
 
-  const className = `table-${canForce ? 'info' : canDo ? 'success' : 'danger'}`
+  const className = `table-${canForce ? 'info' : countPath ? 'success' : 'danger'}`
 
-  let title: string | undefined
-  if (countPathPossible) {
-    title = `Path Count\n\nAll: ${countPathPossible.toLocaleString()}`
+  const countPathForced = entry[2] ?? 0
+  const countPathForcedNoTiming = entry[3] ?? 0
+  const pathForcedType = val > 0 ? 'Forced' : 'Lost'
 
-    const countPathForced = entry[2]
-    if (countPathForced) {
-      const countPathUntaken = entry[3] ?? 0
-      title += `\n\n${val > 0 ? 'Forced' : 'Lost'}: ${countPathForced.toLocaleString()}` +
-        `\nUntaken: ${countPathUntaken.toLocaleString()}` +
-        `\nTotal: ${(countPathForced + countPathUntaken).toLocaleString()}`
-    }
-  }
+  let title = `Path Count: ${countPath.toLocaleString()}`
+    + `\n\n${pathForcedType}: ${countPathForced.toLocaleString()}`
+    + `\n${pathForcedType}: ${countPathForcedNoTiming.toLocaleString()} (without timing)`
 
   return [text, className, title]
 }
@@ -68,14 +62,11 @@ $: made = moveLength > i
 $: hasInfo = made || (moveLength === i && !winner)
 $: memo = hasInfo && getMemo ? getMemo(boardHistory[i]) : undefined
 
-$: winnerMapX = winnerMap.map(w => ((i ^ (w === Winner.P1 ? 0 : 1)) & 1) + 1) as WinnerMap
-$: winnerMapO = winnerMap.map(w => ((i ^ (w === Winner.P2 ? 0 : 1)) & 1) + 1) as WinnerMap
-$: winnerMapTie = winnerMap.map(w => ((i ^ (w === Winner.Tie ? 0 : 1)) & 1) + 1) as WinnerMap
 $: info = !memo ? emptyInfo
   : [
-    winInfo(memo, 1, winnerMapX),
-    winInfo(memo, 2, winnerMapO),
-    winInfo(memo, 3, winnerMapTie)
+    winInfo(i, memo, winnerMap, Winner.P1),
+    winInfo(i, memo, winnerMap, Winner.P2),
+    winInfo(i, memo, winnerMap, Winner.Tie)
   ]
 </script>
 

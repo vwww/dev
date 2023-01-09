@@ -1,7 +1,7 @@
 import { checkWin, numToWinnerMap, occupied, remapWin, WinnerMap, winnerMapInvert, winnerMapToNum, WINNER_MAP_MAX } from './game'
 
 export type MemoEntryWin = [value: number]
-export type MemoEntryRegular = [bestValue: number, moves: number[], countPathForced: number, countPathUntaken: number]
+export type MemoEntryRegular = [bestValue: number, moves: number[], countPathForced: number, countPathForcedNoTiming: number]
 export type PathCount = [total: number, p1: number, p2: number, tie: number]
 export type MemoEntry = [typeDep: MemoEntryRegular[] | MemoEntryWin[], countPaths: PathCount]
 
@@ -87,7 +87,7 @@ function buildTables (state: number, mark: number, depth: number): MemoEntry {
 
       let bestValSign = -1
       let countPathForced = 0
-      let countPathUntaken = 0
+      let countPathForcedNoTiming = 0
 
       for (let i = 0; i < 9; ++i) {
         if (!occupied(state, i)) {
@@ -99,32 +99,30 @@ function buildTables (state: number, mark: number, depth: number): MemoEntry {
 
           const val = -opp[0]
 
-          // Update best move
+          // Update best move, path count
           if (bestVal === val) {
             moves.push(i)
+            countPathForced += opp[2] ?? 1
           } else if (bestVal < val) {
             bestVal = val
             moves = [i]
+            countPathForced = opp[2] ?? 1
           }
 
-          // Update path count
+          // Update path count without timing
           const valSign = Math.sign(val)
           if (bestValSign < valSign) {
             bestValSign = valSign
-            countPathUntaken += countPathForced
-            countPathForced = 0
+            countPathForcedNoTiming = 0
           }
 
           if (bestValSign === valSign) {
-            countPathForced += opp[2] ?? 1
-          } else {
-            countPathUntaken += opp[2] ?? 1
+            countPathForcedNoTiming += opp[3] ?? 1
           }
-          countPathUntaken += opp[3] ?? 0
         }
       }
 
-      return [bestVal, moves, countPathForced, countPathUntaken]
+      return [bestVal, moves, countPathForced, countPathForcedNoTiming]
     })
   }
 
