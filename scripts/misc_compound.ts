@@ -39,6 +39,10 @@ $(function () {
 
   // create the chart
   const options: Highcharts.Options = {
+    credits: {
+      enabled: false
+    },
+
     title: {
       text: 'Compound Interest Graph'
     },
