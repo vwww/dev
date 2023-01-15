@@ -1,4 +1,4 @@
-import $ from 'jquery'
+import { $idA, $ready } from '@/util'
 import Highcharts from 'highcharts/highstock'
 import Exporting from 'highcharts/modules/exporting'
 
@@ -6,12 +6,14 @@ Exporting(Highcharts)
 
 let series: Highcharts.Series | undefined
 
+const $idI = $idA<HTMLInputElement>
+
 function addData (): void {
   // Data info
-  const startTime = Date.parse($('#startDate').val() + '')
-  const maxTime = startTime + +($('#terms').val() ?? 0) * 3.156e+10
-  const startValue = +($('#principal').val() ?? 0)
-  const interest = 1 + +($('#interest').val() ?? 0) / 100
+  const startTime = Date.parse($idI('startDate').value + '')
+  const maxTime = startTime + +($idI('terms').value ?? 0) * 3.156e+10
+  const startValue = +($idI('principal').value ?? 0)
+  const interest = 1 + +($idI('interest').value ?? 0) / 100
   const valueIncrement = 0.01
   const timeIncrement = 1800000 // 30 minutes // 1 * 8.64e+7 // 1 day
   // Generate
@@ -27,13 +29,8 @@ function addData (): void {
   series!.setData(data)
 }
 
-function plotData (): void {
-  addData()
-  // return false
-}
-
-$(function () {
-  $('#plotDataButton').on('click', plotData)
+$ready(function () {
+  $idA('plotDataButton').onclick = addData
 
   const colors = Highcharts.getOptions().colors!
 
@@ -133,13 +130,6 @@ $(function () {
     series = chart.series[0]
     addData()
     window.setInterval(function () {
-      /*
-      chart.series[1].addPoint({
-        x : Date.now(),
-        title : '!',
-        text : 'Now'
-      }, true, chart.series[1].data.length >= 1)
-      */
       chart.series[1].data[0].update({ x: Date.now() })
     }, 1000)
   })
