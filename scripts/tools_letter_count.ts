@@ -120,6 +120,7 @@ const chartOptions1: Highcharts.Options = {
   },
   colors: pieColors.map(makePieGradient),
   title: {
+    text: 'Letter Count (Pie)',
     style: {
       fontSize: '20px',
       color: '#0b61a4',
@@ -296,8 +297,6 @@ function update (): void {
   const chart3data: Highcharts.PointOptionsType[] = []
   const chart4series: Highcharts.SeriesOptionsType[] = []
 
-  const excludeLine = Math.round(sumCount * 0.02) // (2% and below) minority is excluded for chart1
-
   for (let i = 0; i < chrCount.length; i++) {
     const count = chrCount[i]
     if (!count) continue
@@ -324,24 +323,6 @@ function update (): void {
       color,
       borderColor,
     })
-    chart3data.push({
-      name: c === ' ' ? 'SPACE' : c,
-      y: count,
-    })
-    chart4series.push({
-      type: 'bar',
-      name: c === ' ' ? 'SPACE' : c,
-      data: [count],
-    })
-
-    const c2Index = isVowel ? 0 : isLetter ? 1 : 2
-    c2data[c2Index].y += count
-    c2data[c2Index].subpoints.push({
-      name: c === ' ' ? 'SPACE' : c,
-      y: count,
-    })
-
-    if (count <= excludeLine) continue
 
     const c1color = pieColors[c1data.length % pieColors.length]
     c1data.push({
@@ -356,6 +337,24 @@ function update (): void {
         },
       },
     })
+
+    const c2Index = isVowel ? 0 : isLetter ? 1 : 2
+    c2data[c2Index].y += count
+    c2data[c2Index].subpoints.push({
+      name: c === ' ' ? 'SPACE' : c,
+      y: count,
+    })
+
+    chart3data.push({
+      name: c === ' ' ? 'SPACE' : c,
+      y: count,
+    })
+
+    chart4series.push({
+      type: 'bar',
+      name: c === ' ' ? 'SPACE' : c,
+      data: [count],
+    })
   }
 
   // Update column chart
@@ -365,7 +364,6 @@ function update (): void {
   chart0.series[0].setData(c0data)
 
   // Update pie chart
-  chart1.title.update({ text: `Letter Count (Pie${excludeLine > 0 ? `, ${excludeLine} and below excluded` : ''})` }, false)
   chart1.series[0].setData(c1data)
 
   // Update donut chart
