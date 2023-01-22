@@ -69,12 +69,10 @@ function hasTile (zoom: string | number, x: number, y: number): boolean {
 
 const tileLayer = L.tileLayer(LAYER_URL, {
   maxZoom: MAX_ZOOM,
-  subdomains: '1234567890'
 })
 const tileLayer2 = L.tileLayer(LAYER_URL, {
   minZoom: 2,
   maxZoom: 4,
-  subdomains: '1234567890'
 })
 
 tileLayer.getTileUrl = tileLayer2.getTileUrl = function (tilePoint: LPoint, zoom: number) {
