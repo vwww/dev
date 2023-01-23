@@ -44,8 +44,7 @@ export class Mt19937Algo implements RandomAlgo {
     y ^= y >>> 11
     y ^= (y << 7) & TEMPER_A
     y ^= (y << 15) & TEMPER_B
-    y ^= y >>> 18
-    return y
+    return y ^ (y >>> 18)
   }
 
   range (min: number, max: number): number {
