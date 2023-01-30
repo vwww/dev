@@ -49,8 +49,19 @@ module.exports = {
         ],
       },
       {
+        test: /\.css$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
+      },
+      {
         test: /\.txt$/,
         use: 'raw-loader',
+      },
+      {
+        test: /\.png$/,
+        type: 'asset/resource'
       },
     ],
   },
@@ -69,27 +80,27 @@ module.exports = {
       fileName: path.resolve(__dirname, 'docs/_data/manifest.json'),
       generate (_seed, _files, entrypoints) {
         const js = {}
-        const unknown = []
+        const css = {}
 
         for (const [k, files] of Object.entries(entrypoints)) {
           const entryJS = []
-          const entryUnknown = []
+          const entryCSS = []
 
           for (const f of files) {
             if (f.endsWith('.js')) {
               entryJS.push(f.slice(0, -3))
-            } else if (!f.endsWith('.css')) {
-              entryUnknown.push(f)
+            } else {
+              entryCSS.push(f)
             }
           }
 
           if (entryJS.length) js[k] = entryJS
-          if (entryUnknown.length) unknown.push([k, entryUnknown])
+          if (entryCSS.length) css[k] = entryCSS
         }
 
         return {
           js,
-          unknown: unknown.length ? Object.fromEntries(unknown) : undefined,
+          css,
         }
       },
       serialize: JSON.stringify,

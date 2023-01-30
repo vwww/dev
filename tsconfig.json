@@ -23,6 +23,6 @@
   },
   "include": [
     "scripts",
-    "typings.d.ts",
+    "scripts/types",
   ]
 }

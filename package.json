@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
+    "@types/leaflet-fullscreen": "^1.0.6",
     "bootstrap": "^5.2.3",
     "bootswatch": "^5.2.3",
     "d3": "^7.8.0",
@@ -73,6 +74,9 @@
     "jquery": "^3.6.3",
     "jssha": "^3.3.0",
     "leaflet": "^1.9.3",
+    "leaflet-fullscreen": "^1.0.2",
+    "leaflet-hash": "^0.2.1",
+    "leaflet-minimap": "^3.6.1",
     "packery": "^2.1.2",
     "plotly.js": "^2.17.0",
     "svelte": "^3.55.0",
