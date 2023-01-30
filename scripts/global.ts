@@ -44,10 +44,11 @@ function init (): void {
     // timeago
     $.timeago.settings.refreshMillis = 5000
     $.timeago.settings.strings = {
-      prefixAgo: undefined,
-      prefixFromNow: undefined,
+      prefixAgo: null,
+      prefixFromNow: null,
       suffixAgo: 'ago',
       suffixFromNow: 'from now',
+      inPast: 'any moment now',
       seconds: '%d seconds',
       minute: 'a minute',
       minutes: '%d minutes',
