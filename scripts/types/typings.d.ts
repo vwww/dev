@@ -1,8 +1,3 @@
-// timeago
-interface Timeago {
-  (action?: 'init' | 'update' | 'updateFromDOM' | 'dispose'): JQuery
-}
-
 // Svelte
 declare module '*.svelte' {
   const App: any
