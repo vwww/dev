@@ -16,4 +16,4 @@ _History is not retained!_
 
 In the past, files would be stored on some web server without any version control. Also, directory listings were private.
 
-Unlike code for other projects, history is not as important for this website. The history in this repo is subject to a periodic cleanup operation.
+Unlike code for other projects, history is not as important for this website. The history in this repo may be squashed at any time to reclaim storage space.
