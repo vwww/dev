@@ -1,6 +1,6 @@
 import { $idA } from '@/util'
 
-import * as L from 'leaflet'
+import L from 'leaflet'
 import 'leaflet-hash'
 import 'leaflet-fullscreen'
 import 'leaflet-minimap'
