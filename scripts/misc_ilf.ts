@@ -7,7 +7,9 @@ window.addEventListener('hashchange', update)
 function update (): void {
   $idA('copyyear').innerText = new Date().getFullYear() + ''
 
-  const seed = location.hash.startsWith('#s=') ? parseInt(location.hash.slice(3)) : Math.floor(Date.now() / 3600000)
+  let seed = location.hash.startsWith('#s=') ? parseInt(location.hash.slice(3)) : Math.floor(Date.now() / 3600000)
+  if (!Number.isFinite(seed)) seed = 0
+
   const $pageVer = $idA<HTMLAnchorElement>('pageVer')
   $pageVer.innerText = `v${seed}`
   $pageVer.href = `#s=${seed}`
