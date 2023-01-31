@@ -2,9 +2,9 @@
 
 // .d.ts code by Victor
 // .js code by Player.IO
-//  v3.7.2
-//  released 2020-06-05
-//  PlayerIO SDK.9Pz-Aq4pkyaX6OBK0qb8sA.zip
+//  v3.9.0
+//  released 2022-02-15
+//  PlayerIO SDK.s2fG8FIPhRjoY9VN8wEadg.zip
 //  MIT license without required attribution
 
 declare namespace PIO {
