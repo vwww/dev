@@ -22,7 +22,7 @@
     {%- comment %}<!-- {{ page.url | replace:'index.html', '.html' | replace:'.html', '' }} -->{% endcomment -%}
     <link rel="canonical" href="{{ site.mirrors[0][1] }}{{ page.url }}">
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{assets}}victorz/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{{assets}}{{ page.favicon | default: 'victorz/favicon.ico' }}">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" id="theme-switcher" href="{{assets}}dist/bootstrap_theme.css">
