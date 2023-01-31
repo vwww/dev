@@ -7,7 +7,6 @@ L.CanvasLayer = L.GridLayer.extend({
     tile.setAttribute('height', tileSize.y)
 
     const ctx = tile.getContext('2d')
-    if (!ctx) return
 
     this.options.drawTile(ctx, coords)
 
