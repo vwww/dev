@@ -1,4 +1,3 @@
-
 import 'leaflet'
 
 declare module 'leaflet' {

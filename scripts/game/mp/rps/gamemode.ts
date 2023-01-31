@@ -1,4 +1,3 @@
-
 export const roomCreateOptions = [
   ['optClassic', 'b', false, 'Classic', 'no streak bonuses'],
   ['optInverted', 'b', false, 'Inverted', 'switch default winning and losing direction'],
