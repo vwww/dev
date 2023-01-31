@@ -7,12 +7,13 @@ import PaginationButtons from '@/common/PaginationButtons.svelte'
 import langListRaw from './languages.json'
 const langList = langListRaw
 
-const NUM_PROBLEMS = 524288 // 2^19
+const NUM_PROBLEMS = 2 ** 19
 const NUM_PROBLEMS_PER_PAGE = 10
 const NUM_PROBLEM_PAGES = Math.ceil(NUM_PROBLEMS / NUM_PROBLEMS_PER_PAGE)
 const PROBLEM_SPECIAL = 1337
+const PROBLEM_SPECIAL_PAGE = Math.floor((NUM_PROBLEMS - PROBLEM_SPECIAL) / NUM_PROBLEMS_PER_PAGE) + 1
 
-const NUM_USERS = 17179869184 // 2^34
+const NUM_USERS = 2 ** 34
 const NUM_USERS_PER_PAGE = 10
 const NUM_USER_PAGES = Math.ceil(NUM_USERS / NUM_USERS_PER_PAGE)
 
@@ -25,6 +26,10 @@ let leaderboardPage = 1
 
 $: problemNumbers = Array.from(numbersOnPageDesc(NUM_PROBLEMS, problemsPage, NUM_PROBLEMS_PER_PAGE))
 $: leaderboardNumbers = Array.from(numbersOnPageAsc(NUM_USERS, leaderboardPage, NUM_USERS_PER_PAGE))
+
+function detrnd (seed: number, mod: number): number {
+  return ((seed * 1103515245 + 12345) >>> 16) % mod
+}
 
 function* range (start: number, end?: number, step?: number) {
   if (end === undefined) {
@@ -120,6 +125,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
   </div>
   <div class="tab-pane" id="problems" role="tabpanel" aria-labelledby="problems-tab">
     <h2>Problems</h2>
+    <p>Page <a href="#problemPage{PROBLEM_SPECIAL_PAGE}" on:click|preventDefault={() => problemsPage = PROBLEM_SPECIAL_PAGE}>{PROBLEM_SPECIAL_PAGE}</a> is special.</p>
     <table class="table table-striped table-bordered table-hover">
       <thead>
         <tr>
@@ -289,7 +295,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
             <td><a href="#user{i}" on:click={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
             <td>0.000000</td>
             <td>{new Date(fakeSiteCreated.getTime() + i).toISOString()}</td>
-            <td>{langList[((((i + 5 * problemPageNum) * 1103515245 + 12345) >> 16) & 0xFFFF) % langList.length]}</td>
+            <td>{langList[detrnd(i + 5 * problemPageNum, langList.length)]}</td>
             <td>Accepted</td>
             <td><button class="btn btn-outline-primary" on:click={downloadBlankFile}>Download</button></td>
           </tr>
