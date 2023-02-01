@@ -31,7 +31,7 @@ export let onSetPage: (page: number) => void
         </li>
       {:else if page === pageCur}
         <li class="page-item active">
-          <input type="number" class="page-link" on:blur={function () { onSetPage(Math.min(Math.max(this.value | 0, 1), pageMax)) }} min=1 max={pageMax} step=1 value={pageCur} />
+          <input type="number" class="page-link" on:blur={function () { onSetPage(Math.min(Math.max(Math.floor(this.value), 1), pageMax)) }} min=1 max={pageMax} step=1 value={pageCur} />
         </li>
       {:else}
         <li class="page-item">

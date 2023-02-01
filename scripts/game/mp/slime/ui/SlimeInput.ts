@@ -26,7 +26,7 @@ export class SlimeInput {
     const L = this.KeyL() ? 1 : 0
     const R = this.KeyR() ? 1 : 0
     const U = this.KeyU() ? 1 : 0
-    this.keyFlags = (L | 0) | (R << 1) | (U << 2)
-    this.keyFlagsFlip = (R | 0) | (L << 1) | (U << 2)
+    this.keyFlags = L | (R << 1) | (U << 2)
+    this.keyFlagsFlip = R | (L << 1) | (U << 2)
   }
 }

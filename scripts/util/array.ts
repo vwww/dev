@@ -3,12 +3,12 @@ export function sum (array: number[]): number {
 }
 
 export function randomArrayItem<T> (array: T[]): T {
-  return array[(Math.random() * array.length) | 0]
+  return array[Math.floor(Math.random() * array.length)]
 }
 
 export function randomArrayItemZipf<T> (array: T[]): T {
   const MAXRAND = Math.log(array.length + 1)
-  const w = Math.min(Math.exp(Math.random() * MAXRAND) | 0, array.length)
+  const w = Math.min(Math.floor(Math.exp(Math.random() * MAXRAND)), array.length)
   return array[w - 1]
 }
 

@@ -11,7 +11,7 @@ export let rankIndex: number, rankIndexOther: number
 
 // Format rank as HTML
 function rankSuffix (rank: number): string {
-  if (rank === (rank | 0)) { // 1.5th
+  if (Number.isInteger(rank)) { // 1.5th
     let x = rank % 100
     // ignore suffix for 11th, 12th, 13th
     if (!(x > 3 && x < 21)) {

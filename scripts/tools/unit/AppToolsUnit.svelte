@@ -75,7 +75,7 @@ function getSigFigs (n: string): number {
 
 function toSigFigs (num: number, sig: number): string {
   if (num === 0) return '0'
-  if (sig < 0 || (num | 0) === num) return num.toString()
+  if (sig < 0 || Number.isInteger(num)) return num.toString()
   if (getSigFigs(num + '') > sig && sig >= 1 && sig <= 21) return num.toPrecision(sig)
   // round to significant digits
   const digits = Math.round((-Math.log(Math.abs(num)) / Math.LN10) + (sig || 2))

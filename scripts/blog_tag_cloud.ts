@@ -10,7 +10,7 @@ function resizeTagCloud (): void {
   let numMax = Number.MIN_VALUE
 
   $('.tag-cloud a').each(function () {
-    const num = (+$(this).find('sup').text() | 0) || 1
+    const num = parseInt($(this).find('sup').text()) || 1
     numMin = Math.min(numMin, num)
     numMax = Math.max(numMax, num)
   })
@@ -25,7 +25,7 @@ function resizeTagCloud (): void {
 
   const sizeMult = sizeGrow / Math.sqrt(numMax - numMin + 1)
   $('.tag-cloud a').each(function () {
-    const num = (+$(this).find('sup').text() | 0) || 1
+    const num = parseInt($(this).find('sup').text()) || 1
     $(this).css('font-size', (sizeMin + Math.sqrt(num - numMin + 1) * sizeMult) + '%')
   })
 }
