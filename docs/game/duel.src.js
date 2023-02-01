@@ -402,7 +402,7 @@
   function getUserName () { return $id('pName').value }
   function getUserColor () {
     var color = parseInt($id('pColor').value, 16)
-    if (Number.isNaN(color)) color = Math.random() * 0xFF
+    if (Number.isNaN(color)) color = Math.random() * 0x100
     return color & 0xFF
   }
   function filterName (name) {

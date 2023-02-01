@@ -27,7 +27,7 @@ const {
 $: canMove = $isActive && $roundState === 2 && $inRound
 
 export function randomizeNextNumber () {
-  return nextNumber = Math.floor(Math.random() * 8000000000000)
+  return nextNumber = Math.floor(Math.random() * 8000000000001)
 }
 </script>
 

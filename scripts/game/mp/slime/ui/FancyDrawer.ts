@@ -8,7 +8,7 @@ class Fancy {
   y = Math.random()
   vx = Math.floor((Math.random() * 7) - 3) / 800 * 0.06
   vy = Math.floor((Math.random() * 3) + 1) / 400 * 0.06
-  rgb = (Math.random() * 0xFFFFFF) | 0
+  rgb = (Math.random() * 0x1000000) | 0
   a = (Math.random() * 0.6) + 0.1
   blurSize = (Math.floor(Math.random() * 10) + 5) / 2 / 800
   scale = (Math.random() * 0.7) + 0.3

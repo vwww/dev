@@ -23,7 +23,7 @@ function setTimeRandom (): void {
 }
 
 function setTimeRandomJS (): void {
-  timestampNum = Math.floor(Math.random() * 8640000000000)
+  timestampNum = Math.floor(Math.random() * 8640000000001)
   recalcTimeFromNum()
 }
 

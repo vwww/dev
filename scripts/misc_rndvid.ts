@@ -24,7 +24,7 @@ $ready(function () {
   function makeImage (): void {
     if (!imagedata) return
     for (let i = (canvas.width * canvas.height << 2) - 1; i; --i) {
-      imagedata.data[i] = !(~i & 3) ? 255 : Math.floor(Math.random() * 255)
+      imagedata.data[i] = !(~i & 3) ? 255 : ((Math.random() * 256) | 0)
     }
   }
 

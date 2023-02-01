@@ -16,5 +16,5 @@ export function formatHexColor (v: number | string): string {
 }
 
 export function randomHexColor (): string {
-  return formatHexColor((Math.random() * 0xFFFFFF) | 0)
+  return formatHexColor((Math.random() * 0x1000000) | 0)
 }
