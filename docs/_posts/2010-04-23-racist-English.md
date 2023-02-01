@@ -16,7 +16,7 @@ You know what I think? <mark>That statement is false</mark>. I've thought about 
 
 > White-hat: Someone that hacks to prevent Black-hats from doing; A black-hat that reports and fixes instead of infecting.
 
-Some more examples that I thought are good from [thepatrioticvanguard.com/spip.php?article4966](http://thepatrioticvanguard.com/spip.php?article4966):
+Some more examples that I thought are good from [thepatrioticvanguard.com/racism-in-the-english-language](https://thepatrioticvanguard.com/racism-in-the-english-language):
 
 > Black Art/Magic: magic involving the supposed invocation of evil spirits for evil purposes.
 
