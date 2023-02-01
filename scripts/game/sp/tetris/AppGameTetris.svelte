@@ -323,7 +323,7 @@ function gameTick (): void {
   if (gamePaused) return
 
   if ($speedup) {
-    intervalTarget -= INTERVAL_FACTOR * (intervalTarget * intervalTarget);
+    intervalTarget -= INTERVAL_FACTOR * (intervalTarget * intervalTarget)
     if (intervalTarget < INTERVAL_MIN) {
       intervalTarget = INTERVAL_MIN
     }
