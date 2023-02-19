@@ -79,12 +79,12 @@ function resetEvents () {
 {/if}
 
 {#if $avgByTime}
-  <p>Average time shown = (sum of time) / count; average frequency = 1/(average time)</p>
+  <p>Average time shown = <code>(sum of time) / count</code>; average frequency = <code>1/(average time)</code></p>
 {:else}
-  <p>Average frequency shown = (sum of frequency) / count; average time = 1/(average frequency)</p>
+  <p>Average frequency shown = <code>(sum of frequency) / count</code>; average time = <code>1/(average frequency)</code></p>
 {/if}
 
-<p>Averaging time (frequency = 1/(average time)) and averaging frequency (time = 1/(average frequency)) are related by harmonic means.</p>
+<p>Averaging time (frequency = <code>1/(average time)</code>) and averaging frequency (time = <code>1/(average frequency)</code>) are related by harmonic means.</p>
 
 <style>
 .result { font-family: monospace }
