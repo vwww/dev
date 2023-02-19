@@ -1,13 +1,13 @@
 - desc: Automation is convenient! Robots can easily do repetitive and tedious tasks.
   items:
   - name: Facebook Poke
-    desc: See the leaderboard of people who try to poke a bot that returns pokes automatically
+    desc: See the leaderboard of people who poke a bot that returns pokes automatically
     href: bots/poke
 - name: Twitter
   desc: Bots on Twitter
   items:
   - name: Grammar
-    desc: "@_grammar_ corrects users' grammar. It was suspended too much."
+    desc: "@_grammar_ corrects users' grammar. It was suspended many times."
     href: bots/grammar
     hrefs:
       - name: Twitter

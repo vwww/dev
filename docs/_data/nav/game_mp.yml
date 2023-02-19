@@ -2,7 +2,7 @@
   desc: These multiplayer games have continuous realtime actions.
   items:
   - name: Slime Volleyball
-    desc: Don't let the ball hit your side's ground
+    desc: Don't let the ball hit your ground
     href: game/slime
     # hrefs:
     #   - name: Rules
