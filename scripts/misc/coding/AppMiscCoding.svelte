@@ -58,7 +58,10 @@ function* numbersOnPageDesc (total: number, page: number, numPerPage: number) {
   yield* range(start, end)
 }
 
+function solvePoints (i: number): number { return Math.ceil(PROBLEM_POINTS / Math.log2(i + 1)) }
+
 function userIdToName (i: number): string { return i === 1 ? 'Victor' : `user${i}` }
+function userIdToPoints (i: number): number { return NUM_PROBLEMS * solvePoints(i) }
 
 let problemsTab: HTMLElement
 let leaderboardTab: HTMLElement
@@ -157,7 +160,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
     <h2>Leaderboard</h2>
     <div class="alert alert-info" role="alert">
       <h4 class="alert-heading">Ranking Info</h4>
-      Every user gets <code>w/(n+1)</code> points for each problem solved, where <code>w</code> is the weight of the problem, and <code>n</code> is the number of people who solved it earlier.
+      Every user gets <code>ceil(w/lg(n+2))</code> points for each problem solved, where <code>w</code> is the weight of the problem, and <code>n</code> is the number of people who solved it earlier.
     </div>
     <ul class="nav nav-pills mb-2">
       <li class="nav-item">
@@ -185,7 +188,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
           <tr>
             <td>{i.toLocaleString()}</td>
             <td><a href="#user{i}" on:click={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
-            <td>{Math.round(NUM_PROBLEMS * PROBLEM_POINTS / i).toLocaleString()}</td>
+            <td>{userIdToPoints(i).toLocaleString()}</td>
             <td>{NUM_PROBLEMS.toLocaleString()}</td>
             <td>{NUM_PROBLEMS.toLocaleString()}</td>
           </tr>
@@ -296,7 +299,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
             <td>0.000000</td>
             <td>{new Date(fakeSiteCreated.getTime() + i).toISOString()}</td>
             <td>{langList[detrnd(i + 5 * problemPageNum, langList.length)]}</td>
-            <td>Accepted</td>
+            <td>Accepted ({solvePoints(i)} points)</td>
             <td><button class="btn btn-outline-primary" on:click={downloadBlankFile}>Download</button></td>
           </tr>
         {/each}
@@ -322,7 +325,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
             <p>Member since: {fakeSiteCreated.toLocaleString()}</p>
             <p>Submitted: {NUM_PROBLEMS.toLocaleString()}</p>
             <p>Solved: {NUM_PROBLEMS.toLocaleString()}</p>
-            <p>Points: {Math.round(NUM_PROBLEMS * PROBLEM_POINTS / userModalUID).toLocaleString()}</p>
+            <p>Points: {userIdToPoints(userModalUID).toLocaleString()}</p>
             <p>Rank: {userModalUID.toLocaleString()}</p>
             <p>Rank History</p>
             <img src="https://chart.googleapis.com/chart?cht=lc&chs=320x165&chxt=y&chxr=0,0,{userModalUID * 2}&chd=t:{userModalUID},{userModalUID}&chds=0,{userModalUID * 2}" alt="">
