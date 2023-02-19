@@ -29,19 +29,21 @@ function resetEvents () {
 }
 </script>
 
-<div class="btn-group d-flex mb-3" role="group">
-  <button on:click={addEvent} class="btn btn-outline-primary">Add Event</button>
-  <button on:click={resetEvents} class="btn btn-outline-secondary">Reset</button>
+<div class="my-2">
+  <b class="me-3">Average by</b>
+  <label class="form-check form-check-inline">
+    <input type="radio" class="form-check-input" bind:group={$avgByTime} value={true}>
+    <span class="form-check-label">Time</span>
+  </label>
+  <label class="form-check form-check-inline">
+    <input type="radio" class="form-check-input" bind:group={$avgByTime} value={false}>
+    <span class="form-check-label">Frequency</span>
+  </label>
 </div>
 
 <div class="btn-group d-flex mb-3" role="group">
-  <span class="input-group-text">Average by</span>
-  <button class="w-100 btn btn-outline-primary"
-    class:active={$avgByTime}
-    on:click={() => $avgByTime = true}>Time</button>
-  <button class="w-50 btn btn-outline-secondary"
-    class:active={!$avgByTime}
-    on:click={() => $avgByTime = false}>Frequency</button>
+  <button on:click={addEvent} class="btn btn-outline-primary">Add Event</button>
+  <button on:click={resetEvents} class="btn btn-outline-secondary">Reset</button>
 </div>
 
 {#if $intervalCount < 0}
