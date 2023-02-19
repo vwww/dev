@@ -49,8 +49,9 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
   const pathForcedType = val > 0 ? 'Forced' : 'Lost'
 
   let title = `Path Count: ${countPath.toLocaleString()}`
-    + `\n\n${pathForcedType}: ${countPathForced.toLocaleString()}`
-    + `\n${pathForcedType}: ${countPathForcedNoTiming.toLocaleString()} (without timing)`
+    + `\n\n${pathForcedType}:`
+    + `\n${countPathForced.toLocaleString()}`
+    + `\n${countPathForcedNoTiming.toLocaleString()} (without timing)`
 
   return [text, className, title]
 }
