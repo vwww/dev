@@ -56,12 +56,12 @@ function resetEvents () {
           <span>{$intervalCount} interval{$intervalCount === 1 ? '' : 's'} over {($eventTime / 1000).toFixed(3)} s</span><br>
           <span>{(60000 / $eventAvgTime).toFixed(3)}</span>/min<br>
           <span>{(1000 / $eventAvgTime).toFixed(3)}</span>/s<br>
-          <span>{(0.001 * $eventAvgTime).toFixed(3)} s/event</span>
+          <span>{(0.001 * $eventAvgTime).toFixed(3)} s/interval</span>
         {:else}
           <span>{(1000 * $intervalCount / $eventAvgTime).toFixed(3)}/s over {$intervalCount} interval{$intervalCount === 1 ? '' : 's'}</span><br>
           <span>{(60000 * $eventAvgFreq).toFixed(3)}</span>/min<br>
           <span>{(1000 * $eventAvgFreq).toFixed(3)}</span>/s<br>
-          <span>{(0.001 / $eventAvgFreq).toFixed(3)} s/event</span>
+          <span>{(0.001 / $eventAvgFreq).toFixed(3)} s/interval</span>
         {/if}
       </h2>
     </div>
@@ -70,7 +70,7 @@ function resetEvents () {
         <span>Last interval over {($lastDelay / 1000).toFixed(3)} s</span><br>
         <span>{(60000 / $lastDelay).toFixed(3)}</span>/min<br>
         <span>{(1000 / $lastDelay).toFixed(3)}</span>/s<br>
-        <span>{(0.001 * $lastDelay).toFixed(3)} s/event</span>
+        <span>{(0.001 * $lastDelay).toFixed(3)} s</span>
       </h2>
     </div>
   </div>
