@@ -29,12 +29,10 @@ entry: app_game_mp_rps_rules
 <h3>Move selection</h3>
 <p>Every player has four options: pick <u>Rock</u>, <u>Paper</u>, <u>Scissors</u>, or <u>Auto</u>. If Auto is selected, the game replaces the player's choice: one of the first three is randomly selected, or if the player has a streak bonus, an optimal choice is made automatically.</p>
 
-<p>This phase lasts 5 seconds (3 seconds if <b>Blitz</b> is on).</p>
-
 <h3>Damage calculation</h3>
 <p>When two moves are the same, the result is always a tie.</p>
 
-<p>By default,</p>
+<p>This phase calculates the results of the other possible move pairs. By default,</p>
 <ul>
   <li>Rock beats Scissors
   <li>Scissors beats Paper
@@ -100,9 +98,6 @@ entry: app_game_mp_rps_rules
 
 <h2>Bot Balance <small>(default: 0, min: -1000, max: 1000)</small></h2>
 <p>If negative, balance total players to absolute value; otherwise, add this number of bots.</p>
-
-<h2>Blitz <small>(quick round, default: off)</small></h2>
-<p>Move selection happens within 3 seconds instead of 5.</p>
 
 <h2>Classic <small>(ancient, no streak bonuses, default: off)</small></h2>
 <p>Streak bonuses are not used, but streaks are still calculated as usual.</p>
