@@ -69,7 +69,7 @@ function render (): void {
       .attr('y', (d) => d.y + 10)
       .attr('width', (d) => d.width)
       .attr('height', (d) => d.height)
-      .attr('fill', (d) => d.color)
+      .attr('fill', (d) => d.fill)
       // .attr('stroke', 'rgba(0,0,0,0.3)')
       // .attr('stroke-width', 4)
       // .attr('stroke-dasharray', (d) => `70,${d.width}`)

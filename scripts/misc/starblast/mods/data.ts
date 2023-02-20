@@ -8,7 +8,7 @@ export interface Data {
   y: number
   width: number
   height: number
-  color: string
+  fill: string
   label: string
   tooltip: string
 }
@@ -38,7 +38,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
       y: 0,
       width: xWidth,
       height: 70,
-      color: colorScale[1],
+      fill: colorScale[1],
       label: '[zoom in for details]',
       tooltip: '',
     }]
@@ -90,7 +90,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
             y: 0,
             width,
             height: curHistory.infoFeatured.length ? 40 : 70,
-            color: colorScale[firstLastColor && j + 1 === active.length ? 1 : j % colorScale.length],
+            fill: colorScale[firstLastColor && j + 1 === active.length ? 1 : j % colorScale.length],
             label: adjustLabel(width, mod.title, mod.mod_id),
             tooltip: tooltipLines.join('\n').trimEnd(),
           })
@@ -131,7 +131,7 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
           y: 40,
           width,
           height: 30,
-          color: ['#555', '#777'][featuredColor ^= 1],
+          fill: ['#555', '#777'][featuredColor ^= 1],
           label: adjustLabel(width, curHistory.infoFeatured.map((m) => m.title).join(', ')),
           tooltip: tooltipLines.join('\n'),
         })
