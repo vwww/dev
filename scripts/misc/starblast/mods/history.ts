@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { sum } from '@/util'
+import { gcd, sum } from '@/util'
 import { formatTimeISO } from './data'
 import { getActive, getFeatured, ModData, ModDataKeys, ModInfo } from './modinfo'
 
@@ -16,9 +16,11 @@ export type ModEvent = ModEventBase & {
   info: ModInfo
   infoActive: ModInfo
   infoActiveHours: number
+  infoActiveHoursGCD24: number
   infoFeatured: ModInfo
   mod?: ModData
   minor: boolean
+  newTime?: string
 }
 
 export type ModHistory = ModEvent[]
@@ -127,15 +129,21 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
       event.prop !== 'featured'
 
     const infoActive = getActive(info)
+    const infoActiveHours = sum(infoActive.map((m) => m.active_duration))
+    const infoActiveHoursGCD24 = gcd(infoActiveHours, 24, 0, 24)
     history.push({
       ...event,
       timeStr: formatTimeISO(time),
       info,
       infoActive,
-      infoActiveHours: sum(infoActive.map((m) => m.active_duration)),
+      infoActiveHours,
+      infoActiveHoursGCD24,
       infoFeatured: getFeatured(info),
       mod: data,
       minor,
+      newTime: minor || (add && !(data.active && !data.featured))
+        ? undefined
+        : totalTimeString(infoActiveHoursGCD24, infoActiveHours),
     })
 
     // revert event
@@ -149,16 +157,24 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
   }
 
   const infoActive = getActive(info)
+  const infoActiveHours = sum(infoActive.map((m) => m.active_duration))
+  const infoActiveHoursGCD24 = gcd(infoActiveHours, 24, 0, 24)
   history.push({
     add: true,
     time: SB_INIT_TIME,
     timeStr: formatTimeISO(SB_INIT_TIME),
     info,
     infoActive: getActive(info),
-    infoActiveHours: sum(infoActive.map((m) => m.active_duration)),
+    infoActiveHours,
+    infoActiveHoursGCD24,
     infoFeatured: getFeatured(info),
     minor: false,
+    newTime: totalTimeString(infoActiveHoursGCD24, infoActiveHours),
   })
 
   return history
+}
+
+function totalTimeString (g: number, h: number): string {
+  return `(${h} h = ${h / g} d / ${24 / g})`
 }

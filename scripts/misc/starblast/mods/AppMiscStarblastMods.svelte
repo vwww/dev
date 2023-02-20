@@ -2,7 +2,6 @@
 import * as d3 from 'd3'
 
 import { onMount } from 'svelte'
-import { gcd } from '@/util'
 import { pStore } from '@/util/svelte'
 
 import { ModData, ModInfo } from './modinfo'
@@ -207,12 +206,12 @@ function setModEvent (m: ModEvent) {
   modEvent = m
 
   const total = modEvent.infoActiveHours
-  const g = gcd(total, 24, 0, 24)
+  const g = modEvent.infoActiveHoursGCD24
   const periodRun = 24 / g
   const periodDay = total / g
   modEventLCM = periodRun * total
 
-  modEventTotalText = `Total time = ${total} h, gcd(${total}, 24) = ${g}, lcm(${total}, 24) = ${modEventLCM} (${periodDay} d, ${periodRun} run)`
+  modEventTotalText = `Total time = ${total} h, gcd(${total}, 24) = ${g} (${g} h, 1/${periodRun} d), lcm(${total}, 24) = ${modEventLCM} (${periodDay} d, ${periodRun} run)`
 
   modEventTimetable = []
   let modOffset = 0
@@ -352,6 +351,7 @@ onMount(async function () {
               </span>
               {h.mod?.mod_id}: <code>{h.oldVal}</code> to <code>{h.mod?.[h.prop]}</code>
             {/if}
+            {h.newTime ?? ''}
           </button>
         {/if}
     {/each}
