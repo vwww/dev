@@ -178,3 +178,24 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
 function totalTimeString (g: number, h: number): string {
   return `(${h} h = ${h / g} d / ${24 / g})`
 }
+
+export function formatDelay (t: number): string {
+  const ms = t % 1000
+  t = (t - ms) / 1000
+  const s = t % 60
+  t = (t - s) / 60
+  const m = t % 60
+  t = (t - m) / 60
+  const h = t % 24
+  t = (t - h) / 24
+  const d = t % 7
+  t = (t - d) / 7
+  return [
+    t && `${t} week`,
+    d && `${d} day`,
+    h && `${h} hour`,
+    m && `${m} min`,
+    s && `${s} sec`,
+    ms && `${ms} ms`,
+  ].filter((x) => x).join(' ')
+}

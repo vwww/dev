@@ -5,13 +5,14 @@ import { onMount } from 'svelte'
 import { pStore } from '@/util/svelte'
 
 import { ModData, ModInfo } from './modinfo'
-import { generateHistory, ModEvent } from './history'
+import { formatDelay, generateHistory, ModEvent } from './history'
 import { formatTime, generateData } from './data'
 
 import modsinfo from './modsinfo.json'
 
 const autoHistory = pStore('misc/starblast/autoHistory', true)
 const hideMinor = pStore('misc/starblast/hideMinor', false)
+const showDelay = pStore('misc/starblast/showDelay', false)
 
 const modDataCached: ModInfo = modsinfo[0]
 
@@ -23,6 +24,7 @@ let modEventTotalText = ''
 let modEventTimetable: [mod: ModData, timings: string | ModTiming[], className?: string][] = []
 let modHistory = [generateHistory(modDataCached)]
 let useLive = false
+$: activeModHistory = modHistory[useLive ? 1 : 0]
 let loading = false
 let loadError: unknown = 'loading'
 
@@ -58,7 +60,7 @@ let pan = d3.zoom<SVGSVGElement, unknown>()
 function render (): void {
   const data = generateData(
     xScale,
-    $autoHistory ? modHistory[useLive ? 1 : 0] : [modEvent],
+    $autoHistory ? activeModHistory : [modEvent],
   )
 
   barGroup.selectAll('rect')
@@ -323,6 +325,10 @@ onMount(async function () {
     <input type="checkbox" class="form-check-input" bind:checked={$hideMinor}>
     <span class="form-check-label">Hide minor revisions</span>
   </label>
+  <label class="form-check form-check-inline">
+    <input type="checkbox" class="form-check-input" bind:checked={$showDelay}>
+    <span class="form-check-label">Show delays between revisions</span>
+  </label>
 </div>
 
 {#if useLive && loadError}
@@ -332,7 +338,12 @@ onMount(async function () {
   </div>
 {:else}
   <div class="list-group">
-    {#each modHistory[useLive ? 1 : 0] as h}
+    {#each activeModHistory as h, i}
+      {#if i && $showDelay && activeModHistory[i - 1].time > h.time}
+        <div class="list-group-item text-center">
+          {formatDelay(activeModHistory[i - 1].time - h.time)}
+        </div>
+      {/if}
       {#if !$hideMinor || !h.minor || modEvent === h}
         <button class="list-group-item list-group-item-action"
           class:active={modEvent === h}
