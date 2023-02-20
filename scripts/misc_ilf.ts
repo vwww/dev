@@ -100,7 +100,7 @@ function update (): void {
     const smallClan = matchType < 2 ? clan : '[ILF]'
     const outcome = ['Win', 'Draw', 'Loss'][matchType]
 
-    const $e = document.createElement('h1')
+    const $e = document.createElement('h2')
     $e.className = ['win', 'tie', 'los'][matchType]
     $e.innerHTML = `${bigClan} vs ${smallClan}: ${outcome} &ndash; ${big}&mdash;${small} - ${mode} - ${map}`
     return $e

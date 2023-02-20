@@ -144,15 +144,15 @@ header {
 	padding: 5px 0 5px 25px;
 	border-bottom: 1px solid #eff0f1;
 }
-.main h2.win, .main h1.win {
+.main h2.win {
 	color: #88ac0b;
 	background: #fff url(square-green.png) no-repeat 3px 50%;
 }
-.main h2.tie, .main h1.tie {
+.main h2.tie {
 	color: #e9b21c;
 	background: #fff url(square-yellow.png) no-repeat 3px 50%;
 }
-.main h2.los, .main h1.los {
+.main h2.los {
 	color: #a60000;
 	background: #fff url(square-red.png) no-repeat 3px 50%;
 }
