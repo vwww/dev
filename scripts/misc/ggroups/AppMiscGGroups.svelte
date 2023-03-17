@@ -4,7 +4,7 @@ import ChatMessageFromText from './ChatMessageFromText.svelte'
 import ChatMessageHidden from './ChatMessageHidden.svelte'
 
 import { shuffle } from '@/util'
-import { pStore } from '@/util/svelte'
+import { pStore, ValueStore, valueStore } from '@/util/svelte'
 
 import { flip } from 'svelte/animate'
 
@@ -39,6 +39,8 @@ const forumStringsOrig = ((window as any).textAsset as string)
 let forumStrings = forumStringsOrig
 
 function* filterMessages (query: string, strings: string[]) {
+  type HiddenMessages = [string[], ValueStore<boolean>]
+
   if (!query) return yield* strings
 
   query = query.toLowerCase()
@@ -52,7 +54,7 @@ function* filterMessages (query: string, strings: string[]) {
     }
 
     if (nextEmit < i) {
-      yield strings.slice(nextEmit, i)
+      yield [strings.slice(nextEmit, i), valueStore(false)] as HiddenMessages
     }
 
     yield s
@@ -60,7 +62,7 @@ function* filterMessages (query: string, strings: string[]) {
   }
 
   if (nextEmit < strings.length) {
-    yield strings.slice(nextEmit)
+    yield [strings.slice(nextEmit), valueStore(false)] as HiddenMessages
   }
 }
 
@@ -102,11 +104,11 @@ randomize(true)
   {#each forumStrings as conversation (conversation.id) }
     <div animate:flip="{{ duration: 500 }}">
       <hr>
-      {#each Array.from(filterMessages($searchQuery, conversation.messages)) as rawText (rawText)}
+      {#each Array.from(filterMessages($searchQuery, conversation.messages)) as rawText}
         {#if typeof rawText == 'string'}
           <ChatMessageFromText {rawText} allowSecretSystemMessages={$allowSecretSystemMessages} />
         {:else}
-          <ChatMessageHidden rawTexts={rawText} allowSecretSystemMessages={$allowSecretSystemMessages} />
+          <ChatMessageHidden rawTexts={rawText[0]} showStore={rawText[1]} allowSecretSystemMessages={$allowSecretSystemMessages} />
         {/if}
       {/each}
     </div>

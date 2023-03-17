@@ -1,17 +1,18 @@
 <script lang="ts">
 import ChatMessageFromText from './ChatMessageFromText.svelte'
 
+import { Writable } from 'svelte/store'
+
 export let allowSecretSystemMessages: boolean
 export let rawTexts: string[]
-
-let show = false
+export let showStore: Writable<boolean>
 
 function reveal () {
-  show = true
+  $showStore = true
 }
 </script>
 
-{#if show}
+{#if $showStore}
   {#each rawTexts as rawText}
     <ChatMessageFromText {rawText} {allowSecretSystemMessages} />
   {/each}
