@@ -4,11 +4,11 @@ import ChatMessage from './ChatMessage.svelte'
 export let allowSecretSystemMessages: boolean
 export let rawText: string
 
-let msgClassNum = 0
-let sender = ''
-let text = ''
+function parseRawText (rawText: string, allowSecretSystemMessages: boolean): [msgClassNum: number, sender: string, text: string] {
+  let msgClassNum = 0
+  let sender = ''
+  let text = ''
 
-$: {
   if (rawText[0] === '#') {
     msgClassNum = 1 // '^m7^Cz'
     if (rawText[1] === 'T') text = rawText.slice(3)
@@ -16,7 +16,10 @@ $: {
     else if (rawText[1] === 'b') text = 'USER ' + rawText.slice(2) + ' BANNED'
     else if (rawText[1] === 'l') text = 'USER ' + rawText.slice(2) + ' LEFT'
     else if (rawText[1] === 'k') text = 'USER ' + rawText.slice(2) + ' KICKED'
-    else text = ''
+    else {
+      text = rawText
+      msgClassNum = 3
+    }
   } else if (rawText[0] === '!') {
     if (!allowSecretSystemMessages) {
       text = ''
@@ -31,10 +34,14 @@ $: {
     sender = rawText.slice(0, num)
     text = rawText.slice(num + 1)
   }
+
+  return [msgClassNum, sender, text]
 }
 
+$: [msgClassNum, sender, text] = parseRawText(rawText, allowSecretSystemMessages)
+$: title = msgClassNum == 3 ? undefined : rawText
 </script>
 
 {#if text}
-  <ChatMessage {sender} {text} {msgClassNum} />
+  <ChatMessage {sender} {text} {msgClassNum} {title} />
 {/if}

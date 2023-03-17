@@ -2,13 +2,15 @@
 export let sender = ''
 export let text = ''
 export let msgClassNum = 0
+export let title: string | undefined = undefined
 
-const floatRightClass = msgClassNum === 1 || msgClassNum === 2 ? '' : ' float-end'
+$: floatRightClass = msgClassNum === 1 || msgClassNum === 2 ? '' : ' float-end'
 
-const msgClass =
+$: msgClass =
   msgClassNum === 1 ? 'light'
     : msgClassNum === 2 ? 'danger text-white'
-      : 'primary text-white'
+      : msgClassNum === 3 ? 'dark text-white'
+        : 'primary text-white'
 </script>
 
 <style>
@@ -22,7 +24,7 @@ div.card {
 </style>
 
 <div class="clearfix">
-  <div class="card my-1 clearfix{floatRightClass}">
+  <div class="card my-1 clearfix{floatRightClass}" {title}>
     {#if sender}
       <div class="card-header bg-{msgClass}">{sender}</div>
       <div class="card-body">{text}</div>

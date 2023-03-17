@@ -1,12 +1,15 @@
 <script lang="ts">
 import ChatMessage from './ChatMessage.svelte'
 import ChatMessageFromText from './ChatMessageFromText.svelte'
+import ChatMessageHidden from './ChatMessageHidden.svelte'
 
 import { shuffle } from '@/util'
+import { pStore } from '@/util/svelte'
 
 import { flip } from 'svelte/animate'
 
-let allowSecretSystemMessages = true
+const allowSecretSystemMessages = pStore('misc/ggroups/allowSecretSystemMessages', true)
+const searchQuery = pStore('misc/ggroups/autoHistory', '')
 
 const forumStringsOrig = ((window as any).textAsset as string)
   .split(/[\r\n]+-+[\r\n]+/)
@@ -35,6 +38,32 @@ const forumStringsOrig = ((window as any).textAsset as string)
 
 let forumStrings = forumStringsOrig
 
+function* filterMessages (query: string, strings: string[]) {
+  if (!query) return yield* strings
+
+  query = query.toLowerCase()
+
+  let nextEmit = 0
+  for (let i = 0; i < strings.length; i++) {
+    const s = strings[i]
+
+    if (!s.toLowerCase().includes(query)) {
+      continue
+    }
+
+    if (nextEmit < i) {
+      yield strings.slice(nextEmit, i)
+    }
+
+    yield s
+    nextEmit = i + 1
+  }
+
+  if (nextEmit < strings.length) {
+    yield strings.slice(nextEmit)
+  }
+}
+
 function randomize (on = false): void {
   forumStrings = forumStringsOrig
   if (on) {
@@ -46,9 +75,11 @@ function randomize (on = false): void {
 randomize(true)
 </script>
 
-<div class="btn-group d-flex" role="group">
-  <button class={allowSecretSystemMessages ? 'btn btn-success active' : 'btn btn-warning'}
-          on:click={() => { allowSecretSystemMessages = !allowSecretSystemMessages }}>
+<input class="form-control my-2" placeholder="Search" bind:value={$searchQuery}>
+
+<div class="btn-group d-flex my-2" role="group">
+  <button class={$allowSecretSystemMessages ? 'btn btn-success active' : 'btn btn-warning'}
+      on:click={() => { $allowSecretSystemMessages = !$allowSecretSystemMessages }}>
     Privileged Access
   </button>
   <button class="btn btn-secondary" on:click={() => randomize()}>Order</button>
@@ -60,7 +91,7 @@ randomize(true)
 <h2>guruGROUPS</h2>
 
 <div class="container">
-  {#if allowSecretSystemMessages}
+  {#if $allowSecretSystemMessages}
     <!-- "^Fr^Cr^m7^OLISTENING TO #HACKING. PRIVILEGED ACCESS." -->
     <ChatMessage text='LISTENING TO #HACKING. PRIVILEGED ACCESS.' msgClassNum={2} />
   {:else}
@@ -71,8 +102,12 @@ randomize(true)
   {#each forumStrings as conversation (conversation.id) }
     <div animate:flip="{{ duration: 500 }}">
       <hr>
-      {#each conversation.messages as rawText }
-        <ChatMessageFromText {rawText} {allowSecretSystemMessages} />
+      {#each Array.from(filterMessages($searchQuery, conversation.messages)) as rawText (rawText)}
+        {#if typeof rawText == 'string'}
+          <ChatMessageFromText {rawText} allowSecretSystemMessages={$allowSecretSystemMessages} />
+        {:else}
+          <ChatMessageHidden rawTexts={rawText} allowSecretSystemMessages={$allowSecretSystemMessages} />
+        {/if}
       {/each}
     </div>
   {/each}
