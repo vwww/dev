@@ -96,6 +96,7 @@ function downloadBlankFile (): void {
 onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
 </script>
 
+<!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
 <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>

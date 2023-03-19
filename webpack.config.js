@@ -68,6 +68,11 @@ module.exports = {
   resolve: {
     plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })],
     extensions: [ '.ts', '.mjs', '.js', '.svelte' ],
+    alias: {
+      svelte: path.resolve('node_modules', 'svelte'),
+    },
+    mainFields: ['svelte', 'browser', 'module', 'main'],
+    conditionNames: ['svelte', 'import', 'require'],
     fallback: {
       "http": false,
       "https": false,
