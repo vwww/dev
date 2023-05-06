@@ -66,18 +66,13 @@ function alignv (cell: CellInfo): string {
   border: 0.5vmin solid black;
   background-color: #aaa;
   position: relative;
-  text-align: attr(data-alignh);
-  vertical-align: attr(data-alignv);
 
-  z-index: -1;
   color: #000;
   font: 2.5vmin monospace;
 }
 
-.fill * {
-  display: block;
+.fill div {
   position: absolute;
-  z-index: -1;
 }
 
 .fill :nth-child(1) { width: 30%; height: 51%; left: 35%; top: 0; }
