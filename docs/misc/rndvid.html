@@ -1,9 +1,17 @@
 ---
 title: Random Video
 date: "2019-01-01 00:00:00 +0000" # exact date is unknown
-mdate: 2019-06-01 12:41:45 -0600
+mdate: 2023-03-19 15:00:00 -0600
 entry: misc_rndvid
 ---
 <p>Click the video for full-screen.</p>
 
-<canvas id="rndvid"></canvas>
+<div id="selectRenderer">
+  <h2>Select renderer</h2>
+
+  <p><code>2d</code> calls <code>Math.random</code>, which has a possibility of being more random, but it is slower than <code>webgl</code> and <code>webgl2</code>, which use a shader for pseudorandom approximation.</p>
+
+  <div id="selectRendererGroup" class="btn-group d-flex mb-2" role="group"></div>
+</div>
+
+<canvas id="rndvid" class="d-none"></canvas>
