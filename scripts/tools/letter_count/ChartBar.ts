@@ -70,7 +70,7 @@ export const ChartBar: ChartBase = {
 
         return c + ' found ' + (count === 1 ? 'once' : count + ' times')
       },
-      borderWidth: 2,
+      borderWidth: '2',
       borderRadius: 6,
       borderColor: '#6e604f',
     },
