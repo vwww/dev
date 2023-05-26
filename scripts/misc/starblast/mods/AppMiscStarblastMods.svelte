@@ -41,7 +41,7 @@ let barGroup: d3Sel<SVGGElement>
 let barTextGroup: d3Sel<SVGGElement>
 let xAxis: d3Sel<SVGGElement>
 let curTimeLine: d3Sel<SVGLineElement>
-let updateTimeLine: d3Sel<SVGLineElement>
+let updateTimeLine: d3Sel<SVGGElement>
 
 let width = 100
 let height = 100
@@ -95,10 +95,14 @@ function render (): void {
     .attr('x1', xNow)
     .attr('x2', xNow)
 
-  const xUpdate = xScale(modEvent.time)
-  updateTimeLine
-    .attr('x1', xUpdate)
-    .attr('x2', xUpdate)
+  updateTimeLine.selectAll('line')
+    .data(activeModHistory)
+    .join('line')
+      .attr('x1', (d) => xScale(d.time))
+      .attr('x2', (d) => xScale(d.time))
+      .attr('y1', 0)
+      .attr('y2', 100)
+      .attr('stroke', (d) => d === modEvent ? 'blue' : 'gray')
 
   xAxisGenerator
     .scale(xScale)
@@ -194,10 +198,7 @@ function init () {
     .attr('y2', 100)
     .style('stroke', 'red')
 
-  updateTimeLine = viz.append('line')
-    .attr('y1', 0)
-    .attr('y2', 100)
-    .style('stroke', 'blue')
+  updateTimeLine = viz.append('g')
 
   pan(viz)
   resetPan(1)
