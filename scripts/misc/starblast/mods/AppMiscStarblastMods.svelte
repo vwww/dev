@@ -11,6 +11,9 @@ import { formatTime, generateData } from './data'
 import modsinfo from './modsinfo.json'
 
 const autoHistory = pStore('misc/starblast/autoHistory', true)
+const showHistoryTimes = pStore('misc/starblast/showHistoryTimes', true)
+const showDaily = pStore('misc/starblast/showDaily', true)
+const showDailyTime = pStore('misc/starblast/showDailyTime', '20:00')
 const hideMinor = pStore('misc/starblast/hideMinor', false)
 const showDelay = pStore('misc/starblast/showDelay', false)
 
@@ -41,7 +44,7 @@ let barGroup: d3Sel<SVGGElement>
 let barTextGroup: d3Sel<SVGGElement>
 let xAxis: d3Sel<SVGGElement>
 let curTimeLine: d3Sel<SVGLineElement>
-let updateTimeLine: d3Sel<SVGGElement>
+let extraTimeLines: d3Sel<SVGGElement>
 
 let width = 100
 let height = 100
@@ -95,14 +98,35 @@ function render (): void {
     .attr('x1', xNow)
     .attr('x2', xNow)
 
-  updateTimeLine.selectAll('line')
-    .data(activeModHistory)
+  const extraTimes: [time: number, color: string][] = $showHistoryTimes
+    ? activeModHistory.map((event) => [xScale(event.time), event === modEvent ? 'blue' : 'gray'])
+    : []
+
+  if ($showDaily && $showDailyTime) {
+    const [dStart, dEnd] = xScale.domain().map(Number)
+    if (dEnd - dStart <= 6912e7) { // 800 days
+      let t = new Date(dStart - (24 + 2)*60*60*1000) // assuming DST shifts up to a maximum of 2 hours
+      const [h, m] = $showDailyTime.split(':').map(Number)
+      t.setHours(h)
+      t.setMinutes(m)
+
+      let tPrev = +t
+      let tCur
+      while ((tCur = t.setDate(t.getDate() + 1)) < dEnd) {
+        extraTimes.push([xScale(t), tCur - tPrev === 86400000 ? 'green' : '#0f0'])
+        tPrev = tCur
+      }
+    }
+  }
+
+  extraTimeLines.selectAll('line')
+    .data(extraTimes)
     .join('line')
-      .attr('x1', (d) => xScale(d.time))
-      .attr('x2', (d) => xScale(d.time))
+      .attr('x1', (d) => d[0])
+      .attr('x2', (d) => d[0])
       .attr('y1', 0)
       .attr('y2', 100)
-      .attr('stroke', (d) => d === modEvent ? 'blue' : 'gray')
+      .attr('stroke', (d) => d[1])
 
   xAxisGenerator
     .scale(xScale)
@@ -198,7 +222,7 @@ function init () {
     .attr('y2', 100)
     .style('stroke', 'red')
 
-  updateTimeLine = viz.append('g')
+  extraTimeLines = viz.append('g')
 
   pan(viz)
   resetPan(1)
@@ -317,19 +341,46 @@ onMount(async function () {
   <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : useLive = true}>{loading ? '[Loading]' : 'Online'}</button>
 </div>
 
-<div class="my-2">
-  <label class="form-check form-check-inline">
-    <input type="checkbox" class="form-check-input" bind:checked={$autoHistory} on:change={render}>
-    <span class="form-check-label">Render effective history</span>
-  </label>
-  <label class="form-check form-check-inline">
-    <input type="checkbox" class="form-check-input" bind:checked={$hideMinor}>
-    <span class="form-check-label">Hide minor revisions</span>
-  </label>
-  <label class="form-check form-check-inline">
-    <input type="checkbox" class="form-check-input" bind:checked={$showDelay}>
-    <span class="form-check-label">Show delays between revisions</span>
-  </label>
+<div class="row row-cols-md-auto g-3 align-items-center my-2">
+  <div class="col-12">
+    <label class="form-check">
+      <input type="checkbox" class="form-check-input" bind:checked={$autoHistory} on:change={render}>
+      <span class="form-check-label">Render effective history</span>
+    </label>
+  </div>
+  <div class="col-12">
+    <label class="form-check">
+      <input type="checkbox" class="form-check-input" bind:checked={$showHistoryTimes} on:change={render}>
+      <span class="form-check-label">Render history times</span>
+    </label>
+  </div>
+  <div class="col-12">
+    <div class="row row-cols-auto align-items-center">
+      <div class="col">
+        <label class="form-check">
+          <input type="checkbox" class="form-check-input" bind:checked={$showDaily} on:change={render}>
+          <span class="form-check-label">Render daily time</span>
+        </label>
+      </div>
+      {#if $showDaily}
+        <div class="col">
+          <input type="time" class="form-control" bind:value={$showDailyTime} on:change={render}>
+        </div>
+      {/if}
+    </div>
+  </div>
+  <div class="col-12">
+    <label class="form-check">
+      <input type="checkbox" class="form-check-input" bind:checked={$hideMinor}>
+      <span class="form-check-label">Hide minor revisions</span>
+    </label>
+  </div>
+    <div class="col-12">
+    <label class="form-check">
+      <input type="checkbox" class="form-check-input" bind:checked={$showDelay}>
+      <span class="form-check-label">Show delays between revisions</span>
+    </label>
+  </div>
 </div>
 
 {#if useLive && loadError}
