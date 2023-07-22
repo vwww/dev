@@ -51,7 +51,7 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
 
   public readonly pendingMove = valueStore(0)
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: RPSClient) => p.roundStreak,
     (p: RPSClient) => p.roundWins - p.roundLosses,
     (p: RPSClient) => p.roundWins,
@@ -59,7 +59,7 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
     (p: RPSClient) => p.battleWins,
   ]
 
-  protected ROUND_TIME = 0 // set by mode
+  protected override ROUND_TIME = 0 // set by mode
 
   sendMove (n: number): void {
     this.room?.send(new ByteWriter()

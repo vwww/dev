@@ -33,7 +33,7 @@ export const enum TPTurnC2S {
 }
 
 export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C, TPHistoryEntry> {
-  protected static DEFAULT_PLAYER: TPTurnClient = {
+  protected static override readonly DEFAULT_PLAYER: TPTurnClient = {
     ...TurnBasedGame.DEFAULT_PLAYER,
     score: 0, // 4 * win + 2 * tie + loss
     wins: 0,
@@ -50,7 +50,7 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
   protected myPlayer = valueStore(0)
   protected drawOffer = valueStore(0)
 
-  public sendMoveEnd (): void {
+  public override sendMoveEnd (): void {
     this.room?.send(new ByteWriter()
       .putInt(TurnC2S.MOVE_END)
       .toArray()
@@ -78,13 +78,13 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
     )
   }
 
-  protected processWelcomeGame2 (m: ByteReader): void {
+  protected override processWelcomeGame2 (m: ByteReader): void {
     this.resetRound()
     this.processPlayerInfo(m)
     this.processRoundInfo(m)
   }
 
-  protected processRoundStart (m: ByteReader): void {
+  protected override processRoundStart (m: ByteReader): void {
     this.resetRound()
     this.processPlayerInfo(m)
     this.processRoundStartInfo(m)
@@ -143,7 +143,7 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
 
   protected abstract processEndTurn2 (m: ByteReader): void
 
-  protected processMessage3 (type: number, m: ByteReader): boolean {
+  protected override processMessage3 (type: number, m: ByteReader): boolean {
     switch (type) {
       case TPTurnS2C.OFFER_DRAW: {
         const drawReq = m.getInt()

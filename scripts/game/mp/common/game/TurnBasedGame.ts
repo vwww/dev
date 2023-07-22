@@ -33,7 +33,7 @@ export const enum GameState {
 }
 
 export abstract class TurnBasedGame<C extends TurnBasedClient, G> extends CommonGame<C, G> {
-  protected static DEFAULT_PLAYER: TurnBasedClient = {
+  protected static override readonly DEFAULT_PLAYER: TurnBasedClient = {
     ...CommonGame.DEFAULT_PLAYER,
     ready: false,
     inRound: false,

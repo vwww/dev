@@ -86,7 +86,7 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   public readonly pendingMove = valueStore(0)
   public readonly pendingMoveCount = valueStore(0)
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: PClient) => p.score,
     (p: PClient) => p.streak,
     (p: PClient) => p.rank2p,

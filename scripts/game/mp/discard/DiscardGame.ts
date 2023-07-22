@@ -102,7 +102,7 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
   public readonly pendingMoveTarget = valueStore(0)
   public readonly pendingMoveGuess = valueStore(0)
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: DClient) => p.score,
     (p: DClient) => p.wins,
     (p: DClient) => p.streak,

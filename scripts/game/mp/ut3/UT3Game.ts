@@ -38,9 +38,9 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
   public readonly boardIndex = valueStore(0)
   public readonly moveHistory = valueStore([] as [number, number][])
 
-  protected ROUND_TIME = 0 // set by mode
+  protected override ROUND_TIME = 0 // set by mode
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: UT3Client) => p.streak,
     (p: UT3Client) => p.score,
     (p: UT3Client) => p.wins,
@@ -67,7 +67,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
     m.getInt() // pendingMovePos
   }
 
-  protected processRoundInfo (m: ByteReader): void {
+  protected override processRoundInfo (m: ByteReader): void {
     this.reset()
     for (let i = 0; i <= MAX_TURNS; i++) {
       const board = m.getInt()

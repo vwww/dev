@@ -12,10 +12,10 @@ export const enum RRTurnC2S {
 }
 
 export abstract class OneTurnGame<C extends OneTurnClient, G> extends TurnBasedGame<C, G> {
-  protected static DEFAULT_PLAYER: OneTurnClient = TurnBasedGame.DEFAULT_PLAYER
+  protected static override readonly DEFAULT_PLAYER: OneTurnClient = TurnBasedGame.DEFAULT_PLAYER
 
-  protected INTERMISSION_TIME = 5000
-  protected ROUND_TIME = 3000
+  protected override readonly INTERMISSION_TIME = 5000
+  protected override readonly ROUND_TIME: number = 3000
 
   protected processEndTurn (m: ByteReader): void { /* ignore */ }
 }

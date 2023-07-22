@@ -39,7 +39,7 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
 
   public readonly pendingMove = valueStore(0)
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: MorraClient) => p.streak,
     (p: MorraClient) => p.wins - p.losses,
     (p: MorraClient) => p.wins,
@@ -57,11 +57,11 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
     )
   }
 
-  protected processMoveConfirm (m: ByteReader): void {
+  protected override processMoveConfirm (m: ByteReader): void {
     this.pendingMove.set(m.getFloat64())
   }
 
-  protected processRoundStart (_: ByteReader): void {
+  protected override processRoundStart (_: ByteReader): void {
     if (this.clients.get(this.myCn)?.inRound) {
       this.roundStartWithCurrentPlayer()
     }

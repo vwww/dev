@@ -9,6 +9,7 @@
     "outDir": "./tsc_temp",
     "strict": true,
     // "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,

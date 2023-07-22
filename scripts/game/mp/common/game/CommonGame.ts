@@ -22,7 +22,7 @@ export interface BaseClient {
 }
 
 export abstract class CommonGame<C extends BaseClient, G> {
-  protected static DEFAULT_PLAYER: BaseClient = {
+  protected static readonly DEFAULT_PLAYER: BaseClient = {
     cn: -1,
     name: 'unnamed',
     active: false,

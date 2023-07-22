@@ -73,7 +73,7 @@ export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, 
   public readonly pendingMove = valueStore(newZeroCardCount())
   public readonly pendingMoveClaim = valueStore(0)
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: CheatClient) => p.score,
     (p: CheatClient) => p.wins,
     (p: CheatClient) => p.streak,

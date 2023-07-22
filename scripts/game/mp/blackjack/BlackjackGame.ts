@@ -48,7 +48,7 @@ export default class BlackjackGame extends RRTurnGame<BClient, BPlayerInfo, BDis
 
   public readonly pendingMove = valueStore(0)
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: BClient) => p.score,
     (p: BClient) => p.wins,
     (p: BClient) => p.streak,

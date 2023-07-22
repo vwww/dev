@@ -20,9 +20,9 @@ export default class T3Game extends TPTurnGame<T3Client> {
   public readonly boardBad = valueStore(0)
   public readonly moveHistory = valueStore([] as number[])
 
-  protected ROUND_TIME = 0 // set by mode
+  protected override ROUND_TIME = 0 // set by mode
 
-  protected playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: T3Client) => p.streak,
     (p: T3Client) => p.score,
     (p: T3Client) => p.wins,

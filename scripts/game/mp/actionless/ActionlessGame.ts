@@ -28,7 +28,7 @@ export default class AGame extends OneTurnGame<AClient, AGameHistory> {
   public readonly modeIndependent = valueStore(false)
   public readonly modeTeam = valueStore(0)
 
-  protected readonly playersSortProps = [
+  protected override readonly playersSortProps = [
     (p: AClient) => p.streak,
     (p: AClient) => p.wins - p.losses,
     (p: AClient) => p.wins,

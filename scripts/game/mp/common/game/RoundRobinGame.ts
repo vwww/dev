@@ -30,7 +30,7 @@ export abstract class RRTurnGame<
   D extends RRTurnDiscInfo,
   G>
   extends TurnBasedGame<C, G> {
-  protected static DEFAULT_PLAYER: RRTurnClient = TurnBasedGame.DEFAULT_PLAYER
+  protected static override readonly DEFAULT_PLAYER: RRTurnClient = TurnBasedGame.DEFAULT_PLAYER
 
   protected static DEFAULT_PLAYER_INFO: RRTurnPlayerInfo = {
     owner: -1,
@@ -64,7 +64,7 @@ export abstract class RRTurnGame<
     this.playerInfo.update((v) => v)
   }
 
-  protected processRoundStart (m: ByteReader): void {
+  protected override processRoundStart (m: ByteReader): void {
     const playerInfo: P[] = []
     for (let i = 0; i <= this.clients.size; i++) {
       const owner = m.getInt()
@@ -80,7 +80,7 @@ export abstract class RRTurnGame<
     this.processRoundStartInfo(m)
   }
 
-  protected processWelcomeGame2 (m: ByteReader): void {
+  protected override processWelcomeGame2 (m: ByteReader): void {
     this.processPlayerInfos(m)
     this.processDiscInfos(m)
     this.processRoundInfo(m)
@@ -103,7 +103,7 @@ export abstract class RRTurnGame<
   protected abstract processPlayerInfo (m: ByteReader, p: P): void
   protected abstract processDiscInfo (m: ByteReader, d: D): void
 
-  protected processMessage3 (type: number, m: ByteReader): boolean {
+  protected override processMessage3 (type: number, m: ByteReader): boolean {
     switch (type) {
       case RRTurnS2C.PLAYER_ELIMINATE: {
         // can't imply from unspectate/leave/endTurn, as
