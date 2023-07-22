@@ -277,7 +277,7 @@ async function loadInfo () {
     loadError = undefined
     useLive = true
     setModEvent((modHistory[1] = generateHistory(respJson[0], modDataCached))[0])
-    render()
+    setTimeout(render, 1) // needs delay for some reason
   } catch (e) {
     console.error(loadError = e)
   } finally {
