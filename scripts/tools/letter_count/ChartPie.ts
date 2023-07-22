@@ -41,7 +41,7 @@ export const ChartPie: ChartBase = {
       formatter () {
         return (this.point as any).label
       },
-      borderWidth: '3',
+      borderWidth: 3,
       borderRadius: 6,
       borderColor: '#6e604f',
     },
