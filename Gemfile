@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
-gem 'github-pages', '>= 200', group: :jekyll_plugins
+gem 'github-pages', group: :jekyll_plugins
 gem 'wdm' if Gem.win_platform?
+gem 'webrick', '~> 1.7'
 gem 'tzinfo-data'
-
-gem "activesupport", ">= 6"
