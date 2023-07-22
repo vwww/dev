@@ -4,7 +4,7 @@ import { formatTimeISO } from './data'
 import { getActive, getFeatured, ModData, ModDataKeys, ModInfo } from './modinfo'
 
 const SB_INIT_TIME = 1479772800000
-const SB_CACHE_TIME = 1668000000000
+const SB_CACHE_TIME = 1690052400000
 
 export type ModEventBase =
   | { add: true }
@@ -55,6 +55,10 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
     mcst: [
       { time: 1612516370000, add: true },
       { time: 1637498700000, prop: 'active_duration', oldVal: 4 },
+    ],
+    escalation: [
+      { time: 1637939475000, add: true },
+      { time: 1689768000000, prop: 'active', oldVal: true },
     ],
   }
 

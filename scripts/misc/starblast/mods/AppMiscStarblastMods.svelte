@@ -310,7 +310,7 @@ onMount(async function () {
 }
 </style>
 
-<svelte:window on:resize={() => resizeHandler?.()} />
+<svelte:window on:resize={resizeHandler} />
 
 <h2>Timeline</h2>
 
