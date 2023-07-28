@@ -1,7 +1,7 @@
 mirrors:
   - [victorz.ca, https://victorz.ca]
   - [vwww.github.io, https://vwww.github.io]
-edit_prefix: https://github.com/vwww/dev/blob/master/docs/
+edit_prefix: https://github.com/vwww/dev/blob/main/docs/
 
 incremental: true
 

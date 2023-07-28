@@ -86,7 +86,7 @@ function alignv (cell: CellInfo): string {
 /*
 inspired by
 https://codepen.io/dom111/full/mwJwmM/
-https://github.com/dom111/flow-free/blob/master/flow.css
+https://github.com/dom111/flow-free/blob/64d661812b6b5f155756c2298b53b226eb7dc719/flow.css
 */
 
 .fill-root { background-color: #da8; }

@@ -4,13 +4,10 @@
         "es2021": true
     },
     "extends": [
-        // https://github.com/eslint/eslint/blob/master/conf/eslint-recommended.js
+        // https://github.com/eslint/eslint/blob/main/packages/js/src/configs/eslint-recommended.js
         "eslint:recommended",
-        // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/src/configs/recommended.ts
-        "plugin:@typescript-eslint/recommended",
-        // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/src/configs/recommended-requiring-type-checking.ts
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        // https://github.com/standard/eslint-config-standard/blob/master/eslintrc.json
+        // https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/src/configs/recommended-type-checked.ts
+        "plugin:@typescript-eslint/recommended-type-checked",
         // https://github.com/standard/eslint-config-standard-with-typescript/blob/master/src/index.ts
         "standard-with-typescript"
     ],
