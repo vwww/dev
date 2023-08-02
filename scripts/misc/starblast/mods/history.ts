@@ -58,7 +58,7 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
     ],
     escalation: [
       { time: 1637939475000, add: true },
-      { time: 1689768000000, prop: 'active', oldVal: true },
+      { time: 1689778537000, prop: 'active', oldVal: true },
     ],
   }
 
