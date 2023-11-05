@@ -8,6 +8,8 @@
         "eslint:recommended",
         // https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/src/configs/recommended-type-checked.ts
         "plugin:@typescript-eslint/recommended-type-checked",
+        // https://github.com/sveltejs/eslint-plugin-svelte/blob/main/src/configs/recommended.ts
+        "plugin:svelte/recommended",
         // https://github.com/standard/eslint-config-standard-with-typescript/blob/master/src/index.ts
         "standard-with-typescript"
     ],
@@ -15,21 +17,21 @@
     "parserOptions": {
         "ecmaVersion": 12,
         "sourceType": "module",
+        "extraFileExtensions": [".svelte"],
         "project": "./tsconfig.json"
     },
     "plugins": [
-        "@typescript-eslint",
-        "svelte3"
+        "@typescript-eslint"
     ],
     "overrides": [
         {
             "files": "*.svelte",
-            "processor": "svelte3/svelte3"
+            "parser": "svelte-eslint-parser",
+            "parserOptions": {
+                "parser": "@typescript-eslint/parser"
+            }
         }
     ],
-    "settings": {
-        "svelte3/typescript": true
-    },
     "ignorePatterns": [
         "scripts/vendor/*.js"
     ],

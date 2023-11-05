@@ -79,7 +79,7 @@ p {
 
 <div>
   {#each tweets as [tweetShort, tweetFull] (tweetShort)}
-    <p transition:slide|local title={tweetFull}>
+    <p transition:slide title={tweetFull}>
       {#if tweetFull}
         <span class="badge bg-danger">{tweetFull.length}</span>
       {:else}
