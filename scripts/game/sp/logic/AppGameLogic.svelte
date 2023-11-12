@@ -178,10 +178,10 @@ void fetch('logic.json')
         {#each logicPreset as preset}
           <tr>
             <td>{preset.num}</td>
-            <td title={preset.desc}>{preset.name} <span class="badge bg-secondary" title={preset.clues.join('\n\n')}>{preset.clues.length} clues</span></td>
+            <td title={preset.desc}>{preset.name} <span class="badge text-bg-secondary" title={preset.clues.join('\n\n')}>{preset.clues.length} clues</span></td>
             <td>
               {#each preset.types as presetType}
-                <span class="badge bg-secondary me-1" title={presetType.vals.join(', ')}>{presetType.vals.length} {presetType.type}</span>
+                <span class="badge text-bg-secondary me-1" title={presetType.vals.join(', ')}>{presetType.vals.length} {presetType.type}</span>
               {/each}
             </td>
             <td>

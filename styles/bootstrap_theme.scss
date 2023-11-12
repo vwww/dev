@@ -3,11 +3,4 @@ $enable-gradients: true;
 
 @import "~bootstrap/scss/bootstrap";
 
-.badge {
-  &.bg-warning,
-  &.bg-light {
-    @extend .text-dark;
-  }
-}
-
 @import './rouge/github';

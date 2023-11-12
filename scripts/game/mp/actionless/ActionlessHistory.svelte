@@ -12,7 +12,7 @@ export let results: AGameHistory[]
           FFA:
           {#each pastGame.wins as win}
             {#each win.players as player}
-              <span class="badge me-1 bg-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
+              <span class="badge me-1 text-bg-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
             {/each}
           {/each}
         </div>
@@ -21,7 +21,7 @@ export let results: AGameHistory[]
           <div>
             Team {win.id}:
             {#each win.players as player}
-              <span class="badge me-1 bg-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
+              <span class="badge me-1 text-bg-{win.win ? 'success' : 'danger'}">{player.name} ({player.cn})</span>
             {/each}
           </div>
         {/each}

@@ -9,7 +9,7 @@ entry: blog_tag_cloud
 
 <div class="tag-cloud mb-4">
 	{%- for tag in tags_sorted %}
-	<a href="#{{ tag }}" class="badge bg-secondary">{{ tag }} <sup>{{ site.tags[tag].size }}</sup></a>
+	<a href="#{{ tag }}" class="badge text-bg-secondary">{{ tag }} <sup>{{ site.tags[tag].size }}</sup></a>
 	{%- endfor %}
 </div>
 

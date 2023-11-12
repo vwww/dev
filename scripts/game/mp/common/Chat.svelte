@@ -76,7 +76,7 @@ function handleKeydown (event: KeyboardEvent): void {
             {#if message.flags & 4}
               * {message.name}
             {:else}
-              <span class="badge bg-secondary">{message.name}</span>
+              <span class="badge text-bg-secondary">{message.name}</span>
             {/if}
             {#if message.flags & 8}
               <small class="text-muted"><del>{message.msg}</del></small> <span class="text-danger">(do not spam!)</span>
@@ -84,9 +84,9 @@ function handleKeydown (event: KeyboardEvent): void {
               {message.msg}
             {/if}
             {#if message.targetName}
-              (to <span class="badge bg-primary">{message.targetName}</span>)
+              (to <span class="badge text-bg-primary">{message.targetName}</span>)
             {:else if (message.flags & 3) === 2}
-              (to <span class="badge bg-info">TEAM</span>)
+              (to <span class="badge text-bg-info">TEAM</span>)
             {/if}
           </span>
         {:else if message.type === 'sys'}
@@ -96,7 +96,7 @@ function handleKeydown (event: KeyboardEvent): void {
         {/if}
       </li>
     {/each}
-    <li class="list-group-item bg-warning text-center" class:d-none={autoscroll}>Scroll down to resume autoscroll</li>
+    <li class="list-group-item text-bg-warning text-center" class:d-none={autoscroll}>Scroll down to resume autoscroll</li>
   </ul>
   <div class="card-footer">
     <div class="input-group">

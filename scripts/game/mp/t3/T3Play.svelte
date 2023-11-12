@@ -70,11 +70,11 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   <p>
     You are
     {#if !$myPlayer}
-      <span class="badge bg-secondary">spectating</span>.
+      <span class="badge text-bg-secondary">spectating</span>.
     {:else if $myPlayer === 1}
-      <span class="badge bg-success">player X</span>.
+      <span class="badge text-bg-success">player X</span>.
     {:else}
-      <span class="badge bg-danger">player O</span>.
+      <span class="badge text-bg-danger">player O</span>.
     {/if}
     Get 3 in a row to win.
   </p>
@@ -90,7 +90,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   <div>
     Moves:
     {#each $moveHistory as move, i}
-      <span class="badge bg-{(i & 1) ? 'danger' : 'success'} me-1">{move}</span>
+      <span class="badge text-bg-{(i & 1) ? 'danger' : 'success'} me-1">{move}</span>
     {:else}
       (none)
     {/each}
@@ -99,11 +99,11 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   <p>
     You are
     {#if !$myPlayer}
-      <span class="badge bg-secondary">spectating</span>.
+      <span class="badge text-bg-secondary">spectating</span>.
     {:else if $myPlayer === 1}
-      <span class="badge bg-success">player X</span>.
+      <span class="badge text-bg-success">player X</span>.
     {:else}
-      <span class="badge bg-primary">player O</span>.
+      <span class="badge text-bg-primary">player O</span>.
     {/if}
     Take 3 {['numbers that sum to 15', 'words that have the same letter'][t3Isomorphism - 1]}.
   </p>

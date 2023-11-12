@@ -8,9 +8,9 @@ $: floatRightClass = msgClassNum === 1 || msgClassNum === 2 ? '' : ' float-end'
 
 $: msgClass =
   msgClassNum === 1 ? 'light'
-    : msgClassNum === 2 ? 'danger text-white'
-      : msgClassNum === 3 ? 'dark text-white'
-        : 'primary text-white'
+    : msgClassNum === 2 ? 'danger'
+      : msgClassNum === 3 ? 'dark'
+        : 'primary'
 </script>
 
 <style>
@@ -26,10 +26,10 @@ div.card {
 <div class="clearfix">
   <div class="card my-1 clearfix{floatRightClass}" {title}>
     {#if sender}
-      <div class="card-header bg-{msgClass}">{sender}</div>
+      <div class="card-header text-bg-{msgClass}">{sender}</div>
       <div class="card-body">{text}</div>
     {:else}
-      <div class="card-header bg-{msgClass}">{text}</div>
+      <div class="card-header text-bg-{msgClass}">{text}</div>
     {/if}
   </div>
 </div>

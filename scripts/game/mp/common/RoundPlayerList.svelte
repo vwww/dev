@@ -8,7 +8,7 @@ export let inQueue: ArrayLike<TurnBasedClient>
 <div>
   In game:
   {#each inGame as roundPlayer}
-    <span class="badge bg-{roundPlayer.ready ? 'info' : 'primary'} me-1">{roundPlayer.name} ({roundPlayer.cn})</span>
+    <span class="badge text-bg-{roundPlayer.ready ? 'info' : 'primary'} me-1">{roundPlayer.name} ({roundPlayer.cn})</span>
   {:else}
     nobody
   {/each}
@@ -17,7 +17,7 @@ export let inQueue: ArrayLike<TurnBasedClient>
 <div>
   Queue:
   {#each inQueue as queuedPlayer}
-    <span class="badge bg-{queuedPlayer.ready ? 'info' : 'secondary'} me-1">{queuedPlayer.name} ({queuedPlayer.cn})</span>
+    <span class="badge text-bg-{queuedPlayer.ready ? 'info' : 'secondary'} me-1">{queuedPlayer.name} ({queuedPlayer.cn})</span>
   {:else}
     nobody
   {/each}

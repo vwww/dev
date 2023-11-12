@@ -8,7 +8,7 @@ function scoreClass (s: number): string {
 }
 
 function scoreBadgeClass (s: number): string {
-  return `badge bg${scoreClass(s)}`
+  return `badge text-bg${scoreClass(s)}`
 }
 </script>
 

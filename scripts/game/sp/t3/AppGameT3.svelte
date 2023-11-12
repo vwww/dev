@@ -223,7 +223,7 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
   {/each}
 </div>
 
-<h3>Prefer Outcome Timing <span class="badge bg-secondary">TODO</span></h3>
+<h3>Prefer Outcome Timing <span class="badge text-bg-secondary">TODO</span></h3>
 
 <div class="btn-group d-flex mb-1" role="group">
   <span class="input-group-text">Win</span>

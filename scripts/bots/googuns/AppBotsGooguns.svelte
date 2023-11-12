@@ -59,7 +59,7 @@ function validateInput (this: HTMLTextAreaElement) {
 <Gen {onMsg} />
 
 <h2>Notation</h2>
-<pre class="card card-body bg-light">All fields are big endian.
+<pre class="card card-body text-bg-light">All fields are big endian.
 &lt;&lt;&lt; = rol and &gt;&gt;&gt; = ror (bitwise rotations).
 ^ = bitwise XOR (exclusive OR).
 ~ = bitwise negation.

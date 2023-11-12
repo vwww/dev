@@ -16,12 +16,12 @@ export let onSetReady: (ready: boolean) => void
 
 <div class:d-none={!inGame || isActive} class="alert alert-warning" role="alert">
   <h4 class="alert-heading">Spectating</h4>
-  <span class="badge bg-primary">Unspectate</span> if you want to play!
+  <span class="badge text-bg-primary">Unspectate</span> if you want to play!
 </div>
 
 <div class:d-none={!inGame || !isActive || !canReady || isReady} class="alert alert-info" role="alert">
   <h4 class="alert-heading">Unready</h4>
-  If all players are <span class="badge bg-info">Ready</span>, the intermission ends early.
+  If all players are <span class="badge text-bg-info">Ready</span>, the intermission ends early.
 </div>
 
 <div class="card mb-3">

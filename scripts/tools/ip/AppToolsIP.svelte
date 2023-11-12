@@ -35,15 +35,15 @@ async function getResult (url: string) {
   <p>
     IP ({name}):
     {#await getResult(url)}
-      <span class="badge bg-secondary">fetching</span>
+      <span class="badge text-bg-secondary">fetching</span>
     {:then data}
-      <span class="badge bg-success">{data.delay} ms</span>
+      <span class="badge text-bg-success">{data.delay} ms</span>
       {data.ip}
       {#if data.proxy.length}
         <span title={data.proxy.map((p) => `${p.name}: ${p.old} -> ${p.new}\n${p.rule}\n${p.Why}`).join('\n\n')}>[proxy count = {data.proxy.length}]</span>
       {/if}
     {:catch error}
-      <span class="badge bg-danger">failed</span>
+      <span class="badge text-bg-danger">failed</span>
       {error.stack ?? error}
     {/await}
   </p>

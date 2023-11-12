@@ -10,7 +10,7 @@ export let results: CheatGameHistory[]
       <div>
         Ranks:
         {#each pastGame.players as p, id}
-          <span class="badge bg-{id ? 'secondary' : 'primary'}">
+          <span class="badge text-bg-{id ? 'secondary' : 'primary'}">
             {p.name} ({p.cn})
           </span>
         {/each}

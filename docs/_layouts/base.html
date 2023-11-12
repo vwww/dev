@@ -51,21 +51,21 @@
       </div>
     </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
+    <footer class="footer mt-auto py-3 text-bg-light">
       <div class="container">
         <div class="mb-2">
           &copy; 2005-<span id="copyyear">{{ site.time | date: "%Y" }}</span> Victor Zheng. All rights reserved.
           {%- unless post %}
           {%- if page.date %}
             <div class="badge-group me-2" title="This page was created on {{ page.date | date: site.format_date }} at {{ page.date | date: site.format_time }}">
-              <span class="badge bg-secondary">Created</span>
-              <span class="timeago badge bg-primary" title="{{ page.date }}"></span>
+              <span class="badge text-bg-secondary">Created</span>
+              <span class="timeago badge text-bg-primary" title="{{ page.date }}"></span>
             </div>
           {%- endif %}
           {%- if page.mdate %}
             <div class="badge-group me-2" title="This page was modified on {{ page.mdate | date: site.format_date }} at {{ page.mdate | date: site.format_time }}">
-              <span class="badge bg-secondary">Modified</span>
-              <span class="timeago badge bg-primary" title="{{ page.mdate }}"></span>
+              <span class="badge text-bg-secondary">Modified</span>
+              <span class="timeago badge text-bg-primary" title="{{ page.mdate }}"></span>
             </div>
           {%- endif %}
           {%- endunless %}
@@ -75,18 +75,18 @@
 
           <a href="{{ base }}"><img src="{{assets}}a/80-15.png" class="rounded" alt="Victor"></a>
 
-          <a href="https://validator.w3.org/check?uri=referer" referrerpolicy="unsafe-url" class="badge bg-primary" title="This site uses HTML5.">HTML5</a>
+          <a href="https://validator.w3.org/check?uri=referer" referrerpolicy="unsafe-url" class="badge text-bg-primary" title="This site uses HTML5.">HTML5</a>
 
-          <a href="https://jigsaw.w3.org/css-validator/check/referer" referrerpolicy="unsafe-url" class="badge bg-primary" title="This site uses CSS.">CSS</a>
+          <a href="https://jigsaw.w3.org/css-validator/check/referer" referrerpolicy="unsafe-url" class="badge text-bg-primary" title="This site uses CSS.">CSS</a>
 
           <div class="badge-group me-2" title="This site was last regenerated on {{ site.time | date: site.format_date }} at {{ site.time | date: site.format_time }}">
-            <span class="badge bg-secondary">Regenerated</span>
-            <span class="timeago badge bg-primary" title="{{ site.time }}"></span>
+            <span class="badge text-bg-secondary">Regenerated</span>
+            <span class="timeago badge text-bg-primary" title="{{ site.time }}"></span>
           </div>
 
           <div class="badge-group me-2" title="This is how long it has been since my site started to exist.">
-            <span class="badge bg-dark">Site Age</span>
-            <span class="badge bg-light border"><strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years</span>
+            <span class="badge text-bg-dark">Site Age</span>
+            <span class="badge text-bg-light border"><strong id="uptime-years"></strong> (<b id="uptime-years-hex">many</b>) years</span>
           </div>
         </div>
       </div>

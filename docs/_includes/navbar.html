@@ -1,6 +1,6 @@
 {% include _init.html %}
 
-<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+<nav class="navbar sticky-top navbar-expand-lg navbar-light text-bg-light">
   <div class="container">
     <a class="navbar-brand" href="{{base}}"><img src="{{assets}}victorz/logo.png" alt="logo"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,10 +40,10 @@
               {%- endif %}
               >{{d.name}}
               {%- for b in d.badges %}
-                <span class="badge bg-{{b[0]}}">{{b[1]}}</span>
+                <span class="badge text-bg-{{b[0]}}">{{b[1]}}</span>
               {%- endfor %}
               {%- if d.href_ext %}
-              <span class="badge bg-info">Ext</span>
+              <span class="badge text-bg-info">Ext</span>
               {%- endif %}
               </a>
             </li>
@@ -78,7 +78,7 @@
         </li>
 
         <li id="april-fools-joke-menu" class="dropdown d-none">
-          <a class="nav-link dropdown-toggle" href="#nav/language" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language <span class="badge bg-warning">NEW</span></a>
+          <a class="nav-link dropdown-toggle" href="#nav/language" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language <span class="badge text-bg-warning">NEW</span></a>
           <ul class="dropdown-menu" role="menu">
             <li class="dropdown-header">10 languages</li>
             <li><button class="dropdown-item" onclick="return false">English</button></li>

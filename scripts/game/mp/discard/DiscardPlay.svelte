@@ -132,9 +132,9 @@ export function getCardName (card: number, ll: boolean): string | number {
   </div>
   {#if $roundState === 2 && playing}
     <div class="col-12">
-      Your hand: <span class="badge bg-dark">{getCardName($myHand, ll)}</span>
+      Your hand: <span class="badge text-bg-dark">{getCardName($myHand, ll)}</span>
       {#if canMove}
-        <span class="badge bg-dark">{getCardName($myAltMove, ll)}</span>
+        <span class="badge text-bg-dark">{getCardName($myAltMove, ll)}</span>
       {/if}
     </div>
     {#if canMove}
@@ -157,7 +157,7 @@ export function getCardName (card: number, ll: boolean): string | number {
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonTarget">
             <button class="dropdown-item" class:active={$pendingMoveTarget < 0} on:click={() => gameState.sendMoveTarget(-1)}>auto</button>
             {#each $playerInfo as p, i}
-              <button class="dropdown-item" class:bg-danger={!i && pendingMove !== 5 || p.immune} class:active={$pendingMoveTarget === i}
+              <button class="dropdown-item" class:text-bg-danger={!i && pendingMove !== 5 || p.immune} class:active={$pendingMoveTarget === i}
                 on:click={() => gameState.sendMoveTarget(i)}>{gameState.getNameFromPlayer(p)}</button>
             {/each}
           </div>
@@ -191,25 +191,25 @@ export function getCardName (card: number, ll: boolean): string | number {
     <div class="mb-2">
       <b>Active Players</b>
       {#each $playerInfo as p, i}
-        <br><span class="badge bg-{playerColor(gameState.playerIsMe(p))}">{gameState.getNameFromPlayer(p)}</span>
-        <span class="badge bg-dark">{gameState.playerIsMe(p) ? getCardName($myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
+        <br><span class="badge text-bg-{playerColor(gameState.playerIsMe(p))}">{gameState.getNameFromPlayer(p)}</span>
+        <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName($myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
         {#if !i && $roundState === 2}
-          <span class="badge bg-dark">{gameState.playerIsMe(p) ? getCardName($myAltMove, ll) : '?'}</span>
+          <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName($myAltMove, ll) : '?'}</span>
         {/if}
-        {#if p.immune}<badge class="badge bg-info">IMMUNE</badge>{/if}
+        {#if p.immune}<badge class="badge text-bg-info">IMMUNE</badge>{/if}
         {p.discardSum}
         {#each p.discarded as d}
-          <span class="badge bg-light">{d}</span>
+          <span class="badge text-bg-light">{d}</span>
         {/each}
       {/each}
     </div>
     <div>
       <b>Eliminated</b>
       {#each $playerDiscInfo as p}
-        <br><span class="badge bg-secondary">{p.ownerName}</span>
+        <br><span class="badge text-bg-secondary">{p.ownerName}</span>
         {p.discardSum}
         {#each p.discarded as d}
-          <span class="badge bg-light">{getCardName(d, ll)}</span>
+          <span class="badge text-bg-light">{getCardName(d, ll)}</span>
         {/each}
       {/each}
     </div>

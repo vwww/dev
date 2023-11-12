@@ -114,7 +114,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
 
 <div class="tab-content">
   <div class="tab-pane show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-    <div class="p-5 mb-4 bg-light border rounded-3">
+    <div class="p-5 mb-4 text-bg-light border rounded-3">
       <div class="container-fluid py-2">
         <h1 class="display-4">BestCoder</h1>
         <p class="lead">Be the best coder you can be; practice your skills on the most popular* programming contest practice site!</p>
@@ -217,22 +217,22 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
     <div class="row">
       <div class="col-6">
         <h3>Sample Input 0</h3>
-        <pre class="card card-body bg-light" />
+        <pre class="card card-body text-bg-light" />
       </div>
       <div class="col-6">
         <h3>Sample Output 0</h3>
-        <pre class="card card-body bg-light" />
+        <pre class="card card-body text-bg-light" />
       </div>
     </div>
 
     <div class="row">
       <div class="col-6">
         <h3>Sample Input 1</h3>
-        <pre class="card card-body bg-light">1337</pre>
+        <pre class="card card-body text-bg-light">1337</pre>
       </div>
       <div class="col-6">
         <h3>Sample Output 1</h3>
-        <pre class="card card-body bg-light" />
+        <pre class="card card-body text-bg-light" />
       </div>
     </div>
 

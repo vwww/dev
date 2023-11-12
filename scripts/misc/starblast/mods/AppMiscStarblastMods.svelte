@@ -402,10 +402,10 @@ onMount(async function () {
           on:click={() => modEvent === h ? panTo(h.time) : (setModEvent(h), render())}>
             {h.timeStr}
             {#if h.add}
-              <span class="badge bg-{h.mod ? 'success' : 'info'}">{h.mod ? 'add' : 'init'}</span>
+              <span class="badge text-bg-{h.mod ? 'success' : 'info'}">{h.mod ? 'add' : 'init'}</span>
               {h.mod?.mod_id ?? ''}
             {:else}
-              <span class="badge bg-{h.prop === 'active' || h.prop === 'featured'
+              <span class="badge text-bg-{h.prop === 'active' || h.prop === 'featured'
                   ? h.oldVal == (h.prop === 'active') ? 'danger' : 'primary'
                   : h.prop === 'active_duration'
                     ? 'warning'

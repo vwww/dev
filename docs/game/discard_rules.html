@@ -30,7 +30,7 @@ mdate: 2020-10-18 20:13:25 -0600
   Eliminated players are ranked by the order of elimination, below players who were not eliminated.
 </p>
 
-<p><mark>After determining ranks, if a <span class="badge bg-warning">WATCHED</span> player has rank 1, the player who discarded 0b, if still present, partially wins.</mark></p>
+<p><mark>After determining ranks, if a <span class="badge text-bg-warning">WATCHED</span> player has rank 1, the player who discarded 0b, if still present, partially wins.</mark></p>
 
 <p>When a user partially wins, his win counter is increased by 1 without affecting any other score.</p>
 
@@ -74,7 +74,7 @@ mdate: 2020-10-18 20:13:25 -0600
   <tr>
     <td>4</td>
     <td>Handmaid Susannah</td>
-    <td>become <span class="badge bg-info">IMMUNE</span> (prevent being targeted) until user's next turn starts</td>
+    <td>become <span class="badge text-bg-info">IMMUNE</span> (prevent being targeted) until user's next turn starts</td>
     <td>2</td>
   </tr>
   <tr>
@@ -121,7 +121,7 @@ mdate: 2020-10-18 20:13:25 -0600
   <tr class="table-warning">
     <td>4b</td>
     <td>Sycophant Morris</td>
-    <td>target <em>any</em> player; target becomes <span class="badge bg-danger">REQUIRED</span> (must be targeted at least once) until the end of the next turn</td>
+    <td>target <em>any</em> player; target becomes <span class="badge text-bg-danger">REQUIRED</span> (must be targeted at least once) until the end of the next turn</td>
     <td>0 (2)</td>
   </tr>
   <tr class="table-warning">
@@ -139,7 +139,7 @@ mdate: 2020-10-18 20:13:25 -0600
   <tr class="table-warning">
     <td>0b</td>
     <td>Jester Darius</td>
-    <td>target another player; target becomes <span class="badge bg-warning">WATCHED</span></td>
+    <td>target another player; target becomes <span class="badge text-bg-warning">WATCHED</span></td>
     <td>0 (1)</td>
   </tr>
   <tr class="table-warning">
@@ -153,17 +153,17 @@ mdate: 2020-10-18 20:13:25 -0600
 <p>Only 8 has an effect when it is destroyed (same as effect when used). If any other card is destroyed, the player draws another card to replace it.</p>
 
 <p>
-  If players are to be targeted, but no target valid (by <span class="badge bg-info">IMMUNE</span> <mark>or <span class="badge bg-danger">REQUIRED</span></mark>), the targeting fails, and no effect occurs, since the effect requires a valid target and is skipped.
+  If players are to be targeted, but no target valid (by <span class="badge text-bg-info">IMMUNE</span> <mark>or <span class="badge text-bg-danger">REQUIRED</span></mark>), the targeting fails, and no effect occurs, since the effect requires a valid target and is skipped.
   Some cards do not target: 4, 7, <mark>6b, 5b, 0c</mark>.
 </p>
 
-<p>A target is valid if it meets the textual constraint ("another" excludes the targeter, "different" requires the members to be distinct), <mark>contains all <span class="badge bg-danger">REQUIRED</span> players,</mark> and does not contain any <span class="badge bg-info">IMMUNE</span> members.</p>
+<p>A target is valid if it meets the textual constraint ("another" excludes the targeter, "different" requires the members to be distinct), <mark>contains all <span class="badge text-bg-danger">REQUIRED</span> players,</mark> and does not contain any <span class="badge text-bg-info">IMMUNE</span> members.</p>
 
 <p>
   In some cases, the constraints are impossible to satisfy.
-  If targeting other players, and all other players are <span class="badge bg-info">IMMUNE</span>, <mark>or a player is both <span class="badge bg-danger">REQUIRED</span> and either the targeter or <span class="badge bg-info">IMMUNE</span>,</mark> no target is valid.
-  <mark>If the <span class="badge bg-danger">REQUIRED</span> player is not targeting and is not <span class="badge bg-info">IMMUNE</span>, that player can be targeted twice (3b), or the targeter can target himself and the <span class="badge bg-danger">REQUIRED</span> player (2b).</mark>
-  A player who activates 5 <mark>or 4b</mark> can always target someone (himself <mark>or the <span class="badge bg-danger">REQUIRED</span> player</mark>) <mark>unless someone is both <span class="badge bg-danger">REQUIRED</span> and <span class="badge bg-info">IMMUNE</span></mark>.
+  If targeting other players, and all other players are <span class="badge text-bg-info">IMMUNE</span>, <mark>or a player is both <span class="badge text-bg-danger">REQUIRED</span> and either the targeter or <span class="badge text-bg-info">IMMUNE</span>,</mark> no target is valid.
+  <mark>If the <span class="badge text-bg-danger">REQUIRED</span> player is not targeting and is not <span class="badge text-bg-info">IMMUNE</span>, that player can be targeted twice (3b), or the targeter can target himself and the <span class="badge text-bg-danger">REQUIRED</span> player (2b).</mark>
+  A player who activates 5 <mark>or 4b</mark> can always target someone (himself <mark>or the <span class="badge text-bg-danger">REQUIRED</span> player</mark>) <mark>unless someone is both <span class="badge text-bg-danger">REQUIRED</span> and <span class="badge text-bg-info">IMMUNE</span></mark>.
 </p>
 
 <h3>Adjustments</h3>

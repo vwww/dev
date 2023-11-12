@@ -45,10 +45,10 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
     <li class="list-group-item">
       {#if pastGame.local}
         <p>
-          You: <span class="badge bg-primary">{pastGame.local.newStreak > 0 ? '+' : ''}{pastGame.local.newStreak}</span> streak;
-          <span class="badge bg-success">{pastGame.local.battleLTW[2]}</span> win,
-          <span class="badge bg-danger">{pastGame.local.battleLTW[0]}</span> lose,
-          <span class="badge bg-warning">{pastGame.local.battleLTW[1]}</span> tie
+          You: <span class="badge text-bg-primary">{pastGame.local.newStreak > 0 ? '+' : ''}{pastGame.local.newStreak}</span> streak;
+          <span class="badge text-bg-success">{pastGame.local.battleLTW[2]}</span> win,
+          <span class="badge text-bg-danger">{pastGame.local.battleLTW[0]}</span> lose,
+          <span class="badge text-bg-warning">{pastGame.local.battleLTW[1]}</span> tie
         </p>
       {/if}
       <div class="row">
@@ -64,7 +64,7 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
                 <td class:table-danger={pastGame.local && pastGame.local.move === i}>{pastGame.count[(i + 1) % 3]}</td>
                 <td>
                   {move.b}
-                  <span class="badge bg-{pastGame.outcomes[i] < 0 ? 'primary' : pastGame.outcomes[i] > 0 ? 'danger' : 'secondary'}">
+                  <span class="badge text-bg-{pastGame.outcomes[i] < 0 ? 'primary' : pastGame.outcomes[i] > 0 ? 'danger' : 'secondary'}">
                     {#if pastGame.outcomes[i] > 0}&lt;{/if}
                     {getOutcomeText(move.text[pastGame.outcomes[i] + 1], move.textBitShift, pastGame.detRandBits)}
                     {#if pastGame.outcomes[i] < 0}&gt;{/if}
@@ -95,10 +95,10 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
                 <td>{pastGame.count[i]}</td>
                 <td>
                   {#each move.players as player}
-                    <span class="badge bg-secondary">{player.name} ({player.cn})</span>
+                    <span class="badge text-bg-secondary">{player.name} ({player.cn})</span>
                   {/each}
                   {#if pastGame.botCount[i]}
-                    <span class="badge bg-secondary">+{pastGame.botCount[i]}</span>
+                    <span class="badge text-bg-secondary">+{pastGame.botCount[i]}</span>
                   {/if}
                   {#if !(move.players.length || pastGame.botCount[i])}nobody{/if}
                 </td>

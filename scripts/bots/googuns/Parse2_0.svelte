@@ -76,7 +76,7 @@ export function generate2_0 (timeHex: string, rHex: string): string {
   <div class="card-header">
     <h4 class="card-title">
       <a data-bs-toggle="collapse" href="#collapse2">
-        <h2>v2.0 Format <span class={(VA ? 'badge bg-success' : 'd-none')}>Valid</span></h2>
+        <h2>v2.0 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span></h2>
       </a>
     </h4>
   </div>

@@ -87,7 +87,7 @@ export function generate1_0 (timeHex: string, rHex: string): string {
   <div class="card-header">
     <h4 class="card-title">
       <a data-bs-toggle="collapse" href="#collapse1">
-        <h2>v1 Format <span class={(VA ? 'badge bg-success' : 'd-none')}>Valid</span></h2>
+        <h2>v1 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span></h2>
       </a>
     </h4>
   </div>
@@ -159,7 +159,7 @@ export function generate1_0 (timeHex: string, rHex: string): string {
         <DerivedTimestamp hexBytes={UT || repStr(16, '?')} date={UTD || undefined} valid={VT} />
       </DerivedTable>
 
-      <pre class="card card-body bg-light">
+      <pre class="card card-body text-bg-light">
 * transformed 64-bit timestamp = (([UNIX timestamp] &lt;&lt;&lt; A) ^ B ^ 0x420B16B00B5F1337) &gt;&gt;&gt; C
 A: 1 random byte
 B: 8 random bytes

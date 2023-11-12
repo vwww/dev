@@ -133,15 +133,15 @@ function onResize (): void {
   <div class="col-4 clearfix">
     <ul class="list-group">
       <li class="list-group-item">
-        <span class="badge bg-secondary">{infoPokes?.toLocaleString() ?? '?'}</span>
+        <span class="badge text-bg-secondary">{infoPokes?.toLocaleString() ?? '?'}</span>
         Pokes Returned
       </li>
       <li class="list-group-item">
-        <span class="badge bg-secondary">{infoTicks?.toLocaleString() ?? '?'}</span>
+        <span class="badge text-bg-secondary">{infoTicks?.toLocaleString() ?? '?'}</span>
         Checks
       </li>
       <li class="list-group-item">
-        <span class="badge bg-secondary">{infoPokes == null || infoTicks == null ? '?' : (infoPokes * 100 / infoTicks).toFixed(4) + '%'}</span>
+        <span class="badge text-bg-secondary">{infoPokes == null || infoTicks == null ? '?' : (infoPokes * 100 / infoTicks).toFixed(4) + '%'}</span>
         Duty Cycle
       </li>
     </ul>

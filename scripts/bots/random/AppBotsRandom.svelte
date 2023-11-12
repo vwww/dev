@@ -81,9 +81,9 @@ p {
   {#each tweets as [tweetShort, tweetFull] (tweetShort)}
     <p transition:slide title={tweetFull}>
       {#if tweetFull}
-        <span class="badge bg-danger">{tweetFull.length}</span>
+        <span class="badge text-bg-danger">{tweetFull.length}</span>
       {:else}
-        <span class="badge bg-{tweetShort.length === TWEET_LEN ? 'success' : 'warning'}">{tweetShort.length}</span>
+        <span class="badge text-bg-{tweetShort.length === TWEET_LEN ? 'success' : 'warning'}">{tweetShort.length}</span>
       {/if}
       {tweetShort}
     </p>
