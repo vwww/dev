@@ -1,5 +1,5 @@
 <script lang="ts">
-import ChatState from './ChatState'
+import type ChatState from './ChatState'
 
 import { afterUpdate } from 'svelte'
 
@@ -15,7 +15,7 @@ let autoscroll: boolean | undefined = true
 
 let chatMessage = ''
 
-function checkAutoScroll () {
+function checkAutoScroll (): void {
   const newAutoscroll = autoscrollParent &&
     (autoscrollParent.offsetHeight + autoscrollParent.scrollTop) > (autoscrollParent.scrollHeight - 1)
   if (autoscroll !== newAutoscroll) {
@@ -24,7 +24,7 @@ function checkAutoScroll () {
   }
 }
 
-function doAutoScroll () {
+function doAutoScroll (): void {
   if (autoscroll) {
     autoscrollParent?.scrollTo(0, autoscrollParent.scrollHeight)
   }
@@ -32,12 +32,12 @@ function doAutoScroll () {
 
 afterUpdate(doAutoScroll)
 
-function sendInput () {
+function sendInput (): void {
   onInput(chatMessage)
   chatMessage = ''
 }
 
-function handleKeydown (event: KeyboardEvent) {
+function handleKeydown (event: KeyboardEvent): void {
   if (event.which === 13) {
     sendInput()
   }

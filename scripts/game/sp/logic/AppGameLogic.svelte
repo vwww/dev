@@ -44,13 +44,13 @@ function loadPreset (preset: Preset): void {
   $title = preset.name
   $description = preset.desc
   $clues = preset.clues.slice(0)
-  $puzzleTypes = preset.types.map((x) => ({...x}))
-  $puzzleRules = preset.rules.map((x) => ({...x}))
+  $puzzleTypes = preset.types.map((x) => ({ ...x }))
+  $puzzleRules = preset.rules.map((x) => ({ ...x }))
   $solution = preset.solution
 }
 
-fetch('logic.json')
-  .then(resp => resp.json())
+void fetch('logic.json')
+  .then((resp) => resp.json())
   .then((p: Record<string, Record<string, RawPreset>>) => {
     const sortedLogicKeys = Object.keys(p).sort()
     for (const presetKey of sortedLogicKeys) {
@@ -64,7 +64,7 @@ fetch('logic.json')
           num: puzzleKey,
           name: puzzle.name,
           desc: puzzle.desc.trim(),
-          clues: puzzle.clues.map(c => c.trim()),
+          clues: puzzle.clues.map((c) => c.trim()),
           types: puzzle.types || [],
           rules: puzzle.rules || [],
           solution: puzzle.solution,
@@ -92,14 +92,14 @@ fetch('logic.json')
   </div>
 
   <div class="col-lg-6 mb-2">
-    <h3>Clues <button class="btn btn-success mb-2" on:click={() => $clues = [...$clues, '']}>+</button></h3>
+    <h3>Clues <button class="btn btn-success mb-2" on:click={() => { $clues = [...$clues, ''] }}>+</button></h3>
 
     <ol>
       {#each $clues as clue, i}
         <li>
         <div class="input-group mb-3">
           <div class="input-group">
-            <textarea class="form-control" placeholder="Clue {i+1}" bind:value={clue} rows="2" />
+            <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={clue} rows="2" />
             <button class="btn btn-danger" on:click={() => {
               $clues.splice(i, 1)
               $clues = $clues
@@ -141,7 +141,7 @@ fetch('logic.json')
 
 <div class="row mb-2">
   <div class="col-sm-8 col-md-6">
-    <h2>Grid</h2>
+    <h2>Grids</h2>
     TODO
   </div>
   <div class="col-sm-4 col-md-6">
@@ -149,8 +149,8 @@ fetch('logic.json')
     TODO
     <!--
     Item Names
-    <p>Categories:</p> [add/delete buttons]
-    <p>Items:</p>
+    <p>Categories:</p> [num picker, up to 4]
+    <p>Items:</p> [num picker, up to 8]
 
     [name table]
 
@@ -185,7 +185,7 @@ fetch('logic.json')
               {/each}
             </td>
             <td>
-              <button on:click={() => loadPreset({...preset, solution: undefined})} class="btn btn-sm btn-outline-secondary" class:btn-outline-danger={!preset.rules.length}>Puzzle Only</button>
+              <button on:click={() => loadPreset({ ...preset, solution: undefined })} class="btn btn-sm btn-outline-secondary" class:btn-outline-danger={!preset.rules.length}>Puzzle Only</button>
               {#if preset.solution}
                 <button on:click={() => loadPreset(preset)} class="btn btn-sm btn-outline-primary">Answer</button>
               {/if}

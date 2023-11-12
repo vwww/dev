@@ -1,4 +1,5 @@
 {
+    "root": true,
     "env": {
         "browser": true,
         "es2021": true
@@ -17,7 +18,6 @@
     "parserOptions": {
         "ecmaVersion": 12,
         "sourceType": "module",
-        "extraFileExtensions": [".svelte"],
         "project": "./tsconfig.json"
     },
     "plugins": [
@@ -28,8 +28,19 @@
             "files": "*.svelte",
             "parser": "svelte-eslint-parser",
             "parserOptions": {
-                "parser": "@typescript-eslint/parser"
+                "parser": "@typescript-eslint/parser",
+                "extraFileExtensions": [
+                    ".svelte"
+                ]
             }
+        },
+        {
+            "files": "*.html",
+            "parser": "espree",
+            "plugins": [
+                "frontmatter",
+                "html"
+            ]
         }
     ],
     "ignorePatterns": [
@@ -88,6 +99,7 @@
                 "objectLiteralTypeAssertions": "never"
             }
         ],
+        "@typescript-eslint/no-confusing-void-expression": "off",
         "@typescript-eslint/no-floating-promises": "warn",
         "@typescript-eslint/no-misused-new": "error",
         "@typescript-eslint/no-unnecessary-qualifier": "error",
@@ -100,10 +112,6 @@
         "@typescript-eslint/no-inferrable-types": "warn",
         "@typescript-eslint/no-explicit-any": "warn",
         "@typescript-eslint/prefer-readonly": "warn",
-        "no-inner-declarations": [
-            "error",
-            "functions"
-        ],
         // Custom: workaround for sveltejs/eslint-plugin-svelte3#41
         "no-multiple-empty-lines": [
             "error",
@@ -118,6 +126,7 @@
         // Custom
         "comma-dangle": "off",
         "@typescript-eslint/comma-dangle": "off",
+        "no-labels": "off",
         "no-new": "off",
         "no-self-assign": "off", // svelte and .innerHTML self-assign hack
         "no-sequences": "off",

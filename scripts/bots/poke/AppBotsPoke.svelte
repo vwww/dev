@@ -1,9 +1,9 @@
 <script lang="ts">
 import Entry from './Entry.svelte'
 
-import { EntryInfo, parseEntry } from './EntryInfo'
-import { PokeInfo } from './PokeInfo'
-import { PokeSource } from './PokeSource'
+import { type EntryInfo, parseEntry } from './EntryInfo'
+import { type PokeInfo } from './PokeInfo'
+import { type PokeSource } from './PokeSource'
 import PokeSourceFirebase from './PokeSourceFirebase'
 
 import { pStore } from '@/util/svelte'
@@ -87,7 +87,7 @@ function updateInfo (pokes: number, ticks: number): void {
 }
 
 // Ready handler
-function onReady () {
+function onReady (): void {
   const pokeSource: PokeSource = new PokeSourceFirebase()
   pokeSource.onInfoUpdate(updateInfo)
   pokeSource.onPokeUpdate(updatePoke)
@@ -107,7 +107,7 @@ function onReady () {
 }
 
 // Resize handler
-function onResize () {
+function onResize (): void {
   Plotly.Plots.resize(Plotly.d3.select('#opponentPlot').node() as Plotly.Root)
 }
 </script>
@@ -141,7 +141,7 @@ function onResize () {
         Checks
       </li>
       <li class="list-group-item">
-        <span class="badge bg-secondary">{infoPokes == undefined || infoTicks == undefined ? '?' : (infoPokes * 100 / infoTicks).toFixed(4) + '%'}</span>
+        <span class="badge bg-secondary">{infoPokes == null || infoTicks == null ? '?' : (infoPokes * 100 / infoTicks).toFixed(4) + '%'}</span>
         Duty Cycle
       </li>
     </ul>
@@ -193,7 +193,7 @@ function onResize () {
   <div class="col-6">
     <h3>Recent Pokes</h3>
     <ol class="leaderboard">
-      {#each data2.filter(e => e.num >= $leaderboardMinPokes).slice(0, $leaderboardLimit || data2.length) as entry}
+      {#each data2.filter((e) => e.num >= $leaderboardMinPokes).slice(0, $leaderboardLimit || data2.length) as entry}
         <Entry {entry} tie={0} rankIndex={0} rankIndexOther={$leaderboardTie + 1} />
       {/each}
     </ol>
