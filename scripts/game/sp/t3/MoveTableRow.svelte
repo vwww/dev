@@ -32,7 +32,7 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
   const countPaths = remapPathCount(countPathsRaw, winnerMap)
   const countPath = countPaths[result]
 
-  const otherPossible = !((result !== 1 && countPaths[1]) || (result !== 2 && countPaths[2]) || (result !== 3 && countPaths[3]))
+  const otherPossible = (result !== 1 && countPaths[1]) || (result !== 2 && countPaths[2]) || (result !== 3 && countPaths[3])
   const entry = memoEntry[winnerMapToNum(winnerMap.map((w) => ((i ^ (w === result ? 0 : 1)) & 1) + 1) as WinnerMap)]
 
   const val = entry[0]
