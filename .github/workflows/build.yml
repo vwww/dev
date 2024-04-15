@@ -19,7 +19,7 @@ jobs:
         with:
           ruby-version: 2.7
       - run: bundle install
-      - run: npm ci
+      - run: npm ci --force
       - run: npm run build
       - name: Deploy
         working-directory: ./docs/_site
