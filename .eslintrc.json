@@ -11,8 +11,8 @@
         "plugin:@typescript-eslint/recommended-type-checked",
         // https://github.com/sveltejs/eslint-plugin-svelte/blob/main/src/configs/recommended.ts
         "plugin:svelte/recommended",
-        // https://github.com/standard/eslint-config-standard-with-typescript/blob/master/src/index.ts
-        "standard-with-typescript"
+        // https://github.com/mightyiam/eslint-config-love/blob/main/src/index.ts
+        "love"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
