@@ -26,4 +26,4 @@ Dependencies can be updated:
 - `package.json`: `npm up --save`
 - Vendored JS packages
   - `simperium`: `v0.1` (last updated: 2023-01-30)
-  - `PlayerIOClient`: `v3.9.0` from `PlayerIO SDK.s2fG8FIPhRjoY9VN8wEadg.zip` (last updated: 2023-01-30)
+  - `PlayerIOClient`: `v3.9.0` from `PlayerIO SDK.s2fG8FIPhRjoY9VN8wEadg.zip` (last updated: 2024-05-19)
