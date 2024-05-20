@@ -4,8 +4,8 @@ import * as d3 from 'd3'
 import { onMount } from 'svelte'
 import { pStore } from '@/util/svelte'
 
-import { ModData, ModInfo } from './modinfo'
-import { formatDelay, generateHistory, ModEvent } from './history'
+import { type ModData, type ModInfo } from './modinfo'
+import { formatDelay, generateHistory, type ModEvent } from './history'
 import { formatTime, generateData } from './data'
 
 import modsinfo from './modsinfo.json'
@@ -105,7 +105,7 @@ function render (): void {
   if ($showDaily && $showDailyTime) {
     const [dStart, dEnd] = xScale.domain().map(Number)
     if (dEnd - dStart <= 6912e7) { // 800 days
-      let t = new Date(dStart - (24 + 2)*60*60*1000) // assuming DST shifts up to a maximum of 2 hours
+      const t = new Date(dStart - (24 + 2) * 60 * 60 * 1000) // assuming DST shifts up to a maximum of 2 hours
       const [h, m] = $showDailyTime.split(':').map(Number)
       t.setHours(h)
       t.setMinutes(m)
@@ -178,7 +178,7 @@ function resizeHandler (): void {
 
   viz
     .attr('width', width)
-    .attr('height',  height)
+    .attr('height', height)
 
   xAxis
     .attr('transform', 'translate(0, ' + height + ')')
@@ -205,7 +205,7 @@ function resizeHandler (): void {
   render()
 }
 
-function init () {
+function init (): void {
   const chart = d3.select(chartNode)
 
   viz = chart.append('svg')
@@ -229,7 +229,7 @@ function init () {
   resizeHandler()
 }
 
-function setModEvent (m: ModEvent) {
+function setModEvent (m: ModEvent): void {
   modEvent = m
 
   const total = modEvent.infoActiveHours
@@ -268,7 +268,7 @@ function setModEvent (m: ModEvent) {
   }
 }
 
-async function loadInfo () {
+async function loadInfo (): Promise<void> {
   loading = true
   try {
     const resp = await fetch('https://starblast.io/modsinfo.json')
@@ -342,8 +342,8 @@ onMount(async function () {
 
 <div class="btn-group my-2 d-flex">
   <span class="input-group-text">Info Source</span>
-  <button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => useLive = false}>Offline (Cached)</button>
-  <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : useLive = true}>{loading ? '[Loading]' : 'Online'}</button>
+  <button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => (useLive = false)}>Offline (Cached)</button>
+  <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : (useLive = true)}>{loading ? '[Loading]' : 'Online'}</button>
 </div>
 
 <div class="row row-cols-md-auto g-3 align-items-center my-2">
@@ -411,7 +411,7 @@ onMount(async function () {
               {h.mod?.mod_id ?? ''}
             {:else}
               <span class="badge text-bg-{h.prop === 'active' || h.prop === 'featured'
-                  ? h.oldVal == (h.prop === 'active') ? 'danger' : 'primary'
+                  ? h.oldVal === (h.prop === 'active') ? 'danger' : 'primary'
                   : h.prop === 'active_duration'
                     ? 'warning'
                     : 'secondary'}">
@@ -444,7 +444,7 @@ onMount(async function () {
         <td>{title}</td>
         <td>{mod_id}</td>
         <td class={className}>
-          {#if typeof timings == 'string'}
+          {#if typeof timings === 'string'}
             {timings}
           {:else}
             {#each timings as t, i}
