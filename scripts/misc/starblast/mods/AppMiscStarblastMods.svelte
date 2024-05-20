@@ -320,14 +320,19 @@ onMount(async function () {
   <span class="input-group-text">Navigate</span>
 
   <button class="w-50 btn btn-outline-secondary"
+    title="Previous cycle at same time of day"
     on:click={() => panShift(-modEventLCM)}>&laquo;</button>
   <button class="w-75 btn btn-outline-secondary"
+    title="Previous cycle"
     on:click={() => panShift(-modEvent.infoActiveHours)}>&lsaquo;</button>
   <button class="w-100 btn btn-outline-secondary"
+    title="Jump to current time"
     on:click={() => panShift(0)}>Reset</button>
   <button class="w-75 btn btn-outline-secondary"
+    title="Next cycle"
     on:click={() => panShift(modEvent.infoActiveHours)}>&rsaquo;</button>
   <button class="w-50 btn btn-outline-secondary"
+    title="Next cycle at same time of day"
     on:click={() => panShift(modEventLCM)}>&raquo;</button>
 </div>
 
