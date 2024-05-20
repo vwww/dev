@@ -42,7 +42,7 @@
     "concurrently": "^8.2.2",
     "css-loader": "^7.1.1",
     "eslint": "^8.57.0",
-    "eslint-config-love": "^47.0.0",
+    "eslint-config-love": "^48.0.0",
     "eslint-plugin-frontmatter": "^0.0.8",
     "eslint-plugin-html": "^8.1.1",
     "eslint-plugin-import": "^2.29.1",
