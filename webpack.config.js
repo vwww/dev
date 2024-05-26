@@ -16,6 +16,8 @@ for (let e of fg.sync('*.scss', { cwd: path.resolve(__dirname, 'styles') })) {
   entry[e.slice(0, -5) + '.css'] = './styles/' + e
 }
 
+const mainFields = ['svelte', 'browser', 'module', 'main']
+
 module.exports = {
   mode: devMode ? 'development' : 'production',
   entry,
@@ -66,12 +68,12 @@ module.exports = {
     ],
   },
   resolve: {
-    plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })],
+    plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.json", mainFields })],
     extensions: [ '.ts', '.mjs', '.js', '.svelte' ],
     alias: {
       svelte: path.resolve('node_modules', 'svelte/src/runtime'),
     },
-    mainFields: ['svelte', 'browser', 'module', 'main'],
+    mainFields,
     conditionNames: ['svelte', 'import', 'require'],
     fallback: {
       "http": false,
