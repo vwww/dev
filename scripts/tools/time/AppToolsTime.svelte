@@ -16,6 +16,10 @@ let chartNodeL: HTMLDivElement
 let chartNodeC: HTMLDivElement
 let chartNodeQ: HTMLDivElement
 
+function scaleChecked (scale: d3.ScaleContinuousNumeric<number, number, never>, val: number): number {
+  return val < scale.domain()[0] ? -1 : scale(val)
+}
+
 function init () {
   const scaleR = d3.scaleLinear()
   const scaleS = d3.scaleSqrt()
@@ -25,13 +29,19 @@ function init () {
   const colorScale = d3.schemeCategory10
 
   function updateHover (age: number) {
-    for (const { scale, hoverLine } of charts) {
-      const x = scale(age)
+    for (const { scale, hoverLineTop, hoverLine } of charts) {
+      const xR = scaleR(age)
+      const x = scaleChecked(scale, age)
+      hoverLineTop
+        .attr('x1', xR)
+        .attr('x2', xR)
       hoverLine
         .attr('x1', x)
         .attr('x2', x)
     }
   }
+
+  const xAxisGenerator0 = d3.axisTop(scaleR)
 
   const charts = ([
       [chartNodeR, scaleR, 0],
@@ -42,17 +52,14 @@ function init () {
     ] as [HTMLDivElement, d3.ScaleContinuousNumeric<number, number>, number][]).map(([chart, scale, lowerBound]) => {
       const chartD3 = d3.select(chart)
       const viz = chartD3.append('svg')
-      const groupBars = viz.append('g')
-      const xAxisGenerator = d3.axisBottom(scale)
+      const xAxisGenerator1 = d3.axisBottom(scale)
 
       scale.domain([lowerBound, 2])
 
-      viz.on('mousemove', (event) => updateHover(scale.invert(d3.pointer(event)[0])))
-
-      const xAxis = viz.append('g')
-        .classed('axis', true)
-        .attr('transform', 'translate(0, 30)')
-        .call(xAxisGenerator)
+      viz.on('mousemove', (event) => {
+        const [mx, my] = d3.pointer(event)
+        updateHover((my < 40 ? scaleR : scale).invert(mx))
+      })
 
       return {
         chart,
@@ -60,23 +67,45 @@ function init () {
         lowerBound,
         chartD3,
         viz,
-        groupBars,
-        xAxisGenerator,
-        xAxis,
-        ageLine: viz.append('line')
+        groupBars: viz.append('g'),
+        lineChart0: viz.append('path'),
+        lineChart1: viz.append('path'),
+        xAxisGenerator0,
+        xAxisTop: viz.append('g')
+          .classed('axis', true)
+          .attr('transform', 'translate(0, 20)')
+          .call(xAxisGenerator0),
+        xAxisGenerator1,
+        xAxis: viz.append('g')
+          .classed('axis', true)
+          .attr('transform', 'translate(0, 60)')
+          .call(xAxisGenerator1),
+        ageLineTop: viz.append('line')
           .attr('y1', 0)
-          .attr('y2', 100)
+          .attr('y2', 40)
+          .style('stroke', 'red'),
+        hoverLineTop: viz.append('line')
+          .attr('y1', 0)
+          .attr('y2', 40)
+          .style('stroke', 'black'),
+        ageLine: viz.append('line')
+          .attr('y1', 40)
+          .attr('y2', 80)
           .style('stroke', 'red'),
         hoverLine: viz.append('line')
-          .attr('y1', 0)
-          .attr('y2', 100)
-          .style('stroke', 'black')
+          .attr('y1', 40)
+          .attr('y2', 80)
+          .style('stroke', 'black'),
       }
     })
 
   updateCurHandler = function () {
-    for (const { scale, ageLine } of charts) {
-      const x = scale($curAge)
+    for (const { scale, ageLineTop, ageLine } of charts) {
+      const xR = scaleR($curAge)
+      const x = scaleChecked(scale, $curAge)
+      ageLineTop
+        .attr('x1', xR)
+        .attr('x2', xR)
       ageLine
         .attr('x1', x)
         .attr('x2', x)
@@ -86,10 +115,34 @@ function init () {
   updateMaxHandler = function () {
     const years = [...Array($maxAge).keys()]
 
-    for (const { scale, lowerBound, groupBars, xAxisGenerator, xAxis } of charts) {
-      scale.domain([scale.domain()[0], $maxAge])
+    for (const { scale, lowerBound, groupBars, lineChart0, lineChart1, xAxisTop, xAxisGenerator1, xAxis } of charts) {
+      scale.domain([lowerBound, $maxAge])
 
-      xAxisGenerator
+      const width = scale.range()[1]
+      const skip = scaleR(lowerBound)
+
+      const lineChartDatum0 = Array(Math.floor(width + 1 - skip)).fill(undefined).map((_, i) => [skip + i, 40 - 20 * scale(scaleR.invert(skip + i)) / width])
+      const lineChartDatum1 = Array(Math.floor(width + 1)).fill(undefined).map((_, i) => [i, 60 - 20 * scale.invert(i) / $maxAge])
+
+      lineChart0
+        .datum(lineChartDatum0)
+        .attr('fill', 'none')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 1.5)
+        .attr('d', d3.line())
+
+      lineChart1
+        .datum(lineChartDatum1)
+        .attr('fill', 'none')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 1.5)
+        .attr('d', d3.line())
+
+      xAxisGenerator0
+        .scale(scaleR)
+        (xAxisTop)
+
+      xAxisGenerator1
         .scale(scale)
         (xAxis)
 
@@ -97,7 +150,7 @@ function init () {
         .data(years.slice(lowerBound))
         .join('rect')
           .attr('x', (d) => scale(d))
-          .attr('y', 10)
+          .attr('y', 40)
           .attr('width', (d) => scale(d + 1) - scale(d))
           .attr('height', 20)
           .attr('fill', (d) => colorScale[d % colorScale.length])
@@ -131,7 +184,7 @@ onMount(init)
 <style>
 .chart {
   width: 100%;
-  height: 50px;
+  height: 80px;
   background: #eee;
   display: flex;
   align-items: center;
@@ -144,7 +197,7 @@ onMount(init)
   <div class="col-sm-6 mb-1">
     <div class="input-group">
       <span class="input-group-text">Current Age: </span>
-      <input type="number" class="form-control" bind:value={$curAge} min="1" on:change={() => updateCurHandler?.()}>
+      <input type="number" class="form-control" bind:value={$curAge} min="0" on:change={() => updateCurHandler?.()}>
     </div>
   </div>
   <div class="col-sm-6 mb-3">
@@ -155,7 +208,7 @@ onMount(init)
   </div>
 </div>
 
-<h1>Real Time</h1>
+<h1>Real Time (Linear)</h1>
 <p>This is a linear scale, representing real time.</p>
 <div class="chart" bind:this={chartNodeR}></div>
 
