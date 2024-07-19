@@ -1,5 +1,5 @@
 import Highcharts from 'highcharts'
-import { CHARS, ChartBase, VOWELS } from './Chart'
+import { CHARS, type ChartBase, VOWELS } from './Chart'
 
 const defaultColors = Highcharts.getOptions().colors!
 

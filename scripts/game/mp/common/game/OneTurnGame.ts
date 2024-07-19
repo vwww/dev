@@ -1,5 +1,5 @@
 import { ByteReader } from './ByteReader'
-import { TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'
+import { type TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'
 
 export interface OneTurnClient extends TurnBasedClient {
 }

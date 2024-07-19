@@ -1,4 +1,4 @@
-import { checkWin, numToWinnerMap, occupied, remapWin, WinnerMap, winnerMapInvert, winnerMapToNum, WINNER_MAP_MAX } from './game'
+import { checkWin, numToWinnerMap, occupied, remapWin, type WinnerMap, winnerMapInvert, winnerMapToNum, WINNER_MAP_MAX } from './game'
 
 export type MemoEntryWin = [value: number]
 export type MemoEntryRegular = [bestValue: number, moves: number[], countPathForced: number, countPathForcedNoTiming: number]

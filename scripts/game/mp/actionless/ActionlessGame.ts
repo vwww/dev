@@ -1,6 +1,6 @@
 import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
-import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame'
+import { type OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame'
 
 interface AClient extends OneTurnClient {
   wins: number

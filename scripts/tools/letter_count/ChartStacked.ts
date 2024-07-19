@@ -1,4 +1,4 @@
-import { CHARS, ChartBase } from './Chart'
+import { CHARS, type ChartBase } from './Chart'
 
 export const ChartStacked: ChartBase = {
   type: 'bar',

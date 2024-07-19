@@ -1,8 +1,8 @@
 import $ from 'jquery'
 import 'timeago'
 
-import { PokeInfo, TaggedPokeInfo } from './bots/poke/PokeInfo'
-import { PokeSource } from './bots/poke/PokeSource'
+import type { PokeInfo, TaggedPokeInfo } from './bots/poke/PokeInfo'
+import type { PokeSource } from './bots/poke/PokeSource'
 import PokeSourceFirebase from './bots/poke/PokeSourceFirebase'
 
 // Handle updated poke data

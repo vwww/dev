@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { gcd, sum } from '@/util'
 import { formatTimeISO } from './data'
-import { getActive, getFeatured, ModData, ModDataKeys, ModInfo } from './modinfo'
+import { getActive, getFeatured, type ModData, ModDataKeys, type ModInfo } from './modinfo'
 
 const SB_INIT_TIME = 1479772800000
 const SB_CACHE_TIME = 1690052400000

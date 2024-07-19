@@ -1,4 +1,4 @@
-import { RandomAlgo, randomRange } from './common'
+import { type RandomAlgo, randomRange } from './common'
 
 const N = 624
 const M = 397

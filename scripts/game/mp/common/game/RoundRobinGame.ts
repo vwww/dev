@@ -1,7 +1,7 @@
 import { valueStore } from '@/util/svelte'
 import { ByteReader } from './ByteReader'
 import { CommonGame } from './CommonGame'
-import { TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'
+import { type TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'
 
 export interface RRTurnClient extends TurnBasedClient {
 }

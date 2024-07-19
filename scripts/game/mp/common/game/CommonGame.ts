@@ -1,6 +1,6 @@
 import { valueStore } from '@/util/svelte'
 import ChatState from '../ChatState'
-import { BaseGameRoom } from '../remote/BaseGameRoom'
+import type { BaseGameRoom } from '../remote/BaseGameRoom'
 import { ByteReader } from './ByteReader'
 import { ByteWriter } from './ByteWriter'
 

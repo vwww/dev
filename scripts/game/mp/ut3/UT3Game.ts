@@ -4,7 +4,7 @@ import { isFull, isNearWin, isWin } from '@gc/t3/game'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { TurnC2S } from '@gmc/game/TurnBasedGame'
-import { TPTurnClient, TPTurnGame } from '@gmc/game/TwoPlayerGame'
+import { type TPTurnClient, TPTurnGame } from '@gmc/game/TwoPlayerGame'
 
 interface UT3Client extends TPTurnClient { }
 

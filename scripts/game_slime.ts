@@ -1,10 +1,10 @@
 import { Game } from './game/mp/slime/Game'
-import { IConnector } from './game/mp/slime/net/IConnector'
-import { IConnectorCallbacks } from './game/mp/slime/net/IConnectorCallbacks'
+import type { IConnector } from './game/mp/slime/net/IConnector'
+import type { IConnectorCallbacks } from './game/mp/slime/net/IConnectorCallbacks'
 import { PlayerIOConnector } from './game/mp/slime/net/PlayerIOConnector'
 // import { WebSocketConnector } from './game/slime/net/WebSocketConnector'
 import { GameDrawer } from './game/mp/slime/ui/GameDrawer'
-import { ISlimeUICallbacks } from './game/mp/slime/ui/IConnectorCallbacks'
+import type { ISlimeUICallbacks } from './game/mp/slime/ui/IConnectorCallbacks'
 import { SlimeUI } from './game/mp/slime/ui/SlimeUI'
 import { $ready } from './util'
 

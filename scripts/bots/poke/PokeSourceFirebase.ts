@@ -1,7 +1,7 @@
-import { PokeInfo } from './PokeInfo'
-import { PokeSource } from './PokeSource'
+import type { PokeInfo } from './PokeInfo'
+import type { PokeSource } from './PokeSource'
 
-import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app'
+import { type FirebaseApp, type FirebaseOptions, initializeApp } from 'firebase/app'
 import { getDatabase, ref, onValue } from 'firebase/database'
 
 export default class PokeSourceFirebase implements PokeSource {

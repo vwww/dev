@@ -1,5 +1,5 @@
-import { BaseGameRoom, DiscCallback, MsgCallback } from '../BaseGameRoom'
-import { Connection } from '../ConnectionManager'
+import type { BaseGameRoom, DiscCallback, MsgCallback } from '../BaseGameRoom'
+import type { Connection } from '../ConnectionManager'
 
 /**
  * Wrapper for PlayerIO.connection with promises.

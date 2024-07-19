@@ -1,5 +1,5 @@
-import { PokeInfo } from './PokeInfo'
-import { PokeSource } from './PokeSource'
+import type { PokeInfo } from './PokeInfo'
+import type { PokeSource } from './PokeSource'
 
 import '@/vendor/simperium-v0.1.js'
 

@@ -1,6 +1,6 @@
 import Highcharts from 'highcharts'
 
-import { CHARS, ChartBase } from './Chart'
+import { CHARS, type ChartBase } from './Chart'
 
 const pieColors = [
   '#1f8fa1', // dark sea blue

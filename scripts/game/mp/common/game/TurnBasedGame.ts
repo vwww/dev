@@ -1,7 +1,7 @@
 import { valueStore } from '@/util/svelte'
 import { ByteReader } from './ByteReader'
 import { ByteWriter } from './ByteWriter'
-import { BaseClient, CommonC2S, CommonGame, CommonS2C } from './CommonGame'
+import { type BaseClient, CommonC2S, CommonGame, CommonS2C } from './CommonGame'
 
 export interface TurnBasedClient extends BaseClient {
   ready: boolean

@@ -1,4 +1,4 @@
-import { PokeInfo } from './PokeInfo'
+import type { PokeInfo } from './PokeInfo'
 
 export interface PokeSource {
   onInfoUpdate (updateInfo: (pokes: number, ticks: number) => void): () => void

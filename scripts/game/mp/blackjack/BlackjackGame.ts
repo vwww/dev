@@ -1,7 +1,7 @@
 import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { RRTurnClient, RRTurnDiscInfo, RRTurnGame, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame'
+import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame'
 import { TurnC2S } from '@gmc/game/TurnBasedGame'
 
 interface BClient extends RRTurnClient {

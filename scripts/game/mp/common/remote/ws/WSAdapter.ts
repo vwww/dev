@@ -1,5 +1,5 @@
-import { BaseGameRoom, DiscCallback, MsgCallback } from '../BaseGameRoom'
-import { Connection } from '../ConnectionManager'
+import type { BaseGameRoom, DiscCallback, MsgCallback } from '../BaseGameRoom'
+import type { Connection } from '../ConnectionManager'
 
 export class WSAdapter implements BaseGameRoom, Connection {
   private readonly msgCallbacks: MsgCallback[] = []

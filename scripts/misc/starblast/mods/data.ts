@@ -1,6 +1,6 @@
 import { schemeCategory10 as colorScale } from 'd3'
 
-import { ModEvent, ModHistory } from './history'
+import type { ModEvent, ModHistory } from './history'
 import { ModDataKeys } from './modinfo'
 
 export interface Data {

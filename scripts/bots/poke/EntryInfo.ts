@@ -1,4 +1,4 @@
-import { PokeInfo, TaggedPokeInfo } from './PokeInfo'
+import type { PokeInfo, TaggedPokeInfo } from './PokeInfo'
 
 export const enum TieType {
   NONE,
