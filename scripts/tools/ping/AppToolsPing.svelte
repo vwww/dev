@@ -34,7 +34,6 @@ function start () {
     jQuery.ajax({
       url,
       method: 'HEAD',
-      headers: { 'Cache-Control': 'no-cache' },
     })
       .done(doneCallback)
       .fail(doneCallback)
