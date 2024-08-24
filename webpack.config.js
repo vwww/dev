@@ -16,7 +16,7 @@ for (let e of fg.sync('*.scss', { cwd: path.resolve(__dirname, 'styles') })) {
   entry[e.slice(0, -5) + '.css'] = './styles/' + e
 }
 
-const mainFields = ['svelte', 'browser', 'module', 'main']
+const mainFields = ['svelte', '...']
 
 module.exports = {
   mode: devMode ? 'development' : 'production',
