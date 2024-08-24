@@ -74,7 +74,7 @@ module.exports = {
       svelte: path.resolve('node_modules', 'svelte/src/runtime'),
     },
     mainFields,
-    conditionNames: ['svelte', 'import', 'require'],
+    conditionNames: ['svelte', '...'],
     fallback: {
       'http': false,
       'https': false,
