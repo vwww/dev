@@ -88,8 +88,12 @@ function showProblem (num: number): void {
   jQuery(problemTab).tab('show')
 }
 
+const blankFileLink = document.createElement('a')
+blankFileLink.href = 'data:application/octet-stream,'
+blankFileLink.download = 'submission'
+
 function downloadBlankFile (): void {
-  location.assign(URL.createObjectURL(new File([], 'submission', { type: 'application/octet-stream' })))
+  blankFileLink.click()
 }
 
 // hack to make Bootstrap's jQuery.fn.tab work
