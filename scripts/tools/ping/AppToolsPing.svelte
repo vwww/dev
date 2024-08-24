@@ -83,18 +83,12 @@ function stop () {
       {/if}
     </div>
   </div>
-  <div class="col-6">
-    <h3>Ping Stats</h3>
-    {#if rsPing}
-      <RollingStatsDisplay stats={rsPing} />
+  <div class="col-12">
+    <h3>Results</h3>
+    {#if rsPing && rsJitter}
+      <RollingStatsDisplay stats={[['Ping', rsPing], ['Jitter', rsJitter]]} />
     {:else}
       Click Start!
-    {/if}
-  </div>
-  <div class="col-6">
-    <h3>Jitter Stats</h3>
-    {#if rsJitter}
-      <RollingStatsDisplay stats={rsJitter} />
     {/if}
   </div>
 </div>
