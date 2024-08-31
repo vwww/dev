@@ -13,8 +13,8 @@ $: avgFreq = $sumFreq / $intervalCount
 function addEvent () {
   if (++$intervalCount) {
     const now = Date.now()
-    $prevTime = now
     $lastDelay = now - $prevTime
+    $prevTime = now
     $sumTime = now - $startTime
     $sumFreq += 1 / $lastDelay
   } else {
