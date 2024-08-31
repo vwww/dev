@@ -107,19 +107,21 @@ if (process.env.NODE_ENV !== 'production') {
 function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
 </script>
 
-<label class="w-100">
-  Load stage
-  <input type="number"
-    class="form-control"
-    min="101" max={BOARDS.length + 100}
-    on:change={onBoardChange}
-    bind:value={$gridLevel}>
-  <input type="range"
-    class="form-range"
-    min="101" max={BOARDS.length + 100}
-    on:change={onBoardChange}
-    bind:value={$gridLevel}>
-</label>
+<div class="row">
+  <div class="col-8 col-sm-9 col-md-10">
+    <input type="number"
+      class="form-control"
+      min="101" max={BOARDS.length + 100}
+      bind:value={$gridLevel}>
+    <input type="range"
+      class="form-range"
+      min="101" max={BOARDS.length + 100}
+      bind:value={$gridLevel}>
+  </div>
+  <div class="col-4 col-sm-3 col-md-2">
+    <button class="btn btn-primary w-100" on:click={onBoardChange}>Load Stage</button>
+  </div>
+</div>
 
 <textarea class="form-control mb-3" bind:value={gridTextTxt} on:change={() => loadString(gridTextTxt)} maxlength="280" placeholder="Grid string"></textarea>
 
