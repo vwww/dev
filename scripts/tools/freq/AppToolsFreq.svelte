@@ -1,8 +1,6 @@
 <script lang="ts">
 import { pStore } from '@/util/svelte'
 
-const avgByTime = pStore('tool/freq/avgByTime', true)
-
 const intervalCount = pStore('tool/freq/intervalCount', -1)
 const startTime = pStore('tool/freq/startTime', 0)
 const lastTime = pStore('tool/freq/lastTime', 0)
@@ -29,18 +27,6 @@ function resetEvents () {
 }
 </script>
 
-<div class="my-2">
-  <b class="me-3">Average by</b>
-  <label class="form-check form-check-inline">
-    <input type="radio" class="form-check-input" bind:group={$avgByTime} value={true}>
-    <span class="form-check-label">Time</span>
-  </label>
-  <label class="form-check form-check-inline">
-    <input type="radio" class="form-check-input" bind:group={$avgByTime} value={false}>
-    <span class="form-check-label">Frequency</span>
-  </label>
-</div>
-
 <div class="btn-group d-flex mb-3" role="group">
   <button on:click={addEvent} class="btn btn-outline-primary">Add Event</button>
   <button on:click={resetEvents} class="btn btn-outline-secondary">Reset</button>
@@ -51,41 +37,47 @@ function resetEvents () {
 {:else if !$intervalCount}
   <h2>Add another event!</h2>
 {:else}
-  <div class="row">
-    <div class="col-12 col-md-6">
-      <h2 class="result">
-        {#if $avgByTime}
-          <span>{$intervalCount} interval{$intervalCount === 1 ? '' : 's'} over {($eventTime / 1000).toFixed(3)} s</span><br>
-          <span>{(60000 / $eventAvgTime).toFixed(3)}</span>/min<br>
-          <span>{(1000 / $eventAvgTime).toFixed(3)}</span>/s<br>
-          <span>{(0.001 * $eventAvgTime).toFixed(3)} s/interval</span>
-        {:else}
-          <span>{(1000 * $intervalCount / $eventAvgTime).toFixed(3)}/s over {$intervalCount} interval{$intervalCount === 1 ? '' : 's'}</span><br>
-          <span>{(60000 * $eventAvgFreq).toFixed(3)}</span>/min<br>
-          <span>{(1000 * $eventAvgFreq).toFixed(3)}</span>/s<br>
-          <span>{(0.001 / $eventAvgFreq).toFixed(3)} s/interval</span>
-        {/if}
-      </h2>
-    </div>
-    <div class="col-12 col-md-6">
-      <h2 class="result">
-        <span>Last interval over {($lastDelay / 1000).toFixed(3)} s</span><br>
-        <span>{(60000 / $lastDelay).toFixed(3)}</span>/min<br>
-        <span>{(1000 / $lastDelay).toFixed(3)}</span>/s<br>
-        <span>{(0.001 * $lastDelay).toFixed(3)} s</span>
-      </h2>
-    </div>
-  </div>
+<table class="table table-striped table-bordered table-hover caption-top w-auto">
+  <caption>Count of intervals = {$intervalCount}</caption>
+  <thead>
+    <tr>
+      <th scope="col">Quantity</th>
+      <th scope="col">s</th>
+      <th scope="col">/s</th>
+      <th scope="col">/min</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Last</th>
+      <td class="text-end">{(0.001 * $lastDelay).toFixed(3)}</td>
+      <td class="text-end">{(1000 / $lastDelay).toFixed(3)}</td>
+      <td class="text-end">{(60000 / $lastDelay).toFixed(3)}</td>
+    </tr>
+    <tr>
+      <th scope="row">Avg Time</th>
+      <td class="text-end">{(0.001 * $eventAvgTime).toFixed(3)}</td>
+      <td class="text-end">{(1000 / $eventAvgTime).toFixed(3)}</td>
+      <td class="text-end">{(60000 / $eventAvgTime).toFixed(3)}</td>
+    </tr>
+    <tr>
+      <th scope="row">Avg Freq</th>
+      <td class="text-end">{(0.001 / $eventAvgFreq).toFixed(3)}</td>
+      <td class="text-end">{(1000 * $eventAvgFreq).toFixed(3)}</td>
+      <td class="text-end">{(60000 * $eventAvgFreq).toFixed(3)}</td>
+    </tr>
+    <tr>
+      <th scope="row">Sum Time</th>
+      <td class="text-end">{(0.001 * $eventTime).toFixed(3)}</td>
+      <td class="text-end">{(1000 / $eventTime).toFixed(3)}</td>
+      <td class="text-end">{(60000 / $eventTime).toFixed(3)}</td>
+    </tr>
+    <tr>
+      <th scope="row">Sum Freq</th>
+      <td class="text-end"></td>
+      <td class="text-end">{(1000 * $intervalCount / $eventAvgTime).toFixed(3)}</td>
+      <td class="text-end">{(60000 * $intervalCount / $eventAvgTime).toFixed(3)}</td>
+    </tr>
+  </tbody>
+</table>
 {/if}
-
-{#if $avgByTime}
-  <p>Average time shown = <code>(sum of time) / count</code>; average frequency = <code>1/(average time)</code></p>
-{:else}
-  <p>Average frequency shown = <code>(sum of frequency) / count</code>; average time = <code>1/(average frequency)</code></p>
-{/if}
-
-<p>Averaging time (frequency = <code>1/(average time)</code>) and averaging frequency (time = <code>1/(average frequency)</code>) are related by harmonic means.</p>
-
-<style>
-.result { font-family: monospace }
-</style>
