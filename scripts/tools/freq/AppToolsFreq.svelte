@@ -74,9 +74,9 @@ function resetEvents () {
     </tr>
     <tr>
       <th scope="row">Sum Freq</th>
-      <td class="text-end"></td>
-      <td class="text-end">{(1000 * $intervalCount / $eventAvgTime).toFixed(3)}</td>
-      <td class="text-end">{(60000 * $intervalCount / $eventAvgTime).toFixed(3)}</td>
+      <td class="text-end">{(0.001 / ($eventAvgFreq * $intervalCount)).toFixed(3)}</td>
+      <td class="text-end">{(1000 * $eventAvgFreq * $intervalCount).toFixed(3)}</td>
+      <td class="text-end">{(60000 * $eventAvgFreq * $intervalCount).toFixed(3)}</td>
     </tr>
   </tbody>
 </table>
