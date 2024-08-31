@@ -1,7 +1,7 @@
 <script lang="ts">
 import boards from './boards.txt'
 
-import FillTable, { CellInfo } from './FillTable.svelte'
+import FillTable, { type CellInfo } from './FillTable.svelte'
 
 import { Solver } from './Solver'
 import { pStore } from '@/util/svelte'
@@ -107,10 +107,19 @@ if (process.env.NODE_ENV !== 'production') {
 function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
 </script>
 
-<div class="input-group mb-2">
-  <span class="input-group-text">Load level</span>
-  <input type="number" on:change={onBoardChange} min="101" max={BOARDS.length + 100} bind:value={$gridLevel} class="form-control">
-</div>
+<label class="w-100">
+  Load stage
+  <input type="number"
+    class="form-control"
+    min="101" max={BOARDS.length + 100}
+    on:change={onBoardChange}
+    bind:value={$gridLevel}>
+  <input type="range"
+    class="form-range"
+    min="101" max={BOARDS.length + 100}
+    on:change={onBoardChange}
+    bind:value={$gridLevel}>
+</label>
 
 <textarea class="form-control mb-3" bind:value={gridTextTxt} on:change={() => loadString(gridTextTxt)} maxlength="280" placeholder="Grid string"></textarea>
 

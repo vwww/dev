@@ -1,7 +1,7 @@
 <script lang="ts">
 import boards from './boards.json'
 
-import FillTable, { CellInfo } from './FillTable.svelte'
+import FillTable, { type CellInfo } from './FillTable.svelte'
 import { DELTA, MoveType } from './Move'
 import { pStore } from '@/util/svelte'
 
@@ -41,17 +41,33 @@ const gridStage = pStore('game/sp/fill/browse/gridStage', 1)
 $: cells = generateCells(($gridLevel - 1) * 100 + $gridStage - 1)
 </script>
 
-<div class="input-group mb-5">
-  <span class="input-group-text">Level</span>
-  <input type="number"
-    class="form-control"
-    min="1" max={BOARDS.length / 100}
-    bind:value={$gridLevel} >
-  <span class="input-group-text">Stage</span>
-  <input type="number"
-    class="form-control"
-    min="1" max="100"
-    bind:value={$gridStage} >
+<div class="row">
+  <div class="col-12 col-md-6">
+    <label class="w-100">
+      Level
+      <input type="number"
+        class="form-control"
+        min="1" max={BOARDS.length / 100}
+        bind:value={$gridLevel}>
+      <input type="range"
+        class="form-range"
+        min="1" max={BOARDS.length / 100}
+        bind:value={$gridLevel}>
+    </label>
+  </div>
+  <div class="col-12 col-md-6">
+    <label class="w-100">
+      Stage
+      <input type="number"
+        class="form-control"
+        min="1" max="100"
+        bind:value={$gridStage}>
+      <input type="range"
+        class="form-range"
+        min="1" max="100"
+        bind:value={$gridStage}>
+    </label>
+  </div>
 </div>
 
 <FillTable {cells} />
