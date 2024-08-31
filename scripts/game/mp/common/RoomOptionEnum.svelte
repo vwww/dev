@@ -1,5 +1,5 @@
 <script lang="ts">
-import { OptionStoreEnum } from './RoomOption.svelte'
+import type { OptionStoreEnum } from './RoomOption.svelte'
 
 export let option: OptionStoreEnum[0]
 export let store: OptionStoreEnum[1]

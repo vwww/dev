@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-import { ValueStore } from '@/util/svelte'
+import type { ValueStore } from '@/util/svelte'
 
 export type Options<T, K extends string, E extends unknown[] = []> = readonly [id: string, type: K, defaultValue: T, name: string, description: string, ...rest: E]
 export type OptionsBool = Options<boolean, 'b'>
