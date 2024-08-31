@@ -3,22 +3,22 @@ import { pStore } from '@/util/svelte'
 
 const intervalCount = pStore('tool/freq/intervalCount', -1)
 const startTime = pStore('tool/freq/startTime', 0)
-const lastTime = pStore('tool/freq/lastTime', 0)
+const prevTime = pStore('tool/freq/prevTime', 0)
 const lastDelay = pStore('tool/freq/lastDelay', 0)
-const eventTime = pStore('tool/freq/eventTime', 0)
-const eventAvgTime = pStore('tool/freq/eventAvgTime', 0)
-const eventAvgFreq = pStore('tool/freq/eventAvgFreq', 0)
+const sumTime = pStore('tool/freq/sumTime', 0)
+const sumFreq = pStore('tool/freq/sumFreq', 0)
+$: avgTime = $sumTime / $intervalCount
+$: avgFreq = $sumFreq / $intervalCount
 
 function addEvent () {
   if (++$intervalCount) {
     const now = Date.now()
-    $eventTime = now - $startTime
-    $eventAvgTime = $eventTime / $intervalCount
-    $lastDelay = now - $lastTime
-    $eventAvgFreq += (1 / $lastDelay - $eventAvgFreq) / $intervalCount
-    $lastTime = now
+    $prevTime = now
+    $lastDelay = now - $prevTime
+    $sumTime = now - $startTime
+    $sumFreq += 1 / $lastDelay
   } else {
-    $startTime = $lastTime = Date.now()
+    $startTime = $prevTime = Date.now()
   }
 }
 
@@ -56,27 +56,27 @@ function resetEvents () {
     </tr>
     <tr>
       <th scope="row">Avg Time</th>
-      <td class="text-end">{(0.001 * $eventAvgTime).toFixed(3)}</td>
-      <td class="text-end">{(1000 / $eventAvgTime).toFixed(3)}</td>
-      <td class="text-end">{(60000 / $eventAvgTime).toFixed(3)}</td>
+      <td class="text-end">{(0.001 * avgTime).toFixed(3)}</td>
+      <td class="text-end">{(1000 / avgTime).toFixed(3)}</td>
+      <td class="text-end">{(60000 / avgTime).toFixed(3)}</td>
     </tr>
     <tr>
       <th scope="row">Avg Freq</th>
-      <td class="text-end">{(0.001 / $eventAvgFreq).toFixed(3)}</td>
-      <td class="text-end">{(1000 * $eventAvgFreq).toFixed(3)}</td>
-      <td class="text-end">{(60000 * $eventAvgFreq).toFixed(3)}</td>
+      <td class="text-end">{(0.001 / avgFreq).toFixed(3)}</td>
+      <td class="text-end">{(1000 * avgFreq).toFixed(3)}</td>
+      <td class="text-end">{(60000 * avgFreq).toFixed(3)}</td>
     </tr>
     <tr>
       <th scope="row">Sum Time</th>
-      <td class="text-end">{(0.001 * $eventTime).toFixed(3)}</td>
-      <td class="text-end">{(1000 / $eventTime).toFixed(3)}</td>
-      <td class="text-end">{(60000 / $eventTime).toFixed(3)}</td>
+      <td class="text-end">{(0.001 * $sumTime).toFixed(3)}</td>
+      <td class="text-end">{(1000 / $sumTime).toFixed(3)}</td>
+      <td class="text-end">{(60000 / $sumTime).toFixed(3)}</td>
     </tr>
     <tr>
       <th scope="row">Sum Freq</th>
-      <td class="text-end">{(0.001 / ($eventAvgFreq * $intervalCount)).toFixed(3)}</td>
-      <td class="text-end">{(1000 * $eventAvgFreq * $intervalCount).toFixed(3)}</td>
-      <td class="text-end">{(60000 * $eventAvgFreq * $intervalCount).toFixed(3)}</td>
+      <td class="text-end">{(0.001 / $sumFreq).toFixed(3)}</td>
+      <td class="text-end">{(1000 * $sumFreq).toFixed(3)}</td>
+      <td class="text-end">{(60000 * $sumFreq).toFixed(3)}</td>
     </tr>
   </tbody>
 </table>
