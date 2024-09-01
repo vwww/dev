@@ -113,8 +113,6 @@ class Renderer2DMath extends RendererBase<'2d'> {
 }
 
 abstract class RendererBaseGL<ContextId extends 'webgl' | 'webgl2'> extends RendererBase<ContextId> {
-  protected tri: WebGLBuffer | null
-  protected lPos: GLint
   protected lTime: WebGLUniformLocation | null
   protected initialTime: number
 
@@ -152,15 +150,18 @@ abstract class RendererBaseGL<ContextId extends 'webgl' | 'webgl2'> extends Rend
     }
 
     gl.useProgram(program)
-    this.lPos = gl.getAttribLocation(program, 'pos')
     this.lTime = gl.getUniformLocation(program, 'iTime')
 
     this.initialTime = RendererBaseGL.currentTime()
 
-    this.tri = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.tri)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
+    const tri = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, tri)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW)
     // gl.bindBuffer(gl.ARRAY_BUFFER, null)
+
+    const vpos = gl.getAttribLocation(program, 'pos')
+    gl.vertexAttribPointer(vpos, 2, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(vpos)
   }
 
   render (): void {
@@ -169,14 +170,7 @@ abstract class RendererBaseGL<ContextId extends 'webgl' | 'webgl2'> extends Rend
 
     gl.viewport(0, 0, this.canvas.width, this.canvas.height)
 
-    // DrawFullScreenTriangle_XY
-    const vpos = this.lPos
-    // gl.bindBuffer(gl.ARRAY_BUFFER, this.tri)
-    gl.vertexAttribPointer(vpos, 2, gl.FLOAT, false, 0, 0)
-    gl.enableVertexAttribArray(vpos)
-    gl.drawArrays(gl.TRIANGLES, 0, 3)
-    gl.disableVertexAttribArray(vpos)
-    // gl.bindBuffer(gl.ARRAY_BUFFER, null)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
   }
 
   static currentTime (): number {
