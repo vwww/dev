@@ -70,27 +70,29 @@ abstract class RendererBase<ContextId extends string> {
 class Renderer2DCrypto extends RendererBase<'2d'> {
   static override displayName = '2d WebCrypto'
 
-  private i = 65536
-  private buf = new Uint8Array(this.i)
-
   constructor (canvas: HTMLCanvasElement) {
     super(canvas, '2d')
   }
 
   render (): void {
+    const MAX_RAND_BYTES = 65536
+    const buf = new Uint8Array(Math.min(MAX_RAND_BYTES, this.canvas.width * this.canvas.height * 3))
+    let r = MAX_RAND_BYTES
+
     const imageData = this.context.createImageData(this.canvas.width, this.canvas.height)
     for (let i = (this.canvas.width * this.canvas.height << 2) - 1; i; --i) {
-      imageData.data[i] = !(~i & 3) ? 255 : this.nextRandomByte()
+      let c = 255
+      if (~i & 3) {
+        if (r === MAX_RAND_BYTES) {
+          r = 0
+          crypto.getRandomValues(buf)
+        }
+
+        c = buf[r++]
+      }
+      imageData.data[i] = c
     }
     this.context.putImageData(imageData, 0, 0)
-  }
-
-  nextRandomByte(): number {
-    if (this.i === this.buf.length) {
-      crypto.getRandomValues(this.buf)
-      this.i = 0
-    }
-    return this.buf[this.i++]
   }
 }
 
@@ -178,7 +180,7 @@ abstract class RendererBaseGL<ContextId extends 'webgl' | 'webgl2'> extends Rend
   }
 
   static currentTime (): number {
-    return (performance ? performance : Date).now()
+    return (performance || Date).now()
   }
 }
 
