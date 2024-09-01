@@ -170,7 +170,13 @@ abstract class RendererBaseGL<ContextId extends 'webgl' | 'webgl2'> extends Rend
 
     gl.viewport(0, 0, this.canvas.width, this.canvas.height)
 
+    // DrawFullScreenTriangle_XY
+    // gl.bindBuffer(gl.ARRAY_BUFFER, tri)
+    // gl.vertexAttribPointer(vpos, 2, gl.FLOAT, false, 0, 0)
+    // gl.enableVertexAttribArray(vpos)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+    // gl.disableVertexAttribArray(vpos)
+    // gl.bindBuffer(gl.ARRAY_BUFFER, null)
   }
 
   static currentTime (): number {
@@ -195,6 +201,7 @@ class RendererWebGL extends RendererBaseGL<'webgl'> {
     uniform float iTime;
     void mainImage(out vec4 c, in vec2 f);
     void main() {
+      /*
       gl_FragColor = vec4(0.0,0.0,0.0,1.0);
       vec4 color = vec4(1e20);
       mainImage(color, gl_FragCoord.xy);
@@ -205,6 +212,8 @@ class RendererWebGL extends RendererBaseGL<'webgl'> {
       if(gl_FragColor.z<0.0) color=vec4(0.0,0.0,1.0,1.0);
       if(gl_FragColor.w<0.0) color=vec4(1.0,1.0,0.0,1.0);
       gl_FragColor = vec4(color.xyz,1.0);
+      */
+      mainImage(gl_FragColor, gl_FragCoord.xy);
     }
     `
 
@@ -229,6 +238,7 @@ class RendererBaseGL2 extends RendererBaseGL<'webgl2'> {
     void mainImage(out vec4 c, in vec2 f);
     out vec4 shadertoy_out_color;
     void main() {
+      /*
       shadertoy_out_color = vec4(1.0,1.0,1.0,1.0);
       vec4 color = vec4(1e20);
       mainImage( color, gl_FragCoord.xy );
@@ -237,6 +247,8 @@ class RendererBaseGL2 extends RendererBaseGL<'webgl2'> {
       if(shadertoy_out_color.z<0.0) color=vec4(0.0,0.0,1.0,1.0);
       if(shadertoy_out_color.w<0.0) color=vec4(1.0,1.0,0.0,1.0);
       shadertoy_out_color = vec4(color.xyz,1.0);
+      */
+      mainImage( shadertoy_out_color, gl_FragCoord.xy );
     }
     `
 
