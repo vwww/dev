@@ -4,7 +4,7 @@ import * as d3 from 'd3'
 import { onMount } from 'svelte'
 import { pStore } from '@/util/svelte'
 
-import { type ModData, type ModInfo } from './modinfo'
+import type { ModData, ModInfo } from './modinfo'
 import { formatDelay, generateHistory, type ModEvent } from './history'
 import { formatTime, generateData } from './data'
 

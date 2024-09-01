@@ -1,10 +1,10 @@
 <script lang="ts">
 import { remapPathCount } from '@gc/t3/ai'
-import { Player, Winner, WinnerMap, winnerMapToNum } from '@gc/t3/game'
+import { Player, Winner, type WinnerMap, winnerMapToNum } from '@gc/t3/game'
 
 import BoardCell from '@gc/t3/BoardCell.svelte'
 
-import { GetMemoType } from './AppGameT3.svelte'
+import { type GetMemoType } from './AppGameT3.svelte'
 
 export let i: number
 export let board: number

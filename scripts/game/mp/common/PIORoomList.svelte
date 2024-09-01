@@ -1,8 +1,8 @@
 <script lang="ts">
-import RoomOption, { OptionsAny, OptionStoreAny } from './RoomOption.svelte'
+import RoomOption, { type OptionsAny, type OptionStoreAny } from './RoomOption.svelte'
 import RoomList from './RoomList.svelte'
 
-import { BaseGameRoom } from './remote/BaseGameRoom'
+import type { BaseGameRoom } from './remote/BaseGameRoom'
 import { PIOAdapter, PIORoom } from './remote/playerio/PIORoom'
 import { PIOConnectionManager } from './remote/playerio/PIOConnectionManager'
 

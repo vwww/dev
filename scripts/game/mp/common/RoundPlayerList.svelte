@@ -1,5 +1,5 @@
 <script lang="ts">
-import { TurnBasedClient } from './game/TurnBasedGame'
+import type { TurnBasedClient } from './game/TurnBasedGame'
 
 export let inGame: ArrayLike<TurnBasedClient>
 export let inQueue: ArrayLike<TurnBasedClient>

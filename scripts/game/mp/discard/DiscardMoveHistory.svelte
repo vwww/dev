@@ -2,7 +2,7 @@
 export let moves: ArrayLike<DiscardMoveInfo>
 export let ll: boolean
 
-import { DiscardMoveInfo } from './DiscardGame'
+import type { DiscardMoveInfo } from './DiscardGame'
 
 import { getCardName } from './DiscardPlay.svelte'
 

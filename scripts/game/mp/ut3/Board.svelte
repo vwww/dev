@@ -1,5 +1,5 @@
 <script lang="ts">
-import { BoardState } from './UT3Game'
+import type { BoardState } from './UT3Game'
 
 export let boardState: BoardState
 export let markHover: number

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { TPHistoryEntry } from './game/TwoPlayerGame'
+import type { TPHistoryEntry } from './game/TwoPlayerGame'
 
 export let results: ArrayLike<TPHistoryEntry>
 export let p0Win = 'X wins'

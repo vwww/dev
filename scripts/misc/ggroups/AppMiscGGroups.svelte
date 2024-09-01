@@ -4,7 +4,7 @@ import ChatMessageFromText from './ChatMessageFromText.svelte'
 import ChatMessageHidden from './ChatMessageHidden.svelte'
 
 import { shuffle } from '@/util'
-import { pStore, ValueStore, valueStore } from '@/util/svelte'
+import { pStore, type ValueStore, valueStore } from '@/util/svelte'
 
 import { flip } from 'svelte/animate'
 

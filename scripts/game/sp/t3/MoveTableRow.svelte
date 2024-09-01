@@ -1,7 +1,7 @@
 <script lang="ts">
-import { MemoEntry, PathCount, remapPathCount } from '@gc/t3/ai'
-import { winnerMapToNum, Winner, WinnerMap } from '@gc/t3/game'
-import { GetMemoType } from './AppGameT3.svelte'
+import { type MemoEntry, type PathCount, remapPathCount } from '@gc/t3/ai'
+import { winnerMapToNum, Winner, type WinnerMap } from '@gc/t3/game'
+import { type GetMemoType } from './AppGameT3.svelte'
 
 export let i: number
 export let boardHistory: number[]

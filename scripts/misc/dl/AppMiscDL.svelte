@@ -1,6 +1,6 @@
 <script lang="ts">
 import fileRoot from './fileList'
-import { NodeBrowse, NodeDirectory } from './nodeTypes'
+import type { NodeBrowse, NodeDirectory } from './nodeTypes'
 
 // File browser
 let curPath = [fileRoot]

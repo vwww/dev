@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Unit, UNITS } from './units'
+import { type Unit, UNITS } from './units'
 
 let curType: string = Object.keys(UNITS)[0]
 let curFrom: string = Object.keys(UNITS[curType])[0]

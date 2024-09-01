@@ -1,5 +1,5 @@
 <script lang="ts">
-import { BaseClient } from './game/CommonGame'
+import type { BaseClient } from './game/CommonGame'
 
 type P = $$Generic<BaseClient>
 

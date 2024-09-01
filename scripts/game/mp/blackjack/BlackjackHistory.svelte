@@ -1,5 +1,5 @@
 <script lang="ts">
-import { BGameHistory } from './BlackjackGame'
+import type { BGameHistory } from './BlackjackGame'
 
 export let results: BGameHistory[]
 

@@ -3,7 +3,7 @@ import jQuery from 'jquery'
 import 'timeago'
 
 import { onDestroy, onMount } from 'svelte'
-import { EntryInfo, TieType } from './EntryInfo'
+import { type EntryInfo, TieType } from './EntryInfo'
 
 export let entry: EntryInfo
 export let tie: TieType

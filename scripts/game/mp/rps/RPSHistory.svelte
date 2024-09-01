@@ -1,5 +1,5 @@
 <script lang="ts">
-import { RPSGameHistory } from './RPSGame'
+import type { RPSGameHistory } from './RPSGame'
 
 export let results: ArrayLike<RPSGameHistory>
 

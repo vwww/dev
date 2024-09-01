@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Winner, WinnerMap } from '@gc/t3/game'
-import { GetMemoType } from './AppGameT3.svelte'
+import { Winner, type WinnerMap } from '@gc/t3/game'
+import { type GetMemoType } from './AppGameT3.svelte'
 import MoveTableRow from './MoveTableRow.svelte'
 
 export let boardHistory: number[]

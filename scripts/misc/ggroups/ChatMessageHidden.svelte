@@ -1,7 +1,7 @@
 <script lang="ts">
 import ChatMessageFromText from './ChatMessageFromText.svelte'
 
-import { Writable } from 'svelte/store'
+import type { Writable } from 'svelte/store'
 
 export let allowSecretSystemMessages: boolean
 export let rawTexts: string[]

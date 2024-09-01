@@ -1,5 +1,5 @@
 <script lang="ts">
-import { MorraGameHistory } from './MorraGame'
+import type { MorraGameHistory } from './MorraGame'
 
 export let results: MorraGameHistory[]
 </script>

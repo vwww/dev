@@ -2,8 +2,8 @@
 import Entry from './Entry.svelte'
 
 import { type EntryInfo, parseEntry } from './EntryInfo'
-import { type PokeInfo } from './PokeInfo'
-import { type PokeSource } from './PokeSource'
+import type { PokeInfo } from './PokeInfo'
+import type { PokeSource } from './PokeSource'
 import PokeSourceFirebase from './PokeSourceFirebase'
 
 import { pStore } from '@/util/svelte'
