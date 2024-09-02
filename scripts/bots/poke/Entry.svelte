@@ -11,21 +11,6 @@ export let entry: EntryInfo
 export let tie: TieType
 export let rankIndex: number, rankIndexOther: number
 
-// Format rank as HTML
-function rankSuffix (rank: number): string {
-  if (Number.isInteger(rank)) { // 1.5th
-    let x = rank % 100
-    // ignore suffix for 11th, 12th, 13th
-    if (!(x > 3 && x < 21)) {
-      x %= 10
-      if (x === 1) return 'st'
-      if (x === 2) return 'nd'
-      if (x === 3) return 'rd'
-    }
-  }
-  return 'th'
-}
-
 function getProfileImageURL (uid: string): string {
   const sha = new JSSHA256('SHA-256', 'TEXT')
     .update(uid)
@@ -54,8 +39,8 @@ $: entry.time, timeAgoStop(), timeAgoStart()
 </script>
 
 <li class:indent={tie > 1}>
-  <h1 data-rank={rank} class:tie>{rank}<sup>{rankSuffix(rank)}</sup></h1>
-  <h1 class="ranko" data-rank={rankOther}>{rankOther}<sup>{rankSuffix(rankOther)}</sup></h1>
+  <h1 data-rank={rank} class:tie><sup>#</sup>{rank}</h1>
+  <h1 class="ranko" data-rank={rankOther}><sup>#</sup>{rankOther}</h1>
   <img src="{getProfileImageURL(entry.uid)}" alt="">
   <h2><a href="https://www.facebook.com/{entry.uid}">{entry.name}</a></h2>
   <h3>{entry.num.toLocaleString()}</h3>
