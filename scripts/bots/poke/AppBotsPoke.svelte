@@ -14,6 +14,8 @@ Plotly.register([
   require('plotly.js/lib/scatter'),
 ])
 
+let opponentPlot: HTMLDivElement
+
 // Poke entries sorted by pokes then time
 let data1: EntryInfo[] = []
 
@@ -68,7 +70,7 @@ function updatePoke (data: Record<string, PokeInfo>): void {
   // Update plot
   const xVals = Array(data1.length).fill(undefined).map((_, index) => index + 1)
   const firstTime = data2[0].time
-  void Plotly.restyle('opponentPlot', {
+  void Plotly.restyle(opponentPlot, {
     x: [xVals, xVals],
     y: [data1.map((x) => x.num), data2.map((x) => (firstTime - x.time) / 86400)]
   })
@@ -103,12 +105,12 @@ function onReady (): void {
     yaxis2: { title: 'days before most recent poke', type: 'log', overlaying: 'y', side: 'right' },
     showlegend: false
   }
-  void Plotly.newPlot('opponentPlot', data, layout)
+  void Plotly.newPlot(opponentPlot, data, layout)
 }
 
 // Resize handler
 function onResize (): void {
-  Plotly.Plots.resize(Plotly.d3.select('#opponentPlot').node() as Plotly.Root)
+  Plotly.Plots.resize(opponentPlot)
 }
 </script>
 
@@ -149,7 +151,7 @@ function onResize (): void {
 </div>
 
 <h2>Opponent Distribution</h2>
-<div id="opponentPlot"></div>
+<div bind:this={opponentPlot}></div>
 
 <h2>Leaderboard of Losers (LOL)</h2>
 
