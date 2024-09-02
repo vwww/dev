@@ -8,12 +8,13 @@ import { pStore } from '@/util/svelte'
 
 const BOARDS = boards.trim().split(/[\r\n]+/)
 
+const LEVEL_OFFSET = 101
 const ROWS = 10
 const COLS = 8
 
 const solver = new Solver(ROWS, COLS)
 
-const gridLevel = pStore('game/sp/fill/gridLevel', undefined)
+const gridLevel = pStore('game/sp/fill/gridLevel', LEVEL_OFFSET)
 const gridText = pStore('game/sp/fill/gridText', '')
 const maxComplexity = pStore('game/sp/fill/maxComplexity', 7)
 let gridTextTxt = ''
@@ -92,7 +93,7 @@ if (process.env.NODE_ENV !== 'production') {
           const cell = testSolver.getCell(r, c)
 
           if (cell.active && rootUF !== cell.solver.ufFind()) {
-            unsolvable.push(i + 101)
+            unsolvable.push(i + LEVEL_OFFSET)
             break OUTER
           }
         }
@@ -104,18 +105,18 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-function onBoardChange (this: HTMLInputElement) { loadBoard(+this.value - 101) }
+function onBoardChange () { loadBoard($gridLevel - LEVEL_OFFSET) }
 </script>
 
 <div class="row">
   <div class="col-8 col-sm-9 col-md-10">
     <input type="number"
       class="form-control"
-      min="101" max={BOARDS.length + 100}
+      min={LEVEL_OFFSET} max={BOARDS.length + (LEVEL_OFFSET - 1)}
       bind:value={$gridLevel}>
     <input type="range"
       class="form-range"
-      min="101" max={BOARDS.length + 100}
+      min={LEVEL_OFFSET} max={BOARDS.length + (LEVEL_OFFSET - 1)}
       bind:value={$gridLevel}>
   </div>
   <div class="col-4 col-sm-3 col-md-2">
