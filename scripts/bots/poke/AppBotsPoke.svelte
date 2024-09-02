@@ -137,12 +137,13 @@ function onResize (): void {
 <div class="row">
   <div class="col-8">
     <div class="alert alert-info" role="alert">
-      <p>I created a bot to win &lsquo;poke wars&rsquo; on Facebook by returning pokes. It can also start a poke war by poking a list.</p>
-      <p>Watch <strong>realtime</strong> updates for the statistics and leaderboard on this page.</p>
+      I created a bot to win &lsquo;poke wars&rsquo; on Facebook by returning pokes. It can also start a poke war by poking a list.
     </div>
+    <p>This page shows <strong>realtime</strong> updates for the statistics and leaderboard.</p>
     <p>The <a href="poke_old" class="alert-link">old leaderboard</a> has less formatting and is more lightweight.</p>
     <div class="alert alert-warning" role="alert">
-      The leaderboard includes only pokes since <span class="timeago" title="2014-07-30T04:15:43.000Z">the end of July 2014</span>.
+      The leaderboard might miss some pokes before <span class="timeago" title="2014-07-30T04:15:43.000Z">the end of July 2014</span>.
+      After Facebook removed profile images from their public API, the leaderboard now shows Identicon images.
       <!-- Stale entries may be pruned over time. -->
     </div>
   </div>

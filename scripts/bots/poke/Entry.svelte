@@ -2,6 +2,8 @@
 import jQuery from 'jquery'
 import 'timeago'
 
+import JSSHA256 from 'jssha/dist/sha256'
+
 import { onDestroy, onMount } from 'svelte'
 import { type EntryInfo, TieType } from './EntryInfo'
 
@@ -22,6 +24,14 @@ function rankSuffix (rank: number): string {
     }
   }
   return 'th'
+}
+
+function getProfileImageURL (uid: string): string {
+  const sha = new JSSHA256('SHA-256', 'TEXT')
+    .update(uid)
+    .getHash('HEX')
+
+  return `https://gravatar.com/avatar/${sha}?s=80&d=identicon`
 }
 
 $: rank = entry.rank[rankIndex]
@@ -46,7 +56,7 @@ $: entry.time, timeAgoStop(), timeAgoStart()
 <li class:indent={tie > 1}>
   <h1 data-rank={rank} class:tie>{rank}<sup>{rankSuffix(rank)}</sup></h1>
   <h1 class="ranko" data-rank={rankOther}>{rankOther}<sup>{rankSuffix(rankOther)}</sup></h1>
-  <img src="https://graph.facebook.com/{entry.uid}/picture?width=80&height=80" alt="">
+  <img src="{getProfileImageURL(entry.uid)}" alt="">
   <h2><a href="https://www.facebook.com/{entry.uid}">{entry.name}</a></h2>
   <h3>{entry.num.toLocaleString()}</h3>
   <span title={time.toISOString()} bind:this={timeAgoElement}>{time.toString()}</span>
