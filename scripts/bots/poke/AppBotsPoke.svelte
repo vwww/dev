@@ -111,6 +111,13 @@ function onReady (): void {
     yaxis: { title: 'number of pokes', type: 'log' },
     yaxis2: { title: 'days', type: 'log', overlaying: 'y', side: 'right' },
     showlegend: false,
+    margin: {
+      l: 50,
+      r: 50,
+      b: 50,
+      t: 50,
+      pad: 4,
+    },
   }
   void Plotly.newPlot(opponentPlot, data, layout)
 }
