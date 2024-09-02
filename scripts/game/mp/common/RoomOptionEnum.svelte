@@ -6,7 +6,7 @@ export let store: OptionStoreEnum[1]
 </script>
 
 <div>
-  <span>{option[3]}</span>
+  <span>{option[3]}{#if $store !== option[2]}<small>*</small>{/if}</span>
   <div><small class="text-muted">{option[4]}</small></div>
   {#each option[5] as v, i}
     <label class="form-check form-check-inline">
