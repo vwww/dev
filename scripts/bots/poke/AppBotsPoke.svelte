@@ -63,6 +63,7 @@ function updatePoke (data: Record<string, PokeInfo>): void {
   // Sort
   data1.sort((a, b) => (b.num - a.num) || (a.time - b.time)) // higher number, earlier time first
   data2.sort((a, b) => b.time - a.time) // later time first
+  const data3 = data2.slice().reverse() // earlier time first
 
   // Compute ranks
   computeRanks()
@@ -70,9 +71,14 @@ function updatePoke (data: Record<string, PokeInfo>): void {
   // Update plot
   const xVals = Array(data1.length).fill(undefined).map((_, index) => index + 1)
   const firstTime = data2[0].time
+  const oldestTime = data3[0].time
   void Plotly.restyle(opponentPlot, {
     x: [xVals, xVals],
-    y: [data1.map((x) => x.num), data2.map((x) => (firstTime - x.time) / 86400)]
+    y: [
+      data1.map((x) => x.num),
+      data2.map((x) => (firstTime - x.time) / 86400),
+      data3.map((x) => (x.time - oldestTime) / 86400),
+    ]
   })
 }
 
@@ -97,13 +103,14 @@ function onReady (): void {
   // Set up plot
   const data: Partial<Plotly.PlotData>[] = [
     { name: 'highest first', type: 'scatter'/*, line: {shape: 'linear'} */ },
-    { name: 'recent first', type: 'scatter'/*, line: {shape: 'linear'} */, yaxis: 'y2' }
+    { name: 'recent first', type: 'scatter'/*, line: {shape: 'linear'} */, yaxis: 'y2' },
+    { name: 'oldest first', type: 'scatter'/*, line: {shape: 'linear'} */, yaxis: 'y2' },
   ]
   const layout: Partial<Plotly.Layout> = {
     xaxis: { title: 'rank', type: 'log' },
     yaxis: { title: 'number of pokes', type: 'log' },
-    yaxis2: { title: 'days before most recent poke', type: 'log', overlaying: 'y', side: 'right' },
-    showlegend: false
+    yaxis2: { title: 'days', type: 'log', overlaying: 'y', side: 'right' },
+    showlegend: false,
   }
   void Plotly.newPlot(opponentPlot, data, layout)
 }
