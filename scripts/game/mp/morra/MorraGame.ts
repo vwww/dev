@@ -8,6 +8,7 @@ import { TurnC2S } from '@gmc/game/TurnBasedGame'
 interface MorraClient extends OneTurnClient {
   wins: number
   losses: number
+  total: number
   streak: number
 }
 
@@ -109,6 +110,8 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
         if (p.streak > 0) p.streak = 0
         p.streak--
       }
+      p.total++
+
       teamObj.moveSum += move
       teamObj.players.push({
         name: p.name,
@@ -129,12 +132,14 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
   protected processWelcomePlayer (m: ByteReader, p: MorraClient): void {
     p.wins = m.getInt()
     p.losses = m.getInt()
+    p.total = p.wins + p.losses
     p.streak = m.getInt()
   }
 
   protected playerResetStats (p: MorraClient): void {
     p.wins = 0
     p.losses = 0
+    p.total = 0
     p.streak = 0
   }
 
@@ -143,6 +148,7 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
       ...OneTurnGame.DEFAULT_PLAYER,
       wins: 0,
       losses: 0,
+      total: 0,
       streak: 0,
     }
   }

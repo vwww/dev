@@ -11,10 +11,12 @@ interface RPSClient extends OneTurnClient {
   roundWins: number
   roundLosses: number
   roundTies: number
+  roundTotal: number
 
   battleWins: number
   battleLosses: number
   battleTies: number
+  battleTotal: number
 }
 
 export interface RPSGameHistory {
@@ -108,6 +110,7 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
       p.battleLosses += battleLTW[0]
       p.battleTies += battleLTW[1]
       p.battleWins += battleLTW[2]
+      p.battleTotal += battleLTW[0] + battleLTW[1] + battleLTW[2]
 
       if (battleLTW[2] > battleLTW[0]) {
         p.roundWins++
@@ -122,6 +125,7 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
       } else {
         p.roundTies++
       }
+      p.roundTotal++
 
       if (cn === this.myCn) {
         localEntry = {
@@ -158,9 +162,11 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
     p.roundWins = m.getInt()
     p.roundLosses = m.getInt()
     p.roundTies = m.getInt()
+    p.roundTotal = p.roundWins + p.roundLosses + p.roundTies
     p.battleWins = m.getFloat64()
     p.battleLosses = m.getFloat64()
     p.battleTies = m.getFloat64()
+    p.battleTotal = p.battleWins + p.battleLosses + p.battleTies
   }
 
   protected playerResetStats (p: RPSClient): void {
@@ -169,9 +175,11 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
     p.roundWins = 0
     p.roundLosses = 0
     p.roundTies = 0
+    p.roundTotal = 0
     p.battleWins = 0
     p.battleLosses = 0
     p.battleTies = 0
+    p.battleTotal = 0
   }
 
   protected makePlayer (): RPSClient {
@@ -182,9 +190,11 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
       roundWins: 0,
       roundLosses: 0,
       roundTies: 0,
+      roundTotal: 0,
       battleWins: 0,
       battleLosses: 0,
       battleTies: 0,
+      battleTotal: 0,
     }
   }
 }

@@ -75,12 +75,12 @@ function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBo
     <Leaderboard players={$clientsSorted} columns={[
       ['Streak', (p) => p.roundStreak],
       ['Score', (p) => p.roundScore],
-      ['Round Win', (p) => p.roundWins],
-      ['Tie', (p) => p.roundTies],
-      ['Loss', (p) => p.roundLosses],
-      ['Battle Win', (p) => p.battleWins],
-      ['Tie', (p) => p.battleTies],
-      ['Loss', (p) => p.battleLosses],
+      ['Round Win', (p) => [p.roundWins, p.roundTotal]],
+      ['Tie', (p) => [p.roundTies, p.roundTotal]],
+      ['Loss', (p) => [p.roundLosses, p.roundTotal]],
+      ['Battle Win', (p) => [p.battleWins, p.battleTotal]],
+      ['Tie', (p) => [p.battleTies, p.battleTotal]],
+      ['Loss', (p) => [p.battleLosses, p.battleTotal]],
     ]} />
   </div>
 

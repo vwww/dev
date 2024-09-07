@@ -3,8 +3,18 @@ import type { BaseClient } from './game/CommonGame'
 
 type P = $$Generic<BaseClient>
 
+type Score = number | string | [number, number]
+
 export let players: ArrayLike<P>
-export let columns: [string, (p: P) => number | string][] = []
+export let columns: [string, (p: P) => Score][] = []
+
+function formatScore(s: Score) {
+  if (typeof s === 'object') {
+    if (!s[1]) return s[0]
+    return `${s[0]} (${(s[0] * 100 / s[1]).toPrecision(3)}%)`
+  }
+  return s
+}
 
 let showSpect = true
 </script>
@@ -38,7 +48,7 @@ let showSpect = true
               <td>{player.rank}</td>
             {/if}
             {#each columns as column}
-              <td>{column[1](player)}</td>
+              <td>{formatScore(column[1](player))}</td>
             {/each}
             <td>{player.ping < 0 ? '?' : player.ping}</td>
           </tr>

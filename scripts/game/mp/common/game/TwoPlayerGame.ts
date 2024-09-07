@@ -9,6 +9,7 @@ export interface TPTurnClient extends TurnBasedClient {
   wins: number
   loss: number
   ties: number
+  total: number
   streak: number
 }
 
@@ -39,6 +40,7 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
     wins: 0,
     loss: 0,
     ties: 0,
+    total: 0,
     streak: 0,
   }
 
@@ -119,6 +121,7 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
     p.wins = m.getInt()
     p.loss = m.getInt()
     p.ties = m.getInt()
+    p.total = p.wins + p.loss + p.ties
     p.streak = m.getInt()
     p.score = (((p.wins << 1) + p.ties) << 1) + p.loss
   }
@@ -128,6 +131,7 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
     p.wins = 0
     p.loss = 0
     p.ties = 0
+    p.total = 0
     p.streak = 0
   }
 
@@ -192,5 +196,6 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
       p.ties++
       p.score += 2
     }
+    p.total++
   }
 }

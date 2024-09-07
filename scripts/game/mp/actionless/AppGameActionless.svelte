@@ -68,8 +68,8 @@ function formatGameMode ({optIndependent, optTeams}: any) {
     <Leaderboard players={$clientsSorted} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.wins - p.losses],
-      ['Win', (p) => p.wins],
-      ['Loss', (p) => p.losses],
+      ['Win', (p) => [p.wins, p.total]],
+      ['Loss', (p) => [p.losses, p.total]],
     ]} />
   </div>
 
