@@ -1,5 +1,5 @@
 <script lang="ts">
-import type ChatState from './ChatState'
+import ChatState, { HoldMode } from './ChatState'
 
 import { afterUpdate } from 'svelte'
 
@@ -10,22 +10,27 @@ export let onInput = console.log
 
 const { messages, queueLength } = chatState
 
-let autoscrollParent: HTMLUListElement | undefined
-let autoscroll: boolean | undefined = true
+let autoscrollParent: HTMLElement | undefined
+let autoscrollResume: HTMLElement | undefined
+let holdMode = HoldMode.None
 
 let chatMessage = ''
 
 function checkAutoScroll (): void {
-  const newAutoscroll = autoscrollParent &&
-    (autoscrollParent.offsetHeight + autoscrollParent.scrollTop) > (autoscrollParent.scrollHeight - 1)
-  if (autoscroll !== newAutoscroll) {
-    autoscroll = newAutoscroll
-    chatState.setHold(!autoscroll)
+  const newHoldMode = autoscrollParent && autoscrollResume
+    && (autoscrollParent.offsetHeight + autoscrollParent.scrollTop) > (autoscrollParent.scrollHeight - autoscrollResume.offsetHeight)
+      ? (autoscrollParent.offsetHeight + autoscrollParent.scrollTop) > (autoscrollParent.scrollHeight - 1)
+        ? HoldMode.None
+        : HoldMode.AfterNext
+      : HoldMode.All
+  if (holdMode !== newHoldMode) {
+    holdMode = newHoldMode
+    chatState.setHoldMode(newHoldMode)
   }
 }
 
 function doAutoScroll (): void {
-  if (autoscroll) {
+  if (!holdMode) {
     autoscrollParent?.scrollTo(0, autoscrollParent.scrollHeight)
   }
 }
@@ -49,8 +54,8 @@ function handleKeydown (event: KeyboardEvent): void {
     <h4 class="float-start">{title}</h4>
     <div class="float-end">
       <button class="btn btn-sm btn-info"
-        class:d-none={!$queueLength && autoscroll}
-        on:click={() => chatState.setHold(!(autoscroll = true))}>{$queueLength} new</button>
+        class:d-none={!$queueLength && !holdMode}
+        on:click={() => chatState.setHoldMode(holdMode = 0)}>{$queueLength} new</button>
       <button class="btn btn-sm btn-danger"
         class:d-none={!$messages.length}
         on:click={() => chatState.clear()}>Clear</button>
@@ -96,7 +101,7 @@ function handleKeydown (event: KeyboardEvent): void {
         {/if}
       </li>
     {/each}
-    <li class="list-group-item text-bg-warning text-center" class:d-none={autoscroll}>Scroll down to resume autoscroll</li>
+    <li class="list-group-item text-bg-warning text-center" class:d-none={!holdMode} bind:this={autoscrollResume}>Scroll down to resume autoscroll</li>
   </ul>
   <div class="card-footer">
     <div class="input-group">

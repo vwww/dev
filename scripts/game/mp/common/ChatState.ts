@@ -36,50 +36,85 @@ type SysMessage = {
 
 type ChatEntry = ChatJoin | ChatLeft | ChatReset | ChatRename | ChatMessage | SysMessage
 
-export default class ChatState {
-  public readonly messages = valueStore([] as ChatEntry[])
-  public readonly queueLength = valueStore(0)
+export const enum HoldMode {
+  None,
+  AfterNext,
+  All,
+}
 
+export default class ChatState {
   private readonly messageBuf: ChatEntry[] = []
 
   private readonly queue: ChatEntry[] = []
-  private hold = false
+  private holdMode = HoldMode.None
+
+  public readonly messages = valueStore(this.messageBuf)
+  public readonly queueLength = valueStore(0)
 
   constructor (private readonly maxChatMessages = 100) { }
 
   clear (): void {
-    this.messageBuf.splice(0)
-    this.queue.splice(0, this.queue.length)
+    this.messageBuf.length = 0
+    this.queue.length = 0
     this.queueLength.set(0)
     this.invalidate()
   }
 
   addEntry (obj: ChatEntry): void {
-    const buf = this.hold ? this.queue : this.messageBuf
-
-    if (buf.length >= this.maxChatMessages) {
-      buf.shift()
-    }
-
-    buf.push(obj)
-
-    if (this.hold) {
-      this.queueLength.update((x) => x + 1)
-    } else {
-      this.invalidate()
+    switch (this.holdMode) {
+      case HoldMode.None:
+        if (this.messageBuf.length >= this.maxChatMessages) {
+          this.messageBuf.shift()
+        }
+        this.messageBuf.push(obj)
+        this.invalidate()
+        break
+      case HoldMode.AfterNext:
+        this.messageBuf.push(obj)
+        this.invalidate()
+        this.holdMode = HoldMode.All
+        break
+      case HoldMode.All:
+        if (this.queue.length >= this.maxChatMessages) {
+          this.queue.shift()
+        }
+        this.queue.push(obj)
+        this.queueLength.update((x) => x + 1)
     }
   }
 
-  setHold (hold: boolean): void {
-    this.hold = hold
-    if (!hold && this.queue.length) {
-      const deleteCount = Math.max(0, this.messageBuf.length + this.queue.length - this.maxChatMessages)
-      if (deleteCount) this.messageBuf.splice(0, deleteCount)
-      this.messageBuf.push(...this.queue)
-      this.queue.length = 0
+  setHoldMode (holdMode: number): void {
+    if (holdMode === HoldMode.AfterNext && this.queueLength.get() > this.maxChatMessages) {
+      // queue overflowed
+      holdMode = HoldMode.All
+    }
 
-      this.invalidate()
-      this.queueLength.set(0)
+    this.holdMode = holdMode
+
+    if (this.queue.length) {
+      if (holdMode === HoldMode.None) {
+        // load all messages
+        const deleteCount = Math.max(0, this.messageBuf.length + this.queue.length - this.maxChatMessages)
+        if (deleteCount) this.messageBuf.splice(0, deleteCount)
+        this.messageBuf.push(...this.queue)
+        this.queue.length = 0
+
+        this.invalidate()
+        this.queueLength.set(0)
+      } else if (holdMode === HoldMode.AfterNext) {
+        // load one message, allowing temporary oversizing
+        this.messageBuf.push(this.queue.shift()!)
+
+        this.invalidate()
+        this.queueLength.update((x) => x - 1)
+      }
+    } else if (holdMode === HoldMode.None) {
+      // fix oversized message buffer
+      const deleteCount = this.messageBuf.length - this.maxChatMessages
+      if (deleteCount > 0) {
+        this.messageBuf.splice(0, deleteCount)
+        this.invalidate()
+      }
     }
   }
 
