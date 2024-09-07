@@ -178,33 +178,33 @@ updateWindowSize()
 <div class="input-group mb-3">
   <label class="input-group-text" for="inputGroupSelectInterval">Interval</label>
   <select bind:value={$interval} class="form-select" id="inputGroupSelectInterval">
-    <option value="-1" class="def">ASAP (requestAnimationFrame)</option>
+    <option value={-1} class="def">ASAP (requestAnimationFrame)</option>
     <optgroup label="Possible Lag">
-      <option value="0" class="maxlag">ASAP (0 ms)</option>
-      <option value="1" class="lag">1/1000 (1 ms)</option>
-      <option value="2" class="lag">1/500 (2 ms)</option>
-      <option value="2" class="lag">1/333 (3 ms)</option>
+      <option value={0} class="maxlag">ASAP (0 ms)</option>
+      <option value={1} class="lag">1/1000 (1 ms)</option>
+      <option value={2} class="lag">1/500 (2 ms)</option>
+      <option value={2} class="lag">1/333 (3 ms)</option>
     </optgroup>
     <optgroup label="Decent">
-      <option value="4" class="def">1/250 (4 ms)</option>
-      <option value="5" class="def">1/200 (5 ms)</option>
-      <option value="10" class="def">1/100 (10 ms)</option>
+      <option value={4} class="def">1/250 (4 ms)</option>
+      <option value={5} class="def">1/200 (5 ms)</option>
+      <option value={10} class="def">1/100 (10 ms)</option>
     </optgroup>
     <optgroup label="Balanced-Slow">
-      <option value="20" class="slow">1/50 (20 ms)</option>
-      <option value="40" class="slow">1/25 (40 ms)</option>
-      <option value="50" class="slow">1/20 (50 ms)</option>
+      <option value={20} class="slow">1/50 (20 ms)</option>
+      <option value={40} class="slow">1/25 (40 ms)</option>
+      <option value={50} class="slow">1/20 (50 ms)</option>
     </optgroup>
     <optgroup label="Slow">
-      <option value="67" class="sslow">1/15 (67 ms)</option>
-      <option value="100" class="sslow">1/10 (100 ms)</option>
-      <option value="125" class="sslow">1/8 (125 ms)</option>
+      <option value={67} class="sslow">1/15 (67 ms)</option>
+      <option value={100} class="sslow">1/10 (100 ms)</option>
+      <option value={125} class="sslow">1/8 (125 ms)</option>
     </optgroup>
     <optgroup label="Extremely Slow">
-      <option value="250" class="ssslow">1/4 (250 ms)</option>
-      <option value="500" class="ssslow">1/2 (1000 ms)</option>
-      <option value="1000" class="ssslow">1 (1000 ms)</option>
-      <option value="2000" class="ssslow">2 (2000 ms)</option>
+      <option value={250} class="ssslow">1/4 (250 ms)</option>
+      <option value={500} class="ssslow">1/2 (1000 ms)</option>
+      <option value={1000} class="ssslow">1 (1000 ms)</option>
+      <option value={2000} class="ssslow">2 (2000 ms)</option>
     </optgroup>
   </select>
 </div>
@@ -222,10 +222,11 @@ updateWindowSize()
   right: 0;
   z-index: 10000;
 }
-option.maxlag { background: #860909 }
-option.lag { background: #FF7673 }
-option.def { background: #CAF378 }
-option.slow { background: #FFC373 }
-option.sslow,option.ssslow { background: #66A3D2 }
-optgroup { background: #A0A0A0 }
+option.maxlag { background: #800 }
+option.lag { background: #f77 }
+option.def { background: #cf7 }
+option.slow { background: #fc7 }
+option.sslow { background: #7ad }
+option.ssslow { background: #ace }
+optgroup { background: #aaa }
 </style>
