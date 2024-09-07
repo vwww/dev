@@ -54,7 +54,7 @@ tick()
 
 <p>Score: {score} (high score: {$highscore})</p>
 
-<div on:contextmenu={() => cheat++} class="play" style="background-color:{colorBack}">
+<div on:contextmenu={() => cheat++} class="play" style="background-color:{colorBack}" role="presentation">
   <button on:click={clicked} on:mousemove={checkCheat} style="background-color:{colorBtn}; left:{x * 100}%;top:{y * 100}%">Click</button>
 </div>
 

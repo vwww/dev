@@ -106,6 +106,8 @@ $: boardState = $boardStates[$boardIndex]
     <span
       class="badge text-bg-{$boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1"
       on:click={() => gameState.historyGo(i + 1)}
+      role="button"
+      tabindex="0"
       >{move.join('')}</span>
   {:else}
     (none)

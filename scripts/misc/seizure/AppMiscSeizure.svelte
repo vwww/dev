@@ -99,8 +99,8 @@ updateWindowSize()
   on:blur={() => windowIsBlurred = true}
   on:focus={() => windowIsBlurred = false} />
 
-<div id="strobeContainer" bind:this={strobeContainer} class:invisible={!running} style="text-align: center" on:dblclick={stop}>
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
+<div id="strobeContainer" bind:this={strobeContainer} class:invisible={!running} style="text-align: center" on:dblclick={stop} role="presentation">
+  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
   <img on:click={stop} src="stop.png" alt="Stop">
   <div class="container">
     <button on:click={stop} class="btn d-block w-100 btn-danger">Secondary Stop</button>
