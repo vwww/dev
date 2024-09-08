@@ -39,7 +39,7 @@
     "@types/timeago": "^1.6.3",
     "@typescript-eslint/eslint-plugin": "^8.2.0",
     "@typescript-eslint/parser": "^8.2.0",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.0.0",
     "css-loader": "^7.1.2",
     "eslint": "^8.57.0",
     "eslint-config-love": "^64.0.0",
