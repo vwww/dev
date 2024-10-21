@@ -180,7 +180,7 @@ export function generateHistory (raw: ModInfo, rawBase?: ModInfo): ModHistory {
 }
 
 function totalTimeString (g: number, h: number): string {
-  return `(${h} h = ${h / g} d / ${24 / g})`
+  return `(${h} h = ${h / g}${g != 24 ? `/${24 / g}` : ''} d)`
 }
 
 export function formatDelay (t: number): string {
