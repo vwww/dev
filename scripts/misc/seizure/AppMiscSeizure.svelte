@@ -4,7 +4,7 @@ import { pStore } from '@/util/svelte'
 
 const colorMode = pStore('misc/seizure/mode', 0)
 const interval = pStore('misc/seizure/int', -1)
-const userColor = pStore('misc/seizure/color', '#FFFFFF')
+const userColor = pStore('misc/seizure/color', '#fff')
 const useTimeMax = pStore('misc/seizure/useTimeMax', 0)
 
 let running = false
@@ -151,26 +151,26 @@ updateWindowSize()
   </div>
   <select bind:value={$userColor} class="form-select">
     <optgroup label="Extreme">
-      <option value="#FFFFFF" style="background-color: #FFFFFF;">White</option>
-      <option value="#000000" style="background-color: #000000;color: #FFFFFF;">Black</option>
+      <option value="#fff" style="background-color: #fff;">White</option>
+      <option value="#000" style="background-color: #000;color: #fff;">Black</option>
     </optgroup>
     <optgroup label="Primary">
-      <option value="#FF0000" style="background-color: #FF0000;">Red</option>
-      <option value="#FFFF00" style="background-color: #FFFF00;">Yellow</option>
-      <option value="#0000FF" style="background-color: #0000FF;color: #FFFFFF;">Blue</option>
+      <option value="#f00" style="background-color: #f00;">Red</option>
+      <option value="#ff0" style="background-color: #ff0;">Yellow</option>
+      <option value="#00f" style="background-color: #00f;color: #fff;">Blue</option>
     </optgroup>
     <optgroup label="Secondary">
-      <option value="#FF7F00" style="background-color: #FF7F00;">Orange</option>
-      <option value="#FF00FF" style="background-color: #FF00FF;">Violet</option>
-      <option value="#00FF00" style="background-color: #00FF00;">Green</option>
+      <option value="#ff7f00" style="background-color: #ff7f00;">Orange</option>
+      <option value="#f0f" style="background-color: #f0f;">Violet</option>
+      <option value="#0f0" style="background-color: #0f0;">Green</option>
     </optgroup>
     <optgroup label="Tertiary">
-      <option value="#FF4900" style="background-color: #FF4900;">Red-Orange</option>
-      <option value="#FF9200" style="background-color: #FF9200;">Yellow-Orange</option>
-      <option value="#CCF600" style="background-color: #CCF600;">Yellow-Green</option>
-      <option value="#00FFFF" style="background-color: #00FFFF;">Blue-Green</option>
-      <option value="#6D00FF" style="background-color: #6D00FF;">Blue-Violet</option>
-      <option value="#A600A6" style="background-color: #A600A6;">Red-Violet</option>
+      <option value="#ff4900" style="background-color: #ff4900;">Red-Orange</option>
+      <option value="#ff9200" style="background-color: #ff9200;">Yellow-Orange</option>
+      <option value="#ccf600" style="background-color: #ccf600;">Yellow-Green</option>
+      <option value="#0ff" style="background-color: #0ff;">Blue-Green</option>
+      <option value="#6d00ff" style="background-color: #6d00ff;">Blue-Violet</option>
+      <option value="#a600a6" style="background-color: #a600a6;">Red-Violet</option>
     </optgroup>
   </select>
 </div>
