@@ -7,8 +7,6 @@ const prevTime = pStore('tool/freq/prevTime', 0)
 const lastDelay = pStore('tool/freq/lastDelay', 0)
 const sumTime = pStore('tool/freq/sumTime', 0)
 const sumFreq = pStore('tool/freq/sumFreq', 0)
-$: avgTime = $sumTime / $intervalCount
-$: avgFreq = $sumFreq / $intervalCount
 
 function addEvent () {
   if (++$intervalCount) {
@@ -37,6 +35,8 @@ function resetEvents () {
 {:else if !$intervalCount}
   <h2>Add another event!</h2>
 {:else}
+{@const avgTime = $sumTime / $intervalCount}
+{@const avgFreq = $sumFreq / $intervalCount}
 <table class="table table-striped table-bordered table-hover caption-top w-auto">
   <caption>Count of intervals = {$intervalCount}</caption>
   <thead>
