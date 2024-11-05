@@ -17,6 +17,7 @@ function addEvent () {
     $sumFreq += 1 / $lastDelay
   } else {
     $startTime = $prevTime = Date.now()
+    $sumFreq = 0
   }
 }
 
