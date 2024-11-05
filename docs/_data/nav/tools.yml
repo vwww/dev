@@ -18,8 +18,11 @@
     desc: Measure frequency, like heart rate
     href: tools/freq
   - name: Letter Counter
+    desc: Count letter frequency in text
     href: tools/letter_count
   - name: Encryption Tools
+    desc: Old encryption tools
     href: tools/encrypt
   - name: Time Perception
+    desc: It's later than you think!
     href: tools/time
