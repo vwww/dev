@@ -1,0 +1,18 @@
+---
+title: Match Win Calculator
+date: "2024-11-06 21:48:00 -0700"
+entry: app_tools_match_win
+---
+<p>
+    Many games and sports play multiple rounds, also known as first-to-n or best-of-(2n-1).
+    This structure amplifies skill gaps, as the underdog is more likely to lose the match than an individual round, which <a href="https://stats.stackexchange.com/a/458808">can be calculated with a negative binomial distribution</a>.
+</p>
+
+<p>
+    In the table below, the row corresponds to the number of points for the opponent, and
+    the column corresponds to the number of points for the current player.
+    The cell shows the probability that the current player wins the match.
+    Double-click the slider for P to reset to 0.5.
+</p>
+
+{% include app.html %}
