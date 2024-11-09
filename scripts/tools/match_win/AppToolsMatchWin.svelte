@@ -64,8 +64,8 @@ $: memo = (() => {
     <button class="btn btn-outline-primary" on:click={() => $pRaw = 0.5}>0.5</button>
     <button class="btn btn-outline-success" on:click={() => $pRaw = 1 - p}>Invert</button>
 </p>
-<input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={p}>
-<input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={p}>
+<input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={$pRaw}>
+<input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={$pRaw}>
 
 <table class="table table-bordered table-hover caption-top w-auto">
     <caption>first-to-{n}/best-of-{2*n-1}{#if leadRequired > 1}, {leadRequired} point lead, max {n + $otRaw} score{/if}</caption>
