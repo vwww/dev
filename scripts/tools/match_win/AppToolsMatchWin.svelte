@@ -68,7 +68,14 @@ $: memo = (() => {
 <input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={$pRaw}>
 
 <table class="table table-bordered table-hover caption-top w-auto">
-    <caption>first-to-{n}/best-of-{2*n-1}{#if leadRequired > 1}, {leadRequired} point lead, max {n + $otRaw} score{/if}</caption>
+    <caption>{
+        draw == 0
+            ? 'Probability of winning'
+            : draw == 1
+                ? 'Probability of winning or drawing'
+                : 'Expected value of'}
+        first-to-{n}/best-of-{2*n-1}{#if leadRequired > 1}, {leadRequired} point lead, max {n + $otRaw} score{/if}
+    </caption>
     <thead>
         <tr>
             <th rowspan=2 colspan=2></th>
