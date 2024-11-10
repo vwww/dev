@@ -69,7 +69,7 @@ $: memo = (() => {
 
 <table class="table table-bordered table-hover caption-top w-auto">
     <caption>{
-        draw == 0
+        leadRequired <= 1 || draw == 0
             ? 'Probability of winning'
             : draw == 1
                 ? 'Probability of winning or drawing'
