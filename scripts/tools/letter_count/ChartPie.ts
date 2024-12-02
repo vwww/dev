@@ -39,7 +39,7 @@ export const ChartPie: ChartBase = {
     },
     tooltip: {
       formatter () {
-        return (this.point as any).label
+        return (this as any).label
       },
       borderWidth: 3,
       borderRadius: 6,

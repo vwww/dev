@@ -65,7 +65,7 @@ export const ChartBar: ChartBase = {
     },
     tooltip: {
       formatter () {
-        const c = this.point.name ?? this.x
+        const c = this.name ?? this.x
         const count = this.y
 
         return c + ' found ' + (count === 1 ? 'once' : count + ' times')
