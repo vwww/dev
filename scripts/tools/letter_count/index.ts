@@ -1,6 +1,8 @@
 import { $idA } from '@/util'
 import Highcharts from 'highcharts'
-import Exporting from 'highcharts/modules/exporting'
+import 'highcharts/modules/exporting'
+import 'highcharts/modules/offline-exporting'
+import 'highcharts/modules/accessibility'
 
 import { CHARS } from './Chart'
 import { ChartBar } from './ChartBar'
@@ -8,8 +10,6 @@ import { ChartDonut } from './ChartDonut'
 import { ChartDonutSemi } from './ChartDonutSemi'
 import { ChartPie } from './ChartPie'
 import { ChartStacked } from './ChartStacked'
-
-Exporting(Highcharts)
 
 const CHARS_MAP = Object.fromEntries([...CHARS].map((v, i) => [v, i]))
 
@@ -106,6 +106,9 @@ const charts = chartInfos.map((chartOptions, i) => {
           events: events,
         },
       },
+    },
+    exporting: {
+      fallbackToExportServer: false,
     },
   }
 
