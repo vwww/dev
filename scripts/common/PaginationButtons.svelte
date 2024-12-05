@@ -1,13 +1,43 @@
 <script lang="ts">
-import Pagination from './Pagination.svelte'
-
-export let showLo: number | undefined = undefined
-export let showBehind: number | undefined = undefined
-export let showAhead: number | undefined = undefined
-export let showHi: number | undefined = undefined
+export let showLo = 3
+export let showBehind = 3
+export let showAhead = 3
+export let showHi = 3
 export let pageCur: number
 export let pageMax: number
 export let onSetPage: (page: number) => void
+
+$: pageNumbers = Array.from(generatePageNumbers(pageCur, pageMax, showLo, showBehind, showAhead, showHi))
+
+function* generatePageNumbers (pageCur: number, pageMax: number, showLo: number, showBehind: number, showAhead: number, showHi: number) {
+  let cur = 1
+
+  const lo0 = Math.min(showLo, pageMax)
+  while (cur <= lo0) {
+    yield cur++
+  }
+
+  const lo1 = pageCur - showBehind
+  if (cur + 1 < lo1) {
+    yield 0
+    cur = lo1
+  }
+
+  const hi1 = Math.min(pageCur + showAhead, pageMax)
+  while (cur <= hi1) {
+    yield cur++
+  }
+
+  const hi2 = pageMax - showHi + 1
+  if (cur + 1 < hi2) {
+    yield 0
+    cur = hi2
+  }
+
+  while (cur <= pageMax) {
+    yield cur++
+  }
+}
 </script>
 
 <nav>
@@ -17,14 +47,7 @@ export let onSetPage: (page: number) => void
         &lsaquo;
       </button>
     </li>
-    <Pagination
-      {showLo}
-      {showBehind}
-      {showAhead}
-      {showHi}
-      {pageCur}
-      {pageMax}
-      let:page>
+    {#each pageNumbers as page}
       {#if page < 1}
         <li class="page-item disabled">
           <button class="page-link" aria-hidden="true">&hellip;</button>
@@ -38,7 +61,7 @@ export let onSetPage: (page: number) => void
           <button class="page-link" on:click={() => onSetPage(page)}>{page}</button>
         </li>
       {/if}
-    </Pagination>
+    {/each}
     <li class="page-item" class:disabled={pageCur === pageMax}>
       <button class="page-link" on:click={() => onSetPage(pageCur + 1)} aria-label="Next">
         &rsaquo;
