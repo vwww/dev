@@ -20,7 +20,7 @@ layout: pages
     {%- for item in section.items %}
       <div class="col-sm-6 col-md-4 col-xl-3 mb-3 grid-item">
         <div class="card{% if item.badges %} border-{{ item.badges[0][0] }}{% endif %}">
-          <div class="card-header">{{ item.name }}{% if item.badges %} <span class="badge text-bg-{{ item.badges[0][0] }}">{{ item.badges[0][1] }}</span>{% endif %}</div>
+          <div class="card-header">{{ item.name }}{% for badge in item.badges %} <span class="badge text-bg-{{ badge[0] }}">{{ badge[1] }}</span>{% endfor %}</div>
           <div class="card-body">
             {%- if item.desc %}
               <p class="card-text">{{ item.desc }}</p>
