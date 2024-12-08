@@ -1,10 +1,10 @@
 - desc: Automation is convenient! Robots can easily do repetitive and tedious tasks.
   items:
   - name: Facebook Poke
-    desc: See the leaderboard of people who poke a bot that returns pokes automatically
+    desc: See the leaderboard of people who poke a bot that returned pokes automatically
     href: bots/poke
 - name: Twitter
-  desc: Bots on Twitter
+  desc: Former Bots on Twitter (I no longer use Twitter.)
   items:
   - name: Grammar
     desc: "@_grammar_ corrects users' grammar. It was suspended many times."
@@ -34,6 +34,7 @@
         ext: true
     badges:
       - [secondary, Future]
+      - [warning, Local]
   - name: GooGuns Lulz
     desc: '@googuns_lulz is like other @googuns_ accounts, yet very different.'
     href: bots/googuns
@@ -41,6 +42,8 @@
       - name: Twitter
         href: https://twitter.com/googuns_lulz
         ext: true
+    badges:
+      - [warning, Local]
   - name: Bing Tomorrow
     desc: "@BingTomorrow can see the future! It can predict Bing's homepage image for tomorrow."
     href: bots/bing_tomorrow
@@ -48,6 +51,8 @@
       - name: Twitter
         href: https://twitter.com/BingTomorrow
         ext: true
+    badges:
+      - [warning, Local]
   - name: Spelling
     desc: "@Bot_Dictionary corrects users' spelling. Its output rate from random searches is quite low."
     href: bots/spelling

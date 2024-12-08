@@ -131,7 +131,7 @@ function onResize (): void {
 <svelte:window on:load={onReady} on:resize={onResize} />
 
 <div class="alert alert-secondary" role="alert">
-  The bot is down. It will be fixed when I get a chance.
+  This bot is down. It has been discontinued, so it will not be restored for a long time.
 </div>
 
 <div class="row">
@@ -142,7 +142,7 @@ function onResize (): void {
     <p>This page shows <strong>realtime</strong> updates for the statistics and leaderboard.</p>
     <p>The <a href="poke_old" class="alert-link">old leaderboard</a> has less formatting and is more lightweight.</p>
     <div class="alert alert-warning" role="alert">
-      The leaderboard might miss some pokes before <span class="timeago" title="2014-07-30T04:15:43.000Z">the end of July 2014</span>.
+      The leaderboard might miss some pokes before the end of July 2014.
       After Facebook removed profile images from their public API, the leaderboard now shows Identicon images.
       <!-- Stale entries may be pruned over time. -->
     </div>
