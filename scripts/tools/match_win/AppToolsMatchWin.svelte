@@ -91,7 +91,7 @@ $: memo = (() => {
         {#each memo as row, i}
             <tr>
                 {#if !i}
-                    <th rowspan={tableSize}><div style="writing-mode: vertical-lr; text-align: end; transform: rotate(180deg)">Opponent score</div></th>
+                    <th rowspan={tableSize}><div style="writing-mode: vertical-lr; transform: rotate(180deg)">Opponent score</div></th>
                 {/if}
                 <th style="position: sticky; left: 0">{i}</th>
                 {#each row as v}
