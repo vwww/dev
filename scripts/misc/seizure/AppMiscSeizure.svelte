@@ -2,14 +2,20 @@
 import { randomHexColor } from '@/util'
 import { pStore } from '@/util/svelte'
 
+const DEFAULT_IMAGE_URL = '../../../assets/victorz/logo.png'
+
 const colorMode = pStore('misc/seizure/mode', 0)
+const imageMode = pStore('misc/seizure/imageMode', 0)
+const imageURL = pStore('misc/seizure/imageURL', DEFAULT_IMAGE_URL)
 const interval = pStore('misc/seizure/int', -1)
+const imageMultiplier = pStore('misc/seizure/imageMult', 1)
 const userColor = pStore('misc/seizure/color', '#fff')
 const userColor2 = pStore('misc/seizure/color2', 'rgba(0, 0, 0, 0.5)')
 const useTimeMax = pStore('misc/seizure/useTimeMax', 0)
 
 let running = false
 let runBackgroundColorInt = 0
+let runImageInt = 0
 let runTimeLast = 0
 let runTimeInt = 0
 let useTime = -1
@@ -20,15 +26,16 @@ $: winA = winW * winH
 const minWinA = 250000
 let windowIsBlurred = false
 
-let strobeContainer: HTMLDivElement
+let strobe = false
 let curColor: string = '#000'
+let curOpacity = 1
+let imageStrobe = false
 
 function nextColor (): void {
-  let curOpacity = 1
   if ($colorMode < 4) {
     if (!($colorMode & 1)) {
       // Black and white (toggle colors)
-      curColor = curColor === '#000' ? '#fff' : '#000'
+      curColor = (strobe = !strobe) ? '#fff' : '#000'
     } else {
       // Rainbow (random color)
       curColor = randomHexColor()
@@ -39,8 +46,10 @@ function nextColor (): void {
   } else {
     curColor = $colorMode < 5 ? $userColor : $userColor2
   }
-  strobeContainer.style.backgroundColor = curColor
-  strobeContainer.style.opacity = curOpacity + ''
+}
+
+function nextImageInvert (): void {
+  imageStrobe = !imageStrobe
 }
 
 function start (): void {
@@ -56,13 +65,17 @@ function start (): void {
     runTimeLast = now
   }, 1)
 
+  curOpacity = 1
+
   if ($interval < 0) {
     (function animCallback () {
       runBackgroundColorInt = requestAnimationFrame(animCallback)
       nextColor()
+      nextImageInvert()
     })()
   } else {
     runBackgroundColorInt = window.setInterval(nextColor, $interval)
+    runImageInt = window.setInterval(nextImageInvert, $interval * $imageMultiplier)
   }
 }
 
@@ -75,6 +88,11 @@ function stop (): void {
   if (runBackgroundColorInt) {
     ($interval < 0 ? cancelAnimationFrame : clearInterval)(runBackgroundColorInt)
     runBackgroundColorInt = 0
+  }
+
+  if (runImageInt) {
+    clearInterval(runImageInt)
+    runImageInt = 0
   }
 
   if ($useTimeMax < useTime) {
@@ -92,6 +110,22 @@ function formatSeconds (ms: number): string {
   return s.padEnd(s.indexOf('.')+1+3, '0')
 }
 
+function handleImageFile (this: HTMLInputElement): void {
+  const file = this.files![0]
+  if (!file) return
+
+  const clearFile = () => this.value = ''
+
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => {
+    $imageURL = reader.result as string
+    $imageMode = 1
+    clearFile()
+  }
+  reader.onerror = clearFile
+}
+
 updateWindowSize()
 </script>
 
@@ -100,22 +134,25 @@ updateWindowSize()
   on:blur={() => windowIsBlurred = true}
   on:focus={() => windowIsBlurred = false} />
 
-<div id="strobeContainer" bind:this={strobeContainer} class:invisible={!running} style="text-align: center" on:dblclick={stop} role="presentation">
+<div id="strobeContainer" class:invisible={!running} style="text-align:center;background-color:{curColor};opacity:{curOpacity}" on:dblclick={stop} role="presentation">
   <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
   <img on:click={stop} src="stop.png" alt="Stop">
   <div class="container">
     <button on:click={stop} class="btn d-block w-100 btn-danger">Secondary Stop</button>
-    <div style=" color: white; mix-blend-mode: difference">
+    <div style="color: white; mix-blend-mode: difference">
       {#if $colorMode < 4}
         <p>You have lasted {formatSeconds(useTime)} seconds!</p>
       {:else}
         <p>Time is not counted in static color mode.</p>
       {/if}
       <p>
-        This <u>window <i>must be </i><b>focused</b> and <i>have a viewport area of at least a </i><b>quarter megapixel</b>.</u><br>
+        This <u>window <i>must be</i> <b>focused</b> and <i>have a viewport area of at least a </i><b>quarter megapixel</b>.</u><br>
         (W * H = {winW} * {winH} = {winA}) {winA >= minWinA ? 'is large enough' : 'needs another ' + (minWinA - winA) + ' pixels of area!'}
       </p>
     </div>
+    {#if $imageMode}
+      <img src={$imageURL} style="{imageStrobe ? 'filter:invert(1)' : ''}" alt="">
+    {/if}
   </div>
 </div>
 
@@ -184,6 +221,24 @@ updateWindowSize()
 </div>
 
 <div class="input-group mb-3">
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$imageMode} value={0}>
+      No Image
+    </label>
+  </div>
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$imageMode} value={1}>
+      URL
+    </label>
+  </div>
+  <input type="url" class="form-control" bind:value={$imageURL}>
+  <input type="file" class="form-control" accept="image/*" on:change={handleImageFile}>
+  <button class="btn btn-outline-secondary" on:click={() => $imageURL = DEFAULT_IMAGE_URL}>Reset</button>
+</div>
+
+<div class="input-group mb-3">
   <label class="input-group-text" for="inputGroupSelectInterval">Interval</label>
   <select bind:value={$interval} class="form-select" id="inputGroupSelectInterval">
     <option value={-1} class="def">ASAP (requestAnimationFrame)</option>
@@ -215,6 +270,30 @@ updateWindowSize()
       <option value={2000} class="ssslow">2 (2000 ms)</option>
     </optgroup>
   </select>
+  {#if $interval > 0}
+    <label class="input-group-text" for="inputGroupSelectInterval">Image Multiplier</label>
+    <select bind:value={$imageMultiplier} class="form-select" id="inputGroupSelectInterval">
+      <optgroup label="Faster">
+        <option value={0.25} class="sslow">1/5 [0.25]</option>
+        <option value={0.5} class="sslow">1/2 [0.5]</option>
+        <option value={0.75} class="sslow">3/4 [0.75]</option>
+      </optgroup>
+      <optgroup label="Same">
+        <option value={1} class="def">Same [1]</option>
+      </optgroup>
+      <optgroup label="Slower">
+        <option value={1.25} class="slow">1 + 1/4 [1.25]</option>
+        <option value={1.5} class="slow">1 + 1/2 [1.5]</option>
+        <option value={1.75} class="slow">1 + 3/4 [1.75]</option>
+        <option value={2} class="slow">Double [2]</option>
+      </optgroup>
+      <optgroup label="Big Difference">
+        <option value={3} class="lag">Triple [3]</option>
+        <option value={4} class="lag">Quadruple [4]</option>
+        <option value={5} class="lag">Quintuple [5]</option>
+      </optgroup>
+    </select>
+  {/if}
 </div>
 
 <p>Last usage time: {useTime < 0 ? '(click Start)' : formatSeconds(useTime) + ' s'} (longest {formatSeconds($useTimeMax) + ' s'})</p>
