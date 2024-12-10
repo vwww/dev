@@ -2,6 +2,7 @@
 import { randomHexColor } from '@/util'
 import { pStore } from '@/util/svelte'
 
+const MIN_WIN_AREA = 250000
 const DEFAULT_IMAGE_URL = '../../../assets/victorz/logo.png'
 
 const colorMode = pStore('misc/seizure/mode', 0)
@@ -23,7 +24,6 @@ let useTime = -1
 let winW = 0
 let winH = 0
 $: winA = winW * winH
-const minWinA = 250000
 let windowIsBlurred = false
 
 let strobe = false
@@ -59,7 +59,7 @@ function start (): void {
   runTimeLast = Date.now()
   runTimeInt = window.setInterval(() => {
     const now = Date.now()
-    if ($colorMode < 4 && winA >= minWinA && !windowIsBlurred) {
+    if (($colorMode < 4 || $imageMode) && winA >= MIN_WIN_AREA && !windowIsBlurred) {
       useTime += now - runTimeLast
     }
     runTimeLast = now
@@ -147,7 +147,7 @@ updateWindowSize()
       {/if}
       <p>
         This <u>window <i>must be</i> <b>focused</b> and <i>have a viewport area of at least a </i><b>quarter megapixel</b>.</u><br>
-        (W * H = {winW} * {winH} = {winA}) {winA >= minWinA ? 'is large enough' : 'needs another ' + (minWinA - winA) + ' pixels of area!'}
+        (W * H = {winW} * {winH} = {winA}) {winA >= MIN_WIN_AREA ? 'is large enough' : 'needs another ' + (MIN_WIN_AREA - winA) + ' pixels of area!'}
       </p>
     </div>
     {#if $imageMode}
