@@ -5,6 +5,7 @@ import { pStore } from '@/util/svelte'
 const colorMode = pStore('misc/seizure/mode', 0)
 const interval = pStore('misc/seizure/int', -1)
 const userColor = pStore('misc/seizure/color', '#fff')
+const userColor2 = pStore('misc/seizure/color2', 'rgba(0, 0, 0, 0.5)')
 const useTimeMax = pStore('misc/seizure/useTimeMax', 0)
 
 let running = false
@@ -36,7 +37,7 @@ function nextColor (): void {
       curOpacity = Math.sqrt(Math.random())
     }
   } else {
-    curColor = $userColor
+    curColor = $colorMode < 5 ? $userColor : $userColor2
   }
   strobeContainer.style.backgroundColor = curColor
   strobeContainer.style.opacity = curOpacity + ''
@@ -111,9 +112,9 @@ updateWindowSize()
         <p>Time is not counted in static color mode.</p>
       {/if}
       <p>
-          This <u>window <i>must be </i><b>focused</b> and <i>have a viewport area of at least a </i><b>quarter megapixel</b>.</u><br>
-          (W * H = {winW} * {winH} = {winA}) {winA >= minWinA ? 'is large enough' : 'needs another ' + (minWinA - winA) + ' pixels of area!'}
-        </p>
+        This <u>window <i>must be </i><b>focused</b> and <i>have a viewport area of at least a </i><b>quarter megapixel</b>.</u><br>
+        (W * H = {winW} * {winH} = {winA}) {winA >= minWinA ? 'is large enough' : 'needs another ' + (minWinA - winA) + ' pixels of area!'}
+      </p>
     </div>
   </div>
 </div>
@@ -173,6 +174,13 @@ updateWindowSize()
       <option value="#a600a6" style="background-color: #a600a6;">Red-Violet</option>
     </optgroup>
   </select>
+  <div class="input-group-text">
+    <label class="form-check">
+      <input type="radio" class="form-check-input" bind:group={$colorMode} value={5}>
+      Custom
+    </label>
+  </div>
+  <input type="url" class="form-control" bind:value={$userColor2}>
 </div>
 
 <div class="input-group mb-3">
