@@ -26,6 +26,8 @@ let winH = 0
 $: winA = winW * winH
 let windowIsBlurred = false
 
+$: countUseTime = $colorMode < 4 || $imageMode
+
 let strobe = false
 let curColor: string = '#000'
 let curOpacity = 1
@@ -59,7 +61,7 @@ function start (): void {
   runTimeLast = Date.now()
   runTimeInt = window.setInterval(() => {
     const now = Date.now()
-    if (($colorMode < 4 || $imageMode) && winA >= MIN_WIN_AREA && !windowIsBlurred) {
+    if (countUseTime && winA >= MIN_WIN_AREA && !windowIsBlurred) {
       useTime += now - runTimeLast
     }
     runTimeLast = now
@@ -140,7 +142,7 @@ updateWindowSize()
   <div class="container">
     <button on:click={stop} class="btn d-block w-100 btn-danger">Secondary Stop</button>
     <div style="color: white; mix-blend-mode: difference">
-      {#if $colorMode < 4}
+      {#if countUseTime}
         <p>You have lasted {formatSeconds(useTime)} seconds!</p>
       {:else}
         <p>Time is not counted in static color mode.</p>
