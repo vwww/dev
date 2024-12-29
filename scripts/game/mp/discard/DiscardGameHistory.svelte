@@ -8,7 +8,7 @@ interface Props {
   ll: boolean
 }
 
-let { results, ll }: Props = $props()
+const { results, ll }: Props = $props()
 </script>
 
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">

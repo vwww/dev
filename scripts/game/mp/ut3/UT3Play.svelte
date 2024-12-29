@@ -13,7 +13,7 @@ interface Props {
   gameState: UT3Game
 }
 
-let { gameState }: Props = $props()
+const { gameState }: Props = $props()
 
 const {
   isActive,
@@ -36,9 +36,9 @@ const {
   modeQuick,
 } = gameState
 
-let playing = $derived($isActive && $roundState === 2 && $inRound)
-let canMove = $derived(playing && $myTurn)
-let boardState = $derived($boardStates[$boardIndex])
+const playing = $derived($isActive && $roundState === 2 && $inRound)
+const canMove = $derived(playing && $myTurn)
+const boardState = $derived($boardStates[$boardIndex])
 </script>
 
 {#if !$roundState}

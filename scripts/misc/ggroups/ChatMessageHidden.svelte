@@ -9,7 +9,7 @@ interface Props {
   showStore: Writable<boolean>
 }
 
-let { allowSecretSystemMessages, rawTexts, showStore }: Props = $props()
+const { allowSecretSystemMessages, rawTexts, showStore }: Props = $props()
 
 function reveal () {
   $showStore = true

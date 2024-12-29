@@ -12,9 +12,9 @@ interface Props {
   len: number
 }
 
-let { msg, len }: Props = $props()
+const { msg, len }: Props = $props()
 
-let parts = $derived([
+const parts = $derived([
   msg.slice(0, 16),
   msg.slice(16, 18),
   msg.slice(18, 128),
@@ -24,7 +24,7 @@ let parts = $derived([
 ])
 
 // Derived
-let C0 = $derived.by(() => {
+const C0 = $derived.by(() => {
   if (len >= 280) {
     let C0 = msg.slice(0, 16)
     for (let i = 16; i < 272; i += 16) {

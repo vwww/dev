@@ -10,7 +10,7 @@ interface Props {
   ll: boolean
 }
 
-let { moves, ll }: Props = $props()
+const { moves, ll }: Props = $props()
 </script>
 
 <b>Move History</b>

@@ -5,7 +5,7 @@ interface Props {
   results: MorraGameHistory[]
 }
 
-let { results }: Props = $props()
+const { results }: Props = $props()
 </script>
 
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">

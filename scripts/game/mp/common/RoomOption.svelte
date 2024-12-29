@@ -24,17 +24,14 @@ import RoomOptionBool from './RoomOptionBool.svelte'
 import RoomOptionEnum from './RoomOptionEnum.svelte'
 import RoomOptionInt from './RoomOptionInt.svelte'
 
-  interface Props {
-    optionStore: OptionStoreAny;
-  }
+interface Props {
+  optionStore: OptionStoreAny
+}
 
-  let { optionStore }: Props = $props();
+const { optionStore }: Props = $props()
 
-let option: any = $state()
-let store: ValueStore<any> = $derived(optionStore)
-let oType: OptionsAny[1] = $derived(option[1])
-
-
+const [option, store] = $derived(optionStore)
+const oType: OptionsAny[1] = $derived(option[1])
 </script>
 
 {#if oType === 'b'}

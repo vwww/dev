@@ -10,7 +10,7 @@ interface Props {
   gameState: RPSGame
 }
 
-let { gameState }: Props = $props()
+const { gameState }: Props = $props()
 
 const {
   isActive,

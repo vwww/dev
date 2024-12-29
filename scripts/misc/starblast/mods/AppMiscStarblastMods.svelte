@@ -27,7 +27,7 @@ let modEventTotalText = $state('')
 let modEventTimetable: [mod: ModData, timings: string | ModTiming[], className?: string][] = $state([])
 let modHistory = $state([generateHistory(modDataCached)])
 let useLive = $state(false)
-let activeModHistory = $derived(modHistory[useLive ? 1 : 0])
+const activeModHistory = $derived(modHistory[useLive ? 1 : 0])
 let loading = $state(false)
 let loadError: unknown = $state('loading')
 
@@ -276,8 +276,9 @@ async function loadInfo (): Promise<void> {
 
     loadError = undefined
     useLive = true
-    setModEvent((modHistory[1] = generateHistory(respJson[0], modDataCached))[0])
-    setTimeout(render, 1) // needs delay for some reason
+    modHistory[1] = generateHistory(respJson[0], modDataCached)
+    setModEvent(modHistory[1][0])
+    render()
   } catch (e) {
     console.error(loadError = e)
   } finally {

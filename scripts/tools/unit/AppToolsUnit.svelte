@@ -1,5 +1,5 @@
 <script lang="ts">
-import { type Unit, UNITS } from './units'
+import { UNITS } from './units'
 
 const DEFAULT_TYPE = Object.keys(UNITS)[0]
 const [DEFAULT_FROM, DEFAULT_TO] = Object.keys(UNITS[DEFAULT_TYPE])
@@ -10,9 +10,6 @@ let curTo: string = $state(DEFAULT_TO)
 
 let val1 = $state('1337.1')
 let val2 = $state('0')
-
-let sfn = $state(0)
-let dpn = $state(0)
 
 const uFrom = $derived(UNITS[curType]?.[curFrom])
 const uTo = $derived(UNITS[curType]?.[curTo])
@@ -91,54 +88,52 @@ function getPrecision (num: number | string): number {
   return s.split('.')[1].length
 }
 
-function fixPrecision (num: number, sf: number, max: number): string {
-  switch (sf) {
-    case 1:
-      return toSigFigs(num, max)
-    case 2:
-      return num.toFixed(max)
-  }
-  return num.toString()
-}
-
-function convertVal (uf: Unit | undefined, ut: Unit | undefined, val1: string, val2: string, sf: number): string {
-  if (!uf || !ut) return '[no unit selected]'
+const [convertedUnrounded, convertedSigFigs, convertedPrecision] = $derived.by(() => {
+  if (!uFrom || !uTo) return Array(3).fill('[no unit selected]') as [string, string, string]
 
   // By multiplying/dividing, we use the number with the least significant figures
-  let maxp = -1
-  switch (sf) {
-    case 1:
-      maxp = getSigFigs(val1)
-      if (uf[2]) maxp = Math.min(maxp, getSigFigs(val2))
+  let sfn = getSigFigs(val1)
+  if (uFrom[2]) sfn = Math.min(sfn, getSigFigs(val2))
 
-      sfn = maxp
-      break
-    case 2:
-      maxp = getPrecision(val1)
-      if (uf[2]) maxp = Math.min(maxp, getPrecision(val2))
-
-      dpn = maxp
-      break
-  }
+  let dpn = getPrecision(val1)
+  if (uFrom[2]) dpn = Math.min(dpn, getPrecision(val2))
 
   // absolute value of the "from"
   let result: number
-  if (uf[2]) result = uf[0][0] * uf[2] * parseFloat(val1) + uf[0][0] * parseFloat(val2)
-  else result = uf[0][0] * parseFloat(val1)
+  if (uFrom[2]) result = uFrom[0][0] * uFrom[2] * parseFloat(val1) + uFrom[0][0] * parseFloat(val2)
+  else result = uFrom[0][0] * parseFloat(val1)
 
-  // we should do "precision" for the following operations...
-  if (uf[0][1]) result += uf[0][1]
-  if (ut[0][1]) result -= ut[0][1]
+  // TODO handle "precision" for the following operations...
+  if (uFrom[0][1]) result += uFrom[0][1]
+  if (uTo[0][1]) result -= uTo[0][1]
 
   // convert it to the "to"
-  result /= ut[0][0]
-  // no precision fix for the division (since modulus is whole)
-  let resultStr: string
-  if (ut[2]) resultStr = Math.floor(result / ut[2]) + ' ' + ut[3] + ' ' + fixPrecision(result % ut[2], sf, maxp)
-  else resultStr = fixPrecision(result, sf, maxp)
+  result /= uTo[0][0]
 
-  return resultStr + ' ' + ut[1]
-}
+  const suffix2 = ` (${sfn} significant figure${sfn == 1 ? '' : 's'})`
+  const suffix3 = ` (${dpn} decimal place${dpn == 1 ? '' : 's'})`
+
+  const unit1 = uTo[1]
+  if (uTo[2]) {
+    // no precision fix for the division (since modulus is whole)
+    const unit2 = uTo[3]
+    const prefix = Math.floor(result / uTo[2]) + ' ' + unit2 + ' '
+    const suffix = ' ' + unit1
+    const remainder = result % uTo[2]
+    return [
+      prefix + remainder + suffix,
+      prefix + toSigFigs(remainder, sfn) + suffix + suffix2,
+      prefix + remainder.toFixed(dpn) + suffix + suffix3,
+    ]
+  } else {
+    const suffix = ' ' + unit1
+    return [
+      result + suffix,
+      toSigFigs(result, sfn) + suffix + suffix2,
+      result.toFixed(dpn) + suffix + suffix3,
+    ]
+  }
+})
 </script>
 
 <div class="row">
@@ -178,8 +173,8 @@ function convertVal (uf: Unit | undefined, ut: Unit | undefined, val1: string, v
     </div>
   </div>
   <div class="col-sm-6">
-    <p>{@html convertVal(uFrom, uTo, val1, val2, 0)}</p>
-    <p>{@html convertVal(uFrom, uTo, val1, val2, 1)} ({sfn} significant figure{sfn == 1 ? '' : 's'})</p>
-    <p>{@html convertVal(uFrom, uTo, val1, val2, 2)} ({dpn} decimal{dpn == 1 ? '' : 's'})</p>
+    <p>{@html convertedUnrounded}</p>
+    <p>{@html convertedSigFigs}</p>
+    <p>{@html convertedPrecision}</p>
   </div>
 </div>

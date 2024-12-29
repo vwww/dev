@@ -17,7 +17,7 @@ function up (count: number): void {
 }
 
 function enterChild (node: NodeDirectory): void {
-  curPath = [...curPath, (curNode = node)]
+  curPath = [...curPath, node]
 
   updateLocationHash()
 }
@@ -141,8 +141,8 @@ browseLocationHash()
   <tbody>
     {#if curPath.length > 2}
       <tr onclick={() => up(curPath.length - 1)}>
-        <!-- svelte-ignore a11y_invalid_attribute We actually want this to set the hash to # -->
-        <td><a onclick={(event) => event.preventDefault()} href="#" class="file-root">. (root)</a></td>
+        <!-- svelte-ignore a11y_invalid_attribute We actually want this to unset the hash -->
+        <td><a onclick={(event) => event.preventDefault()} href="" class="file-root">. (root)</a></td>
         <td title={formatSize(fileRoot.size, true)}>{formatSize(fileRoot.size)}</td>
         <td>Go to the top!</td>
         <td>{formatDateTime(fileRoot.mtime)}</td>
@@ -156,7 +156,7 @@ browseLocationHash()
         <td>{formatDateTime(curParent.mtime)}</td>
       </tr>
     {/if}
-    {#each curNode.children.sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
+    {#each curNode.children.slice().sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
       {#if child.type === 'dir'}
         <tr onclick={() => enterChild(child)}>
           <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir">{child.name}</a></td>

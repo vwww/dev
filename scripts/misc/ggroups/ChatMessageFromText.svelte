@@ -6,7 +6,7 @@ interface Props {
   rawText: string
 }
 
-let { allowSecretSystemMessages, rawText }: Props = $props()
+const { allowSecretSystemMessages, rawText }: Props = $props()
 
 function parseRawText (rawText: string, allowSecretSystemMessages: boolean): [msgClassNum: number, sender: string, text: string] {
   let msgClassNum = 0

@@ -28,7 +28,7 @@ const {
   onMove,
 }: Props = $props()
 
-let boardValue = $derived((board >> (i << 1)) & 3)
+const boardValue = $derived((board >> (i << 1)) & 3)
 
 function recalc () : [string, number] | undefined {
   if (boardValue || !showHints || winner || !getMemo) return
@@ -52,7 +52,7 @@ function recalcWhenNeeded (..._: any[]) {
   return recalc()
 }
 
-let [hintClass, hintVal] = $derived(recalcWhenNeeded(board, showHints, winnerMap, getMemo) || [''])
+const [hintClass, hintVal] = $derived(recalcWhenNeeded(board, showHints, winnerMap, getMemo) || [''])
 </script>
 
 <BoardCell {winner} mark={boardValue} markHover={mark} {hintClass} {hintVal} {onMove} />

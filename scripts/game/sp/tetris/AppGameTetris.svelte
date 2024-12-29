@@ -87,7 +87,7 @@ let curR = -1
 let curC = $state(-1)
 let maxR = $state(-1)
 let ghostLines = $state(-1)
-let curBlock: TetrominoShape = $state(gameBlocks[0])
+let curBlock: TetrominoShape | undefined = $state()
 let curBlockIndex = $state(-1)
 let curColor = $state(-1)
 
@@ -150,7 +150,7 @@ function canAddBlock (): boolean {
     for (let dc = 0; dc < 4; dc++, c++) {
       const colOutOfBounds = (c < 0 || c >= WIDTH)
 
-      if ((rowOutOfBounds || colOutOfBounds || grid[r][c] !== 0) && curBlock[curBlockIndex][dr][dc]) {
+      if ((rowOutOfBounds || colOutOfBounds || grid[r][c] !== 0) && curBlock![curBlockIndex][dr][dc]) {
         return false
       }
     }
@@ -159,7 +159,7 @@ function canAddBlock (): boolean {
   return true
 }
 
-function isGhost (curBlock: TetrominoShape, curBlockIndex: number, maxR: number, curC: number, r: number, c: number): boolean {
+function isGhost (curBlock: TetrominoShape | undefined, curBlockIndex: number, maxR: number, curC: number, r: number, c: number): boolean {
   if (grid[r][c] || !curBlock) return false
 
   const curBlockRows = curBlock[curBlockIndex]
@@ -205,7 +205,7 @@ function setBlock (val: number): void {
 
     let c = curC
     for (let dc = 0; dc < 4; dc++, c++) {
-      if (c < 0 || c >= WIDTH || !curBlock[curBlockIndex][dr][dc]) {
+      if (c < 0 || c >= WIDTH || !curBlock![curBlockIndex][dr][dc]) {
           continue
       }
 
@@ -231,7 +231,7 @@ function addMoment (): void {
 
     let c = curC
     for (let dc = 0; dc < 4; dc++, c++) {
-      if (c < 0 || c >= WIDTH || !curBlock[curBlockIndex][dr][dc]) {
+      if (c < 0 || c >= WIDTH || !curBlock![curBlockIndex][dr][dc]) {
           continue
       }
 
@@ -249,9 +249,9 @@ function gameUpdate (): void {
 
   // Try rotation
   if (keyUp) {
-    curBlockIndex = (curBlockIndex + 1) % curBlock.length
+    curBlockIndex = (curBlockIndex + 1) % curBlock!.length
     if (!canAddBlock()) {
-      curBlockIndex = (curBlockIndex || curBlock.length) - 1
+      curBlockIndex = (curBlockIndex || curBlock!.length) - 1
     } else {
       maxRdirty = true
     }
@@ -383,10 +383,11 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
     {#each grid as row, r}
       <tr>
         {#each row as cell, c}
+          {@const cellIsGhost = $showGhost && !cell && isGhost(curBlock, curBlockIndex, maxR, curC, r, c)}
           <td
-            class:ghost={$showGhost && !cell && isGhost(curBlock, curBlockIndex, maxR, curC, r, c)}
+            class:ghost={cellIsGhost}
             class:ghostLine={$showGhost && r >= ghostLines}
-            style="background-color:{COLORS[cell || ($showGhost && isGhost(curBlock, curBlockIndex, maxR, curC, r, c) ? curColor : 0)]}"
+            style="background-color:{COLORS[cell || (cellIsGhost ? curColor : 0)]}"
   ></td>
         {/each}
       </tr>

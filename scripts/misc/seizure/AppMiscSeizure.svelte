@@ -23,10 +23,10 @@ let useTime = $state(-1)
 
 let winW = $state(0)
 let winH = $state(0)
-let winA = $derived(winW * winH)
+const winA = $derived(winW * winH)
 let windowIsBlurred = $state(false)
 
-let countUseTime = $derived($colorMode < 4 || $imageMode)
+const countUseTime = $derived($colorMode < 4 || $imageMode)
 
 let strobe = false
 let curColor: string = $state('#000')

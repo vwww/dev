@@ -38,8 +38,8 @@ const {
   modeQuick,
 } = gameState
 
-let playing = $derived($isActive && $roundState === 2 && $inRound)
-let canMove = $derived(playing && $myTurn)
+const playing = $derived($isActive && $roundState === 2 && $inRound)
+const canMove = $derived(playing && $myTurn)
 
 const isomorphism1 = [[1, 5], [2, 0], [3, 7], [4, 6], [5, 4], [6, 2], [7, 1], [8, 8], [9, 3]] as const
 const isomorphism2 = [

@@ -1,8 +1,7 @@
 <script lang="ts">
 import jQuery from 'jquery'
 
-import RollingStatsDisplay from './RollingStatsDisplay.svelte'
-import RollingStats from '@/util/RollingStats'
+import RollingStats from '@/util/RollingStats.svelte'
 import { pStore } from '@/util/svelte'
 
 const pingURL = pStore('tool/ping/url', 'https://google.com')
@@ -13,6 +12,17 @@ let curInterval = $state(0)
 
 let rsPing: RollingStats | undefined = $state()
 let rsJitter: RollingStats | undefined = $state()
+
+type Metric = [name: string, formatter: (s: RollingStats) => number | string]
+const metric: Metric[] = [
+  ['Last', stats => stats.getLast()],
+  ['Average', stats => stats.getMean()],
+  ['Min', stats => stats.getMin()],
+  ['Max', stats => stats.getMax()],
+  ['PopStdDev', stats => Math.sqrt(stats.getVariance())],
+  ['SampleStdDev', stats => Math.sqrt(stats.getSampleVariance())],
+  ['Count', stats => stats.getCount()],
+]
 
 function start () {
   const url = $pingURL
@@ -87,7 +97,29 @@ function stop () {
   <div class="col-12">
     <h3>Results</h3>
     {#if rsPing && rsJitter}
-      <RollingStatsDisplay stats={[['Ping', rsPing], ['Jitter', rsJitter]]} />
+      {#snippet rollingStatsDisplay(stats: [name: string, stats: RollingStats][])}
+        <table class="table table-striped table-bordered table-hover w-auto">
+          <thead>
+            <tr>
+              <th>Value</th>
+              {#each stats as [name]}
+                <th scope="col">{name}</th>
+              {/each}
+            </tr>
+          </thead>
+          <tbody>
+            {#each metric as m}
+              <tr>
+                <th scope="row">{m[0]}</th>
+                {#each stats as [_, stat]}
+                  <td class="text-end">{m[1](stat)}</td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      {/snippet}
+      {@render rollingStatsDisplay([['Ping', rsPing], ['Jitter', rsJitter]])}
     {:else}
       Click Start!
     {/if}

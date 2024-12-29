@@ -10,7 +10,7 @@ interface Props {
   gameState: MorraGame
 }
 
-let { gameState }: Props = $props()
+const { gameState }: Props = $props()
 
 let nextNumber = $state(0)
 
@@ -28,7 +28,7 @@ const {
   modeTeams,
 } = gameState
 
-let canMove = $derived($isActive && $roundState === 2 && $inRound)
+const canMove = $derived($isActive && $roundState === 2 && $inRound)
 
 export function randomizeNextNumber () {
   return nextNumber = Math.floor(Math.random() * 8000000000001)

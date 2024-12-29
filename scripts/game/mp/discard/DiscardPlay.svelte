@@ -9,13 +9,13 @@ import DiscardGame from './DiscardGame'
 
 import { getGameModeString, playerColor } from './common'
 
-  interface Props {
-    gameState: DiscardGame;
-    ll: boolean;
-    showCardCount: boolean;
-  }
+interface Props {
+  gameState: DiscardGame
+  ll: boolean
+  showCardCount: boolean
+}
 
-  let { gameState, ll, showCardCount }: Props = $props();
+const { gameState, ll, showCardCount }: Props = $props()
 
 const {
   isActive,
@@ -41,9 +41,9 @@ const {
   modeDeck,
 } = gameState
 
-let playing = $derived($isActive && $roundState === 2 && $inRound)
-let canMove = $derived(playing && gameState.playerIsMe($playerInfo[0]))
-let pendingMove = $derived($pendingMoveUseHand ? $myHand : $myAltMove)
+const playing = $derived($isActive && $roundState === 2 && $inRound)
+const canMove = $derived(playing && gameState.playerIsMe($playerInfo[0]))
+const pendingMove = $derived($pendingMoveUseHand ? $myHand : $myAltMove)
 
 function getCardDesc (card: number, ll: boolean): string {
   if (card < 1 || card > 8) return 'unknown'

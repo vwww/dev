@@ -14,7 +14,7 @@ const winnerX = pStore('game/sp/t3/winnerX', 1)
 const winnerO = pStore('game/sp/t3/winnerO', 2)
 const winnerTie = pStore('game/sp/t3/winnerTie', 3)
 
-let winnerMap = $derived([$winnerX, $winnerO, $winnerTie] as WinnerMap)
+const winnerMap = $derived([$winnerX, $winnerO, $winnerTie] as WinnerMap)
 // checkWinner when needed
 $effect(() => {
   $winnerX
@@ -25,11 +25,11 @@ $effect(() => {
 })
 
 // Game state
-let board: number = $state()
-let mark: number = $state()
-let winner: Winner = $state()
-let moveLength: number = $state()
-let undoLength: number = $state()
+let board: number = $state()!
+let mark: number = $state()!
+let winner: Winner = $state()!
+let moveLength: number = $state()!
+let undoLength: number = $state()!
 let moveStack: number[] = $state(new Array(9))
 let boardHistory: number[] = $state(new Array(10))
 let currentMessage = $state('')

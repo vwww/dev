@@ -5,16 +5,7 @@ import type { Connection } from '../ConnectionManager'
  * Wrapper for PlayerIO.connection with promises.
  */
 export class PIORoom implements Connection {
-  // forward
-  addMessageCallback = this.c.addMessageCallback.bind(this)
-  addDisconnectCallback = this.c.addDisconnectCallback.bind(this)
-  removeMessageCallback = this.c.removeMessageCallback.bind(this)
-  removeDisconnectCallback = this.c.removeDisconnectCallback.bind(this)
-  createMessage = this.c.createMessage.bind(this)
-  send = this.c.send.bind(this)
-  sendMessage = this.c.sendMessage.bind(this)
-
-  constructor (private readonly c: PIO.connection) { }
+  constructor (public readonly c: PIO.connection) { }
 
   get connected (): boolean { return this.c.connected }
 
@@ -52,12 +43,12 @@ export class PIOAdapter implements BaseGameRoom {
     const discCb = (): void => {
       this.discCallbacks.forEach((c) => c())
 
-      room.removeMessageCallback(msgCb)
+      room.c.removeMessageCallback(msgCb)
       // the library has a bug if this callback is removed immediately
-      setTimeout(() => room.removeDisconnectCallback(discCb), 1)
+      setTimeout(() => room.c.removeDisconnectCallback(discCb), 1)
     }
-    room.addMessageCallback('', msgCb)
-    room.addDisconnectCallback(discCb)
+    room.c.addMessageCallback('', msgCb)
+    room.c.addDisconnectCallback(discCb)
   }
 
   get connected (): boolean { return this.room.connected }
@@ -68,7 +59,7 @@ export class PIOAdapter implements BaseGameRoom {
 
   send (msg: Uint8Array): void {
     // console.log('send', msg)
-    this.room.send('', msg)
+    this.room.c.send('', msg)
   }
 
   registerRecv (cb: MsgCallback): void {
