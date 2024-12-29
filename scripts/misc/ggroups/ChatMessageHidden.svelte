@@ -3,9 +3,13 @@ import ChatMessageFromText from './ChatMessageFromText.svelte'
 
 import type { Writable } from 'svelte/store'
 
-export let allowSecretSystemMessages: boolean
-export let rawTexts: string[]
-export let showStore: Writable<boolean>
+interface Props {
+  allowSecretSystemMessages: boolean
+  rawTexts: string[]
+  showStore: Writable<boolean>
+}
+
+let { allowSecretSystemMessages, rawTexts, showStore }: Props = $props()
 
 function reveal () {
   $showStore = true
@@ -18,7 +22,7 @@ function reveal () {
   {/each}
 {:else}
   <div class="my-1 text-center">
-    <button class="btn btn-dark px-5 py-4" on:click={reveal}>
+    <button class="btn btn-dark px-5 py-4" onclick={reveal}>
       [click to show {rawTexts.length} hidden]
     </button>
   </div>

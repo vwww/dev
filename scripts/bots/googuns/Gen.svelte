@@ -5,12 +5,16 @@ import { generate2_0 } from './Parse2_0.svelte'
 
 import { fromHex } from './util'
 
-export let onMsg: (msg: string) => void
+interface Props {
+  onMsg: (msg: string) => void;
+}
 
-let timestampStr = ''
-let timestampNum = 0
-let timestampHex = '00000000'
-let udHex = ''
+const { onMsg }: Props = $props();
+
+let timestampStr = $state('')
+let timestampNum = $state(0)
+let timestampHex = $state('00000000')
+let udHex = $state('')
 
 function setTimeCurrent (): void {
   timestampNum = Math.floor(Date.now() / 1000)
@@ -73,37 +77,37 @@ function randomHex (len: number): string {
 
 <div class="card mb-3">
   <div class="card-header">
-    <h4 class="card-title">
+    <h2 class="card-title">
       <a data-bs-toggle="collapse" href="#collapseGen">
-        <h2>Generator</h2>
+        Generator
       </a>
-    </h4>
+    </h2>
   </div>
   <div id="collapseGen" class="card-collapse collapse">
     <div class="card-body">
       <div class="btn-group d-flex mb-3" role="group">
         <span class="input-group-text">Generate</span>
-        <button class="w-100 btn btn-outline-primary" on:click={() => onMsg(generate1_0(timestampHex, udHex))}>v1</button>
-        <button class="w-100 btn btn-outline-primary" on:click={() => onMsg(generate1_1(timestampHex, udHex))}>v1.1</button>
-        <button class="w-100 btn btn-outline-primary" on:click={() => onMsg(generate2_0(timestampHex, udHex))}>v2.0</button>
+        <button class="w-100 btn btn-outline-primary" onclick={() => onMsg(generate1_0(timestampHex, udHex))}>v1</button>
+        <button class="w-100 btn btn-outline-primary" onclick={() => onMsg(generate1_1(timestampHex, udHex))}>v1.1</button>
+        <button class="w-100 btn btn-outline-primary" onclick={() => onMsg(generate2_0(timestampHex, udHex))}>v2.0</button>
       </div>
 
       <div class="input-group d-flex mb-2" role="group">
         <span class="input-group-text">Timestamp</span>
-        <input bind:value={timestampStr} on:change={recalcTimeFromStr} type="datetime-local" class="form-control">
-        <input bind:value={timestampNum} on:change={recalcTimeFromNum} type="number" class="form-control" min="0" step="1">
-        <input bind:value={timestampHex} on:change={recalcTimeFromHex} type="text" class="form-control" placeholder={'0'.repeat(16)} maxlength="16">
-        <button class="btn btn-outline-warning" on:click={setTimeCurrent}>Current</button>
-        <button class="btn btn-outline-danger" on:click={setTimeRandom}>Random 64-bit</button>
-        <button class="btn btn-outline-danger" on:click={setTimeRandomJS}>Random JS</button>
+        <input bind:value={timestampStr} onchange={recalcTimeFromStr} type="datetime-local" class="form-control">
+        <input bind:value={timestampNum} onchange={recalcTimeFromNum} type="number" class="form-control" min="0" step="1">
+        <input bind:value={timestampHex} onchange={recalcTimeFromHex} type="text" class="form-control" placeholder={'0'.repeat(16)} maxlength="16">
+        <button class="btn btn-outline-warning" onclick={setTimeCurrent}>Current</button>
+        <button class="btn btn-outline-danger" onclick={setTimeRandom}>Random 64-bit</button>
+        <button class="btn btn-outline-danger" onclick={setTimeRandomJS}>Random JS</button>
       </div>
 
       <div class="btn-group d-flex mb-1" role="group">
         <span class="input-group-text w-100">Undefined Data (UD)</span>
-        <button class="btn btn-outline-danger" on:click={() => udHex = ''}>Zero</button>
-        <button class="btn btn-outline-danger" on:click={() => udHex = randomHex(120)}>Random</button>
+        <button class="btn btn-outline-danger" onclick={() => udHex = ''}>Zero</button>
+        <button class="btn btn-outline-danger" onclick={() => udHex = randomHex(120)}>Random</button>
       </div>
-      <textarea class="form-control mb-2" bind:value={udHex} maxlength="240" placeholder={'0'.repeat(240)} />
+      <textarea class="form-control mb-2" bind:value={udHex} maxlength="240" placeholder={'0'.repeat(240)}></textarea>
 
       <p>v1 uses UD[:16], v1.1 UD[:56], and v2.0 UD[:120].</p>
     </div>

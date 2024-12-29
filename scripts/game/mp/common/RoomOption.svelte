@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 import type { ValueStore } from '@/util/svelte'
 
 export type Options<T, K extends string, E extends unknown[] = []> = readonly [id: string, type: K, defaultValue: T, name: string, description: string, ...rest: E]
@@ -24,13 +24,17 @@ import RoomOptionBool from './RoomOptionBool.svelte'
 import RoomOptionEnum from './RoomOptionEnum.svelte'
 import RoomOptionInt from './RoomOptionInt.svelte'
 
-export let optionStore: OptionStoreAny
+  interface Props {
+    optionStore: OptionStoreAny;
+  }
 
-let option: any
-let store: ValueStore<any>
-let oType: OptionsAny[1]
-$: [option, store] = optionStore
-$: oType = option[1]
+  let { optionStore }: Props = $props();
+
+let option: any = $state()
+let store: ValueStore<any> = $derived(optionStore)
+let oType: OptionsAny[1] = $derived(option[1])
+
+
 </script>
 
 {#if oType === 'b'}

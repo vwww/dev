@@ -7,44 +7,47 @@ import RawTable from './RawTable.svelte'
 
 import { fromHex, repStr, xorHexStr } from './util'
 
-export let msg: string
-export let len: number
+interface Props {
+  msg: string
+  len: number
+}
 
-$: parts = [
+let { msg, len }: Props = $props()
+
+let parts = $derived([
   msg.slice(0, 16),
   msg.slice(16, 18),
   msg.slice(18, 128),
   msg.slice(128, 144),
   msg.slice(144, 274),
   msg.slice(274)
-]
+])
 
 // Derived
-let C0: string | undefined
-$: {
+let C0 = $derived.by(() => {
   if (len >= 280) {
-    C0 = msg.slice(0, 16)
+    let C0 = msg.slice(0, 16)
     for (let i = 16; i < 272; i += 16) {
       if (i !== 128) {
         C0 = xorHexStr(C0, msg.slice(i, i + 16))
       }
     }
-    C0 = xorHexStr(C0, msg.slice(272, 280) + msg.slice(272, 280))
+    return xorHexStr(C0, msg.slice(272, 280) + msg.slice(272, 280))
   } else {
-    C0 = undefined
+    return undefined
   }
-}
-$: UT = len >= 122 ? xorHexStr(parts[0], msg.slice(122, 138)) : repStr(16, '?')
-$: UTD = !UT.includes('?') && new Date(fromHex(UT) * 1000)
+})
+const UT = $derived(len >= 122 ? xorHexStr(parts[0], msg.slice(122, 138)) : repStr(16, '?'))
+const UTD = $derived(!UT.includes('?') && new Date(fromHex(UT) * 1000))
 
-$: V1 = parts[1] === '20'
-$: V3 = !!C0 && parts[3] === C0
-$: V5 = parts[5] === '000000'
-$: VT = UTD && isFinite(+UTD)
-$: VA = V1 && V3 && V5 && VT
+const V1 = $derived(parts[1] === '20')
+const V3 = $derived(!!C0 && parts[3] === C0)
+const V5 = $derived(parts[5] === '000000')
+const VT = $derived(UTD && isFinite(+UTD))
+const VA = $derived(V1 && V3 && V5 && VT)
 </script>
 
-<script lang="ts" context="module">
+<script lang="ts" module>
 export function generate2_0 (timeHex: string, rHex: string): string {
   timeHex = timeHex.padStart(16, '0').slice(0, 16)
   rHex = rHex.padEnd(240, '0')
@@ -74,11 +77,11 @@ export function generate2_0 (timeHex: string, rHex: string): string {
 
 <div class="card mb-3">
   <div class="card-header">
-    <h4 class="card-title">
+    <h2 class="card-title">
       <a data-bs-toggle="collapse" href="#collapse2">
-        <h2>v2.0 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span></h2>
+        v2.0 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span>
       </a>
-    </h4>
+    </h2>
   </div>
   <div id="collapse2" class="card-collapse collapse">
     <div class="card-body">

@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 export type CellInfo = {
   r: number
   c: number
@@ -15,9 +15,17 @@ type CellCallback = (_: CellInfo) => void
 <script lang="ts">
 import { MoveType } from './Move'
 
-export let cells: CellInfo[][]
-export let onLeftClickCell: CellCallback = () => {}
-export let onRightClickCell: CellCallback = () => {}
+interface Props {
+  cells: CellInfo[][]
+  onLeftClickCell?: CellCallback
+  onRightClickCell?: CellCallback
+}
+
+const {
+  cells,
+  onLeftClickCell = () => {},
+  onRightClickCell = () => {},
+}: Props = $props()
 
 function alignh (cell: CellInfo): string {
   return cell.moves[2] ? cell.moves[3] ? 'center' : 'right' : 'left'
@@ -30,27 +38,28 @@ function alignv (cell: CellInfo): string {
 
 <table id="fill-table">
   {#each cells as row}
-    <tr>
-      {#each row as cell}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <td
-          class="fill"
-          class:fill-solved={cell.isSolved}
-          class:fill-to-root={!cell.isRoot && cell.reachesRoot}
-          class:fill-root={cell.isRoot}
-          class:fill-disabled={!cell.active}
-          style={cell.browseNum === undefined ? undefined :
-            !cell.browseNum ? 'text-align: center'
-              : `text-align: ${alignh(cell)}; vertical-align: ${alignv(cell)}`}
-          on:click={() => onLeftClickCell(cell)}
-          on:contextmenu|preventDefault={() => (onRightClickCell(cell), true)}>
-        {#each cell.moves as move}
-          <div class={['', 'fill-m', 'fill-y'][move]}></div>
+    <tbody>
+      <tr>
+        {#each row as cell}
+          <td
+            class="fill"
+            class:fill-solved={cell.isSolved}
+            class:fill-to-root={!cell.isRoot && cell.reachesRoot}
+            class:fill-root={cell.isRoot}
+            class:fill-disabled={!cell.active}
+            style={cell.browseNum === undefined ? undefined :
+              !cell.browseNum ? 'text-align: center'
+                : `text-align: ${alignh(cell)}; vertical-align: ${alignv(cell)}`}
+            onclick={() => onLeftClickCell(cell)}
+            oncontextmenu={(event) => (event.preventDefault(), onRightClickCell(cell), true)}>
+          {#each cell.moves as move}
+            <div class={['', 'fill-m', 'fill-y'][move]}></div>
+          {/each}
+          {cell.browseNum ?? ''}
+          </td>
         {/each}
-        {cell.browseNum ?? ''}
-        </td>
-      {/each}
-    </tr>
+      </tr>
+    </tbody>
   {/each}
 </table>
 

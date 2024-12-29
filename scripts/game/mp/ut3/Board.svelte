@@ -1,9 +1,13 @@
 <script lang="ts">
 import type { BoardState } from './UT3Game'
 
-export let boardState: BoardState
-export let markHover: number
-export let onMove: (row: number, col: number) => void
+interface Props {
+  boardState: BoardState
+  markHover: number
+  onMove: (row: number, col: number) => void
+}
+
+const { boardState, markHover, onMove }: Props = $props()
 
 const cellNumbers = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
 
@@ -14,26 +18,29 @@ function cellClass (board: number, i: number, legalMove: boolean) {
 </script>
 
 <table class="outerGrid m{markHover}">
-  {#each cellNumbers as row}
-    <tr>
-    {#each row as i}
-      <td>
-        <table class="innerGrid p{cellClass(boardState.board, i, boardState.boardMustMove < 0 || boardState.boardMustMove === i)}">
-          {#each cellNumbers as row}
-            <tr>
-            {#each row as j}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <td class="innerCell p{cellClass(boardState.boards[i], j, !((boardState.boardRestrict[i] >> j) & 1))}"
-                class:canMove={markHover}
-                on:click={() => onMove(i, j)} />
-            {/each}
-            </tr>
-          {/each}
-        </table>
-      </td>
+  <tbody>
+    {#each cellNumbers as row}
+      <tr>
+      {#each row as i}
+        <td>
+          <table class="innerGrid p{cellClass(boardState.board, i, boardState.boardMustMove < 0 || boardState.boardMustMove === i)}">
+            <tbody>
+              {#each cellNumbers as row}
+                <tr>
+                {#each row as j}
+                  <td class="innerCell p{cellClass(boardState.boards[i], j, !((boardState.boardRestrict[i] >> j) & 1))}"
+                    class:canMove={markHover}
+                    onclick={() => onMove(i, j)}></td>
+                {/each}
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </td>
+      {/each}
+      </tr>
     {/each}
-    </tr>
-  {/each}
+  </tbody>
 </table>
 
 <style>

@@ -41,13 +41,13 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
   <span class="input-group-text">Isomorphism</span>
   <button class="w-100 btn btn-outline-secondary"
     class:active={!$t3Isomorphism}
-    on:click={() => { $t3Isomorphism = 0 }}>Tic-Tac-Toe</button>
+    onclick={() => { $t3Isomorphism = 0 }}>Tic-Tac-Toe</button>
   <button class="w-50 btn btn-outline-secondary"
     class:active={$t3Isomorphism === 1}
-    on:click={() => { $t3Isomorphism = 1 }}>Pick15</button>
+    onclick={() => { $t3Isomorphism = 1 }}>Pick15</button>
   <button class="w-50 btn btn-outline-secondary"
     class:active={$t3Isomorphism === 2}
-    on:click={() => { $t3Isomorphism = 2 }}>Words</button>
+    onclick={() => { $t3Isomorphism = 2 }}>Words</button>
 </div>
 
 <NameBox bind:value={$name} />

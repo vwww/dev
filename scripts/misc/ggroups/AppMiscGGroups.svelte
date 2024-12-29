@@ -36,7 +36,7 @@ const forumStringsOrig = ((window as any).textAsset as string)
     }
   })
 
-let forumStrings = forumStringsOrig
+let forumStrings = $state(forumStringsOrig)
 
 function* filterMessages (query: string, strings: string[]) {
   type HiddenMessages = [string[], ValueStore<boolean>]
@@ -81,11 +81,11 @@ randomize(true)
 
 <div class="btn-group d-flex my-2" role="group">
   <button class={$allowSecretSystemMessages ? 'btn btn-success active' : 'btn btn-warning'}
-      on:click={() => { $allowSecretSystemMessages = !$allowSecretSystemMessages }}>
+      onclick={() => { $allowSecretSystemMessages = !$allowSecretSystemMessages }}>
     Privileged Access
   </button>
-  <button class="btn btn-secondary" on:click={() => randomize()}>Order</button>
-  <button class="btn btn-primary" on:click={() => randomize(true)}>Randomize</button>
+  <button class="btn btn-secondary" onclick={() => randomize()}>Order</button>
+  <button class="btn btn-primary" onclick={() => randomize(true)}>Randomize</button>
 </div>
 
 <hr>

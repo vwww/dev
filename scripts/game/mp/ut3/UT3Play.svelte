@@ -9,7 +9,11 @@ import Board from './Board.svelte'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState: UT3Game
+interface Props {
+  gameState: UT3Game
+}
+
+let { gameState }: Props = $props()
 
 const {
   isActive,
@@ -32,9 +36,9 @@ const {
   modeQuick,
 } = gameState
 
-$: playing = $isActive && $roundState === 2 && $inRound
-$: canMove = playing && $myTurn
-$: boardState = $boardStates[$boardIndex]
+let playing = $derived($isActive && $roundState === 2 && $inRound)
+let canMove = $derived(playing && $myTurn)
+let boardState = $derived($boardStates[$boardIndex])
 </script>
 
 {#if !$roundState}
@@ -88,24 +92,24 @@ $: boardState = $boardStates[$boardIndex]
     <span class="input-group-text">Navigate</span>
     <button class="w-100 btn btn-secondary"
       class:disabled={!$boardIndex}
-      on:click={() => gameState.historyGo(0)}>&laquo;</button>
+      onclick={() => gameState.historyGo(0)}>&laquo;</button>
     <button class="w-100 btn btn-secondary"
       class:disabled={!$boardIndex}
-      on:click={() => gameState.historyGo($boardIndex - 1)}>&lsaquo;</button>
+      onclick={() => gameState.historyGo($boardIndex - 1)}>&lsaquo;</button>
     <button class="w-100 btn btn-secondary"
       class:disabled={$boardIndex >= $moveHistory.length}
-      on:click={() => gameState.historyGo($boardIndex + 1)}>&rsaquo;</button>
+      onclick={() => gameState.historyGo($boardIndex + 1)}>&rsaquo;</button>
     <button class="w-100 btn btn-secondary"
       class:disabled={$boardIndex >= $moveHistory.length}
-      on:click={() => gameState.historyGo($moveHistory.length)}>&raquo;</button>
+      onclick={() => gameState.historyGo($moveHistory.length)}>&raquo;</button>
   </div>
 
   Moves:
   {#each $moveHistory as move, i}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
     <span
       class="badge text-bg-{$boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1"
-      on:click={() => gameState.historyGo(i + 1)}
+      onclick={() => gameState.historyGo(i + 1)}
       role="button"
       tabindex="0"
       >{move.join('')}</span>
@@ -118,7 +122,7 @@ $: boardState = $boardStates[$boardIndex]
   {#if canMove}
     <button
       class="btn btn-outline-secondary d-block w-100 my-2"
-      on:click={() => gameState.sendMoveEnd()}>End Turn (Auto Random)</button>
+      onclick={() => gameState.sendMoveEnd()}>End Turn (Auto Random)</button>
   {/if}
 
   <TwoPlayerEarlyEnd

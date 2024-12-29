@@ -1,7 +1,11 @@
 <script lang="ts">
-export let hexBytes: string
-export let date: Date | undefined | false
-export let valid: boolean
+interface Props {
+  hexBytes: string
+  date: Date | false | ''
+  valid: boolean
+}
+
+const { hexBytes, date, valid }: Props = $props()
 </script>
 
 <tr>

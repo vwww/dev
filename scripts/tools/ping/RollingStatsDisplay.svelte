@@ -1,7 +1,11 @@
 <script lang="ts">
 import type RollingStats from '@/util/RollingStats'
 
-export let stats: [name: string, stats: RollingStats][]
+interface Props {
+  stats: [name: string, stats: RollingStats][]
+}
+
+const { stats }: Props = $props()
 
 type Metric = [name: string, formatter: (s: RollingStats) => number | string]
 const metric: Metric[] = [

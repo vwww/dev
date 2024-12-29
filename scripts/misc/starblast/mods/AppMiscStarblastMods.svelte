@@ -21,15 +21,15 @@ const modDataCached: ModInfo = modsinfo[0]
 
 type ModTiming = [offset: number, mod: ModData]
 
-let modEvent: ModEvent
-let modEventLCM = 0
-let modEventTotalText = ''
-let modEventTimetable: [mod: ModData, timings: string | ModTiming[], className?: string][] = []
-let modHistory = [generateHistory(modDataCached)]
-let useLive = false
-$: activeModHistory = modHistory[useLive ? 1 : 0]
-let loading = false
-let loadError: unknown = 'loading'
+let modEvent: ModEvent | undefined = $state()
+let modEventLCM = $state(0)
+let modEventTotalText = $state('')
+let modEventTimetable: [mod: ModData, timings: string | ModTiming[], className?: string][] = $state([])
+let modHistory = $state([generateHistory(modDataCached)])
+let useLive = $state(false)
+let activeModHistory = $derived(modHistory[useLive ? 1 : 0])
+let loading = $state(false)
+let loadError: unknown = $state('loading')
 
 const MIN_TIME = +new Date('-010001-12-31T00:00Z')
 const MAX_TIME = +new Date('+010000-01-02T00:00Z')
@@ -38,7 +38,7 @@ const DAY_MS = 86400000
 
 type d3Sel<T extends d3.BaseType> = d3.Selection<T, unknown, null, undefined>
 
-let chartNode: HTMLDivElement
+let chartNode: HTMLDivElement | undefined = $state()
 let viz: d3Sel<SVGSVGElement>
 let barGroup: d3Sel<SVGGElement>
 let barTextGroup: d3Sel<SVGGElement>
@@ -63,7 +63,7 @@ let pan = d3.zoom<SVGSVGElement, unknown>()
 function render (): void {
   const data = generateData(
     xScale,
-    $autoHistory ? activeModHistory : [modEvent],
+    $autoHistory ? activeModHistory : [modEvent!],
   )
 
   barGroup.selectAll('rect')
@@ -172,7 +172,7 @@ function panNext (offset: number, data: ModData): void {
 }
 
 function resizeHandler (): void {
-  const rect = chartNode.getBoundingClientRect()
+  const rect = chartNode!.getBoundingClientRect()
   width = rect.width
   height = rect.height
 
@@ -206,7 +206,7 @@ function resizeHandler (): void {
 }
 
 function init (): void {
-  const chart = d3.select(chartNode)
+  const chart = d3.select(chartNode!)
 
   viz = chart.append('svg')
 
@@ -310,7 +310,7 @@ onMount(async function () {
 }
 </style>
 
-<svelte:window on:resize={resizeHandler} />
+<svelte:window onresize={resizeHandler} />
 
 <h2>Timeline</h2>
 
@@ -321,19 +321,19 @@ onMount(async function () {
 
   <button class="w-50 btn btn-outline-secondary"
     title="Previous cycle at same time of day"
-    on:click={() => panShift(-modEventLCM)}>&laquo;</button>
+    onclick={() => panShift(-modEventLCM)}>&laquo;</button>
   <button class="w-75 btn btn-outline-secondary"
     title="Previous cycle"
-    on:click={() => panShift(-modEvent.infoActiveHours)}>&lsaquo;</button>
+    onclick={() => panShift(-modEvent!.infoActiveHours)}>&lsaquo;</button>
   <button class="w-100 btn btn-outline-secondary"
     title="Jump to current time"
-    on:click={() => panShift(0)}>Reset</button>
+    onclick={() => panShift(0)}>Reset</button>
   <button class="w-75 btn btn-outline-secondary"
     title="Next cycle"
-    on:click={() => panShift(modEvent.infoActiveHours)}>&rsaquo;</button>
+    onclick={() => panShift(modEvent!.infoActiveHours)}>&rsaquo;</button>
   <button class="w-50 btn btn-outline-secondary"
     title="Next cycle at same time of day"
-    on:click={() => panShift(modEventLCM)}>&raquo;</button>
+    onclick={() => panShift(modEventLCM)}>&raquo;</button>
 </div>
 
 <p>{modEventTotalText}</p>
@@ -342,20 +342,20 @@ onMount(async function () {
 
 <div class="btn-group my-2 d-flex">
   <span class="input-group-text">Info Source</span>
-  <button class="btn btn-outline-secondary w-100" class:active={!useLive} on:click={() => (useLive = false)}>Offline (Cached)</button>
-  <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} on:click={() => useLive ? (loading || loadInfo()) : (useLive = true)}>{loading ? '[Loading]' : 'Online'}</button>
+  <button class="btn btn-outline-secondary w-100" class:active={!useLive} onclick={() => (useLive = false)}>Offline (Cached)</button>
+  <button class="btn btn-outline-{loading ? 'warning' : 'primary'} w-100" class:active={useLive} onclick={() => useLive ? (loading || loadInfo()) : (useLive = true)}>{loading ? '[Loading]' : 'Online'}</button>
 </div>
 
 <div class="row row-cols-md-auto g-3 align-items-center my-2">
   <div class="col-12">
     <label class="form-check">
-      <input type="checkbox" class="form-check-input" bind:checked={$autoHistory} on:change={render}>
+      <input type="checkbox" class="form-check-input" bind:checked={$autoHistory} onchange={render}>
       <span class="form-check-label">Render effective history</span>
     </label>
   </div>
   <div class="col-12">
     <label class="form-check">
-      <input type="checkbox" class="form-check-input" bind:checked={$showHistoryTimes} on:change={render}>
+      <input type="checkbox" class="form-check-input" bind:checked={$showHistoryTimes} onchange={render}>
       <span class="form-check-label">Render history times</span>
     </label>
   </div>
@@ -363,13 +363,13 @@ onMount(async function () {
     <div class="row row-cols-auto align-items-center">
       <div class="col">
         <label class="form-check">
-          <input type="checkbox" class="form-check-input" bind:checked={$showDaily} on:change={render}>
+          <input type="checkbox" class="form-check-input" bind:checked={$showDaily} onchange={render}>
           <span class="form-check-label">Render daily time</span>
         </label>
       </div>
       {#if $showDaily}
         <div class="col">
-          <input type="time" class="form-control" bind:value={$showDailyTime} on:change={render}>
+          <input type="time" class="form-control" bind:value={$showDailyTime} onchange={render}>
         </div>
       {/if}
     </div>
@@ -404,7 +404,7 @@ onMount(async function () {
       {#if !$hideMinor || !h.minor || modEvent === h}
         <button class="list-group-item list-group-item-action"
           class:active={modEvent === h}
-          on:click={() => modEvent === h ? panTo(h.time) : (setModEvent(h), render())}>
+          onclick={() => modEvent === h ? panTo(h.time) : (setModEvent(h), render())}>
             {h.timeStr}
             {#if h.add}
               <span class="badge text-bg-{h.mod ? 'success' : 'info'}">{h.mod ? 'add' : 'init'}</span>
@@ -448,7 +448,7 @@ onMount(async function () {
             {timings}
           {:else}
             {#each timings as t, i}
-              {#if i}, {/if}<a href="#next_{mod_id}_{t[0]}" on:click|preventDefault={() => panNext(...t)}>{t[0] % 24}</a>
+              {#if i}, {/if}<a href="#next_{mod_id}_{t[0]}" onclick={(event) => (event.preventDefault(), panNext(...t))}>{t[0] % 24}</a>
             {/each}
           {/if}
         </td>

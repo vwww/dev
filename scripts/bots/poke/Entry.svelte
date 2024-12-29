@@ -7,9 +7,19 @@ import JSSHA256 from 'jssha/dist/sha256'
 import { onDestroy, onMount } from 'svelte'
 import { type EntryInfo, TieType } from './EntryInfo'
 
-export let entry: EntryInfo
-export let tie: TieType
-export let rankIndex: number, rankIndexOther: number
+interface Props {
+  entry: EntryInfo
+  tie: TieType
+  rankIndex: number
+  rankIndexOther: number
+}
+
+const {
+  entry,
+  tie,
+  rankIndex,
+  rankIndexOther,
+}: Props = $props()
 
 function getProfileImageURL (uid: string): string {
   const sha = new JSSHA256('SHA-256', 'TEXT')
@@ -19,23 +29,23 @@ function getProfileImageURL (uid: string): string {
   return `https://gravatar.com/avatar/${sha}?s=80&d=identicon`
 }
 
-$: rank = entry.rank[rankIndex]
-$: rankOther = entry.rank[rankIndexOther]
-$: time = new Date(entry.time * 1000)
+const rank = $derived(entry.rank[rankIndex])
+const rankOther = $derived(entry.rank[rankIndexOther])
+const time = $derived(new Date(entry.time * 1000))
 
-let timeAgoElement: HTMLSpanElement
+let timeAgoElement: HTMLSpanElement | undefined = $state()
 
 function timeAgoStart () {
-  jQuery(timeAgoElement).timeago()
+  jQuery(timeAgoElement!).timeago()
 }
 
 function timeAgoStop () {
-  jQuery(timeAgoElement).timeago()
+  jQuery(timeAgoElement!).timeago()
 }
 
 onMount(timeAgoStart)
 onDestroy(timeAgoStop)
-$: entry.time, timeAgoStop(), timeAgoStart()
+$effect(() => (entry.time, timeAgoStop(), timeAgoStart()))
 </script>
 
 <li class:indent={tie > 1}>

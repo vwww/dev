@@ -6,7 +6,11 @@ import RPSGame from './RPSGame'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState: RPSGame
+interface Props {
+  gameState: RPSGame
+}
+
+let { gameState }: Props = $props()
 
 const {
   isActive,
@@ -24,7 +28,7 @@ const {
   modeBotBalance
 } = gameState
 
-$: canMove = $isActive && $roundState === 2 && $inRound
+const canMove = $derived($isActive && $roundState === 2 && $inRound)
 </script>
 
 {#if $roundState === 0}
@@ -49,7 +53,7 @@ $: canMove = $isActive && $roundState === 2 && $inRound
     <span class="input-group-text">Next Move</span>
     {#each ['Auto', '\u{1F94C} Rock', '\u{1F4C4} Paper', '\u2702 Scissors'] as move, i}
       <button
-        on:click={() => gameState.sendMove(i)}
+        onclick={() => gameState.sendMove(i)}
         class:active={$pendingMove === i}
         class="w-100 btn btn-outline-secondary">{move}</button>
     {/each}

@@ -1,12 +1,29 @@
 <script lang="ts">
-export let inGame = false
-export let isActive = false
-export let canReady = false
-export let isReady = false
-export let onReset: () => void
-export let onDisconnect: () => void
-export let onSetActive: (active: boolean) => void
-export let onSetReady: (ready: boolean) => void
+import type { Snippet } from 'svelte'
+
+interface Props {
+  inGame?: boolean
+  isActive?: boolean
+  canReady?: boolean
+  isReady?: boolean
+  onReset: () => void
+  onDisconnect: () => void
+  onSetActive: (active: boolean) => void
+  onSetReady: (ready: boolean) => void
+  children?: Snippet
+}
+
+const {
+  inGame = false,
+  isActive = false,
+  canReady = false,
+  isReady = false,
+  onReset,
+  onDisconnect,
+  onSetActive,
+  onSetReady,
+  children,
+}: Props = $props()
 </script>
 
 <div class:d-none={inGame} class="alert alert-danger" role="alert">
@@ -32,23 +49,23 @@ export let onSetReady: (ready: boolean) => void
         {#if isActive}
           {#if canReady}
             {#if isReady}
-              <button class="btn btn-sm btn-success" on:click={() => onSetReady(false)}>Unready</button>
+              <button class="btn btn-sm btn-success" onclick={() => onSetReady(false)}>Unready</button>
             {:else}
-              <button class="btn btn-sm btn-info" on:click={() => onSetReady(true)}>Ready</button>
+              <button class="btn btn-sm btn-info" onclick={() => onSetReady(true)}>Ready</button>
               {/if}
           {/if}
-          <button class="btn btn-sm btn-secondary" on:click={() => onSetActive(false)}>Spectate</button>
+          <button class="btn btn-sm btn-secondary" onclick={() => onSetActive(false)}>Spectate</button>
         {:else}
-          <button class="btn btn-sm btn-primary" on:click={() => onSetActive(true)}>Unspectate</button>
+          <button class="btn btn-sm btn-primary" onclick={() => onSetActive(true)}>Unspectate</button>
         {/if}
         <div class="btn-group">
-          <button class="btn btn-sm btn-warning" on:click={onReset}>Reset Score</button>
-          <button class="btn btn-sm btn-danger" on:click={onDisconnect}>Disconnect</button>
+          <button class="btn btn-sm btn-warning" onclick={onReset}>Reset Score</button>
+          <button class="btn btn-sm btn-danger" onclick={onDisconnect}>Disconnect</button>
         </div>
       </div>
     {/if}
   </div>
   <div class="card-body">
-    <slot />
+    {@render children?.()}
   </div>
 </div>

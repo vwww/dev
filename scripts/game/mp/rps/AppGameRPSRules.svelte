@@ -37,26 +37,26 @@ function formatResultClass (result: number): string {
   }
 }
 
-let modeInverted = false
-let modeCount = false
+let modeInverted = $state(false)
+let modeCount = $state(false)
 
 const emptyResult: [string, string] = ['', '']
 const emptyResultRow = [emptyResult, emptyResult, emptyResult]
 
 const names = ['Rock', 'Paper', 'Scissors']
-let count = [1, 2, 3]
-let ltw = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-let pairResults = [emptyResultRow, emptyResultRow, emptyResultRow]
+let count = $state([1, 2, 3])
+let ltw = $state([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+let pairResults = $state([emptyResultRow, emptyResultRow, emptyResultRow])
 // let scores = [0, 0, 0]
-let totalPlayers = 0
-let totalWins = 0
-let totalLoss = 0
-let totalTies = 0
-let totalRound = 0
-$: totalResults = totalPlayers * (totalPlayers - 1)
-$: totalBattles = totalResults / 2
+let totalPlayers = $state(0)
+let totalWins = $state(0)
+let totalLoss = $state(0)
+let totalTies = $state(0)
+let totalRound = $state(0)
+const totalResults = $derived(totalPlayers * (totalPlayers - 1))
+const totalBattles = $derived(totalResults / 2)
 
-$: {
+$effect(() => {
   totalPlayers = 0
   totalWins = 0
   totalLoss = 0
@@ -109,7 +109,7 @@ $: {
     totalTies += ltw[i][1] * count[i]
     totalRound += Math.sign(ltw[i][2] - ltw[i][0]) * count[i]
   }
-}
+})
 
 type number3 = [r: number, p: number, s: number]
 type Preset = [...n: number3, desc: string]
@@ -127,15 +127,15 @@ const PRESETS: Preset[] = [
 </script>
 
 <div class="btn-group d-flex mb-2" role="group">
-  <button on:click={() => modeInverted = !modeInverted} class="w-100 btn {modeInverted ? 'active btn' : 'btn-outline'}-success">Inverted</button>
-  <button on:click={() => modeCount = !modeCount} class="w-100 btn {modeCount ? 'active btn' : 'btn-outline'}-warning">Count</button>
+  <button onclick={() => modeInverted = !modeInverted} class="w-100 btn {modeInverted ? 'active btn' : 'btn-outline'}-success">Inverted</button>
+  <button onclick={() => modeCount = !modeCount} class="w-100 btn {modeCount ? 'active btn' : 'btn-outline'}-warning">Count</button>
 </div>
 
 <div class="btn-group d-flex mb-3" role="group">
   <span class="input-group-text">Presets:</span>
   {#each PRESETS as p}
     <button
-      on:click={() => { [count[0], count[1], count[2]] = p }}
+      onclick={() => { [count[0], count[1], count[2]] = p }}
       class:active={count[0] === p[0] && count[1] === p[1] && count[2] === p[2]}
       class="w-100 btn btn-outline-secondary">{p[3]}</button>
   {/each}

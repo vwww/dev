@@ -6,18 +6,18 @@ const zeroThreshold = pStore('tool/gcd/zero', 0.000000001)
 const maxIterations = pStore('tool/gcd/maxIter', 100000)
 const nums = pStore('tool/gcd/nums', '0.1337, 0.42')
 
-let gcdText = ''
-let lcmText = ''
-$: {
+const [gcdText, lcmText] = $derived.by(() => {
   const numArray = $nums.split(',').map(n => +n.trim())
   const gcdResult = numArray.reduce((acc, curVal) => gcd(acc, curVal, $zeroThreshold, $maxIterations))
   const lcmResult = numArray.reduce((acc, curVal) => acc / gcd(acc, curVal, $zeroThreshold, $maxIterations) * curVal)
 
   const numString = numArray.join(', ')
 
-  gcdText = `gcd(${numString}) = ${gcdResult}`
-  lcmText = `lcm(${numString}) = ${lcmResult}`
-}
+  return [
+    `gcd(${numString}) = ${gcdResult}`,
+    `lcm(${numString}) = ${lcmResult}`,
+  ]
+})
 </script>
 
 <div class="row">

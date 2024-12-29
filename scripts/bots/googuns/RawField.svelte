@@ -1,9 +1,19 @@
 <script lang="ts">
-export let offset: number | string
-export let length: number | string
-export let desc: string
-export let hexBytes: string
-export let valid: boolean | undefined = undefined
+interface Props {
+  offset: number | string
+  length: number | string
+  desc: string
+  hexBytes: string
+  valid?: boolean
+}
+
+let {
+  offset,
+  length,
+  desc,
+  hexBytes,
+  valid,
+}: Props = $props()
 </script>
 
 <tr>

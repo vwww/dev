@@ -7,15 +7,15 @@ const leadRequiredRaw = pStore('tool/match_win/l', 1)
 const otRaw = pStore('tool/match_win/ot', 1)
 const drawValueRaw = pStore('tool/match_win/drawValue', 0.5)
 
-$: n = Math.max($nRaw | 0, 1)
-$: p = Math.min(Math.max($pRaw, 0), 1)
-$: draw = Math.min(Math.max($drawValueRaw, 0), 1)
-$: leadRequired = Math.min(Math.max($leadRequiredRaw | 0, 1), n)
-$: ot = leadRequired > 1 ? Math.max($otRaw | 0, 0) : 0
-$: maxRound = n + ot
-$: tableSize = maxRound + 1
+const n = $derived(Math.max($nRaw | 0, 1))
+const p = $derived(Math.min(Math.max($pRaw, 0), 1))
+const draw = $derived(Math.min(Math.max($drawValueRaw, 0), 1))
+const leadRequired = $derived(Math.min(Math.max($leadRequiredRaw | 0, 1), n))
+const ot = $derived(leadRequired > 1 ? Math.max($otRaw | 0, 0) : 0)
+const maxRound = $derived(n + ot)
+const tableSize = $derived(maxRound + 1)
 
-$: memo = (() => {
+const memo = $derived((() => {
     const r = Array(tableSize).fill(undefined).map(() => Array(tableSize).fill(undefined))
     const maxNoLead = maxRound - leadRequired
     for (let i = 0; i <= maxNoLead; i++) {
@@ -35,7 +35,7 @@ $: memo = (() => {
         }
     }
     return r
-})()
+})())
 </script>
 
 <p>Minimum score to win</p>
@@ -52,17 +52,17 @@ $: memo = (() => {
     <input type="range" class="form-range" min=0 max=16 bind:value={$otRaw}>
 
     <p>Draw value
-        <button class="btn btn-outline-danger" on:click={() => $drawValueRaw = 0}>0</button>
-        <button class="btn btn-outline-primary" on:click={() => $drawValueRaw = 0.5}>0.5</button>
-        <button class="btn btn-outline-info" on:click={() => $drawValueRaw = 1}>1</button>
+        <button class="btn btn-outline-danger" onclick={() => $drawValueRaw = 0}>0</button>
+        <button class="btn btn-outline-primary" onclick={() => $drawValueRaw = 0.5}>0.5</button>
+        <button class="btn btn-outline-info" onclick={() => $drawValueRaw = 1}>1</button>
     </p>
     <input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={$drawValueRaw}>
     <input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={$drawValueRaw}>
 {/if}
 
 <p>Probability of winning a round
-    <button class="btn btn-outline-primary" on:click={() => $pRaw = 0.5}>0.5</button>
-    <button class="btn btn-outline-success" on:click={() => $pRaw = 1 - p}>Invert</button>
+    <button class="btn btn-outline-primary" onclick={() => $pRaw = 0.5}>0.5</button>
+    <button class="btn btn-outline-success" onclick={() => $pRaw = 1 - p}>Invert</button>
 </p>
 <input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={$pRaw}>
 <input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={$pRaw}>

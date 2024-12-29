@@ -28,19 +28,31 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
+        test: /\.svelte\.ts$/,
+        use: [ 'svelte-loader', 'ts-loader' ],
       },
       {
-        test: /\.svelte$/,
+        test: /(?<!\.svelte)\.ts$/,
+        use: 'ts-loader',
+      },
+      {
+        test: /\.svelte(?:\.js)?$/,
         use: {
           loader: 'svelte-loader',
           options: {
+            compilerOptions: {
+							dev: devMode
+						},
+            hotReload: devMode,
             preprocess: require('svelte-preprocess')({})
           }
         },
-        exclude: /node_modules/,
+      },
+      {
+        test: /node_modules\/svelte\/.*\.mjs$/,
+        resolve: {
+          fullySpecified: false
+        }
       },
       {
         test: /\.s[ac]ss$/i,
@@ -70,9 +82,6 @@ module.exports = {
   resolve: {
     plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json', mainFields })],
     extensions: [ '.ts', '.mjs', '.js', '.svelte' ],
-    alias: {
-      svelte: path.resolve('node_modules', 'svelte/src/runtime'),
-    },
     mainFields,
     conditionNames: ['svelte', '...'],
     fallback: {
@@ -81,7 +90,7 @@ module.exports = {
       'url': false,
     },
   },
-  devtool: false,
+  devtool: devMode ? 'source-map' : false,
   plugins: [
     new WebpackManifestPlugin({
       fileName: path.resolve(__dirname, 'docs/_data/manifest.json'),

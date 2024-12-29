@@ -7,10 +7,14 @@ import RawTable from './RawTable.svelte'
 
 import { fromHex, repStr, rolHex64Str, sha, xorHexStr } from './util'
 
-export let msg: string
-export let len: number
+interface Props {
+  msg: string
+  len: number
+}
 
-$: parts = [
+const { msg, len }: Props = $props()
+
+const parts = $derived([
   msg.slice(0, 16),
   msg.slice(16, 36),
   msg.slice(36, 56),
@@ -19,13 +23,14 @@ $: parts = [
   msg.slice(124, 126),
   msg.slice(126, 134),
   msg.slice(134)
-]
+])
 
 // Derived
-$: C1 = len >= 16 && sha(1, parts[0])
-$: C2 = len >= 124 && sha(256, msg.slice(0, 60) + msg.slice(124, len & ~1))
-$: ABC = xorHexStr(parts[1], parts[2])
-$: UT = !ABC.includes('?') && rolHex64Str(
+const C1 = $derived(len >= 16 && sha(1, parts[0]))
+const C2 = $derived(len >= 124 && sha(256, msg.slice(0, 60) + msg.slice(124, len & ~1)))
+const ABC = $derived(xorHexStr(parts[1], parts[2]))
+const UT = $derived(
+  !ABC.includes('?') && rolHex64Str(
     xorHexStr(
       rolHex64Str(
         parts[0],
@@ -38,18 +43,19 @@ $: UT = !ABC.includes('?') && rolHex64Str(
     ),
     64 - fromHex(ABC.slice(0, 2))
   )
-$: UTD = UT && new Date(fromHex(UT) * 1000)
+)
+const UTD = $derived(UT && new Date(fromHex(UT) * 1000))
 
 // Valid
-$: V1 = !!C1 && parts[1] === C1.slice(0, 20)
-$: V4 = parts[4] === C2
-$: V5 = parts[5] === '01'
-$: V7 = parts[7] === '000000'
-$: VT = !!UTD && isFinite(+UTD)
-$: VA = V1 && V4 && V5 && V7 && VT
+const V1 = $derived(!!C1 && parts[1] === C1.slice(0, 20))
+const V4 = $derived(parts[4] === C2)
+const V5 = $derived(parts[5] === '01')
+const V7 = $derived(parts[7] === '000000')
+const VT = $derived(!!UTD && isFinite(+UTD))
+const VA = $derived(V1 && V4 && V5 && V7 && VT)
 </script>
 
-<script lang="ts" context="module">
+<script lang="ts" module>
 export function generate1_0 (timeHex: string, rHex: string): string {
   timeHex = timeHex.padStart(16, '0')
   rHex = rHex.padEnd(32, '0')
@@ -85,11 +91,11 @@ export function generate1_0 (timeHex: string, rHex: string): string {
 
 <div class="card mb-3">
   <div class="card-header">
-    <h4 class="card-title">
+    <h2 class="card-title">
       <a data-bs-toggle="collapse" href="#collapse1">
-        <h2>v1 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span></h2>
+        v1 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span>
       </a>
-    </h4>
+    </h2>
   </div>
   <div id="collapse1" class="card-collapse collapse">
     <div class="card-body">
@@ -156,7 +162,7 @@ export function generate1_0 (timeHex: string, rHex: string): string {
         <DerivedField name="hash1 = sha1(data[:8])" hexBytes={C1 || repStr(40, '?')} />
         <DerivedField name="hash2 = sha256(data[:30] + data[62:])" hexBytes={C2 || repStr(64, '?')} />
         <DerivedField name="A + B + C" hexBytes={ABC || repStr(10, '?')} />
-        <DerivedTimestamp hexBytes={UT || repStr(16, '?')} date={UTD || undefined} valid={VT} />
+        <DerivedTimestamp hexBytes={UT || repStr(16, '?')} date={UTD} valid={VT} />
       </DerivedTable>
 
       <pre class="card card-body text-bg-light">

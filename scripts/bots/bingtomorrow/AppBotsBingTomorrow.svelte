@@ -7,7 +7,7 @@ const FIREBASE_CONFIG = {
   databaseURL: 'https://victor-poke.firebaseio.com'
 }
 
-let bingTomorrowData: any[] = []
+let bingTomorrowData: any[] = $state([])
 
 function init (): void {
   const firebaseApp = initializeApp(FIREBASE_CONFIG)
@@ -29,7 +29,7 @@ function dateFromID (id: string): string {
 }
 </script>
 
-<svelte:window on:load={init} />
+<svelte:window onload={init} />
 
 {#each bingTomorrowData as entry}
   <div class="card mb-3">

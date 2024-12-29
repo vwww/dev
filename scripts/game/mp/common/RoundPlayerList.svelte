@@ -1,8 +1,12 @@
 <script lang="ts">
 import type { TurnBasedClient } from './game/TurnBasedGame'
 
-export let inGame: ArrayLike<TurnBasedClient>
-export let inQueue: ArrayLike<TurnBasedClient>
+interface Props {
+  inGame: ArrayLike<TurnBasedClient>
+  inQueue: ArrayLike<TurnBasedClient>
+}
+
+const { inGame, inQueue }: Props = $props()
 </script>
 
 <div>

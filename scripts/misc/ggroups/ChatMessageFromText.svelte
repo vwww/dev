@@ -1,8 +1,12 @@
 <script lang="ts">
 import ChatMessage from './ChatMessage.svelte'
 
-export let allowSecretSystemMessages: boolean
-export let rawText: string
+interface Props {
+  allowSecretSystemMessages: boolean
+  rawText: string
+}
+
+let { allowSecretSystemMessages, rawText }: Props = $props()
 
 function parseRawText (rawText: string, allowSecretSystemMessages: boolean): [msgClassNum: number, sender: string, text: string] {
   let msgClassNum = 0
@@ -38,8 +42,8 @@ function parseRawText (rawText: string, allowSecretSystemMessages: boolean): [ms
   return [msgClassNum, sender, text]
 }
 
-$: [msgClassNum, sender, text] = parseRawText(rawText, allowSecretSystemMessages)
-$: title = msgClassNum == 3 ? undefined : rawText
+const [msgClassNum, sender, text] = $derived(parseRawText(rawText, allowSecretSystemMessages))
+const title = $derived(msgClassNum == 3 ? undefined : rawText)
 </script>
 
 {#if text}

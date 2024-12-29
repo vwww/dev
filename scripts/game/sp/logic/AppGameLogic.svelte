@@ -1,7 +1,7 @@
 <script lang="ts">
 import { pStore } from '@/util/svelte'
 
-let logicPresets: Preset[][] = []
+let logicPresets: Preset[][] = $state([])
 
 const title = pStore('game/sp/logic/title', '')
 const description = pStore('game/sp/logic/desc', '')
@@ -88,19 +88,19 @@ void fetch('logic.json')
 
     <input type="text" class="form-control mb-2" placeholder="Title" bind:value={$title}>
 
-    <textarea class="form-control" placeholder="Description" bind:value={$description} rows="10" />
+    <textarea class="form-control" placeholder="Description" bind:value={$description} rows="10"></textarea>
   </div>
 
   <div class="col-lg-6 mb-2">
-    <h3>Clues <button class="btn btn-success mb-2" on:click={() => { $clues = [...$clues, ''] }}>+</button></h3>
+    <h3>Clues <button class="btn btn-success mb-2" onclick={() => { $clues = [...$clues, ''] }}>+</button></h3>
 
     <ol>
-      {#each $clues as clue, i}
+      {#each $clues, i}
         <li>
         <div class="input-group mb-3">
           <div class="input-group">
-            <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={clue} rows="2" />
-            <button class="btn btn-danger" on:click={() => {
+            <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={$clues[i]} rows="2"></textarea>
+            <button class="btn btn-danger" onclick={() => {
               $clues.splice(i, 1)
               $clues = $clues
             }}>-</button>
@@ -185,9 +185,9 @@ void fetch('logic.json')
               {/each}
             </td>
             <td>
-              <button on:click={() => loadPreset({ ...preset, solution: undefined })} class="btn btn-sm btn-outline-secondary" class:btn-outline-danger={!preset.rules.length}>Puzzle Only</button>
+              <button onclick={() => loadPreset({ ...preset, solution: undefined })} class="btn btn-sm btn-outline-secondary" class:btn-outline-danger={!preset.rules.length}>Puzzle Only</button>
               {#if preset.solution}
-                <button on:click={() => loadPreset(preset)} class="btn btn-sm btn-outline-primary">Answer</button>
+                <button onclick={() => loadPreset(preset)} class="btn btn-sm btn-outline-primary">Answer</button>
               {/if}
             </td>
           </tr>

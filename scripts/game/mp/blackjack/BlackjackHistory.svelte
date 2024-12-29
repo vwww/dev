@@ -1,7 +1,11 @@
 <script lang="ts">
 import type { BGameHistory } from './BlackjackGame'
 
-export let results: BGameHistory[]
+interface Props {
+  results: BGameHistory[]
+}
+
+const { results }: Props = $props()
 
 function scoreClass (s: number): string {
   return s ? s < 0 ? 'danger' : 'success' : 'warning'

@@ -1,7 +1,11 @@
 <script lang="ts">
-export let value: string
-export let placeholder = 'unnamed'
-export let maxlength = 20
+interface Props {
+  value: string
+  placeholder?: string
+  maxlength?: number
+}
+
+let { value = $bindable(), placeholder = 'unnamed', maxlength = 20 }: Props = $props()
 </script>
 
 <div class="input-group mb-3">

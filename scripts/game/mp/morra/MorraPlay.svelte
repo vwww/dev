@@ -6,9 +6,13 @@ import MorraGame from './MorraGame'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState: MorraGame
+interface Props {
+  gameState: MorraGame
+}
 
-let nextNumber = 0
+let { gameState }: Props = $props()
+
+let nextNumber = $state(0)
 
 const {
   isActive,
@@ -24,7 +28,7 @@ const {
   modeTeams,
 } = gameState
 
-$: canMove = $isActive && $roundState === 2 && $inRound
+let canMove = $derived($isActive && $roundState === 2 && $inRound)
 
 export function randomizeNextNumber () {
   return nextNumber = Math.floor(Math.random() * 8000000000001)
@@ -49,8 +53,8 @@ export function randomizeNextNumber () {
 </div>
 
 {#if $roundState === 2 && canMove}
-  <input type="number" class="form-control is-{$pendingMove === nextNumber ? '' : 'in'}valid" bind:value={nextNumber} on:change={() => gameState.sendMove(nextNumber)} min="0" max="8000000000000">
-  <input type="range" class="form-range" bind:value={nextNumber} on:change={() => gameState.sendMove(nextNumber)} min="0" max="8000000000000">
+  <input type="number" class="form-control is-{$pendingMove === nextNumber ? '' : 'in'}valid" bind:value={nextNumber} onchange={() => gameState.sendMove(nextNumber)} min="0" max="8000000000000">
+  <input type="range" class="form-range" bind:value={nextNumber} onchange={() => gameState.sendMove(nextNumber)} min="0" max="8000000000000">
 {/if}
 
 <RoundPlayerList inGame={$roundPlayers} inQueue={$roundPlayerQueue} />

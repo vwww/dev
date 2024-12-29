@@ -1,21 +1,31 @@
 <script lang="ts">
 import { Winner } from './game'
 
-export let winner: Winner
-export let mark: number
-export let markHover = 0
-export let hintClass = ''
-export let hintVal = 0
-export let onMove: () => void | undefined
+interface Props {
+  winner: Winner
+  mark: number
+  markHover?: number
+  hintClass?: string
+  hintVal?: number
+  onMove?: () => void
+}
+
+let {
+  winner,
+  mark,
+  markHover = 0,
+  hintClass = '',
+  hintVal = 0,
+  onMove,
+}: Props = $props()
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
 <td
   class="p{mark} n{winner ? 0 : markHover} {hintClass}"
   class:win={winner}
   data-hintTurn={hintVal ? hintVal > 0 ? 10 - hintVal : 10 + hintVal : undefined}
-  on:click={onMove}
-/>
+  onclick={onMove}
+></td>
 
 <style>
 td {

@@ -1,12 +1,23 @@
 <script lang="ts">
 import type { TPHistoryEntry } from './game/TwoPlayerGame'
 
-export let results: ArrayLike<TPHistoryEntry>
-export let p0Win = 'X wins'
-export let p1Win = 'O wins'
-export let draw = 'draw'
-export let winEarly = 'by forfeit'
-export let drawEarly = 'by agreement'
+interface Props {
+  results: ArrayLike<TPHistoryEntry>
+  p0Win?: string
+  p1Win?: string
+  draw?: string
+  winEarly?: string
+  drawEarly?: string
+}
+
+let {
+  results,
+  p0Win = 'X wins',
+  p1Win = 'O wins',
+  draw = 'draw',
+  winEarly = 'by forfeit',
+  drawEarly = 'by agreement',
+}: Props = $props()
 
 function winClass (winner: number): string {
   return !winner ? 'success' : winner === 1 ? 'danger' : 'secondary'

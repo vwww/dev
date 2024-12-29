@@ -17,10 +17,10 @@ import { pStore } from '@/util/svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
-let play: MorraPlay
+let play: MorraPlay | undefined = $state()
 
 const chatState = new ChatState()
-const gameState: MorraGame = new MorraGame(chatState, () => gameState.sendMove(play.randomizeNextNumber()))
+const gameState: MorraGame = new MorraGame(chatState, () => gameState.sendMove(play!.randomizeNextNumber()))
 
 const {
   inGame,
@@ -79,7 +79,7 @@ function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
   <div class="col-12 col-lg-4 mb-3">
     <Chat
       {chatState}
-      onInput={msg => gameState.processCommand(msg)}
+      onInput={(msg) => gameState.processCommand(msg)}
     />
   </div>
 </div>

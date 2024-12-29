@@ -1,8 +1,12 @@
 <script lang="ts">
 import type { OptionStoreBool } from './RoomOption.svelte'
 
-export let option: OptionStoreBool[0]
-export let store: OptionStoreBool[1]
+interface Props {
+  option: OptionStoreBool[0]
+  store: OptionStoreBool[1]
+}
+
+const { option, store }: Props = $props()
 </script>
 
 <div>

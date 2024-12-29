@@ -1,13 +1,25 @@
 <script lang="ts">
-export let showLo = 3
-export let showBehind = 3
-export let showAhead = 3
-export let showHi = 3
-export let pageCur: number
-export let pageMax: number
-export let onSetPage: (page: number) => void
+interface Props {
+  showLo?: number
+  showBehind?: number
+  showAhead?: number
+  showHi?: number
+  pageCur: number
+  pageMax: number
+  onSetPage: (page: number) => void
+}
 
-$: pageNumbers = Array.from(generatePageNumbers(pageCur, pageMax, showLo, showBehind, showAhead, showHi))
+const {
+  showLo = 3,
+  showBehind = 3,
+  showAhead = 3,
+  showHi = 3,
+  pageCur,
+  pageMax,
+  onSetPage,
+}: Props = $props()
+
+const pageNumbers = $derived(Array.from(generatePageNumbers(pageCur, pageMax, showLo, showBehind, showAhead, showHi)))
 
 function* generatePageNumbers (pageCur: number, pageMax: number, showLo: number, showBehind: number, showAhead: number, showHi: number) {
   let cur = 1
@@ -43,7 +55,7 @@ function* generatePageNumbers (pageCur: number, pageMax: number, showLo: number,
 <nav>
   <ul class="pagination justify-content-center">
     <li class="page-item" class:disabled={pageCur === 1}>
-      <button class="page-link" on:click={() => onSetPage(pageCur - 1)} aria-label="Previous">
+      <button class="page-link" onclick={() => onSetPage(pageCur - 1)} aria-label="Previous">
         &lsaquo;
       </button>
     </li>
@@ -54,16 +66,16 @@ function* generatePageNumbers (pageCur: number, pageMax: number, showLo: number,
         </li>
       {:else if page === pageCur}
         <li class="page-item active">
-          <input type="number" class="page-link" on:blur={function () { onSetPage(Math.min(Math.max(Math.floor(this.value), 1), pageMax)) }} min=1 max={pageMax} step=1 value={pageCur} />
+          <input type="number" class="page-link" onblur={function () { onSetPage(Math.min(Math.max(Math.floor(this.value), 1), pageMax)) }} min=1 max={pageMax} step=1 value={pageCur} />
         </li>
       {:else}
         <li class="page-item">
-          <button class="page-link" on:click={() => onSetPage(page)}>{page}</button>
+          <button class="page-link" onclick={() => onSetPage(page)}>{page}</button>
         </li>
       {/if}
     {/each}
     <li class="page-item" class:disabled={pageCur === pageMax}>
-      <button class="page-link" on:click={() => onSetPage(pageCur + 1)} aria-label="Next">
+      <button class="page-link" onclick={() => onSetPage(pageCur + 1)} aria-label="Next">
         &rsaquo;
       </button>
     </li>

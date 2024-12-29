@@ -1,7 +1,11 @@
 <script lang="ts">
 import type { AGameHistory } from './ActionlessGame'
 
-export let results: AGameHistory[]
+interface Props {
+  results: AGameHistory[]
+}
+
+const { results }: Props = $props()
 </script>
 
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">

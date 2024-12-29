@@ -1,7 +1,11 @@
 <script lang="ts">
 import type { MorraGameHistory } from './MorraGame'
 
-export let results: MorraGameHistory[]
+interface Props {
+  results: MorraGameHistory[]
+}
+
+let { results }: Props = $props()
 </script>
 
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">

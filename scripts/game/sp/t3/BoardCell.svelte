@@ -6,16 +6,29 @@ import BoardCell from '@gc/t3/BoardCell.svelte'
 
 import { type GetMemoType } from './AppGameT3.svelte'
 
-export let i: number
-export let board: number
-export let winner: Winner
-export let winnerMap: WinnerMap
-export let mark: Player
-export let showHints: boolean
-export let getMemo: GetMemoType | undefined
-export let onMove: () => void
+interface Props {
+  i: number
+  board: number
+  winner: Winner
+  winnerMap: WinnerMap
+  mark: Player
+  showHints: boolean
+  getMemo: GetMemoType | undefined
+  onMove: () => void
+}
 
-$: boardValue = (board >> (i << 1)) & 3
+const {
+  i,
+  board,
+  winner,
+  winnerMap,
+  mark,
+  showHints,
+  getMemo,
+  onMove,
+}: Props = $props()
+
+let boardValue = $derived((board >> (i << 1)) & 3)
 
 function recalc () : [string, number] | undefined {
   if (boardValue || !showHints || winner || !getMemo) return
@@ -39,7 +52,7 @@ function recalcWhenNeeded (..._: any[]) {
   return recalc()
 }
 
-$: [hintClass, hintVal] = recalcWhenNeeded(board, showHints, winnerMap, getMemo) || ['']
+let [hintClass, hintVal] = $derived(recalcWhenNeeded(board, showHints, winnerMap, getMemo) || [''])
 </script>
 
 <BoardCell {winner} mark={boardValue} markHover={mark} {hintClass} {hintVal} {onMove} />

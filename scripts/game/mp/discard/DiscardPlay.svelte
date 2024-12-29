@@ -9,9 +9,13 @@ import DiscardGame from './DiscardGame'
 
 import { getGameModeString, playerColor } from './common'
 
-export let gameState: DiscardGame
-export let ll: boolean
-export let showCardCount: boolean
+  interface Props {
+    gameState: DiscardGame;
+    ll: boolean;
+    showCardCount: boolean;
+  }
+
+  let { gameState, ll, showCardCount }: Props = $props();
 
 const {
   isActive,
@@ -37,9 +41,9 @@ const {
   modeDeck,
 } = gameState
 
-$: playing = $isActive && $roundState === 2 && $inRound
-$: canMove = playing && gameState.playerIsMe($playerInfo[0])
-$: pendingMove = $pendingMoveUseHand ? $myHand : $myAltMove
+let playing = $derived($isActive && $roundState === 2 && $inRound)
+let canMove = $derived(playing && gameState.playerIsMe($playerInfo[0]))
+let pendingMove = $derived($pendingMoveUseHand ? $myHand : $myAltMove)
 
 function getCardDesc (card: number, ll: boolean): string {
   if (card < 1 || card > 8) return 'unknown'
@@ -76,7 +80,7 @@ function moveColor (a: number, b: number): string {
 }
 </script>
 
-<script lang="ts" context="module">
+<script lang="ts" module>
 export function getCardName (card: number, ll: boolean): string | number {
   if (ll) {
     return [
@@ -142,9 +146,9 @@ export function getCardName (card: number, ll: boolean): string | number {
         <div class="btn-group d-flex mb-3" role="group">
           <span class="input-group-text">Discard</span>
           <button class:active={$pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor($myHand, $myAltMove)}"
-            on:click={() => gameState.sendMoveUseHand(true)}>{getCardName($myHand, ll)}</button>
+            onclick={() => gameState.sendMoveUseHand(true)}>{getCardName($myHand, ll)}</button>
           <button class:active={!$pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor($myAltMove, $myHand)}"
-            on:click={() => gameState.sendMoveUseHand(false)}>{getCardName($myAltMove, ll)}</button>
+            onclick={() => gameState.sendMoveUseHand(false)}>{getCardName($myAltMove, ll)}</button>
         </div>
       </div>
       <div class="col-12 col-sm-6 mb-2">
@@ -155,10 +159,10 @@ export function getCardName (card: number, ll: boolean): string | number {
             {$pendingMoveTarget < 0 ? 'auto' : gameState.getNameFromPlayer(gameState.getPlayerInfo($pendingMoveTarget), $pendingMoveTarget)}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonTarget">
-            <button class="dropdown-item" class:active={$pendingMoveTarget < 0} on:click={() => gameState.sendMoveTarget(-1)}>auto</button>
+            <button class="dropdown-item" class:active={$pendingMoveTarget < 0} onclick={() => gameState.sendMoveTarget(-1)}>auto</button>
             {#each $playerInfo as p, i}
               <button class="dropdown-item" class:text-bg-danger={!i && pendingMove !== 5 || p.immune} class:active={$pendingMoveTarget === i}
-                on:click={() => gameState.sendMoveTarget(i)}>{gameState.getNameFromPlayer(p)}</button>
+                onclick={() => gameState.sendMoveTarget(i)}>{gameState.getNameFromPlayer(p)}</button>
             {/each}
           </div>
         </label>
@@ -173,17 +177,17 @@ export function getCardName (card: number, ll: boolean): string | number {
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonGuess">
             <button class="dropdown-item" class:active={$pendingMoveGuess < 2}
-              on:click={() => gameState.sendMoveGuess(0)}>auto</button>
+              onclick={() => gameState.sendMoveGuess(0)}>auto</button>
             {#each cardShortNames.slice(2) as m, i}
               <button class="dropdown-item" class:active={$pendingMoveGuess === i+2}
-                on:click={() => gameState.sendMoveGuess(i+2)}>{m}</button>
+                onclick={() => gameState.sendMoveGuess(i+2)}>{m}</button>
             {/each}
           </div>
         </label>
         <small class="form-text text-muted">only for 1</small>
       </div>
       <div class="col-12 mb-2">
-        <button class="btn btn-primary d-block w-100 mb-2" on:click={() => gameState.sendMoveEnd()}>End Move</button>
+        <button class="btn btn-primary d-block w-100 mb-2" onclick={() => gameState.sendMoveEnd()}>End Move</button>
       </div>
     {/if}
   {/if}

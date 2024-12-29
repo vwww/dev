@@ -1,7 +1,11 @@
 <script lang="ts">
-import { PGameHistory, PRankType } from './PresidentGame'
+import type { PGameHistory, PRankType } from './PresidentGame'
 
-export let results: PGameHistory[]
+interface Props {
+  results: PGameHistory[]
+}
+
+const { results }: Props = $props()
 
 const RANKS = [
   ['Scum', 'danger'],

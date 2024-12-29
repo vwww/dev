@@ -2,7 +2,11 @@
 import CardCountTable from '@gmc/CardCountTable.svelte'
 import type PresidentGame from './PresidentGame'
 
-export let gameState: PresidentGame
+interface Props {
+  gameState: PresidentGame
+}
+
+const { gameState }: Props = $props()
 
 const {
   // isActive,
@@ -34,9 +38,9 @@ const canPass = false // temporary
   {/if}
 
   <div class="btn-group d-flex my-2">
-    <button class="btn w-100 btn-primary" on:click={gameState.onConfirm}>Confirm</button>
-    <button class="btn w-50 btn-outline-secondary" on:click={gameState.onRandom}>Random</button>
-    <button class="btn w-50 btn-outline-danger" class:disabled={!canPass} on:click={gameState.onPass}>Pass</button>
+    <button class="btn w-100 btn-primary" onclick={gameState.onConfirm}>Confirm</button>
+    <button class="btn w-50 btn-outline-secondary" onclick={gameState.onRandom}>Random</button>
+    <button class="btn w-50 btn-outline-danger" class:disabled={!canPass} onclick={gameState.onPass}>Pass</button>
   </div>
 {/if}
 

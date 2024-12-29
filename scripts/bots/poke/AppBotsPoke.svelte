@@ -14,13 +14,13 @@ Plotly.register([
   require('plotly.js/lib/scatter'),
 ])
 
-let opponentPlot: HTMLDivElement
+let opponentPlot: HTMLDivElement | undefined = $state()
 
 // Poke entries sorted by pokes then time
-let data1: EntryInfo[] = []
+let data1: EntryInfo[] = $state([])
 
 // Poke entries sorted by time
-let data2: EntryInfo[] = []
+let data2: EntryInfo[] = $state([])
 
 function computeRanks (): void {
   let rDense = 0
@@ -72,7 +72,7 @@ function updatePoke (data: Record<string, PokeInfo>): void {
   const xVals = Array(data1.length).fill(undefined).map((_, index) => index + 1)
   const firstTime = data2[0].time
   const oldestTime = data3[0].time
-  void Plotly.restyle(opponentPlot, {
+  void Plotly.restyle(opponentPlot!, {
     x: [xVals, xVals],
     y: [
       data1.map((x) => x.num),
@@ -86,8 +86,8 @@ const leaderboardLimit = pStore('bot/poke/leaderboardLimit', 10)
 const leaderboardTie = pStore('bot/poke/leaderboardTie', 2)
 const leaderboardMinPokes = pStore('bot/poke/leaderboardMinPokes', 1)
 
-let infoPokes: number | undefined
-let infoTicks: number | undefined
+let infoPokes: number | undefined = $state()
+let infoTicks: number | undefined = $state()
 
 function updateInfo (pokes: number, ticks: number): void {
   infoPokes = pokes
@@ -119,16 +119,16 @@ function onReady (): void {
       pad: 4,
     },
   }
-  void Plotly.newPlot(opponentPlot, data, layout)
+  void Plotly.newPlot(opponentPlot!, data, layout)
 }
 
 // Resize handler
 function onResize (): void {
-  Plotly.Plots.resize(opponentPlot)
+  Plotly.Plots.resize(opponentPlot!)
 }
 </script>
 
-<svelte:window on:load={onReady} on:resize={onResize} />
+<svelte:window onload={onReady} onresize={onResize} />
 
 <div class="alert alert-secondary" role="alert">
   This bot is down. It has been discontinued, so it will not be restored for a long time.

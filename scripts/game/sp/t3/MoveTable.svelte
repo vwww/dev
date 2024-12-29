@@ -3,12 +3,23 @@ import { Winner, type WinnerMap } from '@gc/t3/game'
 import { type GetMemoType } from './AppGameT3.svelte'
 import MoveTableRow from './MoveTableRow.svelte'
 
-export let boardHistory: number[]
-export let moveStack: number[]
-export let moveLength: number
-export let winner: Winner
-export let winnerMap: WinnerMap
-export let getMemo: GetMemoType | undefined
+interface Props {
+  boardHistory: number[]
+  moveStack: number[]
+  moveLength: number
+  winner: Winner
+  winnerMap: WinnerMap
+  getMemo: GetMemoType | undefined
+}
+
+const {
+  boardHistory,
+  moveStack,
+  moveLength,
+  winner,
+  winnerMap,
+  getMemo
+}: Props = $props()
 
 const moves = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 </script>

@@ -1,3 +1,13 @@
+<script lang="ts">
+import type { Snippet } from 'svelte'
+
+interface Props {
+  children?: Snippet
+}
+
+const { children }: Props = $props()
+</script>
+
 <table class="table table-bordered table-hover">
   <thead>
     <tr>
@@ -6,6 +16,6 @@
     </tr>
   </thead>
   <tbody>
-    <slot />
+    {@render children?.()}
   </tbody>
 </table>

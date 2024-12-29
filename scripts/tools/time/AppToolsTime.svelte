@@ -6,15 +6,15 @@ import { pStore } from '@/util/svelte'
 const curAge = pStore('tool/time/ageCur', 30)
 const maxAge = pStore('tool/time/ageMax', 120)
 
-let updateCurHandler: () => void | undefined
-let updateMaxHandler: () => void | undefined
-let resizeHandler: () => void | undefined
+let updateCurHandler: (() => void) | undefined = $state()
+let updateMaxHandler: (() => void) | undefined = $state()
+let resizeHandler: (() => void) | undefined = $state()
 
-let chartNodeR: HTMLDivElement
-let chartNodeS: HTMLDivElement
-let chartNodeL: HTMLDivElement
-let chartNodeC: HTMLDivElement
-let chartNodeQ: HTMLDivElement
+let chartNodeR: HTMLDivElement | undefined = $state()
+let chartNodeS: HTMLDivElement | undefined = $state()
+let chartNodeL: HTMLDivElement | undefined = $state()
+let chartNodeC: HTMLDivElement | undefined = $state()
+let chartNodeQ: HTMLDivElement | undefined = $state()
 
 function scaleChecked (scale: d3.ScaleContinuousNumeric<number, number, never>, val: number): number {
   return val < scale.domain()[0] ? -1 : scale(val)
@@ -156,7 +156,7 @@ function init () {
           .attr('fill', (d) => colorScale[d % colorScale.length])
     }
 
-    updateCurHandler()
+    updateCurHandler?.()
   }
 
   resizeHandler = function () {
@@ -172,7 +172,7 @@ function init () {
         .attr('height',  height)
     }
 
-    updateMaxHandler()
+    updateMaxHandler?.()
   }
 
   resizeHandler()
@@ -191,19 +191,19 @@ onMount(init)
 }
 </style>
 
-<svelte:window on:resize={() => resizeHandler?.()} />
+<svelte:window onresize={() => resizeHandler?.()} />
 
 <div class="row">
   <div class="col-sm-6 mb-1">
     <div class="input-group">
       <span class="input-group-text">Current Age: </span>
-      <input type="number" class="form-control" bind:value={$curAge} min="0" on:change={() => updateCurHandler?.()}>
+      <input type="number" class="form-control" bind:value={$curAge} min="0" onchange={() => updateCurHandler?.()}>
     </div>
   </div>
   <div class="col-sm-6 mb-3">
     <div class="input-group">
       <span class="input-group-text">Max Age: </span>
-      <input type="number" class="form-control" bind:value={$maxAge} min="1" on:change={() => updateMaxHandler?.()}>
+      <input type="number" class="form-control" bind:value={$maxAge} min="1" onchange={() => updateMaxHandler?.()}>
     </div>
   </div>
 </div>

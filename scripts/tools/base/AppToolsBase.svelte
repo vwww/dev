@@ -4,7 +4,7 @@ import { pStore } from '@/util/svelte'
 const inNumber = pStore('tool/base/iN', 'v1337')
 const inBase = pStore('tool/base/iB', 36)
 const outBase = pStore('tool/base/oB', 32)
-$: outValue = parseInt($inNumber, $inBase).toString($outBase ?? 2)
+const outValue = $derived(parseInt($inNumber, $inBase).toString($outBase ?? 2))
 </script>
 
 <div class="row">

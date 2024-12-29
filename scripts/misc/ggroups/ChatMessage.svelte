@@ -1,16 +1,26 @@
 <script lang="ts">
-export let sender = ''
-export let text = ''
-export let msgClassNum = 0
-export let title: string | undefined = undefined
+interface Props {
+  sender?: string
+  text?: string
+  msgClassNum?: number
+  title?: string
+}
 
-$: floatRightClass = msgClassNum === 1 || msgClassNum === 2 ? '' : ' float-end'
+const {
+  sender = '',
+  text = '',
+  msgClassNum = 0,
+  title
+}: Props = $props()
 
-$: msgClass =
+const floatRightClass = $derived(msgClassNum === 1 || msgClassNum === 2 ? '' : ' float-end')
+
+const msgClass = $derived(
   msgClassNum === 1 ? 'light'
     : msgClassNum === 2 ? 'danger'
       : msgClassNum === 3 ? 'dark'
         : 'primary'
+)
 </script>
 
 <style>

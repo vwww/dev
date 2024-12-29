@@ -21,11 +21,11 @@ const PROBLEM_POINTS = 1000
 
 const fakeSiteCreated = new Date(Date.now() - 86400000 * 365.25 * 10)
 
-let problemsPage = 1
-let leaderboardPage = 1
+let problemsPage = $state(1)
+let leaderboardPage = $state(1)
 
-$: problemNumbers = Array.from(numbersOnPageDesc(NUM_PROBLEMS, problemsPage, NUM_PROBLEMS_PER_PAGE))
-$: leaderboardNumbers = Array.from(numbersOnPageAsc(NUM_USERS, leaderboardPage, NUM_USERS_PER_PAGE))
+const problemNumbers = $derived(Array.from(numbersOnPageDesc(NUM_PROBLEMS, problemsPage, NUM_PROBLEMS_PER_PAGE)))
+const leaderboardNumbers = $derived(Array.from(numbersOnPageAsc(NUM_USERS, leaderboardPage, NUM_USERS_PER_PAGE)))
 
 function detrnd (seed: number, mod: number): number {
   return ((seed * 1103515245 + 12345) >>> 16) % mod
@@ -63,29 +63,29 @@ function solvePoints (i: number): number { return Math.ceil(PROBLEM_POINTS / Mat
 function userIdToName (i: number): string { return i === 1 ? 'Victor' : `user${i}` }
 function userIdToPoints (i: number): number { return NUM_PROBLEMS * solvePoints(i) }
 
-let problemsTab: HTMLElement
-let leaderboardTab: HTMLElement
-let problemTab: HTMLElement
+let problemsTab: HTMLElement | undefined = $state()
+let leaderboardTab: HTMLElement | undefined = $state()
+let problemTab: HTMLElement | undefined = $state()
 
-let problemPageNum = PROBLEM_SPECIAL
-let problemPageTextarea: HTMLTextAreaElement
-let problemPageLang = 'Python 3'
-let problemPageHint = 0
-let problemPageRecent = true
+let problemPageNum = $state(PROBLEM_SPECIAL)
+let problemPageTextarea: HTMLTextAreaElement | undefined = $state()
+let problemPageLang = $state('Python 3')
+let problemPageHint = $state(0)
+let problemPageRecent = $state(true)
 
-let userModalUID = 1
+let userModalUID = $state(1)
 
 function showProblems (): void {
-  jQuery(problemsTab).tab('show')
+  jQuery(problemsTab!).tab('show')
 }
 
 function showLeaderboard (): void {
-  jQuery(leaderboardTab).tab('show')
+  jQuery(leaderboardTab!).tab('show')
 }
 
 function showProblem (num: number): void {
   problemPageNum = num
-  jQuery(problemTab).tab('show')
+  jQuery(problemTab!).tab('show')
 }
 
 const blankFileLink = document.createElement('a')
@@ -97,10 +97,9 @@ function downloadBlankFile (): void {
 }
 
 // hack to make Bootstrap's jQuery.fn.tab work
-onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
+onMount(() => (window as any).jQuery ||= jQuery)
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
 <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
@@ -125,15 +124,15 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
         <hr class="my-4">
         <p>*We're probably the most popular with {NUM_PROBLEMS.toLocaleString()} problems and {NUM_USERS.toLocaleString()} users, who submitted {(NUM_PROBLEMS * NUM_USERS).toLocaleString()} solutions.</p>
         <div class="btn-group d-flex">
-          <button class="btn btn-primary btn-lg w-100" on:click={showProblems}>Get Started</button>
-          <button class="btn btn-secondary w-50" on:click={showLeaderboard}>Top Users</button>
+          <button class="btn btn-primary btn-lg w-100" onclick={showProblems}>Get Started</button>
+          <button class="btn btn-secondary w-50" onclick={showLeaderboard}>Top Users</button>
         </div>
       </div>
     </div>
   </div>
   <div class="tab-pane" id="problems" role="tabpanel" aria-labelledby="problems-tab">
     <h2>Problems</h2>
-    <p>Page <a href="#problemPage{PROBLEM_SPECIAL_PAGE}" on:click|preventDefault={() => problemsPage = PROBLEM_SPECIAL_PAGE}>{PROBLEM_SPECIAL_PAGE}</a> is special.</p>
+    <p>Page <a href="#problemPage{PROBLEM_SPECIAL_PAGE}" onclick={(event) => (event.preventDefault(), problemsPage = PROBLEM_SPECIAL_PAGE)}>{PROBLEM_SPECIAL_PAGE}</a> is special.</p>
     <table class="table table-striped table-bordered table-hover">
       <thead>
         <tr>
@@ -148,7 +147,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
         {#each problemNumbers as i}
           <tr>
             <td>{i.toLocaleString()}</td>
-            <td><a href="#problem{i}" on:click|preventDefault={() => showProblem(i)}>Problem {i.toLocaleString()}{i === PROBLEM_SPECIAL ? ': Do Nothing' : ` (alias of #${PROBLEM_SPECIAL.toLocaleString()})`}</a></td>
+            <td><a href="#problem{i}" onclick={(event) => (event.preventDefault(), showProblem(i))}>Problem {i.toLocaleString()}{i === PROBLEM_SPECIAL ? ': Do Nothing' : ` (alias of #${PROBLEM_SPECIAL.toLocaleString()})`}</a></td>
             <td>{PROBLEM_POINTS.toLocaleString()}</td>
             <td>{NUM_USERS.toLocaleString()}</td>
             <td>{NUM_USERS.toLocaleString()}</td>
@@ -192,7 +191,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
         {#each leaderboardNumbers as i}
           <tr>
             <td>{i.toLocaleString()}</td>
-            <td><a href="#user{i}" on:click={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
+            <td><a href="#user{i}" onclick={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
             <td>{userIdToPoints(i).toLocaleString()}</td>
             <td>{NUM_PROBLEMS.toLocaleString()}</td>
             <td>{NUM_PROBLEMS.toLocaleString()}</td>
@@ -221,11 +220,11 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
     <div class="row">
       <div class="col-6">
         <h3>Sample Input 0</h3>
-        <pre class="card card-body text-bg-light" />
+        <pre class="card card-body text-bg-light"></pre>
       </div>
       <div class="col-6">
         <h3>Sample Output 0</h3>
-        <pre class="card card-body text-bg-light" />
+        <pre class="card card-body text-bg-light"></pre>
       </div>
     </div>
 
@@ -236,7 +235,7 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
       </div>
       <div class="col-6">
         <h3>Sample Output 1</h3>
-        <pre class="card card-body text-bg-light" />
+        <pre class="card card-body text-bg-light"></pre>
       </div>
     </div>
 
@@ -254,24 +253,24 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
     </div>
 
     <div class="mb-2">
-      <button class="btn btn-lg btn-primary" on:click={() => problemPageHint = problemPageTextarea.value ? 2 : 3}>Submit</button>
-      <button class="btn btn-secondary" on:click={() => problemPageHint = 1}>Hint</button>
+      <button class="btn btn-lg btn-primary" onclick={() => problemPageHint = problemPageTextarea!.value ? 2 : 3}>Submit</button>
+      <button class="btn btn-secondary" onclick={() => problemPageHint = 1}>Hint</button>
     </div>
 
     {#if problemPageHint === 1}
       <div class="alert alert-info alert-dismissible" role="alert">
-        <button class="btn-close" on:click={() => problemPageHint = 0} aria-label="Close"></button>
+        <button class="btn-close" onclick={() => problemPageHint = 0} aria-label="Close"></button>
         Do the simplest thing that could possibly work.
       </div>
     {:else if problemPageHint === 2}
       <div class="alert alert-danger alert-dismissible" role="alert">
-        <button class="btn-close" on:click={() => problemPageHint = 0} aria-label="Close"></button>
+        <button class="btn-close" onclick={() => problemPageHint = 0} aria-label="Close"></button>
         <h4 class="alert-heading">Code size limit exceeded</h4>
         Try to solve this problem without wasting so much space!
       </div>
     {:else if problemPageHint === 3}
       <div class="alert alert-danger alert-dismissible" role="alert">
-        <button class="btn-close" on:click={() => problemPageHint = 0} aria-label="Close"></button>
+        <button class="btn-close" onclick={() => problemPageHint = 0} aria-label="Close"></button>
         <h4 class="alert-heading">Time Limit Exceeded</h4>
         You are too late, after waiting so long that {NUM_USERS.toLocaleString()} users solved it before you!
       </div>
@@ -280,10 +279,10 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
     <h3>Past Submissions</h3>
     <ul class="nav nav-pills mb-2">
       <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="pill" href="#problem_newest" on:click={() => problemPageRecent = true}>Newest</a>
+        <a class="nav-link active" data-bs-toggle="pill" href="#problem_newest" onclick={() => problemPageRecent = true}>Newest</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="pill" href="#problem_oldest" on:click={() => problemPageRecent = false}>Oldest</a>
+        <a class="nav-link" data-bs-toggle="pill" href="#problem_oldest" onclick={() => problemPageRecent = false}>Oldest</a>
       </li>
     </ul>
     <table class="table table-striped table-bordered table-hover">
@@ -300,12 +299,12 @@ onMount(() => (window as any).jQuery = (window as any).jQuery || jQuery)
       <tbody>
         {#each Array.from((problemPageRecent ? numbersOnPageDesc : numbersOnPageAsc)(NUM_USERS, 1, 5)) as i}
           <tr>
-            <td><a href="#user{i}" on:click={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
+            <td><a href="#user{i}" onclick={() => userModalUID = i} data-bs-toggle="modal" data-bs-target="#userModal">{userIdToName(i)}</a></td>
             <td>0.000000</td>
             <td>{new Date(fakeSiteCreated.getTime() + i).toISOString()}</td>
             <td>{langList[detrnd(i + 5 * problemPageNum, langList.length)]}</td>
             <td>Accepted ({solvePoints(i)} points)</td>
-            <td><button class="btn btn-outline-primary" on:click={downloadBlankFile}>Download</button></td>
+            <td><button class="btn btn-outline-primary" onclick={downloadBlankFile}>Download</button></td>
           </tr>
         {/each}
       </tbody>

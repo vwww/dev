@@ -26,13 +26,13 @@ const questions = [
 questions.forEach(q => shuffle(q.a))
 shuffle(questions)
 
-let ageStr = ''
+let ageStr = $state('')
 
-let resultType = 0
-let resultIQ = 0
-let iqRDetails: string | undefined
-let iqRDesc: string | undefined
-let iqRColor: string | undefined
+let resultType = $state(0)
+let resultIQ = $state(0)
+let iqRDetails: string | undefined = $state()
+let iqRDesc: string | undefined = $state()
+let iqRColor: string | undefined = $state()
 
 // code below
 
@@ -164,8 +164,8 @@ function resetAnswers (): void {
 
     <div class="text-center">
       <div class="btn-group">
-        <button on:click={validateAnswers} class="btn btn-primary">Validate</button>
-        <button on:click={resetAnswers} disabled={!resultType} class="btn btn-danger">Reset</button>
+        <button onclick={validateAnswers} class="btn btn-primary">Validate</button>
+        <button onclick={resetAnswers} disabled={!resultType} class="btn btn-danger">Reset</button>
       </div>
     </div>
   </div>

@@ -9,9 +9,10 @@ const pingURL = pStore('tool/ping/url', 'https://google.com')
 const pingInterval = pStore('tool/ping/pInt', 1000)
 const pingMax = pStore('tool/ping/pMax', 100)
 
-let curInterval = 0
+let curInterval = $state(0)
 
-let rsPing: RollingStats, rsJitter: RollingStats
+let rsPing: RollingStats | undefined = $state()
+let rsJitter: RollingStats | undefined = $state()
 
 function start () {
   const url = $pingURL
@@ -24,11 +25,11 @@ function start () {
     function doneCallback () {
       const delay = Date.now() - start
 
-      if (rsPing.getCount()) {
-        rsJitter.addValue(Math.abs(delay - rsPing.getLast()))
+      if (rsPing!.getCount()) {
+        rsJitter!.addValue(Math.abs(delay - rsPing!.getLast()))
         rsJitter = rsJitter // invalidate
       }
-      rsPing.addValue(delay)
+      rsPing!.addValue(delay)
       rsPing = rsPing // invalidate
     }
     jQuery.ajax({
@@ -77,9 +78,9 @@ function stop () {
   <div class="col-12 col-lg-1">
     <div class="btn-group d-flex" role="group">
       {#if curInterval}
-        <button on:click={stop} class="btn btn-danger w-100">Stop</button>
+        <button onclick={stop} class="btn btn-danger w-100">Stop</button>
       {:else}
-        <button on:click={start} class="btn btn-primary w-100">Start</button>
+        <button onclick={start} class="btn btn-primary w-100">Start</button>
       {/if}
     </div>
   </div>

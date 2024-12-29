@@ -81,7 +81,7 @@
     "leaflet-minimap": "^3.6.1",
     "packery": "^2.1.2",
     "plotly.js": "^2.35.3",
-    "svelte": "^4.2.19",
+    "svelte": "^5.16.0",
     "svg-pan-zoom": "^3.6.2",
     "timeago": "^1.6.7"
   }

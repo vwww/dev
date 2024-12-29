@@ -34,7 +34,7 @@ const COLORS = [
 
 import MomentBar from './MomentBar.svelte'
 
-import { TetrominoShape, tetrominoShapes } from './shapes'
+import { type TetrominoShape, tetrominoShapes } from './shapes'
 import { shuffle } from '@/util'
 
 // game settings
@@ -44,9 +44,9 @@ const highscore = pStore('game/sp/tetris/highscore', 0)
 
 // next block system
 const gameBlocks = [...tetrominoShapes]
-let gameBlockIndex = 0
-$: nextBlock = gameBlocks[gameBlockIndex][0]
-let nextColor = ((Math.random() * (COLORS.length - 1)) | 0) + 1
+let gameBlockIndex = $state(0)
+const nextBlock = $derived(gameBlocks[gameBlockIndex][0])
+let nextColor = $state(((Math.random() * (COLORS.length - 1)) | 0) + 1)
 function getNextBlock (): TetrominoShape {
   const block = gameBlocks[gameBlockIndex]
   setNextBlock()
@@ -69,27 +69,27 @@ function resetNextBlock (): void {
 }
 
 // game state
-let gameRunning = false
-let gamePaused = false
+let gameRunning = $state(false)
+let gamePaused = $state(false)
 let gameTimeout = 0
-let grid = Array(HEIGHT).fill(undefined).map(_ => Array(WIDTH).fill(0))
-let moment = 0
-let score = 0
-let linesCleared = 0
+let grid = $state(Array(HEIGHT).fill(undefined).map(_ => Array(WIDTH).fill(0)))
+let moment = $state(0)
+let score = $state(0)
+let linesCleared = $state(0)
 let keyLeft = false
 let keyRight = false
 let keyUp = false
 let keyDown = false
-let intervalTarget = -1
+let intervalTarget = $state(-1)
 
 // current block
 let curR = -1
-let curC = -1
-let maxR = -1
-let ghostLines = -1
-let curBlock: TetrominoShape
-let curBlockIndex = -1
-let curColor = -1
+let curC = $state(-1)
+let maxR = $state(-1)
+let ghostLines = $state(-1)
+let curBlock: TetrominoShape = $state(gameBlocks[0])
+let curBlockIndex = $state(-1)
+let curColor = $state(-1)
 
 function newGame (): void {
   for (let r = 0; r < HEIGHT; r++) {
@@ -362,15 +362,15 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
 </script>
 
 <svelte:window
-  on:keyup={event => handleKey(event, false)}
-  on:keydown={event => handleKey(event, true)}
+  onkeyup={event => handleKey(event, false)}
+  onkeydown={event => handleKey(event, true)}
 />
 
 <div class="btn-group d-flex" role="group">
-  <button on:click={newGame} class="btn btn-outline-primary w-100">New Game</button>
-  <button on:click={togglePause} class="btn w-100 btn-{gamePaused ? '' : 'outline-'}warning">Pause</button>
-  <button on:click={() => $showGhost = !$showGhost} class="btn w-50 btn-{$showGhost ? '' : 'outline-'}success">Ghost Piece</button>
-  <button on:click={() => $speedup = !$speedup} class="btn w-50 btn-{$speedup ? 'primary' : 'outline-secondary'}">Speedup</button>
+  <button onclick={newGame} class="btn btn-outline-primary w-100">New Game</button>
+  <button onclick={togglePause} class="btn w-100 btn-{gamePaused ? '' : 'outline-'}warning">Pause</button>
+  <button onclick={() => $showGhost = !$showGhost} class="btn w-50 btn-{$showGhost ? '' : 'outline-'}success">Ghost Piece</button>
+  <button onclick={() => $speedup = !$speedup} class="btn w-50 btn-{$speedup ? 'primary' : 'outline-secondary'}">Speedup</button>
 </div>
 
 <p>
@@ -379,17 +379,19 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
 </p>
 
 <table style="backface-visibility: hidden; transform: rotate({-moment / MOMENT_MAX * 45}deg)">
-  {#each grid as row, r}
-    <tr>
-      {#each row as cell, c}
-        <td
-          class:ghost={$showGhost && !cell && isGhost(curBlock, curBlockIndex, maxR, curC, r, c)}
-          class:ghostLine={$showGhost && r >= ghostLines}
-          style="background-color:{COLORS[cell || ($showGhost && isGhost(curBlock, curBlockIndex, maxR, curC, r, c) ? curColor : 0)]}"
-        />
-      {/each}
-    </tr>
-  {/each}
+  <tbody>
+    {#each grid as row, r}
+      <tr>
+        {#each row as cell, c}
+          <td
+            class:ghost={$showGhost && !cell && isGhost(curBlock, curBlockIndex, maxR, curC, r, c)}
+            class:ghostLine={$showGhost && r >= ghostLines}
+            style="background-color:{COLORS[cell || ($showGhost && isGhost(curBlock, curBlockIndex, maxR, curC, r, c) ? curColor : 0)]}"
+  ></td>
+        {/each}
+      </tr>
+    {/each}
+  </tbody>
 </table>
 
 <div class="d-flex my-3">
@@ -402,13 +404,15 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
 </div>
 
 <table>
-  {#each nextBlock as row}
-    <tr>
-      {#each row as cell}
-        <td style="background-color:{COLORS[cell ? nextColor : 0]}"></td>
-      {/each}
-    </tr>
-  {/each}
+  <tbody>
+    {#each nextBlock as row}
+      <tr>
+        {#each row as cell}
+          <td style="background-color:{COLORS[cell ? nextColor : 0]}"></td>
+        {/each}
+      </tr>
+    {/each}
+  </tbody>
 </table>
 
 <style>

@@ -3,13 +3,25 @@ import { type MemoEntry, type PathCount, remapPathCount } from '@gc/t3/ai'
 import { winnerMapToNum, Winner, type WinnerMap } from '@gc/t3/game'
 import { type GetMemoType } from './AppGameT3.svelte'
 
-export let i: number
-export let boardHistory: number[]
-export let moveStack: number[]
-export let moveLength: number
-export let winner: Winner
-export let winnerMap: WinnerMap
-export let getMemo: GetMemoType | undefined
+interface Props {
+  i: number
+  boardHistory: number[]
+  moveStack: number[]
+  moveLength: number
+  winner: Winner
+  winnerMap: WinnerMap
+  getMemo?: GetMemoType
+}
+
+const {
+  i,
+  boardHistory,
+  moveStack,
+  moveLength,
+  winner,
+  winnerMap,
+  getMemo
+}: Props = $props()
 
 function memoTitle (memo: MemoEntry, winnerMap: WinnerMap): string {
   const countPathsRaw = memo[1]
@@ -59,16 +71,16 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
 const emptyEntry: Entry = ['']
 const emptyInfo = [emptyEntry, emptyEntry, emptyEntry]
 
-$: made = moveLength > i
-$: hasInfo = made || (moveLength === i && !winner)
-$: memo = hasInfo && getMemo ? getMemo(boardHistory[i]) : undefined
+const made = $derived(moveLength > i)
+const hasInfo = $derived(made || (moveLength === i && !winner))
+const memo = $derived(hasInfo ? getMemo?.(boardHistory[i]) : undefined)
 
-$: info = !memo ? emptyInfo
+const info = $derived(!memo ? emptyInfo
   : [
     winInfo(i, memo, winnerMap, Winner.P1),
     winInfo(i, memo, winnerMap, Winner.P2),
     winInfo(i, memo, winnerMap, Winner.Tie)
-  ]
+  ])
 </script>
 
 <tr>

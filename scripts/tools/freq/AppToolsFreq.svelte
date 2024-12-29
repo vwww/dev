@@ -27,8 +27,8 @@ function resetEvents () {
 </script>
 
 <div class="btn-group d-flex mb-3" role="group">
-  <button on:click={addEvent} class="btn btn-outline-primary">Add Event</button>
-  <button on:click={resetEvents} class="btn btn-outline-secondary">Reset</button>
+  <button onclick={addEvent} class="btn btn-outline-primary">Add Event</button>
+  <button onclick={resetEvents} class="btn btn-outline-secondary">Reset</button>
 </div>
 
 {#if $intervalCount < 0}

@@ -10,8 +10,12 @@ import TwoPlayerEarlyEnd from '@gmc/TwoPlayerEarlyEnd.svelte'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState: T3Game
-export let t3Isomorphism: number
+interface Props {
+  gameState: T3Game
+  t3Isomorphism: number
+}
+
+const { gameState, t3Isomorphism }: Props = $props()
 
 const {
   isActive,
@@ -34,8 +38,8 @@ const {
   modeQuick,
 } = gameState
 
-$: playing = $isActive && $roundState === 2 && $inRound
-$: canMove = playing && $myTurn
+let playing = $derived($isActive && $roundState === 2 && $inRound)
+let canMove = $derived(playing && $myTurn)
 
 const isomorphism1 = [[1, 5], [2, 0], [3, 7], [4, 6], [5, 4], [6, 2], [7, 1], [8, 8], [9, 3]] as const
 const isomorphism2 = [
@@ -78,14 +82,16 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
     {/if}
     Get 3 in a row to win.
   </p>
-  <Board let:i winner={$winner}>
-    <BoardCell
-      winner={$winner}
-      mark={($boardState >> (i << 1)) & 3}
-      markHover={canMove && !(($boardBad >> i) & 1) ? $myPlayer : 0}
-      hintClass={(($boardState >> (i << 1)) & 3) || !(($boardBad >> i) & 1) ? '' : 'hlose'}
-      onMove={() => gameState.sendMove(i)} />
-  </Board>
+  <Board  winner={$winner}>
+    {#snippet children({ i })}
+        <BoardCell
+        winner={$winner}
+        mark={($boardState >> (i << 1)) & 3}
+        markHover={canMove && !(($boardBad >> i) & 1) ? $myPlayer : 0}
+        hintClass={(($boardState >> (i << 1)) & 3) || !(($boardBad >> i) & 1) ? '' : 'hlose'}
+        onMove={() => gameState.sendMove(i)} />
+          {/snippet}
+    </Board>
 
   <div>
     Moves:
@@ -112,7 +118,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
       {#each (t3Isomorphism === 1 ? isomorphism1 : isomorphism2) as [displayText, i]}
         <button
           class="btn btn-{formatButtonClass(i, $boardState, $boardBad, canMove)}"
-          on:click={() => gameState.sendMove(i)}
+          onclick={() => gameState.sendMove(i)}
         >{displayText}</button>
       {/each}
     </div>
@@ -123,7 +129,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   {#if canMove}
     <button
       class="btn btn-outline-secondary d-block w-100 my-2"
-      on:click={() => gameState.sendMoveEnd()}>End Turn (Auto Random)</button>
+      onclick={() => gameState.sendMoveEnd()}>End Turn (Auto Random)</button>
   {/if}
 
   <TwoPlayerEarlyEnd

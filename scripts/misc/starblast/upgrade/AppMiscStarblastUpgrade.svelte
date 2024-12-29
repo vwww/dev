@@ -35,12 +35,12 @@ function groupByLevel (ships: ShipInfo[]): GroupedShipInfo {
   return levelKeys.map((lvl) => [lvl, levels[lvl]])
 }
 
-let mod = mods[0]
-let ship = mod[1][1][1][1] // Trident
+let mod = $state(mods[0])
+let ship = $state(mods[0][1][1][1][1]) // Trident
 
-let shipLevel = 2
-let shipEnergy = [15, 20]
-let shipDamage = [20, 40]
+let shipLevel = $state(2)
+let shipEnergy = $state([15, 20])
+let shipDamage = $state([20, 40])
 
 function loadShip () {
   shipLevel = ship[1]
@@ -48,7 +48,7 @@ function loadShip () {
   shipDamage = ship[4].slice()
 }
 
-$: upgradeInfo = solve(shipLevel, shipEnergy[0], shipEnergy[1], shipDamage[0], shipDamage[1])
+const upgradeInfo = $derived(solve(shipLevel, shipEnergy[0], shipEnergy[1], shipDamage[0], shipDamage[1]))
 </script>
 
 <div class="input-group mb-3">
@@ -68,7 +68,7 @@ $: upgradeInfo = solve(shipLevel, shipEnergy[0], shipEnergy[1], shipDamage[0], s
       </optgroup>
     {/each}
   </select>
-  <button class="btn btn-outline-secondary" type="button" on:click={loadShip}>Load</button>
+  <button class="btn btn-outline-secondary" type="button" onclick={loadShip}>Load</button>
 </div>
 
 <div class="input-group mb-5">

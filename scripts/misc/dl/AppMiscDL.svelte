@@ -3,9 +3,9 @@ import fileRoot from './fileList'
 import type { NodeBrowse, NodeDirectory } from './nodeTypes'
 
 // File browser
-let curPath = [fileRoot]
-$: curNode = curPath[curPath.length - 1]
-$: curParent = curPath.length > 1 ? curPath[curPath.length - 2] : fileRoot
+let curPath = $state([fileRoot])
+const curNode = $derived(curPath[curPath.length - 1])
+const curParent = $derived(curPath.length > 1 ? curPath[curPath.length - 2] : fileRoot)
 
 function up (count: number): void {
   count = Math.min(count, curPath.length - 1)
@@ -57,8 +57,8 @@ function getDownloadPath (path: NodeDirectory[], node: NodeBrowse): string {
 }
 
 // Sorting
-let curSort = 'name'
-let curSortReverse = false
+let curSort = $state('name')
+let curSortReverse = $state(false)
 
 function setSort (s: string): void {
   if (curSort === s) {
@@ -114,7 +114,7 @@ function browseLocationHash () {
 browseLocationHash()
 </script>
 
-<svelte:window on:hashchange={browseLocationHash} />
+<svelte:window onhashchange={browseLocationHash} />
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -122,7 +122,7 @@ browseLocationHash()
       {#if index + 1 === curPath.length}
         <li class="breadcrumb-item active" aria-current="page">{item.name} ({formatSize(item.size)})</li>
       {:else}
-        <li class="breadcrumb-item"><a href="#{getPathString(curPath.slice(0, index + 1))}" on:click|preventDefault={() => up((curPath.length - 1) - index)}>{item.name}</a></li>
+        <li class="breadcrumb-item"><a href="#{getPathString(curPath.slice(0, index + 1))}" onclick={(event) => (event.preventDefault(), up((curPath.length - 1) - index))}>{item.name}</a></li>
       {/if}
     {/each}
   </ol>
@@ -131,25 +131,25 @@ browseLocationHash()
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <th on:click={() => setSort('name')}>Name{sortText(curSort === 'name', curSortReverse)}</th>
-      <th on:click={() => setSort('size')}>Size{sortText(curSort === 'size', curSortReverse)}</th>
-      <th on:click={() => setSort('remark')}>Remarks{sortText(curSort === 'remark', curSortReverse)}</th>
-      <th on:click={() => setSort('mtime')}>Modified Time{sortText(curSort === 'mtime', curSortReverse)}</th>
+      <th onclick={() => setSort('name')}>Name{sortText(curSort === 'name', curSortReverse)}</th>
+      <th onclick={() => setSort('size')}>Size{sortText(curSort === 'size', curSortReverse)}</th>
+      <th onclick={() => setSort('remark')}>Remarks{sortText(curSort === 'remark', curSortReverse)}</th>
+      <th onclick={() => setSort('mtime')}>Modified Time{sortText(curSort === 'mtime', curSortReverse)}</th>
     </tr>
   </thead>
   <tbody>
     {#if curPath.length > 2}
-      <tr on:click={() => up(curPath.length - 1)}>
-        <!-- svelte-ignore a11y-invalid-attribute We actually want this to set the hash to # -->
-        <td><a on:click|preventDefault href="#" class="file-root">. (root)</a></td>
+      <tr onclick={() => up(curPath.length - 1)}>
+        <!-- svelte-ignore a11y_invalid_attribute We actually want this to set the hash to # -->
+        <td><a onclick={(event) => event.preventDefault()} href="#" class="file-root">. (root)</a></td>
         <td title={formatSize(fileRoot.size, true)}>{formatSize(fileRoot.size)}</td>
         <td>Go to the top!</td>
         <td>{formatDateTime(fileRoot.mtime)}</td>
       </tr>
     {/if}
     {#if curPath.length > 1}
-      <tr on:click={() => up(1)}>
-        <td><a on:click|preventDefault href="#{getPathString(curPath.slice(0, -1))}" class="file-up">.. (up)</a></td>
+      <tr onclick={() => up(1)}>
+        <td><a onclick={(event) => event.preventDefault()} href="#{getPathString(curPath.slice(0, -1))}" class="file-up">.. (up)</a></td>
         <td title={formatSize(curParent.size, true)}>{formatSize(curParent.size)}</td>
         <td>Move up the tree!</td>
         <td>{formatDateTime(curParent.mtime)}</td>
@@ -157,15 +157,14 @@ browseLocationHash()
     {/if}
     {#each curNode.children.sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
       {#if child.type === 'dir'}
-        <tr on:click={() => enterChild(child)}>
-          <td><a on:click|preventDefault href="#{getChildPath(curPath, child)}" class="file-dir">{child.name}</a></td>
+        <tr onclick={() => enterChild(child)}>
+          <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir">{child.name}</a></td>
           <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
           <td>{child.remark}</td>
           <td>{formatDateTime(child.mtime)}</td>
         </tr>
       {:else}
         <tr>
-          <!-- svelte-ignore security-anchor-rel-noreferrer (goes to external domain but still controlled by us) -->
           <td><a href={getDownloadPath(curPath, child)} target="_blank" class="file-file" data-ext={ext(child.name)}>{child.name}</a></td>
           <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
           <td>{child.remark}</td>

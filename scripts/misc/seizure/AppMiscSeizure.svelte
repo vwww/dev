@@ -14,24 +14,24 @@ const userColor = pStore('misc/seizure/color', '#fff')
 const userColor2 = pStore('misc/seizure/color2', 'rgba(0, 0, 0, 0.5)')
 const useTimeMax = pStore('misc/seizure/useTimeMax', 0)
 
-let running = false
+let running = $state(false)
 let runBackgroundColorInt = 0
 let runImageInt = 0
 let runTimeLast = 0
 let runTimeInt = 0
-let useTime = -1
+let useTime = $state(-1)
 
-let winW = 0
-let winH = 0
-$: winA = winW * winH
-let windowIsBlurred = false
+let winW = $state(0)
+let winH = $state(0)
+let winA = $derived(winW * winH)
+let windowIsBlurred = $state(false)
 
-$: countUseTime = $colorMode < 4 || $imageMode
+let countUseTime = $derived($colorMode < 4 || $imageMode)
 
 let strobe = false
-let curColor: string = '#000'
-let curOpacity = 1
-let imageStrobe = false
+let curColor: string = $state('#000')
+let curOpacity = $state(1)
+let imageStrobe = $state(false)
 
 function nextColor (): void {
   if ($colorMode < 4) {
@@ -132,15 +132,15 @@ updateWindowSize()
 </script>
 
 <svelte:window
-  on:resize={updateWindowSize}
-  on:blur={() => windowIsBlurred = true}
-  on:focus={() => windowIsBlurred = false} />
+  onresize={updateWindowSize}
+  onblur={() => windowIsBlurred = true}
+  onfocus={() => windowIsBlurred = false} />
 
-<div id="strobeContainer" class:invisible={!running} style="text-align:center;background-color:{curColor};opacity:{curOpacity}" on:dblclick={stop} role="presentation">
-  <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
-  <img on:click={stop} src="stop.png" alt="Stop">
+<div id="strobeContainer" class:invisible={!running} style="text-align:center;background-color:{curColor};opacity:{curOpacity}" ondblclick={stop} role="presentation">
+  <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+  <img onclick={stop} src="stop.png" alt="Stop">
   <div class="container">
-    <button on:click={stop} class="btn d-block w-100 btn-danger">Secondary Stop</button>
+    <button onclick={stop} class="btn d-block w-100 btn-danger">Secondary Stop</button>
     <div style="color: white; mix-blend-mode: difference">
       {#if countUseTime}
         <p>You have lasted {formatSeconds(useTime)} seconds!</p>
@@ -236,8 +236,8 @@ updateWindowSize()
     </label>
   </div>
   <input type="url" class="form-control" bind:value={$imageURL}>
-  <input type="file" class="form-control" accept="image/*" on:change={handleImageFile}>
-  <button class="btn btn-outline-secondary" on:click={() => $imageURL = DEFAULT_IMAGE_URL}>Reset</button>
+  <input type="file" class="form-control" accept="image/*" onchange={handleImageFile}>
+  <button class="btn btn-outline-secondary" onclick={() => $imageURL = DEFAULT_IMAGE_URL}>Reset</button>
 </div>
 
 <div class="input-group mb-3">
@@ -300,7 +300,7 @@ updateWindowSize()
 
 <p>Last usage time: {useTime < 0 ? '(click Start)' : formatSeconds(useTime) + ' s'} (longest {formatSeconds($useTimeMax) + ' s'})</p>
 
-<button on:click={start} class="btn d-block w-100 btn-primary">Start</button>
+<button onclick={start} class="btn d-block w-100 btn-primary">Start</button>
 
 <style>
 #strobeContainer {

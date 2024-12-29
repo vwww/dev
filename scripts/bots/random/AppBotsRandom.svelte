@@ -8,8 +8,8 @@ const TWEET_LEN = 280
 
 type Tweet = [short: string, long?: string]
 
-let rankedWords: string[] | undefined
-let tweets: Tweet[] = []
+let rankedWords: string[] | undefined = $state()
+let tweets: Tweet[] = $state([])
 
 function getWord (): string {
   if (!rankedWords) return 'the'
@@ -71,7 +71,7 @@ p {
 
 {#if rankedWords}
   <div class="btn-group d-flex mb-3" role="group">
-    <button class="btn btn-primary" on:click={randomize}>Randomize</button>
+    <button class="btn btn-primary" onclick={randomize}>Randomize</button>
   </div>
 {:else}
   <div class="alert alert-danger" role="alert">This page is loading the word list&hellip;</div>

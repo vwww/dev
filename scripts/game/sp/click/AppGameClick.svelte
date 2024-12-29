@@ -4,15 +4,15 @@ import { pStore } from '@/util/svelte'
 
 const highscore = pStore('game/sp/click/highscore', 0)
 
-let x = 0.5
-let y = 0.5
+let x = $state(0.5)
+let y = $state(0.5)
 let dx = 1
 let dy = 1
-let colorBack = '#fff'
-let colorBtn = '#fff'
+let colorBack = $state('#fff')
+let colorBtn = $state('#fff')
 
-let cheat = 0
-let score = 0
+let cheat = $state(0)
+let score = $state(0)
 let tickDelay = 300
 
 function tick (): void {
@@ -54,8 +54,8 @@ tick()
 
 <p>Score: {score} (high score: {$highscore})</p>
 
-<div on:contextmenu={() => cheat++} class="play" style="background-color:{colorBack}" role="presentation">
-  <button on:click={clicked} on:mousemove={checkCheat} style="background-color:{colorBtn}; left:{x * 100}%;top:{y * 100}%">Click</button>
+<div oncontextmenu={() => cheat++} class="play" style="background-color:{colorBack}" role="presentation">
+  <button onclick={clicked} onmousemove={checkCheat} style="background-color:{colorBtn}; left:{x * 100}%;top:{y * 100}%">Click</button>
 </div>
 
 <style>

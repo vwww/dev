@@ -1,13 +1,22 @@
 <script lang="ts">
-export let start = 0
-export let end = 1
-export let startTime = Date.now()
-export let endTime = Date.now() + 20000
-
 import { onMount } from 'svelte'
 
-let progress = 0
-let remain = '0.0 s'
+interface Props {
+  start?: number
+  end?: number
+  startTime?: any
+  endTime?: any
+}
+
+const {
+  start = 0,
+  end = 1,
+  startTime = Date.now(),
+  endTime = Date.now() + 20000,
+}: Props = $props()
+
+let progress = $state(0)
+let remain = $state('0.0 s')
 
 onMount(() => {
   let animHandle: number

@@ -1,18 +1,21 @@
 <script lang="ts">
 import { type Unit, UNITS } from './units'
 
-let curType: string = Object.keys(UNITS)[0]
-let curFrom: string = Object.keys(UNITS[curType])[0]
-let curTo: string = Object.keys(UNITS[curType])[1]
+const DEFAULT_TYPE = Object.keys(UNITS)[0]
+const [DEFAULT_FROM, DEFAULT_TO] = Object.keys(UNITS[DEFAULT_TYPE])
 
-let val1 = '1337.1'
-let val2 = '0'
+let curType: string = $state(DEFAULT_TYPE)
+let curFrom: string = $state(DEFAULT_FROM)
+let curTo: string = $state(DEFAULT_TO)
 
-let sfn = 0
-let dpn = 0
+let val1 = $state('1337.1')
+let val2 = $state('0')
 
-$: uFrom = UNITS[curType]?.[curFrom]
-$: uTo = UNITS[curType]?.[curTo]
+let sfn = $state(0)
+let dpn = $state(0)
+
+const uFrom = $derived(UNITS[curType]?.[curFrom])
+const uTo = $derived(UNITS[curType]?.[curTo])
 
 function curTypeChanged (): void {
   const k = Object.keys(UNITS[curType])
@@ -141,7 +144,7 @@ function convertVal (uf: Unit | undefined, ut: Unit | undefined, val1: string, v
 <div class="row">
   <div class="col-sm-4 mb-2">
     <p>Type</p>
-    <select bind:value={curType} on:change={curTypeChanged} class="form-select" size="12">
+    <select bind:value={curType} onchange={curTypeChanged} class="form-select" size="12">
       {#each Object.keys(UNITS) as cat}
         <option value={cat}>{cat}</option>
       {/each}
@@ -149,7 +152,7 @@ function convertVal (uf: Unit | undefined, ut: Unit | undefined, val1: string, v
   </div>
   <div class="col-sm-4 mb-2">
     <p>From</p>
-    <select bind:value={curFrom} on:change={curFromChanged} class="form-select" size="12">
+    <select bind:value={curFrom} onchange={curFromChanged} class="form-select" size="12">
       {#each keys(UNITS[curType]) as unit}
         <option value={unit}>{unit}</option>
       {/each}

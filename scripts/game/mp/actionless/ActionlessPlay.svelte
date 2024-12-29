@@ -6,7 +6,11 @@ import ActionlessGame from './ActionlessGame'
 
 import { getGameModeString } from './gamemode'
 
-export let gameState: ActionlessGame
+interface Props {
+  gameState: ActionlessGame
+}
+
+const { gameState }: Props = $props()
 
 const {
   roundState,

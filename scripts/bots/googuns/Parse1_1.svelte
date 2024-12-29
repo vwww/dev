@@ -7,10 +7,14 @@ import RawTable from './RawTable.svelte'
 
 import { fromHex, repStr, sha, xorHexStr } from './util'
 
-export let msg: string
-export let len: number
+interface Props {
+  msg: string
+  len: number
+}
 
-$: parts = [
+const { msg, len }: Props = $props()
+
+const parts = $derived([
   msg.slice(0, 16),
   msg.slice(16, 18),
   msg.slice(18, 20),
@@ -18,24 +22,24 @@ $: parts = [
   msg.slice(124, 126),
   msg.slice(126, 134),
   msg.slice(134)
-]
+])
 
 // Derived
-$: C0 = len >= 20 && sha(256, msg.slice(20, len & ~1))
-$: C1 = len >= 16 && sha(1, parts[0])
-$: UT = xorHexStr(parts[0], xorHexStr(msg.slice(18, 34), msg.slice(64, 80)))
-$: UTD = !UT.includes('?') && new Date(fromHex(UT) * 1000)
+const C0 = $derived(len >= 20 && sha(256, msg.slice(20, len & ~1)))
+const C1 = $derived(len >= 16 && sha(1, parts[0]))
+const UT = $derived(xorHexStr(parts[0], xorHexStr(msg.slice(18, 34), msg.slice(64, 80))))
+const UTD = $derived(!UT.includes('?') && new Date(fromHex(UT) * 1000))
 
 // Valid
-$: V1 = !!C1 && parts[1] === xorHexStr(C1.slice(0, 2), 'FF')
-$: V2 = !!C0 && parts[2] === C0.slice(2, 4)
-$: V4 = parts[4] === '01'
-$: V6 = parts[6] === '000000'
-$: VT = UTD && isFinite(+UTD)
-$: VA = V1 && V2 && V4 && V6 && VT
+const V1 = $derived(!!C1 && parts[1] === xorHexStr(C1.slice(0, 2), 'FF'))
+const V2 = $derived(!!C0 && parts[2] === C0.slice(2, 4))
+const V4 = $derived(parts[4] === '01')
+const V6 = $derived(parts[6] === '000000')
+const VT = $derived(UTD && isFinite(+UTD))
+const VA = $derived(V1 && V2 && V4 && V6 && VT)
 </script>
 
-<script lang="ts" context="module">
+<script lang="ts" module>
 export function generate1_1 (timeHex: string, rHex: string): string {
   timeHex = timeHex.padStart(16, '0')
   rHex = rHex.padEnd(112, '0')
@@ -65,11 +69,11 @@ export function generate1_1 (timeHex: string, rHex: string): string {
 
 <div class="card mb-3">
   <div class="card-header">
-    <h4 class="card-title">
+    <h2 class="card-title">
       <a data-bs-toggle="collapse" href="#collapse1_1">
-        <h2>v1.1 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span></h2>
+        v1.1 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span>
       </a>
-    </h4>
+    </h2>
   </div>
   <div id="collapse1_1" class="card-collapse collapse">
     <div class="card-body">

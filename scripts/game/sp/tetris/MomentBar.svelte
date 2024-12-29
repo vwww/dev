@@ -1,13 +1,17 @@
 <script lang="ts">
-export let moment: number
-export let momentMax: number
+interface Props {
+  moment: number
+  momentMax: number
+}
 
-$: width = Math.max(moment, 0) / momentMax * 100
-$: className = width <= 20 ? 'bg-success'
+const { moment, momentMax }: Props = $props()
+
+const width = $derived(Math.max(moment, 0) / momentMax * 100)
+const className = $derived(width <= 20 ? 'bg-success'
   : width <= 40 ? 'bg-info'
   : width <= 60 ? ''
   : width <= 80 ? 'bg-warning'
-  : 'bg-danger'
+  : 'bg-danger')
 </script>
 
 <div class="progress-bar progress-bar-striped progress-bar-animated {className}"
@@ -15,4 +19,4 @@ $: className = width <= 20 ? 'bg-success'
   aria-valuenow={moment}
   aria-valuemin={0}
   aria-valuemax={momentMax}
-  style="width: {width}%" />
+  style="width: {width}%"></div>

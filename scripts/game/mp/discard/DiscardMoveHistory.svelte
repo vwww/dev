@@ -1,12 +1,16 @@
 <script lang="ts">
-export let moves: ArrayLike<DiscardMoveInfo>
-export let ll: boolean
-
 import type { DiscardMoveInfo } from './DiscardGame'
 
 import { getCardName } from './DiscardPlay.svelte'
 
 import { playerColor } from './common'
+
+interface Props {
+  moves: ArrayLike<DiscardMoveInfo>
+  ll: boolean
+}
+
+let { moves, ll }: Props = $props()
 </script>
 
 <b>Move History</b>

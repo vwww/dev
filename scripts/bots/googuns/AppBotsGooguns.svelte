@@ -50,7 +50,7 @@ function validateInput (this: HTMLTextAreaElement) {
 
     <p>Copy and paste a tweet:</p>
 
-    <textarea class="form-control" bind:value={$value} on:input={validateInput} maxlength="280" placeholder={'0'.repeat(280)} />
+    <textarea class="form-control" bind:value={$value} oninput={validateInput} maxlength="280" placeholder={'0'.repeat(280)}></textarea>
   </div>
 </div>
 

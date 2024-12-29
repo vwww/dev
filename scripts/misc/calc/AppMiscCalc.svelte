@@ -7,11 +7,11 @@ const enum NumMode {
   EnteringDec,
 }
 
-let display = '0'
+let display = $state('0')
 
 let result = 0
 let curNum = 0
-let memNum = 0
+let memNum = $state(0)
 let op = '+'
 let numMode = NumMode.Result
 let opPending = false
@@ -160,7 +160,7 @@ function onClickOperator (this: HTMLElement): void { doOp(this.innerText) }
 
 // keyboard handler
 
-const calcButton: Record<string, HTMLElement> = {}
+const calcButton: Record<string, HTMLElement> = $state({})
 
 function onKeyDown (event: KeyboardEvent): void {
   let key = event.key
@@ -234,7 +234,7 @@ const buttons: [string, (this: HTMLButtonElement, event: MouseEvent) => void][][
 ]
 </script>
 
-<svelte:window on:keydown={onKeyDown} />
+<svelte:window onkeydown={onKeyDown} />
 
 <div style="max-width: 576px; margin: auto">
   <div class="row mb-3"><input class="form-control text-center" value="{display}{memNum ? ' M' : ''}" readonly></div>
@@ -242,7 +242,7 @@ const buttons: [string, (this: HTMLButtonElement, event: MouseEvent) => void][][
     <div class="row mb-2">
       {#each row as button}
         <div class="col-3">
-          <button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton[button[0]]} on:click={button[1]}>{button[0]}</button>
+          <button class="btn btn-outline-secondary d-block w-100" bind:this={calcButton[button[0]]} onclick={button[1]}>{button[0]}</button>
         </div>
       {/each}
     </div>

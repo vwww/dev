@@ -1,6 +1,10 @@
 <script lang="ts">
-export let ranks: string[]
-export let counts: [string, number[]][]
+interface Props {
+  ranks: string[]
+  counts: [string, number[]][]
+}
+
+const { ranks, counts }: Props = $props()
 </script>
 
 <div class="table-responsive">

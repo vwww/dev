@@ -9,27 +9,33 @@ import { pStore } from '@/util/svelte'
 
 // Options state
 const showHints = pStore('game/sp/t3/showHints', true)
-let playerType = [playerTypes[0][1], playerTypes[4][1]] // TODO persist player type
+let playerType = $state([playerTypes[0][1], playerTypes[4][1]]) // TODO persist player type
 const winnerX = pStore('game/sp/t3/winnerX', 1)
 const winnerO = pStore('game/sp/t3/winnerO', 2)
 const winnerTie = pStore('game/sp/t3/winnerTie', 3)
 
-$: winnerMap = [$winnerX, $winnerO, $winnerTie] as WinnerMap
-function checkWinnerWhenNeeded (..._: any[]) { return checkWinner() }
-$: { checkWinnerWhenNeeded($winnerX, $winnerO, $winnerTie) }
+let winnerMap = $derived([$winnerX, $winnerO, $winnerTie] as WinnerMap)
+// checkWinner when needed
+$effect(() => {
+  $winnerX
+  $winnerO
+  $winnerTie
+
+  checkWinner()
+})
 
 // Game state
-let board: number
-let mark: number
-let winner: Winner
-let moveLength: number
-let undoLength: number
-let moveStack: number[] = new Array(9)
-let boardHistory: number[] = new Array(10)
-let currentMessage = ''
+let board: number = $state()
+let mark: number = $state()
+let winner: Winner = $state()
+let moveLength: number = $state()
+let undoLength: number = $state()
+let moveStack: number[] = $state(new Array(9))
+let boardHistory: number[] = $state(new Array(10))
+let currentMessage = $state('')
 
 // async loading
-let getMemo: GetMemoType | undefined
+let getMemo: GetMemoType | undefined = $state()
 
 function resetGame (): void {
   board = 0
@@ -153,7 +159,7 @@ const PRESETS = [
 ] as const
 </script>
 
-<script lang="ts" context="module">
+<script lang="ts" module>
 export type GetMemoType = (state: number) => MemoEntry | undefined
 </script>
 
@@ -169,9 +175,9 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
   <div class="col-12">
     <strong>Options</strong>
     <div class="btn-group d-flex mb-2" role="group">
-      <button on:click={() => { $showHints = !$showHints }} class="w-100 btn btn-{$showHints ? 'success active' : 'outline-primary'}">Hints</button>
-      <button on:click={swapTypes} class="w-100 btn btn-outline-secondary">Swap Types</button>
-      <button on:click={undoMove} class="w-100 btn btn-outline-secondary" disabled={!undoLength}>Undo</button>
+      <button onclick={() => { $showHints = !$showHints }} class="w-100 btn btn-{$showHints ? 'success active' : 'outline-primary'}">Hints</button>
+      <button onclick={swapTypes} class="w-100 btn btn-outline-secondary">Swap Types</button>
+      <button onclick={undoMove} class="w-100 btn btn-outline-secondary" disabled={!undoLength}>Undo</button>
     </div>
   </div>
 </div>
@@ -193,23 +199,23 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
 <div class="btn-group d-flex mb-1" role="group">
   <span class="input-group-text">X Wins</span>
   {#each SETTINGS_X as s, i}
-    <button on:click={() => { $winnerX = i + 1 }} class:active={$winnerX === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button onclick={() => { $winnerX = i + 1 }} class:active={$winnerX === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-1" role="group">
   <span class="input-group-text">O Wins</span>
   {#each SETTINGS_O as s, i}
-    <button on:click={() => { $winnerO = i + 1 }} class:active={$winnerO === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button onclick={() => { $winnerO = i + 1 }} class:active={$winnerO === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-2" role="group">
   <span class="input-group-text">Board Full</span>
   {#each SETTINGS_T as s, i}
-    <button on:click={() => { $winnerTie = i + 1 }} class:active={$winnerTie === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button onclick={() => { $winnerTie = i + 1 }} class:active={$winnerTie === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="input-group d-flex mb-2" role="group">
-  <button on:click={() => {
+  <button onclick={() => {
     $winnerX = $winnerX === 3 ? 3 : $winnerX ^ 3
     $winnerO = $winnerO === 3 ? 3 : $winnerO ^ 3
     $winnerTie = $winnerTie === 3 ? 3 : $winnerTie ^ 3
@@ -217,7 +223,7 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
   <span class="input-group-text">Presets: X wants</span>
   {#each PRESETS as p}
     <button
-      on:click={() => { $winnerX = p[0]; $winnerO = p[1]; $winnerTie = p[2] }}
+      onclick={() => { $winnerX = p[0]; $winnerO = p[1]; $winnerTie = p[2] }}
       class:active={$winnerX === p[0] && $winnerO === p[1] && $winnerTie === p[2]}
       class="flex-grow-1 btn btn-outline-{p[3]}">{p[4]}</button>
   {/each}

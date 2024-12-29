@@ -38,7 +38,7 @@ function generateCells (index: number): CellInfo[][] {
 
 const gridLevel = pStore('game/sp/fill/browse/gridLevel', 1)
 const gridStage = pStore('game/sp/fill/browse/gridStage', 1)
-$: cells = generateCells(($gridLevel - 1) * 100 + $gridStage - 1)
+const cells = $derived(generateCells(($gridLevel - 1) * 100 + $gridStage - 1))
 </script>
 
 <div class="row">

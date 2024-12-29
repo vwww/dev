@@ -1,6 +1,13 @@
 <script lang="ts">
-export let name = 'unknown field'
-export let hexBytes = '??'
+interface Props {
+  name?: string
+  hexBytes?: string
+}
+
+const {
+  name = 'unknown field',
+  hexBytes = '??',
+}: Props = $props()
 </script>
 
 <tr>

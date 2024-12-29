@@ -1,6 +1,13 @@
 <script lang="ts">
-export let canClear: boolean
-export let onClear: () => void
+import type { Snippet } from 'svelte'
+
+interface Props {
+  canClear: boolean
+  onClear: () => void
+  children?: Snippet
+}
+
+const { canClear, onClear, children }: Props = $props()
 </script>
 
 <div class="card mb-3">
@@ -8,7 +15,7 @@ export let onClear: () => void
     <h4 class="float-start">Past Games</h4>
     <button class="btn btn-sm btn-danger float-end"
       class:d-none={canClear}
-      on:click={onClear}>Clear</button>
+      onclick={onClear}>Clear</button>
   </div>
-  <slot />
+  {@render children?.()}
 </div>

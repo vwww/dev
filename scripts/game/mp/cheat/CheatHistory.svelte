@@ -1,7 +1,11 @@
 <script lang="ts">
-import { CheatGameHistory } from './CheatGame'
+import type { CheatGameHistory } from './CheatGame'
 
-export let results: CheatGameHistory[]
+interface Props {
+  results: CheatGameHistory[]
+}
+
+const { results }: Props = $props()
 </script>
 
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">

@@ -1,20 +1,29 @@
 <script lang="ts">
 import ChatState, { HoldMode } from './ChatState'
 
-import { afterUpdate } from 'svelte'
+interface Props {
+  title?: string
+  height?: string
+  chatState: ChatState
+  onInput?: (msg: string) => void
+}
 
-export let title = 'Chat'
-export let height = '20rem'
-export let chatState: ChatState
-export let onInput = console.log
+const props: Props = $props()
+
+const {
+  title = 'Chat',
+  height = '20rem',
+  chatState,
+  onInput = console.log
+}: Props = props
 
 const { messages, queueLength } = chatState
 
-let autoscrollParent: HTMLElement | undefined
-let autoscrollResume: HTMLElement | undefined
-let holdMode = HoldMode.None
+let autoscrollParent: HTMLElement | undefined = $state()
+let autoscrollResume: HTMLElement | undefined = $state()
+let holdMode = $state(HoldMode.None)
 
-let chatMessage = ''
+let chatMessage = $state('')
 
 function checkAutoScroll (): void {
   const newHoldMode = autoscrollParent && autoscrollResume
@@ -35,7 +44,11 @@ function doAutoScroll (): void {
   }
 }
 
-afterUpdate(doAutoScroll)
+$effect(() => {
+  props
+
+  doAutoScroll()
+})
 
 function sendInput (): void {
   onInput(chatMessage)
@@ -55,16 +68,16 @@ function handleKeydown (event: KeyboardEvent): void {
     <div class="float-end">
       <button class="btn btn-sm btn-info"
         class:d-none={!$queueLength && !holdMode}
-        on:click={() => chatState.setHoldMode(holdMode = 0)}>{$queueLength} new</button>
+        onclick={() => chatState.setHoldMode(holdMode = 0)}>{$queueLength} new</button>
       <button class="btn btn-sm btn-danger"
         class:d-none={!$messages.length}
-        on:click={() => chatState.clear()}>Clear</button>
+        onclick={() => chatState.clear()}>Clear</button>
     </div>
   </div>
   <ul
     class="list-group list-group-flush"
     style="overflow-y: scroll; height: {height}"
-    on:scroll={checkAutoScroll}
+    onscroll={checkAutoScroll}
     bind:this={autoscrollParent}>
     {#each $messages as message}
       <li class="list-group-item">
@@ -105,8 +118,8 @@ function handleKeydown (event: KeyboardEvent): void {
   </ul>
   <div class="card-footer">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="Enter a message here&hellip;" on:keydown={handleKeydown} bind:value={chatMessage}>
-      <button class="btn btn-outline-primary" on:click={sendInput}>Send</button>
+      <input type="text" class="form-control" placeholder="Enter a message here&hellip;" onkeydown={handleKeydown} bind:value={chatMessage}>
+      <button class="btn btn-outline-primary" onclick={sendInput}>Send</button>
     </div>
   </div>
 </div>

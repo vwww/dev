@@ -1,21 +1,38 @@
 <script lang="ts">
 import ProgressBar from './ProgressBar.svelte'
 
-import { onDestroy } from 'svelte'
+import { onDestroy, type Snippet } from 'svelte'
 
-export let onRefresh: () => void
-export let isRefreshing: boolean
-export let onNewRoom: () => void
-export let onResetRoomOptions: () => void
-export let rooms: ArrayLike<unknown>
-export let disableNew = false
-export let refreshTimeoutBase = 15000
-export let refreshTimeoutJitter = 15000
+interface Props {
+  onRefresh: () => void
+  isRefreshing: boolean
+  onNewRoom: () => void
+  onResetRoomOptions: () => void
+  rooms: ArrayLike<unknown>
+  disableNew?: boolean
+  refreshTimeoutBase?: number
+  refreshTimeoutJitter?: number
+  children?: Snippet
+  newRoom?: Snippet
+}
 
-let collapsed = false
+const {
+  onRefresh,
+  isRefreshing,
+  onNewRoom,
+  onResetRoomOptions,
+  rooms,
+  disableNew = false,
+  refreshTimeoutBase = 15000,
+  refreshTimeoutJitter = 15000,
+  children,
+  newRoom
+}: Props = $props()
 
-let refreshLast = 0
-let refreshNext = 1
+let collapsed = $state(false)
+
+let refreshLast = $state(0)
+let refreshNext = $state(1)
 let refreshTimeout: ReturnType<typeof setTimeout>
 
 function getRefreshDelay () {
@@ -43,17 +60,17 @@ onDestroy(() => clearTimeout(refreshTimeout))
   <div class="card-header">
     <h4 class="float-start">Rooms (showing {rooms.length}/{rooms.length})</h4>
     <div class="float-end">
-      <button class="btn btn-sm btn-secondary" on:click={() => (setRefreshTimeout(), onRefresh())}>
+      <button class="btn btn-sm btn-secondary" onclick={() => (setRefreshTimeout(), onRefresh())}>
         <div class="spinner-border spinner-border-sm" class:d-none={!isRefreshing}></div>
         Refresh
       </button>
-      <button class="btn btn-sm btn-{collapsed ? 'secondary' : 'warning'}" on:click={() => collapsed = !collapsed}>{collapsed ? 'Show' : 'Hide'}</button>
+      <button class="btn btn-sm btn-{collapsed ? 'secondary' : 'warning'}" onclick={() => collapsed = !collapsed}>{collapsed ? 'Show' : 'Hide'}</button>
       <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#newRoomModal" disabled={disableNew}>New</button>
     </div>
   </div>
   <div class="card-body" class:d-none={collapsed} style="overflow-y: scroll; height: 50vh">
     <ProgressBar startTime={refreshLast} endTime={refreshNext} />
-    <slot />
+    {@render children?.()}
   </div>
 </div>
 
@@ -66,12 +83,12 @@ onDestroy(() => clearTimeout(refreshTimeout))
         <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <slot name="newRoom" />
+        {@render newRoom?.()}
       </div>
       <div class="modal-footer">
-        <button class="btn btn-danger me-auto" on:click={onResetRoomOptions}>Reset</button>
+        <button class="btn btn-danger me-auto" onclick={onResetRoomOptions}>Reset</button>
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary" data-bs-dismiss="modal" on:click={onNewRoom}>Create</button>
+        <button class="btn btn-primary" data-bs-dismiss="modal" onclick={onNewRoom}>Create</button>
       </div>
     </div>
   </div>
