@@ -1,10 +1,8 @@
 const fg = require('fast-glob')
 const path = require('path')
 
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
+const rspack = require('@rspack/core')
+const { RspackManifestPlugin } = require('rspack-manifest-plugin')
 
 const devMode = process.env.NODE_ENV !== 'production'
 
@@ -41,8 +39,8 @@ module.exports = {
           loader: 'svelte-loader',
           options: {
             compilerOptions: {
-							dev: devMode
-						},
+              dev: devMode
+            },
             hotReload: devMode,
             preprocess: require('svelte-preprocess')({})
           }
@@ -57,15 +55,21 @@ module.exports = {
       {
         test: /\.s[ac]ss$/i,
         use: [
-          MiniCssExtractPlugin.loader,
+          rspack.CssExtractRspackPlugin.loader,
           'css-loader',
-          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              api: 'modern-compiler',
+              implementation: require.resolve('sass-embedded'),
+            },
+          },
         ],
       },
       {
         test: /\.css$/i,
         use: [
-          MiniCssExtractPlugin.loader,
+          rspack.CssExtractRspackPlugin.loader,
           'css-loader',
         ],
       },
@@ -80,7 +84,7 @@ module.exports = {
     ],
   },
   resolve: {
-    plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json', mainFields })],
+    tsConfig: path.resolve(__dirname, './tsconfig.json'),
     extensions: [ '.ts', '.mjs', '.js', '.svelte' ],
     mainFields,
     conditionNames: ['svelte', '...'],
@@ -92,7 +96,7 @@ module.exports = {
   },
   devtool: devMode ? 'source-map' : false,
   plugins: [
-    new WebpackManifestPlugin({
+    new RspackManifestPlugin({
       fileName: path.resolve(__dirname, 'docs/_data/manifest.json'),
       generate (_seed, _files, entrypoints) {
         const js = {}
@@ -121,15 +125,15 @@ module.exports = {
       },
       serialize: JSON.stringify,
     }),
-    new RemoveEmptyScriptsPlugin(),
-    new MiniCssExtractPlugin({
+    new rspack.CssExtractRspackPlugin({
       filename: '[name]', // [name] already has .css suffix
       chunkFilename: devMode ? '[id].css' : '[id].[contenthash].css',
     }),
+    new rspack.ProgressPlugin(),
   ],
   optimization: {
-    moduleIds: 'size',
-    chunkIds: 'total-size',
+    moduleIds: 'deterministic', // 'size',
+    chunkIds: 'deterministic', // 'total-size',
     splitChunks: {
       chunks: devMode ? 'async' : 'all',
     },
