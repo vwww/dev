@@ -89,7 +89,8 @@ function sortText (isSort: boolean, reverse: boolean): string {
 function updateLocationHash (replaceHash = false) {
   const newHash = getPathString(curPath)
   if (location.hash !== newHash) {
-    history[replaceHash ? 'replaceState' : 'pushState'](null, '', `${location.pathname}#${newHash}`)
+    const url = `${location.pathname}${newHash ? '#' : ''}${newHash}`
+    history[replaceHash ? 'replaceState' : 'pushState'](null, '', url)
   }
   document.title = "Victor's Downloads" + (newHash ? '/' + newHash : '')
 }
