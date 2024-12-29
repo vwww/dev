@@ -42,7 +42,7 @@
     "concurrently": "^9.1.1",
     "css-loader": "^7.1.2",
     "eslint": "^9.17.0",
-    "eslint-config-love": "^112.0.0",
+    "eslint-config-love": "^114.0.0",
     "eslint-plugin-frontmatter": "^0.0.8",
     "eslint-plugin-html": "^8.1.2",
     "eslint-plugin-import": "^2.31.0",
@@ -62,7 +62,7 @@
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.7.2",
     "webpack": "^5.97.1",
-    "webpack-cli": "^5.1.4",
+    "webpack-cli": "^6.0.1",
     "webpack-manifest-plugin": "^5.0.0",
     "webpack-remove-empty-scripts": "^1.0.4"
   },
