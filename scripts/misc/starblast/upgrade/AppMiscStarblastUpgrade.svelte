@@ -86,7 +86,7 @@ const upgradeInfo = $derived(solve(shipLevel, shipEnergy[0], shipEnergy[1], ship
   <thead>
     <tr>
       <th style="width: 0">Damage\Energy</th>
-      {#each upgradeInfo.table[0] as _, i}
+      {#each upgradeInfo.table[0], i}
         <th>{i}</th>
       {/each}
     </tr>

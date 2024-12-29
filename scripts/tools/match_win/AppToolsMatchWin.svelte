@@ -82,7 +82,7 @@ const memo = $derived((() => {
             <th colspan={tableSize}>Player score</th>
         </tr>
         <tr style="position: sticky; top: 0; z-index: 1">
-            {#each memo as _, i}
+            {#each memo, i}
                 <th>{i}</th>
             {/each}
         </tr>
