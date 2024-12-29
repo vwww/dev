@@ -374,7 +374,7 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
 </div>
 
 <p>
-  ({gameRunning ? gamePaused ? 'Paused' : (INTERVAL_START / (intervalTarget | 0)).toPrecision(2) + 'x' : 'Game over'}) |
+  ({gameRunning ? gamePaused ? 'Paused' : (INTERVAL_START / (intervalTarget | 0)).toPrecision(3) + 'x' : 'Game over'}) |
   Score: {score} | High Score: {$highscore} | Lines cleared: {linesCleared} | Moment: {!moment ? '0' : moment > 0 ? moment + ' CCW' : -moment + ' CW'} ({MOMENT_MAX} max)
 </p>
 
