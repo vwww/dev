@@ -426,7 +426,6 @@ td {
 }
 td.ghost {
   opacity: 0.2;
-  animation: blinker 2s linear infinite;
 }
 td.ghostLine {
   animation: blinker 0.5s linear infinite;
