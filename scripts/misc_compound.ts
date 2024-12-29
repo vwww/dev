@@ -1,8 +1,8 @@
 import { $idA, $ready } from '@/util'
 import Highcharts from 'highcharts/highstock'
-import Exporting from 'highcharts/modules/exporting'
-
-Exporting(Highcharts)
+import 'highcharts/modules/exporting'
+import 'highcharts/modules/offline-exporting'
+import 'highcharts/modules/accessibility'
 
 let series: Highcharts.Series | undefined
 
