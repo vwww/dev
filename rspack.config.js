@@ -14,8 +14,6 @@ for (let e of fg.sync('*.scss', { cwd: path.resolve(__dirname, 'styles') })) {
   entry[e.slice(0, -5) + '.css'] = './styles/' + e
 }
 
-const mainFields = ['svelte', '...']
-
 module.exports = {
   mode: devMode ? 'development' : 'production',
   entry,
@@ -86,7 +84,7 @@ module.exports = {
   resolve: {
     tsConfig: path.resolve(__dirname, './tsconfig.json'),
     extensions: [ '.ts', '.mjs', '.js', '.svelte' ],
-    mainFields,
+    mainFields: ['svelte', '...'],
     conditionNames: ['svelte', '...'],
     fallback: {
       'http': false,
