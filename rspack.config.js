@@ -18,7 +18,6 @@ module.exports = {
   mode: devMode ? 'development' : 'production',
   entry,
   output: {
-    filename: devMode ? '[name].js' : '[name].[contenthash:10].js',
     path: path.resolve(__dirname, 'docs/assets/dist'),
   },
   module: {
@@ -125,7 +124,6 @@ module.exports = {
     }),
     new rspack.CssExtractRspackPlugin({
       filename: '[name]', // [name] already has .css suffix
-      chunkFilename: devMode ? '[id].css' : '[id].[contenthash].css',
     }),
     new rspack.ProgressPlugin(),
   ],
