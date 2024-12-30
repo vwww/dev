@@ -132,8 +132,8 @@ module.exports = {
     new rspack.ProgressPlugin(),
   ],
   optimization: {
-    moduleIds: 'deterministic', // 'size',
-    chunkIds: 'deterministic', // 'total-size',
+    moduleIds: 'natural', // 'size',
+    chunkIds: 'natural', // 'total-size',
     splitChunks: {
       chunks: devMode ? 'async' : 'all',
     },
