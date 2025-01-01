@@ -245,29 +245,39 @@ function highcharts (node: HTMLElement, config: Highcharts.Options) {
 <h2>Leaderboard of Losers (LOL)</h2>
 
 <div class="mb-3">
-  Show up to
-  <div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
+  <div class="input-group mb-3">
+    <div class="input-group-text">
+      Filter by minimum pokes
+    </div>
+    <input class="form-control" type="number" min="1" bind:value={$leaderboardMinPokes}>
+  </div>
+  <div class="input-group mb-3">
+    <div class="input-group-text">
+      Limit
+    </div>
     {#each [10, 25, 50, 100, 250, 500, 1000, 0] as limit}
-      <label class="btn btn-outline-secondary">
-        <input type="radio" class="btn-check" bind:group={$leaderboardLimit} value={limit}> {limit || 'all'}
-      </label>
+      <div class="input-group-text">
+        <label class="form-check">
+          <input type="radio" class="form-check-input" bind:group={$leaderboardLimit} value={limit}>
+          {limit || 'all'}
+        </label>
+      </div>
     {/each}
+    <input class="form-control" type="number" min="0" bind:value={$leaderboardLimit}>
   </div>
-  entries
-  using
-  <div class="btn-group btn-group-toggle" data-bs-toggle="buttons">
+  <div class="input-group mb-3">
+    <div class="input-group-text">
+      Ranking Method
+    </div>
     {#each ['dense', 'competition', 'fractional', 'modified', 'ordinal'] as limit, i}
-      <label class="btn btn-outline-secondary">
-        <input type="radio" class="btn-check" bind:group={$leaderboardTie} value={i}> {limit}
-      </label>
+      <div class="input-group-text">
+        <label class="form-check">
+          <input type="radio" class="form-check-input" bind:group={$leaderboardTie} value={i}>
+          {limit}
+        </label>
+      </div>
     {/each}
   </div>
-  ranking,
-  <label>
-    for those who poked at least
-    <input type="number" min="1" bind:value={$leaderboardMinPokes}>
-    times
-  </label>
 </div>
 
 <div id="leaderboards" class="tie0 row clearfix">
