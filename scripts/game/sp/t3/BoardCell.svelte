@@ -30,11 +30,10 @@ const {
 
 const boardValue = $derived((board >> (i << 1)) & 3)
 
-function recalc () : [string, number] | undefined {
-  if (boardValue || !showHints || winner || !getMemo) return
+const memoEntry = $derived(!boardValue && showHints && !winner && getMemo?.(board | (mark << (i << 1))))
 
-  const memoEntry = getMemo(board | (mark << (i << 1)))
-  if (!memoEntry) return
+const [hintClass, hintVal] = $derived.by(function () {
+  if (!memoEntry) return []
 
   const [typeDep, countPathsRaw] = memoEntry
   const val = typeDep[winnerMapToNum(winnerMap)][0]
@@ -46,13 +45,7 @@ function recalc () : [string, number] | undefined {
   const scoreType = !val ? 'tie' : val < 0 ? 'win' : 'lose'
 
   return [`h${scoreType}${noWin ? ' noW' : ''}${noTie ? ' noT' : ''}${noLose ? ' noL': ''}`, val]
-}
-
-function recalcWhenNeeded (..._: any[]) {
-  return recalc()
-}
-
-const [hintClass, hintVal] = $derived(recalcWhenNeeded(board, showHints, winnerMap, getMemo) || [''])
+})
 </script>
 
 <BoardCell {winner} mark={boardValue} markHover={mark} {hintClass} {hintVal} {onMove} />
