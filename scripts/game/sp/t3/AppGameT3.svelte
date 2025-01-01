@@ -57,7 +57,6 @@ function startGame (): void {
 
 function setPlayerType (p: 0 | 1, pType: Bot | undefined): void {
   playerType[p] = pType
-  playerType = playerType
   startGame()
 }
 
@@ -73,9 +72,6 @@ function makeMove (loc: number): void {
   boardHistory[moveLength] = board
 
   checkWinner()
-  // invalidate for Svelte
-  moveStack = moveStack
-  boardHistory = boardHistory
 }
 
 function checkWinner (): void {

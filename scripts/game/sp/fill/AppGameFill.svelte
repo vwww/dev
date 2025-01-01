@@ -52,8 +52,6 @@ function updateRendering () {
   }
 
   if (!root) status = -1
-
-  cells = cells
 }
 
 function recompute () {

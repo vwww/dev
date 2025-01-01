@@ -37,10 +37,8 @@ function start () {
 
       if (rsPing!.getCount()) {
         rsJitter!.addValue(Math.abs(delay - rsPing!.getLast()))
-        rsJitter = rsJitter // invalidate
       }
       rsPing!.addValue(delay)
-      rsPing = rsPing // invalidate
     }
     jQuery.ajax({
       url,

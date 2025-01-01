@@ -77,8 +77,6 @@ void fetch('logic.json')
 
       logicPresets.push(puzzles)
     }
-
-    logicPresets = logicPresets
   })
 </script>
 
