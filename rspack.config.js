@@ -105,4 +105,8 @@ module.exports = {
       chunks: devMode ? 'async' : 'all',
     },
   },
+  performance: {
+    maxEntrypointSize: 2 ** 20, // 1 MiB
+    maxAssetSize: 2 ** 19, // 512 KiB
+  },
 }
