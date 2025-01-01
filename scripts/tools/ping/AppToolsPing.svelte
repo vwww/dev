@@ -14,7 +14,7 @@ let rsPing: RollingStats | undefined = $state()
 let rsJitter: RollingStats | undefined = $state()
 
 type Metric = [name: string, formatter: (s: RollingStats) => number | string]
-const metric: Metric[] = [
+const metric: readonly Metric[] = [
   ['Last', stats => stats.getLast()],
   ['Average', stats => stats.getMean()],
   ['Min', stats => stats.getMin()],
