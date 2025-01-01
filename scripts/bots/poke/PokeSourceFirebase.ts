@@ -1,7 +1,7 @@
 import type { PokeInfo } from './PokeInfo'
 import type { PokeSource } from './PokeSource'
 
-import { type FirebaseApp, type FirebaseOptions, initializeApp } from 'firebase/app'
+import { deleteApp, type FirebaseApp, type FirebaseOptions, initializeApp } from 'firebase/app'
 import { getDatabase, ref, onValue } from 'firebase/database'
 
 export default class PokeSourceFirebase implements PokeSource {
@@ -37,5 +37,9 @@ export default class PokeSourceFirebase implements PokeSource {
       if (!snapshot) return
       updatePoke(snapshot.val() as Record<string, PokeInfo>)
     })
+  }
+
+  destroy (): void {
+    deleteApp(this.firebaseApp)
   }
 }

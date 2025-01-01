@@ -28,4 +28,8 @@ export default class PokeSourceSimperium implements PokeSource {
     // unsubscription is not supported
     return () => { /* do nothing */ }
   }
+
+  destroy (): void {
+    // do nothing
+  }
 }

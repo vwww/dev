@@ -6,21 +6,27 @@ import type { PokeInfo } from './PokeInfo'
 import type { PokeSource } from './PokeSource'
 import PokeSourceFirebase from './PokeSourceFirebase'
 
+import { onMount } from 'svelte'
 import { pStore } from '@/util/svelte'
 
-import Plotly from 'plotly.js/lib/core'
+import Highcharts from 'highcharts'
+import 'highcharts/modules/exporting'
+import 'highcharts/modules/offline-exporting'
+import 'highcharts/modules/accessibility'
 
-Plotly.register([
-  require('plotly.js/lib/scatter'),
-])
-
-let opponentPlot: HTMLDivElement | undefined = $state()
+// Persistent variables
+const leaderboardLimit = pStore('bot/poke/leaderboardLimit', 10)
+const leaderboardTie = pStore('bot/poke/leaderboardTie', 2)
+const leaderboardMinPokes = pStore('bot/poke/leaderboardMinPokes', 1)
 
 // Poke entries sorted by pokes then time
 let data1: EntryInfo[] = $state([])
 
 // Poke entries sorted by time
 let data2: EntryInfo[] = $state([])
+
+// Data for highcharts
+let yData: number[][] = $state([])
 
 function computeRanks (): void {
   let rDense = 0
@@ -63,28 +69,20 @@ function updatePoke (data: Record<string, PokeInfo>): void {
   // Sort
   data1.sort((a, b) => (b.num - a.num) || (a.time - b.time)) // higher number, earlier time first
   data2.sort((a, b) => b.time - a.time) // later time first
-  const data3 = data2.slice().reverse() // earlier time first
 
   // Compute ranks
   computeRanks()
 
   // Update plot
-  const xVals = Array(data1.length).fill(undefined).map((_, index) => index + 1)
+  const last = data2.length - 1
   const firstTime = data2[0].time
-  const oldestTime = data3[0].time
-  void Plotly.restyle(opponentPlot!, {
-    x: [xVals, xVals],
-    y: [
-      data1.map((x) => x.num),
-      data2.map((x) => (firstTime - x.time) / 86400),
-      data3.map((x) => (x.time - oldestTime) / 86400),
-    ]
-  })
+  const oldestTime = data2[last].time
+  yData = [
+    data1.map((x) => x.num),
+    data2.map((x) => (firstTime - x.time) / 86400),
+    data2.map((_, i) => (data2[last - i].time - oldestTime) / 86400), // earlier time first
+  ]
 }
-
-const leaderboardLimit = pStore('bot/poke/leaderboardLimit', 10)
-const leaderboardTie = pStore('bot/poke/leaderboardTie', 2)
-const leaderboardMinPokes = pStore('bot/poke/leaderboardMinPokes', 1)
 
 let infoPokes: number | undefined = $state()
 let infoTicks: number | undefined = $state()
@@ -94,41 +92,117 @@ function updateInfo (pokes: number, ticks: number): void {
   infoTicks = ticks
 }
 
-// Ready handler
-function onReady (): void {
+onMount(() => {
   const pokeSource: PokeSource = new PokeSourceFirebase()
   pokeSource.onInfoUpdate(updateInfo)
   pokeSource.onPokeUpdate(updatePoke)
 
-  // Set up plot
-  const data: Partial<Plotly.PlotData>[] = [
-    { name: 'highest first', type: 'scatter'/*, line: {shape: 'linear'} */ },
-    { name: 'recent first', type: 'scatter'/*, line: {shape: 'linear'} */, yaxis: 'y2' },
-    { name: 'oldest first', type: 'scatter'/*, line: {shape: 'linear'} */, yaxis: 'y2' },
+  return () => {
+    pokeSource.destroy()
+  }
+})
+
+const highchartsOptions: Highcharts.Options = $derived({
+  chart: {
+    type: 'line',
+    zooming: {
+      type: 'x'
+    },
+  },
+  colors: [
+    // plotly.js colors
+    // https://github.com/plotly/plotly.js/blob/v2.35.3/src/components/color/attributes.js#L5-L16
+    '#1f77b4',  // muted blue
+    '#ff7f0e',  // safety orange
+    '#2ca02c',  // cooked asparagus green
+    '#d62728',  // brick red
+    '#9467bd',  // muted purple
+    '#8c564b',  // chestnut brown
+    '#e377c2',  // raspberry yogurt pink
+    '#7f7f7f',  // middle gray
+    '#bcbd22',  // curry yellow-green
+    '#17becf',  // blue-teal
+  ],
+  credits: {
+    enabled: false,
+  },
+  title: {
+    text: undefined,
+  },
+  xAxis: {
+    type: 'logarithmic',
+    title: {
+      text: 'rank'
+    },
+  },
+  yAxis: [
+    {
+      type: 'logarithmic',
+      title: {
+        text: 'number of pokes'
+      },
+    },
+    {
+      type: 'logarithmic',
+      title: {
+        text: 'days'
+      },
+      opposite: true,
+    },
+    {
+      type: 'logarithmic',
+      title: {
+        text: 'days'
+      },
+      opposite: true,
+    },
+  ],
+  tooltip: {
+    shared: true
+  },
+  legend: {
+    enabled: false
+  },
+  series: [
+    {
+      type: 'line',
+      name: 'highest first',
+      data: yData[0],
+    },
+    {
+      type: 'line',
+      name: 'recent first',
+      yAxis: 1,
+      data: yData[1],
+    },
+    {
+      type: 'line',
+      name: 'oldest first',
+      yAxis: 2,
+      data: yData[2],
+    },
   ]
-  const layout: Partial<Plotly.Layout> = {
-    xaxis: { title: 'rank', type: 'log' },
-    yaxis: { title: 'number of pokes', type: 'log' },
-    yaxis2: { title: 'days', type: 'log', overlaying: 'y', side: 'right' },
-    showlegend: false,
-    margin: {
-      l: 50,
-      r: 50,
-      b: 50,
-      t: 50,
-      pad: 4,
+})
+
+function highcharts (node: HTMLElement, config: Highcharts.Options) {
+  const chart = Highcharts.chart(node, config)
+
+  const resizeObserver = new ResizeObserver(() => chart.reflow())
+
+  resizeObserver.observe(node)
+
+  return {
+    update (config: Highcharts.Options) {
+      chart.update(config, true, true)
+    },
+
+    destroy () {
+      resizeObserver.disconnect()
+      chart.destroy()
     },
   }
-  void Plotly.newPlot(opponentPlot!, data, layout)
-}
-
-// Resize handler
-function onResize (): void {
-  Plotly.Plots.resize(opponentPlot!)
 }
 </script>
-
-<svelte:window onload={onReady} onresize={onResize} />
 
 <div class="alert alert-secondary" role="alert">
   This bot is down. It has been discontinued, so it will not be restored for a long time.
@@ -166,7 +240,7 @@ function onResize (): void {
 </div>
 
 <h2>Opponent Distribution</h2>
-<div bind:this={opponentPlot}></div>
+<div use:highcharts={highchartsOptions}></div>
 
 <h2>Leaderboard of Losers (LOL)</h2>
 
