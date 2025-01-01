@@ -72,7 +72,7 @@ function resetNextBlock (): void {
 let gameRunning = $state(false)
 let gamePaused = $state(false)
 let gameTimeout = 0
-let grid = $state(Array(HEIGHT).fill(undefined).map(_ => Array(WIDTH).fill(0)))
+let grid = $state(Array(HEIGHT).fill(undefined).map(() => Array(WIDTH).fill(0)))
 let moment = $state(0)
 let score = $state(0)
 let linesCleared = $state(0)

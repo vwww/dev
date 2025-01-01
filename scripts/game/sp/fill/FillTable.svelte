@@ -9,7 +9,7 @@ export type CellInfo = {
   moves: MoveType[]
   browseNum?: number
 }
-type CellCallback = (_: CellInfo) => void
+type CellCallback = (cell: CellInfo) => void
 </script>
 
 <script lang="ts">

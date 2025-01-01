@@ -18,7 +18,7 @@ export class FancyDrawer {
   private readonly fancy: Fancy[]
 
   constructor (numFancy = BG_NUM) {
-    this.fancy = new Array(numFancy).fill(undefined).map((_) => new Fancy())
+    this.fancy = new Array(numFancy).fill(undefined).map(() => new Fancy())
   }
 
   update (dt: number): void {
