@@ -10,9 +10,6 @@ const entry = {}
 for (let e of fg.sync('*.ts', { cwd: path.resolve(__dirname, 'scripts') })) {
   entry[e.slice(0, -3)] = './scripts/' + e
 }
-for (let e of fg.sync('*.scss', { cwd: path.resolve(__dirname, 'styles') })) {
-  entry[e.slice(0, -5) + '.css'] = './styles/' + e
-}
 
 module.exports = {
   mode: devMode ? 'development' : 'production',
@@ -50,33 +47,12 @@ module.exports = {
         }
       },
       {
-        test: /\.s[ac]ss$/i,
-        use: [
-          rspack.CssExtractRspackPlugin.loader,
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              api: 'modern-compiler',
-              implementation: require.resolve('sass-embedded'),
-            },
-          },
-        ],
-      },
-      {
         test: /\.css$/i,
-        use: [
-          rspack.CssExtractRspackPlugin.loader,
-          'css-loader',
-        ],
+        use: 'css-loader',
       },
       {
         test: /\.txt$/,
-        type: 'asset/source'
-      },
-      {
-        test: /\.png$/,
-        type: 'asset/resource'
+        type: 'asset/source',
       },
     ],
   },
@@ -98,32 +74,27 @@ module.exports = {
       generate (_seed, _files, entrypoints) {
         const js = {}
         const css = {}
+        const unknown = {}
 
         for (const [k, files] of Object.entries(entrypoints)) {
-          const entryJS = []
-          const entryCSS = []
-
           for (const f of files) {
             if (f.endsWith('.js')) {
-              entryJS.push(f.slice(0, -3))
+              (js[k] ??= []).push(f.slice(0, -3))
+            } else if (f.endsWith('.css')) {
+              (css[k] ??= []).push(f.slice(0, -4))
             } else {
-              entryCSS.push(f)
+              (unknown[k] ??= []).push(f)
             }
           }
-
-          if (entryJS.length) js[k] = entryJS
-          if (entryCSS.length) css[k] = entryCSS
         }
 
         return {
           js,
           css,
+          unknown
         }
       },
       serialize: JSON.stringify,
-    }),
-    new rspack.CssExtractRspackPlugin({
-      filename: '[name]', // [name] already has .css suffix
     }),
     new rspack.ProgressPlugin(),
   ],
