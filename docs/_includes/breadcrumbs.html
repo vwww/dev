@@ -3,9 +3,9 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{base}}">Home</a></li>
     {%- for b in site.data.breadcrumbs %}
-      {%- unless b.exclude contains page.path %}
+      {%- unless b.prefix == page.url %}
         {%- assign prefix_len = b.prefix | size -%}
-        {%- assign page_prefix = page.url | slice: 0, prefix_len -%}
+        {%- assign page_prefix = page_url | slice: 0, prefix_len -%}
         {%- if b.prefix == page_prefix %}
         <li class="breadcrumb-item">
           <a href="{{base}}{{ b.prefix }}">{{ b.name }}</a>
@@ -13,6 +13,6 @@
         {%- endif %}
       {%- endunless %}
     {%- endfor %}
-    <li class="breadcrumb-item active" aria-current="page">{{ page.title | default: '[unnamed page]' }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ title | default: '[unnamed page]' }}</li>
   </ol>
 </nav>

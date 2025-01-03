@@ -18,7 +18,7 @@ for (let e of fg.sync('*.scss', { cwd: path.resolve(__dirname, 'styles') })) {
 const config = {
   minify: !devMode,
   entryPoints: entryCSS,
-  outdir: 'docs/assets/dist',
+  outdir: 'docs/pass/assets/dist',
   bundle: true,
   loader: { '.png': 'file', '.svg': 'file' },
   plugins: [

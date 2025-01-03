@@ -15,10 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.3
-      - run: bundle install
       - run: npm ci
       - run: npm run build
       - name: Deploy

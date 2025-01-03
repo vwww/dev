@@ -1,0 +1,54 @@
+---
+title: Blog
+date: "2009-03-01 09:00:00 -0700"
+mdate: 2019-09-30 20:12:00 -0600
+pagination:
+  data: collections.posts
+  size: 8
+  generatePageOnEmptyData: true
+permalink: "/blog/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber | plus: 1 }}/{% endif %}"
+---
+{%- if pagination.pageNumber == 0 %}
+<div class="alert alert-warning" role="alert">
+	These blog posts will eventually be integrated with the rest of the site.
+	With infrequent updates, the <a href="atom.xml">Atom 1.0</a> and <a href="rss.xml">RSS 2.0</a> feeds are less useful.
+	My <a href="software">list of software tools</a> from 2013 is becoming increasingly outdated.
+</div>
+
+<form action="https://encrypted.google.com/search" method="get">
+	<input type="hidden" name="sitesearch" value="victorz.ca/blog">
+	<div class="input-group mb-3">
+		<span class="input-group-text">Search for</span>
+		<input type="text" name="q" class="form-control" placeholder="all of these keywords">
+		<input type="text" name="as_oq" class="form-control" placeholder="any of these keywords">
+		<input type="text" name="as_eq" class="form-control" placeholder="none of these keywords">
+		<button class="btn btn-outline-secondary" type="submit">Go!</button>
+	</div>
+</form>
+{%- endif %}
+
+{%- include blog-header.html -%}
+
+{%- include blog-pagination.html -%}
+
+{%- assign posts_by_year = collections.posts | group_by_exp: 'post', 'post.date | date: "%Y"' -%}
+
+{%- for post in pagination.items %}
+<div class="card mb-3">
+	<div class="card-body">
+		<h5 class="card-title"><a href="{{ post.url | remove_last: '.html' }}">{{ post.data.title }}</a></h5>
+		<h6 class="card-subtitle mb-2 text-muted">
+			{%- assign post_year = post.date | date:"%Y" -%}
+			{%- assign posts_same_year = posts_by_year | where: 'name', post_year | first -%}
+			{%- assign read_min = post.content | number_of_words | plus:90 | plus:125 | divided_by:250, true -%}
+			{{ post.date | date: "%Y %b %e %I:%M %p %Z" }} | {% include blog-tags.html tags=post.data.tags categories=post.data.categories year=post_year year_count=posts_same_year.items.size %} | Estimated {{read_min}}-min read
+		</h6>
+		{{ post.content | excerpt }}
+		{%- if post.content | has_excerpt %}
+		<a class="card-link" href="{{ post.url | remove_last: '.html' }}">Read more&hellip;</a>
+		{%- endif %}
+	</div>
+</div>
+{%- endfor %}
+
+{%- include blog-pagination.html -%}

@@ -1,0 +1,42 @@
+---
+title: Tags
+entry: blog_tag_cloud
+---
+{%- include blog-header.html -%}
+
+{%- capture tags_sorted %}{% for tag in collections.postsByTag %}{{ tag[0] }}{% unless forloop.last %},{% endunless %}{% endfor %}{% endcapture -%}
+{%- assign tags_sorted = tags_sorted | split: ',' | sort -%}
+
+<div class="tag-cloud mb-4">
+	{%- for tag in tags_sorted %}
+	<a href="#{{ tag }}" class="badge text-bg-secondary">{{ tag }} <sup>{{ collections.postsByTag[tag].size }}</sup></a>
+	{%- endfor %}
+</div>
+
+{%- assign posts_by_year = collections.posts | group_by_exp: 'post', 'post.date | date: "%Y"' -%}
+
+{%- assign tags_by_size = collections.postsByTag | entries | group_by_exp: 'tag', 'tag[1].size' | sort: 'name' | reverse -%}
+{%- for tags_with_size in tags_by_size %}
+{%- for tag in tags_with_size.items %}
+{%- assign tag_name = tag[0] -%}
+<div id="{{ tag_name }}" class="card mb-3">
+	<div class="card-header">
+		{{ tag_name }} <sup>{{ tags_with_size.name }}</sup>
+	</div>
+	<ul class="list-group list-group-flush">
+		{%- for post in tag[1] %}
+		{%- assign post_year = post.date | date:"%Y" -%}
+		{%- assign posts_same_year = posts_by_year | where: 'name', post_year | first -%}
+		<li class="list-group-item">
+			<h5 class="card-title"><a href="{{ post.url | remove_last: '.html' }}">{{ post.data.title }}</a></h5>
+			<h6 class="card-subtitle mb-2 text-muted">
+				<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y %b %e" }}</time>
+				|
+				{% include blog-tags.html tags=post.data.tags categories=post.data.categories tag=tag_name year=post_year year_count=posts_same_year.items.size %}
+			</h6>
+		</li>
+		{%- endfor %}
+	</ul>
+</div>
+{%- endfor %}
+{%- endfor %}

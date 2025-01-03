@@ -2,7 +2,8 @@
 layout: pages
 ---
 {%- assign post_year = page.date | date: "%Y" -%}
-{%- assign year_count = site.posts | group_by_exp: 'p', 'p.date | date: "%Y"' | where: 'name', post_year | first | size -%}
-<p>{{ page.date | date: "%Y %b %e %I:%M %p %Z" }} | {% include blog-tags.html tags=page.tags categories=page.categories year=post_year year_count=year_count %}</p>
+{%- assign posts_same_year = collections.posts | group_by_exp: 'p', 'p.date | date: "%Y"' | where: 'name', post_year | first -%}
+{%- assign year_count = posts_same_year.items | size -%}
+<p>{{ page.date | date: "%Y %b %e %I:%M %p %Z" }} | {% include blog-tags.html tags=tags categories=categories year=post_year year_count=year_count %}</p>
 
 {{ content }}

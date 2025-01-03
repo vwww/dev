@@ -1,4 +1,4 @@
-{%- if page.page == 'base' %}
+{%- if view == 'base' %}
   {%- assign show_all = true -%}
 {%- else %}
   {%- assign show_all = false -%}
@@ -45,12 +45,12 @@
   {%- assign e = env[0] -%}
   <div class="col-lg-6 d-flex align-items-center">
     <div class="flex-shrink-0">
-      <a href="{% include misc-3d-_url_img p=page.page k=e %}">
-        <img src="{% include misc-3d-_url_img p=page.page t=1 k=e %}" width="60" height="60" alt="">
+      <a href="{% include misc-3d-_url_img p=view k=e %}">
+        <img src="{% include misc-3d-_url_img p=view t=1 k=e %}" width="60" height="60" alt="">
       </a>
     </div>
     <div class="flex-grow-1 ms-3">
-      <h5><a href="{% include misc-3d-_url_img p=page.page k=e %}">{{ env[1].name }}</a> <small>({{ env[0] }})</small></h5>
+      <h5><a href="{% include misc-3d-_url_img p=view k=e %}">{{ env[1].name }}</a> <small>({{ env[0] }})</small></h5>
       <p>{{ env[1].desc }}</p>
     </div>
   </div>

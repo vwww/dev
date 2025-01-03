@@ -1,0 +1,8 @@
+mirrors:
+  - [victorz.ca, https://victorz.ca]
+  - [vwww.github.io, https://vwww.github.io]
+edit_prefix: https://github.com/vwww/dev/blob/main/docs/
+
+format_date: "%A, %B %d, %Y"
+format_time: "%I:%M %p %Z"
+format_time_min: "%I:%M:%S %p %Z"

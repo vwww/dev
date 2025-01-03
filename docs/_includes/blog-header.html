@@ -2,8 +2,8 @@
 
 <div class="btn-group mb-3 d-flex">
 	<span class="input-group-text">View</span>
-	{%- assign p = page.url | slice: 0, 11 -%}
-	<a class="btn btn-outline-primary w-100{% if page.url == '/blog/' or p == '/blog/page/' %} active{% endif %}" href="{{base}}/blog">Excerpts by Pages</a>
-	<a class="btn btn-outline-primary w-100{% if page.url == '/blog/archives' %} active{% endif %}" href="{{base}}/blog/archives">Titles by Year</a>
-	<a class="btn btn-outline-primary w-100{% if page.url == '/blog/tags' %} active{% endif %}" href="{{base}}/blog/tags">Titles by Tags</a>
+	{%- assign p = page_url | slice: 0, 11 -%}
+	<a class="btn btn-outline-primary w-100{% if page_url == '/blog/' or p == '/blog/page/' %} active{% endif %}" href="{{base}}/blog">Excerpts by Pages</a>
+	<a class="btn btn-outline-primary w-100{% if page_url == '/blog/archives' %} active{% endif %}" href="{{base}}/blog/archives">Titles by Year</a>
+	<a class="btn btn-outline-primary w-100{% if page_url == '/blog/tags' %} active{% endif %}" href="{{base}}/blog/tags">Titles by Tags</a>
 </div>

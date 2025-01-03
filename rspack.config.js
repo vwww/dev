@@ -15,7 +15,7 @@ module.exports = {
   mode: devMode ? 'development' : 'production',
   entry,
   output: {
-    path: path.resolve(__dirname, 'docs/assets/dist'),
+    path: path.resolve(__dirname, 'docs/pass/assets/dist'),
   },
   module: {
     rules: [
@@ -70,7 +70,7 @@ module.exports = {
   devtool: devMode ? 'source-map' : false,
   plugins: [
     new RspackManifestPlugin({
-      fileName: path.resolve(__dirname, 'docs/_data/manifest.json'),
+      fileName: path.resolve(__dirname, 'docs/_data/site/data/manifest.json'),
       generate (_seed, _files, entrypoints) {
         const js = {}
         const css = {}

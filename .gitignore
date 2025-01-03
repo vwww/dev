@@ -1,15 +1,7 @@
-#################### Webpack Half-Build ####################
-docs/assets/dist
-docs/_data/manifest.json
-
-#################### Jekyll ####################
+#################### Site Build ####################
+docs/pass/assets/dist
+docs/_data/site/data/manifest.json
 docs/_site
-docs/.sass-cache/
-docs/.jekyll-cache/
-docs/.jekyll-metadata
-
-#################### SASS ####################
-.sass-cache
 
 #################### NPM ####################
 # Logs

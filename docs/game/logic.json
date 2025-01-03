@@ -1,4 +1,0 @@
----
-layout: ~
----
-{{ site.data.logic | jsonify }}
