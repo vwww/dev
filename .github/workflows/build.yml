@@ -24,11 +24,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Persist 11ty .cache
-        uses: actions/cache@v3
-        with:
-          path: ./docs/.cache
-          key: ${{ runner.os }}-11ty
       - run: npm ci
       - run: npm run build
       - name: Deploy
