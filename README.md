@@ -10,6 +10,10 @@ In 2015, it was recreated with Bootstrap. Old features were reimplemented, while
 
 Since 2019, scripts are also being ported to TypeScript and Svelte.
 
+In 2024 and 2025, migrating from sass to sass-embedded significantly sped up build times, while migrating from webpack to rspack gave a slight improvement.
+esbuild is faster than rspack but does not support `optimization.splitChunks`, resulting in much larger total JavaScript bundle sizes, but it is useful for faster CSS compilation.
+Migrating from Jekyll to Eleventy sped up builds further and removed the dependency on Ruby.
+
 ## Amnesia
 
 _History is not retained!_
@@ -22,8 +26,7 @@ Unlike code for other projects, history is not as important for this website. Th
 
 Dependencies can be updated:
 
-- `Gemfile`: `bundle update`
 - `package.json`: `npm up --save`
 - Vendored JS packages
   - `simperium`: `v0.1` (last updated: 2023-01-30)
-  - `PlayerIOClient`: `v3.9.0` from `PlayerIO SDK.s2fG8FIPhRjoY9VN8wEadg.zip` (last updated: 2024-05-19)
+  - `PlayerIOClient`: `v3.9.0` from `PlayerIO SDK.s2fG8FIPhRjoY9VN8wEadg.zip` (last updated: 2025-01-03)
