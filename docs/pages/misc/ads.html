@@ -20,13 +20,9 @@ date: "2012-03-20 09:00:00 -0700"
       <td colspan="3"><a href="{{ site.data.ads.link }}">{{ site.data.ads.text }}</a></td>
     </tr>
     {%- for ad in site.data.ads.images %}
-    {%- if ad.file %}
-      {%- assign file = ad.file -%}
-    {%- else %}
-      {%- capture file %}{{ ad.w }}-{{ ad.h }}{% endcapture -%}
-    {%- endif %}
-    {%- assign adl = site.data.ads.prefix | append: file | append: site.data.ads.suffix -%}
-    {%- capture adf %}<a href="{{ adl }}"><img src="{{ adl }}" alt="{{ site.data.ads.alt }}" width="{{ ad.w }}" height="{{ ad.h }}" /></a>{% endcapture -%}
+    {%- set file = ad.file or ad.w + ' ' + ad.h %}
+    {%- set adl = site.data.ads.prefix + file + site.data.ads.suffix -%}
+    {%- set adf %}<a href="{{ adl }}"><img src="{{ adl }}" alt="{{ site.data.ads.alt }}" width="{{ ad.w }}" height="{{ ad.h }}" /></a>{% endset -%}
     <tr>
       <td>{{ ad.name }} ({{ ad.w }}x{{ ad.h }})</td>
       <td><input type="text" class="form-control" value="{{ adl | escape }}" /></td>

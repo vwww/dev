@@ -4,10 +4,11 @@ date: "2017-05-16 19:55:19 -0600"
 mdate: 2023-02-18 20:09:42 -0700
 entry: app_game_mp_rps_rules
 ---
-{% include game-tab.html game='rps' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'rps') }}
 
 <h1>Calculator</h1>
-{% include app.html %}
+{% include 'app.html' %}
 
 <h1>Gameplay</h1>
 <p>New players start with 0 (battle, round) (wins, losses, ties), score, and streak.</p>

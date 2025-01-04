@@ -3,7 +3,8 @@ title: Rules for Morra
 date: "2020-01-12 14:48:17 -0700"
 mdate: 2020-09-22 19:48:25 -0600
 ---
-{% include game-tab.html game='morra' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'morra') }}
 
 <h1>Gameplay</h1>
 <p>Each round, each player chooses a number.</p>

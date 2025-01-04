@@ -3,7 +3,8 @@ title: Rules for Discard
 date: "2020-02-02 14:11:00 -0700"
 mdate: 2020-10-18 20:13:25 -0600
 ---
-{% include game-tab.html game='discard' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'discard') }}
 
 <h1>Gameplay</h1>
 

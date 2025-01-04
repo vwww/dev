@@ -11,39 +11,71 @@ module.exports = function (eleventyConfig) {
 
 	eleventyConfig.addGlobalData('layout', 'pages')
 	eleventyConfig.addGlobalData('permalink', '/{{ page.filePathStem }}.{{ page.outputFileExtension }}')
-	eleventyConfig.addGlobalData('eleventyComputed.page_url', () => {
-		return (data) => data.page.url.replace(/\.html$/, '')
-	})
-	eleventyConfig.addGlobalData('eleventyComputed.page_path', () => {
-		return (data) => data.page.inputPath.slice(data.eleventy.directories.input.length)
-	})
 
+	const DATE_OVERRIDE = {
+		'xmlschema':
+			"yyyy-MM-dd'T'HH:mm:ssZZ",
+		'jekyll':
+			'yyyy-MM-dd HH:mm:ss ZZZ',
+	}
+	eleventyConfig.addNunjucksFilter('date', (date, format) => {
+		date = date == 'now' ? new Date() : new Date(date)
+		format = DATE_OVERRIDE[format] ?? format
+		return DateTime.fromJSDate(date).toFormat(format)
+	})
+	eleventyConfig.addFilter('starts_with', (s, search, pos) => s.startsWith(search, pos))
+	eleventyConfig.addFilter('entries', Object.entries)
+	eleventyConfig.addNunjucksFilter('to_array', (val) => Array.isArray(val) ? val : [val])
 	eleventyConfig.addFilter('excerpt', (content) => content.split('<!--more-->')[0])
 	eleventyConfig.addFilter('has_excerpt', (content) => content.includes('<!--more-->'))
-	eleventyConfig.addFilter('entries', Object.entries)
+	eleventyConfig.addFilter('get_3d', (arr, key) => arr.find((v) => v[0] == key)[1])
+
+	eleventyConfig.setNunjucksEnvironmentOptions({
+		throwOnUndefined: true,
+		autoescape: false,
+	})
 
 	// eleventyConfig.addCollection('code', (c) => c.getFilteredByGlob('_code/**'))
 	// eleventyConfig.addCollection('go', (c) => c.getFilteredByGlob('_go/**'))
 
-	eleventyConfig.addCollection('posts', (c) => c.getFilteredByGlob('pages/_posts/**').reverse())
-	eleventyConfig.addCollection('postsByTag', (c) => {
+	function parsePosts (c, initialValue, postCallback, postProcess) {
 		const posts = c.getFilteredByGlob('pages/_posts/**').reverse()
-		const tagToPosts = {}
+		if (!(initialValue && postCallback)) return posts
+
 		for (const post of posts) {
-			for (const tag of post.data.tags ?? []) {
+			postCallback(post, initialValue)
+		}
+		return postProcess ? postProcess(initialValue) : initialValue
+	}
+	eleventyConfig.addCollection('posts', (c) => parsePosts(c))
+	eleventyConfig.addCollection('postsByTag', (c) => parsePosts(c, {}, (post, tagToPosts) => {
+			for (const tag of post.data.tags) {
 				(tagToPosts[tag] ??= []).push(post)
 			}
-		}
-		return tagToPosts
-	})
-	eleventyConfig.addCollection('postsByYear', (c) => {
-		const posts = c.getFilteredByGlob('pages/_posts/**').reverse()
-		const yearToPosts = {}
-		for (const post of posts) {
-			(yearToPosts[post.date.getFullYear()] ??= []).push(post)
-		}
-		return yearToPosts
-	})
+		})
+	)
+	eleventyConfig.addCollection('postTagsByName', (c) => parsePosts(c, new Set(),
+			(post, tags) => {
+				for (const tag of post.data.tags) {
+					tags.add(tag)
+				}
+			},
+			(tags) => Array.from(tags).sort()
+		)
+	)
+	eleventyConfig.addCollection('postTagsBySize', (c) => parsePosts(c, [],
+			(post, tagCount) => {
+				for (const tag of post.data.tags) {
+					tagCount[tag] = (tagCount[tag] ?? 0) + 1
+				}
+			},
+			(tagCount) => Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map((entry) => entry[0])
+		)
+	)
+	eleventyConfig.addCollection('postsByYear', (c) => parsePosts(c, {},
+			(post, yearToPosts) => (yearToPosts[post.date.getFullYear()] ??= []).push(post)
+		)
+	)
 
 	eleventyConfig.addDataExtension('yml,yaml', (contents) => yaml.load(contents))
 
@@ -64,16 +96,8 @@ module.exports = function (eleventyConfig) {
 		.use(markdownItAnchor)
 	)
 
-	eleventyConfig.setLiquidOptions({
-		jekyllInclude: true,
-		// jekyllWhere: true,
-		// timezoneOffset: 0,
-		preserveTimezones: true,
-		dateFormat: '%Y-%m-%d %H:%M:%S %z',
-	})
-
 	// handle Jekyll date
-	eleventyConfig.addDateParsing((d) => typeof d == 'string' && (d = DateTime.fromFormat(d, 'yyyy-MM-dd hh:mm:ss ZZZ')).isValid && d.toJSDate())
+	eleventyConfig.addDateParsing((d) => typeof d == 'string' && (d = DateTime.fromFormat(d, DATE_OVERRIDE.jekyll)).isValid && d.toJSDate())
 }
 
 module.exports.config = {
@@ -83,4 +107,6 @@ module.exports.config = {
 		data: '../_data',
 		layouts: '../_layouts',
 	},
+	markdownTemplateEngine: 'njk',
+	htmlTemplateEngine: 'njk',
 }

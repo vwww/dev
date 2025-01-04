@@ -2,28 +2,29 @@
 title: Archives
 entry: blog_tag_cloud
 ---
-{%- include blog-header.html -%}
+{%- import 'blog.html' as blog -%}
 
-{%- assign posts_by_year = collections.posts | reverse | group_by_exp: 'post', 'post.date | date: "%Y"' | reverse -%}
+{{ blog.header(base, page_url) }}
+
 <div class="tag-cloud mb-4">
-	{%- for group in posts_by_year %}
-	<a href="#{{ group.name }}" class="badge text-bg-secondary">{{ group.name }} <sup>{{ group.items.size }}</sup></a>
+	{%- for year, group in collections.postsByYear | entries | reverse %}
+	<a href="#{{ year }}" class="badge text-bg-secondary">{{ year }} <sup>{{ group.length }}</sup></a>
 	{%- endfor %}
 </div>
 
-{%- for group in posts_by_year %}
-<div id="{{ group.name }}" class="card mb-3">
+{%- for year, group in collections.postsByYear | entries | reverse %}
+<div id="{{ year }}" class="card mb-3">
 	<div class="card-header">
-		{{ group.name }} <sup>{{ group.items.size }}</sup>
+		{{ year }} <sup>{{ group.length }}</sup>
 	</div>
 	<ul class="list-group list-group-flush">
-		{%- for post in group.items %}
+		{%- for post in group %}
 		<li class="list-group-item">
-			<h5 class="card-title"><a href="{{ post.url | remove_last: '.html' }}">{{ post.data.title }}</a></h5>
+			<h5 class="card-title"><a href="{{ post.data.page_url }}">{{ post.data.title }}</a></h5>
 			<h6 class="card-subtitle mb-2 text-muted">
-				<time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %e" }}</time>
+				<time datetime="{{ post.date | date('xmlschema') }}">{{ post.date | date(site.format_blog_no_year_dtime) }}</time>
 				|
-				{% include blog-tags.html tags=post.data.tags categories=post.data.categories year=group.name year_count=group.items.size is_year=1 %}
+				{{ blog.tags(base, collections.postsByTag, tags=post.data.tags, categories=post.data.categories, year=year, year_count=group.length, is_year=true) }}
 			</h6>
 		</li>
 		{%- endfor %}

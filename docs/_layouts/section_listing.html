@@ -1,15 +1,14 @@
 ---
 layout: pages
 ---
-{%- include _init.html -%}
-{%- for s in sections %}
-  {%- unless forloop.first %}
+{%- for s in sections | to_array %}
+  {%- if not loop.first %}
   <hr>
-  {%- endunless %}
+  {%- endif %}
   {%- for section in site.data.nav[s] %}
-    {%- unless forloop.first %}
+    {%- if not loop.first %}
       <hr>
-    {%- endunless %}
+    {%- endif %}
     {%- if section.name %}
       <h2>{{ section.name }}</h2>
     {%- endif %}
@@ -32,7 +31,7 @@ layout: pages
               <a href="{{ item.href_ext }}" target="_blank" class="btn btn-info">Go</a>
             {%- endif %}
             {%- for extra in item.hrefs %}
-              <a href="{% unless extra.ext %}{{ base }}/{% endunless %}{{ extra.href }}" {%- if extra.ext %} target="_blank"{% endif %} class="btn btn-{{ extra.class | default: 'info' }}">{{ extra.name | default: 'Go' }}</a>
+              <a href="{% if not extra.ext %}{{ base }}/{% endif %}{{ extra.href }}" {%- if extra.ext %} target="_blank"{% endif %} class="btn btn-{{ extra.class | default('info') }}">{{ extra.name | default('Go') }}</a>
             {%- endfor -%}
           </div>
         </div>

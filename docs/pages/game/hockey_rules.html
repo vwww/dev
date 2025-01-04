@@ -2,7 +2,8 @@
 title: Rules for Hockey
 date: "2021-01-28 18:04:28 -0700"
 ---
-{% include game-tab.html game='hockey' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'hockey') }}
 
 <h1>Gameplay</h1>
 <p>Make the <span class="badge text-bg-dark">puck</span> enter the opponent team's <span class="badge text-bg-success">goal</span>!</p>

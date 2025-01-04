@@ -3,7 +3,8 @@ title: Rules for Blackjack
 date: "2020-10-03 15:24:00 -0600"
 mdate: 2021-02-21 11:13:41 -0700
 ---
-{% include game-tab.html game='blackjack' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'blackjack') }}
 
 <h1>Gameplay</h1>
 <p>Blackjack is a popular comparing card game.</p>

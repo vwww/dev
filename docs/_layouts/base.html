@@ -1,4 +1,3 @@
-{%- include _init.html -%}
 <!doctype html>
 <html lang="en" class="h-100">
   <head>
@@ -21,14 +20,14 @@
 
     <link rel="canonical" href="{{ site.mirrors[0][1] }}{{ page_url }}">
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{assets}}{{ favicon | default: 'victorz/favicon.ico' }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{assets}}{{ favicon | default('victorz/favicon.ico') }}">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" id="theme-switcher" href="{{assets}}dist/bootstrap_theme.css">
     <meta name="theme-switcher" id="theme-bootstrap" content="{{assets}}dist/bootstrap.css">
     <meta name="theme-switcher" id="theme-bootstrap2" content="{{assets}}dist/bootstrap_theme.css">
-    {%- for theme in site.data.themes.bootswatch %}
-    <meta name="theme-switcher" id="theme-bootswatch-{{ theme[0] }}" content="{{assets}}dist/bootswatch_{{ theme[0] }}.css">
+    {%- for theme, _ in site.data.themes.bootswatch %}
+    <meta name="theme-switcher" id="theme-bootswatch-{{ theme }}" content="{{assets}}dist/bootswatch_{{ theme }}.css">
     {%- endfor %}
     <link rel="stylesheet" href="{{assets}}dist/global.css">
     {%- for style in extra_css %}
@@ -42,7 +41,7 @@
     <![endif]-->
   </head>
   <body class="d-flex flex-column h-100">
-    {% include navbar.html %}
+    {% include 'navbar.html' %}
 
     <main class="flex-shrink-0 my-3">
       <div class="container">
@@ -53,21 +52,21 @@
     <footer class="footer mt-auto py-3 text-bg-light">
       <div class="container">
         <div class="mb-2">
-          &copy; 2005-<span id="copyyear">{{ 'now' | date: "%Y" }}</span> Victor Zheng. All rights reserved.
-          {%- unless post %}
+          &copy; 2005-<span id="copyyear">{{ 'now' | date('y') }}</span> Victor Zheng. All rights reserved.
+          {%- if not post %}
           {%- if date %}
-            <div class="badge-group me-2" title="This page was created on {{ date | date: site.format_date }} at {{ date | date: site.format_time }}">
+            <div class="badge-group me-2" title="This page was created on {{ date | date(site.format_date) }} at {{ date | date(site.format_time) }}">
               <span class="badge text-bg-secondary">Created</span>
-              <span class="timeago badge text-bg-primary" title="{{ date | date }}"></span>
+              <span class="timeago badge text-bg-primary" title="{{ date | date('jekyll') }}"></span>
             </div>
           {%- endif %}
           {%- if mdate %}
-            <div class="badge-group me-2" title="This page was modified on {{ mdate | date: site.format_date }} at {{ mdate | date: site.format_time }}">
+            <div class="badge-group me-2" title="This page was modified on {{ mdate | date(site.format_date) }} at {{ mdate | date(site.format_time) }}">
               <span class="badge text-bg-secondary">Modified</span>
-              <span class="timeago badge text-bg-primary" title="{{ mdate | date }}"></span>
+              <span class="timeago badge text-bg-primary" title="{{ mdate | date('jekyll') }}"></span>
             </div>
           {%- endif %}
-          {%- endunless %}
+          {%- endif %}
         </div>
         <div>
           <script src="//d.victorz.ca/online.js?o=s"></script>
@@ -78,10 +77,10 @@
 
           <a href="https://jigsaw.w3.org/css-validator/check/referer" referrerpolicy="unsafe-url" class="badge text-bg-primary" title="This site uses CSS.">CSS</a>
 
-          <div class="badge-group me-2" title="This site was last regenerated on {{ 'now' | date: site.format_date }} at {{ 'now' | date: site.format_time }}">
+          <!--<div class="badge-group me-2" title="This site was last regenerated on {{ 'now' | date(site.format_date) }} at {{ 'now' | date(site.format_time) }}">
             <span class="badge text-bg-secondary">Regenerated</span>
-            <span class="timeago badge text-bg-primary" title="{{ 'now' | date }}"></span>
-          </div>
+            <span class="timeago badge text-bg-primary" title="{{ 'now' | date('jekyll') }}"></span>
+          </div>-->
 
           <div class="badge-group me-2" title="This is how long it has been since my site started to exist.">
             <span class="badge text-bg-dark">Site Age</span>
@@ -95,13 +94,12 @@
     {%- for file in site.data.manifest.js.global %}
       <script src="{{assets}}dist/{{ file }}.js"></script>
     {%- endfor %}
-    {%- for entry in entry %}
+    {%- for entry in entry | to_array %}
       {%- for file in site.data.manifest.js[entry] %}
       <script src="{{assets}}dist/{{ file }}.js"></script>
       {%- endfor %}
     {%- endfor %}
-    {%- assign page_url_prefix_blog = page.url | slice: 0, 6 %}
-    {%- if page_url_prefix_blog == '/blog/' %}
+    {%- if page.url | starts_with('/blog/') %}
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         tex2jax: {
@@ -114,6 +112,6 @@
     </script>
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     {%- endif %}
-    {% include _scripts.html %}
+    {% include '_scripts.html' %}
   </body>
 </html>

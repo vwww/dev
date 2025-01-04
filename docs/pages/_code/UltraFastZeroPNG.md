@@ -7,5 +7,5 @@ tags: C99, PNG, DEFLATE, zlib
 
 UltraFastZeroPNG.c - [raw](raw/UltraFastZeroPNG.c)
 ```c
-{% include ./raw/UltraFastZeroPNG.c %}
+{% include './raw/UltraFastZeroPNG.c' %}
 ```

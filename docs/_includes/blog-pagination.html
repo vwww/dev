@@ -1,7 +1,0 @@
-{% if pagination.href.previous or pagination.href.next %}
-<nav class="mb-4 text-center">
-	{% if pagination.href.previous %}<a href="{{pagination.href.previous}}" class="btn btn-outline-primary float-start">Prev</a>{% endif %}
-	<span>Page {{ pagination.pageNumber | plus: 1 }} of {{ pagination.pages.size }}</span>
-	{% if pagination.href.next %}<a href="{{pagination.href.next}}" class="btn btn-outline-primary float-end">Next</a>{% endif %}
-</nav>
-{% endif %}

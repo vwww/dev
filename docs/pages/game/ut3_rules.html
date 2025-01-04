@@ -3,7 +3,8 @@ title: Rules for Ultimate Tic-Tac-Toe
 date: "2020-01-12 16:28:00 -0700"
 mdate: 2020-10-20 19:18:15 -0600
 ---
-{% include game-tab.html game='ut3' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'ut3') }}
 
 <h1>Gameplay</h1>
 <p>Ultimate Tic-Tac-Toe is a more advanced version of the two-player board game Tic-Tac-Toe.</p>

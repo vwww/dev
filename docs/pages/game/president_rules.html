@@ -3,7 +3,8 @@ title: Rules for President
 date: "2020-01-12 15:49:00 -0700"
 mdate: 2021-02-23 20:47:00 -0700
 ---
-{% include game-tab.html game='president' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'president') }}
 
 <h1>Gameplay</h1>
 <p>

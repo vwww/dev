@@ -3,7 +3,8 @@ title: Rules for Cheat
 date: "2020-01-12 11:48:28 -0700"
 mdate: 2020-10-03 14:15:00 -0600
 ---
-{% include game-tab.html game='cheat' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'cheat') }}
 
 <h1>Gameplay</h1>
 <p>Cheat is a shedding card game, but players might be dishonest. The minimum player count is 2, but there must be at least 3 players to remove perfect information.</p>

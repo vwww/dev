@@ -1,7 +1,5 @@
-{%- capture github %}https://github.com/{{ old }}{% endcapture -%}
-{%- unless redirect -%}
-	{%- assign redirect = github -%}
-{%- endunless -%}
+{%- set github %}https://github.com/{{ old }}{% endset -%}
+{%- set redirect = redirect or github -%}
 <!DOCTYPE html>
 <html>
 	<head>

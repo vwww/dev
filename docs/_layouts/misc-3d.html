@@ -1,46 +1,63 @@
 ---
-layout: base
+layout: misc-3d-template
 ---
-{%- include _init.html -%}
+{%- from 'misc-3d.html' import url_img, url_page -%}
 
-{%- assign active_area = site.data.m3d.areas[area] -%}
-{%- assign active_page = active_area.pages | where: 0, view | last | last -%}
-{%- assign loc = base | append: '/misc/3d/' -%}
+{%- set active_area = site.data.m3d.areas[area] -%}
+{%- set active_page = active_area.pages | get_3d(view) -%}
+{%- set loc = base + '/misc/3d/' -%}
 
-{%- include breadcrumbs.html -%}
+{%- set show_all = view == 'base' -%}
 
-<div class="container row">
-  <!-- left content -->
-  <div class="col-12 col-sm-7 col-md-8 col-lg-9">
-  {%- if area == 'base' %}
-    {% include misc-3d-base.html active_page=active_page %}
+<div class="page-header">
+  <h1>
+  {%- if show_all %}
+    {{ active_area.name }}
   {%- else %}
-    {% include misc-3d-autodesk.html active_area=active_area active_page=active_page loc=loc %}
+	{{ active_page }} <small>({{ active_area.name }})</small>
   {%- endif %}
-  </div>
-
-  <!-- right nav -->
-  <div class="col-12 col-sm-5 col-md-4 col-lg-3">
-    <h2>Files</h2>
-    <div class="list-group mb-3">
-    {%- for a in site.data.m3d.areas %}
-      <a href="{{ loc }}{% if a[0] != 'base' %}{{ a[0] }}/{% endif %}"
-          class="list-group-item{% if a[0] == area %} active{% endif %}">
-        {{ a[1].name }}
-      </a>
-    {%- endfor %}
-    </div>
-
-    {%- assign total_pages = active_area.pages | size -%}
-    {%- if total_pages > 1 %}
-    <!-- Active Item -->
-    <h3>Views</h3>
-
-    <div class="list-group">
-    {%- for p in active_area.pages %}
-      <a href="{% include misc-3d-_url_page loc=loc %}" class="list-group-item{% if p[0] == view %} active{% endif %}">{{ p[1] }}</a>
-    {%- endfor %}
-    </div>
-    {%- endif %}
-  </div>
+  </h1>
+  <hr class="my-3">
 </div>
+
+{%- if show_all -%}
+
+<h3>Camera Selection</h3>
+<div class="row">
+{%- for b, p in active_area.pages %}
+  {%- if b != 'base' %}
+  <div class="col-lg-6 d-flex align-items-center">
+    <div class="flex-shrink-0">
+      <a href="{{ url_img(area, b) }}">
+        <img src="{{ url_img(area, b, 1) }}" width="60" height="60" alt="">
+      </a>
+    </div>
+    <div class="flex-grow-1 ms-3">
+      <h5><a href="{{ url_page(loc, area, b) }}">{{ p }}</a></h5>
+      <p>{{ p }}</p>
+    </div>
+  </div>
+  {%- endif %}
+{%- endfor %}
+</div>
+
+{%- else -%}
+
+<h3>Environments</h3>
+<div class="row">
+{%- for e, env in site.data.m3d.environments -%}
+  <div class="col-lg-6 d-flex align-items-center">
+    <div class="flex-shrink-0">
+      <a href="{{ url_img(area, view, 0, e) }}">
+        <img src="{{ url_img(area, view, 1, e) }}" width="60" height="60" alt="">
+      </a>
+    </div>
+    <div class="flex-grow-1 ms-3">
+      <h5><a href="{{ url_img(area, view, 0, e) }}">{{ env.name }}</a> <small>({{ e }})</small></h5>
+      <p>{{ env.desc }}</p>
+    </div>
+  </div>
+{%- endfor %}
+</div>
+
+{%- endif -%}

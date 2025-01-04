@@ -1,8 +1,10 @@
 ---
 layout: base
 ---
-{%- include breadcrumbs.html -%}
-{%- include ads.html a='main_head' -%}
+{%- from 'ads.html' import ad -%}
+
+{%- include 'breadcrumbs.html' -%}
+{{ ad('main_head') }}
 
 {%- if title %}
 <div class="page-header">
@@ -13,4 +15,4 @@ layout: base
 
 {{ content }}
 
-{%- include ads.html a='main_foot' -%}
+{{ ad('main_foot') }}

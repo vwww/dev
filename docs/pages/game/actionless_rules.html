@@ -3,7 +3,8 @@ title: Rules for Actionless
 date: "2020-01-12 11:06:12 -0700"
 mdate: 2020-09-22 19:48:25 -0600
 ---
-{% include game-tab.html game='actionless' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'actionless') }}
 
 <h1>Gameplay</h1>
 <p>Each round, players cannot choose to take any action that affects the gameplay.</p>

@@ -119,7 +119,7 @@ examples:
         keys: [/, =]
         disp: 0.25
 ---
-{% include app.html %}
+{% include 'app.html' %}
 
 <h2 class="my-3">Examples</h2>
 
@@ -134,14 +134,14 @@ examples:
   </thead>
   {%- for e in examples %}
   <tr>
-    <td{% if e.case.size > 1 %} rowspan="{{ e.case.size }}"{% endif %}>{{ e.name }}</td>
+    <td{% if e.case.length > 1 %} rowspan="{{ e.case.length }}"{% endif %}>{{ e.name }}</td>
   {%- for c in e.case %}
-  {%- unless forloop.first %}
+  {%- if not loop.first %}
   </tr>
   <tr>
-  {%- endunless %}
+  {%- endif %}
     <td>{{ c.name }}</td>
-    <td>{% for k in c.keys %}{% if k contains "" %}<kbd>{{ k }}</kbd>{% else %}{{ k }}{% endif %} {% endfor %}</td>
+    <td>{% for k in c.keys %}{% if k is string %}<kbd>{{ k }}</kbd>{% else %}{{ k }}{% endif %} {% endfor %}</td>
     <td>{{ c.disp }}</td>
   {%- endfor %}
   </tr>

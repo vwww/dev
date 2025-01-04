@@ -3,7 +3,8 @@ title: Rules for Tic-Tac-Toe
 date: "2020-01-12 15:51:39 -0700"
 mdate: 2020-10-20 19:18:15 -0600
 ---
-{% include game-tab.html game='t3_multi' %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 't3_multi') }}
 
 <h1>Gameplay</h1>
 <p>

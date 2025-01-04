@@ -4,7 +4,6 @@ date: "2012-02-25 11:44:00 -0700"
 category: Hacks
 tags: Hacks Gaming Web
 ---
-{% include _init.html %}
 I have recently found the site known as *Luminosity* through an online advertisement. It is <mark>a site that measures your brain's health through the use of games</mark>.
 
 This is a picture of my results:

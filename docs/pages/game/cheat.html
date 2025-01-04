@@ -3,5 +3,7 @@ title: Cheat
 # date: "2020-01-01 12:00:00 -0700" # replace when created
 entry: app_game_mp_cheat
 ---
-{% include game-tab.html game='cheat' %}
-{% include app.html %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'cheat') }}
+
+{% include 'app.html' %}

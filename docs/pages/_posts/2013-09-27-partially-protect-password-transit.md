@@ -4,7 +4,6 @@ date: "2013-09-27 19:39:00 -0700"
 category: Security
 tags: Security Web
 ---
-{% include _init.html %}
 <mark>**HTTP does not encrypt** any traffic</mark>. Any of the <mark>**internet routers** can see and log your traffic</mark>, and your passwords might be compromised if the server does nothing to alleviate this.
 
 On my arcade, my login form requires JavaScript to be more secure, but it is not perfectly secure.

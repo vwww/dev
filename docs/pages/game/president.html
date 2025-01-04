@@ -3,5 +3,7 @@ title: President
 # date: "2020-01-01 12:00:00 -0700" # replace when created
 entry: app_game_mp_president
 ---
-{% include game-tab.html game='president' %}
-{% include app.html %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'president') }}
+
+{% include 'app.html' %}

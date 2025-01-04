@@ -4,5 +4,7 @@ date: "2020-02-22 21:07:30 -0700"
 mdate: 2020-09-22 21:47:14 -0600
 entry: app_game_mp_rps
 ---
-{% include game-tab.html game='rps' %}
-{% include app.html %}
+{% import 'game.html' as game %}
+{{ game.tab(page_url, 'rps') }}
+
+{% include 'app.html' %}

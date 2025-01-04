@@ -3,7 +3,6 @@ layout: ~
 date: "2023-02-13 19:37:09 -0700"
 mdate: 2023-02-19 14:25:14 -0700
 ---
-{%- include _init.html -%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -98,7 +97,7 @@ mdate: 2023-02-19 14:25:14 -0700
 {%- for file in site.data.manifest.js.misc_ilf %}
 <script src="{{assets}}dist/{{ file }}.js"></script>
 {%- endfor %}
-{% include _scripts.html %}
+{% include '_scripts.html' %}
 </body>
 
 </html>

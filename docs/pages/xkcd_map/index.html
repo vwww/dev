@@ -3,7 +3,6 @@ layout: ~
 date: "2013-04-11 08:00:00 -0700"
 mdate: 2014-02-16 08:00:00 -0700
 ---
-{%- include _init.html -%}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -20,6 +19,6 @@ mdate: 2014-02-16 08:00:00 -0700
 		<script src="{{assets}}dist/{{ file }}.js"></script>
 		{%- endfor %}
 		<div id="autoclose"><script src="//d.victorz.ca/a/xkcd"></script></div>
-		{% include _scripts.html %}
+		{% include '_scripts.html' %}
 	</body>
 </html>

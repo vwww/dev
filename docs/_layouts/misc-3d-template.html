@@ -1,0 +1,40 @@
+---
+layout: base
+---
+{%- from 'misc-3d.html' import url_img, url_page -%}
+
+{%- set active_area = site.data.m3d.areas[area] -%}
+{%- set loc = base + '/misc/3d/' -%}
+
+{%- include 'breadcrumbs.html' -%}
+
+<div class="container row">
+  <!-- left content -->
+  <div class="col-12 col-sm-7 col-md-8 col-lg-9">
+    {{ content }}
+  </div>
+
+  <!-- right nav -->
+  <div class="col-12 col-sm-5 col-md-4 col-lg-3">
+    <h2>Files</h2>
+    <div class="list-group mb-3">
+    {%- for a, aInfo in site.data.m3d.areas %}
+      <a href="{{ loc }}{% if a != 'base' %}{{ a }}/{% endif %}"
+          class="list-group-item{% if a == area %} active{% endif %}">
+        {{ aInfo.name }}
+      </a>
+    {%- endfor %}
+    </div>
+
+    {%- if active_area.pages.length > 1 %}
+    <!-- Active Item -->
+    <h3>Views</h3>
+
+    <div class="list-group">
+    {%- for b, p in active_area.pages %}
+      <a href="{{ url_page(loc, area, b) }}" class="list-group-item{% if b == view %} active{% endif %}">{{ p }}</a>
+    {%- endfor %}
+    </div>
+    {%- endif %}
+  </div>
+</div>

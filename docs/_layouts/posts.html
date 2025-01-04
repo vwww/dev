@@ -1,9 +1,9 @@
 ---
 layout: pages
 ---
-{%- assign post_year = page.date | date: "%Y" -%}
-{%- assign posts_same_year = collections.posts | group_by_exp: 'p', 'p.date | date: "%Y"' | where: 'name', post_year | first -%}
-{%- assign year_count = posts_same_year.items | size -%}
-<p>{{ page.date | date: "%Y %b %e %I:%M %p %Z" }} | {% include blog-tags.html tags=tags categories=categories year=post_year year_count=year_count %}</p>
+{%- import 'blog.html' as blog -%}
+{%- set post_year = page.date.getFullYear() -%}
+{%- set year_count = collections.postsByYear[post_year].length -%}
+<p>{{ page.date | date(site.format_blog_datetime) }} | {{ blog.tags(base, collections.postsByTag, tags, categories, post_year, year_count) }}</p>
 
 {{ content }}
