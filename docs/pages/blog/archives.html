@@ -6,13 +6,15 @@ entry: blog_tag_cloud
 
 {{ blog.header(base, page_url) }}
 
+{%- set postsByYear = collections.postsByYear | entries | reverse -%}
+
 <div class="tag-cloud mb-4">
-	{%- for year, group in collections.postsByYear | entries | reverse %}
+	{%- for year, group in postsByYear %}
 	<a href="#{{ year }}" class="badge text-bg-secondary">{{ year }} <sup>{{ group.length }}</sup></a>
 	{%- endfor %}
 </div>
 
-{%- for year, group in collections.postsByYear | entries | reverse %}
+{%- for year, group in postsByYear %}
 <div id="{{ year }}" class="card mb-3">
 	<div class="card-header">
 		{{ year }} <sup>{{ group.length }}</sup>
@@ -24,7 +26,7 @@ entry: blog_tag_cloud
 			<h6 class="card-subtitle mb-2 text-muted">
 				<time datetime="{{ post.date | date('xmlschema') }}">{{ post.date | date(site.format_blog_no_year_dtime) }}</time>
 				|
-				{{ blog.tags(base, collections.postsByTag, tags=post.data.tags, categories=post.data.categories, year=year, year_count=group.length, is_year=true) }}
+				{{ blog.tags(base, collections.postsByTag, tags=post.data.blog_tags, categories=post.data.categories, year=year, year_count=group.length, is_year=true) }}
 			</h6>
 		</li>
 		{%- endfor %}

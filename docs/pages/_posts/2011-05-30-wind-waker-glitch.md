@@ -2,7 +2,7 @@
 title: Wind Waker Glitch *updated*
 date: "2011-05-30 18:23:00 -0700"
 category: Gaming
-tags: Gaming Hacks Nintendo Nintendo-GC Nintendo-Wii
+blog_tags: Gaming Hacks Nintendo Nintendo-GC Nintendo-Wii
 ---
 I used some cheats on the Wind Waker with my Wii, but only to be reflected with this glitch. <mark>When I have to unlock the Earth Temple, I already have the Earth God's Lyric</mark>. As a result, <mark>going to Headstone Island and trying to "learn" the song fails</mark>. Using another cheat to "forget" the song, I go "learn" it again the way I am supposed to. Then I have to go find <mark>Medli, but she somehow disappeared</mark> from the location she should be at.
 

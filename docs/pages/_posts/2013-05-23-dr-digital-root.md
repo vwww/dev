@@ -2,7 +2,7 @@
 title: Digital Roots
 date: "2013-05-23 17:56:00 -0700"
 categories: Math Programming
-tags: Math Programming PHP Python
+blog_tags: Math Programming PHP Python
 ---
 What <mark>happens to the digital root</mark> as the numbers increase?
 

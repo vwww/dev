@@ -2,7 +2,7 @@
 title: Luminosity Hacks
 date: "2012-02-25 11:44:00 -0700"
 category: Hacks
-tags: Hacks Gaming Web
+blog_tags: Hacks Gaming Web
 ---
 I have recently found the site known as *Luminosity* through an online advertisement. It is <mark>a site that measures your brain's health through the use of games</mark>.
 

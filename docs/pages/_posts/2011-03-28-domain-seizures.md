@@ -2,7 +2,7 @@
 title: Domain Seizures
 date: "2011-03-28 11:27:00 -0700"
 category: Programming
-tags: DNS Domains Programming Web
+blog_tags: DNS Domains Programming Web
 ---
 I have noticed that <mark>seized domains all have one thing in common; their nameservers</mark> are:
 

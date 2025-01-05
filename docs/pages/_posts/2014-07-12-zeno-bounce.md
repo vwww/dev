@@ -2,7 +2,7 @@
 title: Zeno's Paradox for a Bouncing Ball
 date: "2014-07-12 19:42:00 -0600"
 category: Math
-tags: Math
+blog_tags: Math
 ---
 If a ball is thrown up to a height $h$, falls to the ground, and retains a certain fraction $a$ of its energy when it bounces, it will stop bouncing after a certain amount of time. This is paradoxical as it will have bounced an infinite number of times when it stops.
 

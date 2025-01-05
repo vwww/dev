@@ -2,7 +2,7 @@
 title: Google App Engine's Memcache with Quercus
 date: "2011-02-19 17:17:00 -0700"
 category: Programming
-tags: Java PHP Programming Web
+blog_tags: Java PHP Programming Web
 ---
 Google App Engine supports Java and Python, thus supporting <mark>PHP via Quercus on Java</mark>. We can <mark>use their fast-access Memcache with code similar to the following</mark>:
 

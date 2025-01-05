@@ -2,7 +2,7 @@
 title: Dotted Notes (Music)
 date: "2011-02-27 15:37:00 -0700"
 category: Math
-tags: Math
+blog_tags: Math
 ---
 This is a formula (equation) to <mark>calculate the length of a note</mark>:
 

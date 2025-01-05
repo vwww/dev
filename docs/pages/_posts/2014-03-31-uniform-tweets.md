@@ -2,7 +2,7 @@
 title: Uniformly Distributed Tweets
 date: "2014-03-21 19:49:00 -0600"
 category: Programming
-tags: Math Programming
+blog_tags: Math Programming
 ---
 For [my Grammar bot](https://victorz.ca/bots/grammar), I added a new feature: <mark>GPS coordinates are added to the tweets</mark>. This is <mark>just for fun</mark> and serves no practical purpose.
 

@@ -25,7 +25,7 @@ entry: blog_tag_cloud
 			<h6 class="card-subtitle mb-2 text-muted">
 				<time datetime="{{ post.date | date('xmlschema') }}">{{ post.date | date(site.format_blog_date) }}</time>
 				|
-				{{ blog.tags(base, collections.postsByTag, tags=post.data.tags, categories=post.data.categories, tag=tag_name, year=post_year, year_count=collections.postsByYear[post_year].length) }}
+				{{ blog.tags(base, collections.postsByTag, tags=post.data.blog_tags, categories=post.data.categories, tag=tag_name, year=post_year, year_count=collections.postsByYear[post_year].length) }}
 			</h6>
 		</li>
 		{%- endfor %}

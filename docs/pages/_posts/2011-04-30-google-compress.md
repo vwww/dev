@@ -2,7 +2,7 @@
 title: Google-Like Compression
 date: "2011-04-30 19:15:00 -0700"
 category: Programming
-tags: PHP Programming Web
+blog_tags: PHP Programming Web
 ---
 I have a <mark>PHP object buffer callback</mark> that allows you to compress your PHP like Google:
 

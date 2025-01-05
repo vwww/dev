@@ -2,7 +2,7 @@
 title: Windows Experience Index Hack
 date: "2011-06-10 19:35:00 -0700"
 category: Hacks
-tags: Hacks Windows Windows-Advanced
+blog_tags: Hacks Windows Windows-Advanced
 ---
 I hacked my Windows Experience Index rating! My rating is way better than yours, if you don't believe it, view the screenshot! For my <mark>real ratings, subtract 10</mark> from each individual score. Yes, my <mark>real score is 5.9, but I deserve 6.82 as an average or even 6.84</mark>29525791137848568296393718408... as the root mean square! See how I did it in the full article.
 

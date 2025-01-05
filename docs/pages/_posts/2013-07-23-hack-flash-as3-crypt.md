@@ -2,7 +2,7 @@
 title: Hacking a Flash Payload Crypter with 1 line of code
 date: "2013-07-23 10:08:00 -0700"
 category: Hacks
-tags: ActionScript ActionScript-3 Assembly Flash Hacks Security Web
+blog_tags: ActionScript ActionScript-3 Assembly Flash Hacks Security Web
 ---
 If the flash file puts everything into a binary section and encrypts it, is there any way to decrypt it? If <mark>they cut off the header, you won't be able to memory-dump it</mark>, but would you give up there? Of course not!
 

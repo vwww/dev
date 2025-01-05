@@ -2,7 +2,7 @@
 title: New (and last) AssaultCube video
 date: "2010-10-08 16:37:00 -0700"
 category: Gaming
-tags: C++ Gaming Windows
+blog_tags: C++ Gaming Windows
 ---
 I have made a new---and likely my last---AssaultCube video at [youtu.be/RLfnl9fU7h4](https://www.youtube.com/watch?v=RLfnl9fU7h4) and [youtu.be/W1ej0-yjas8](https://www.youtube.com/watch?v=W1ej0-yjas8).
 

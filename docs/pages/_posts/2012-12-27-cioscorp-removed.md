@@ -2,7 +2,7 @@
 title: cIOSCORP Removal Progress
 date: "2012-12-27 18:34:00 -0700"
 category: Nintendo-Wii
-tags: Nintendo Nintendo-Wii
+blog_tags: Nintendo Nintendo-Wii
 ---
 This is a <mark>big list</mark>...
 

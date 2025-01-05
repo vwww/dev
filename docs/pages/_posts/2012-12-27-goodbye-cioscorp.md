@@ -2,7 +2,7 @@
 title: Goodbye to cIOSCORP!
 date: "2012-12-27 11:55:00 -0700"
 category: Nintendo-Wii
-tags: Nintendo Nintendo-Wii
+blog_tags: Nintendo Nintendo-Wii
 ---
 I have <mark>decided to remove cIOSCORP</mark>, as it is not necessary anymore: I can <mark>still launch backups through backup launchers</mark> (NeoGamma, ~~Gecko OS~~, USB loaders, etc.)
 

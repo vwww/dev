@@ -2,7 +2,7 @@
 title: More Blitz Hacks (Time)
 date: "2012-05-22 15:27:00 -0700"
 categories: Hacks Web
-tags: Gaming Hacks JavaScript Programming Web
+blog_tags: Gaming Hacks JavaScript Programming Web
 ---
 The <mark>*Song of Time* just keeps on playing</mark>...
 

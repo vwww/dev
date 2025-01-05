@@ -50,7 +50,7 @@ permalink: "/blog/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumbe
 			{%- set post_year = post.date.getFullYear() -%}
 			{%- set year_count = collections.postsByYear[post_year].length -%}
 			{%- set read_min = (post.content | wordcount + 90 + 125) // 250 -%}
-			{{ post.date | date(site.format_blog_datetime) }} | {{ blog.tags(base, collections.postsByTag, tags=post.data.tags, categories=post.data.categories, year=post_year, year_count=year_count) }} | Estimated {{read_min}}-min read
+			{{ post.date | date(site.format_blog_datetime) }} | {{ blog.tags(base, collections.postsByTag, tags=post.data.blog_tags, categories=post.data.categories, year=post_year, year_count=year_count) }} | Estimated {{read_min}}-min read
 		</h6>
 		{{ post.content | excerpt }}
 		{%- if post.content | has_excerpt %}

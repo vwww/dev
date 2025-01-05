@@ -39,7 +39,7 @@ module.exports = function (eleventyConfig) {
 	// eleventyConfig.addCollection('go', (c) => c.getFilteredByGlob('_go/**'))
 
 	function parsePosts (c, initialValue, postCallback, postProcess) {
-		const posts = c.getFilteredByGlob('pages/_posts/**').reverse()
+		const posts = c.getFilteredByTag('blog').reverse()
 		if (!(initialValue && postCallback)) return posts
 
 		for (const post of posts) {
@@ -48,15 +48,17 @@ module.exports = function (eleventyConfig) {
 		return postProcess ? postProcess(initialValue) : initialValue
 	}
 	eleventyConfig.addCollection('posts', (c) => parsePosts(c))
-	eleventyConfig.addCollection('postsByTag', (c) => parsePosts(c, {}, (post, tagToPosts) => {
-			for (const tag of post.data.tags) {
-				(tagToPosts[tag] ??= []).push(post)
+	eleventyConfig.addCollection('postsByTag', (c) => parsePosts(c, {},
+			(post, tagToPosts) => {
+				for (const tag of post.data.blog_tags) {
+					(tagToPosts[tag] ??= []).push(post)
+				}
 			}
-		})
+		)
 	)
 	eleventyConfig.addCollection('postTagsByName', (c) => parsePosts(c, new Set(),
 			(post, tags) => {
-				for (const tag of post.data.tags) {
+				for (const tag of post.data.blog_tags) {
 					tags.add(tag)
 				}
 			},
@@ -65,7 +67,7 @@ module.exports = function (eleventyConfig) {
 	)
 	eleventyConfig.addCollection('postTagsBySize', (c) => parsePosts(c, [],
 			(post, tagCount) => {
-				for (const tag of post.data.tags) {
+				for (const tag of post.data.blog_tags) {
 					tagCount[tag] = (tagCount[tag] ?? 0) + 1
 				}
 			},

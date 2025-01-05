@@ -2,7 +2,7 @@
 title: Identify what the operator ^ does
 date: "2011-09-11 09:25:00 -0700"
 category: Programming
-tags: Programming
+blog_tags: Programming
 ---
 What does the operator ^ do? <mark>Does the carat mean **XOR**, or does it mean **exponent**?</mark> One simple debug statement will solve the problem:
 

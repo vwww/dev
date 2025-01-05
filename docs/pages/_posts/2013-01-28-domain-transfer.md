@@ -2,7 +2,7 @@
 title: Domain Renewal by Transfer
 date: "2013-01-28 17:18:00 -0700"
 category: Web
-tags: Domains Web
+blog_tags: Domains Web
 ---
 I have <mark>extended my domain for a year by transferring it</mark>. It won't expire until April, but <mark>it's unwise to attempt a transfer during the last few days, in case something goes wrong</mark>. However, I had to <mark>pay extra</mark> fees...
 

@@ -2,7 +2,7 @@
 title: "Prepositions: Reasonable to End Sentences with"
 date: "2013-04-09 15:52:00 -0700"
 category: English
-tags: English Grammar
+blog_tags: English Grammar
 ---
 Why can't prepositions be used as something to end sentences _with_?
 

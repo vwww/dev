@@ -2,7 +2,7 @@
 title: Flasm (ActionScript 2) Bytecode Equivalents
 date: "2013-07-19 17:55:00 -0700"
 category: Programming
-tags: ActionScript ActionScript-2 Assembly Flash Programming Web
+blog_tags: ActionScript ActionScript-2 Assembly Flash Programming Web
 ---
 <mark>[Flasm](https://nowrap.de/flasm) allows people to disassemble flash files (.swf) into human-readable bytecode</mark>. I have discovered some of the <mark>Flash compiler techniques and other interesting things</mark>.
 

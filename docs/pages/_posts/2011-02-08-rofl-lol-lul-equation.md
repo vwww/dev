@@ -2,7 +2,7 @@
 title: LOL Equation
 date: "2011-02-08 16:43:00 -0700"
 category: Math
-tags: Math
+blog_tags: Math
 ---
 <mark>Try to solve</mark> this equation:
 

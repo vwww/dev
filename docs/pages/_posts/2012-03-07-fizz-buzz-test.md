@@ -2,7 +2,7 @@
 title: FizzBuzz Test
 date: "2012-03-07 17:26:00 -0700"
 category: Programming
-tags: Math Programming PHP
+blog_tags: Math Programming PHP
 ---
 This is a controversial way to filter out ~~noobs~~ people who can't program. Luckily for me, I did very well at it. So what is this challenge about?
 

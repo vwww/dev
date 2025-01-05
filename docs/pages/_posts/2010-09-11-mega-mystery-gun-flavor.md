@@ -2,7 +2,7 @@
 title: Stride Mega Mystery Gum (Flavor)
 date: "2010-09-11 14:08:00 -0700"
 category: Uncategorized
-tags: Uncategorized
+blog_tags: Uncategorized
 ---
 The <mark>Stride "Mega Mystery" gum</mark> tastes like
 

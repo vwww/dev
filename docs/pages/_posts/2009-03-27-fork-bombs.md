@@ -2,7 +2,7 @@
 title: Fork Bombs
 date: "2009-03-27 11:21:00 -0700"
 category: Programming
-tags: Hacks Linux Programming Windows Windows-Advanced Windows-Basic
+blog_tags: Hacks Linux Programming Windows Windows-Advanced Windows-Basic
 ---
 <span style="font-size:x-large;color:red">***_WARNING: Trying some of these can crash your system!_***</span>
 

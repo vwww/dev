@@ -2,7 +2,7 @@
 title: Eject Channel Idea
 date: "2009-07-16 13:13:00 -0700"
 category: Programming
-tags: C C++ Nintendo Nintendo-GC Nintendo-Wii Programming
+blog_tags: C C++ Nintendo Nintendo-GC Nintendo-Wii Programming
 ---
 I'm going to <mark>create a new channel for my Wii</mark>. It will allow you to use all four Wii remotes, and maybe the GameCube controllers!
 

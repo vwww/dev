@@ -2,7 +2,7 @@
 title: Python Goto Decorator Improved
 date: "2013-08-13 16:15:00 -0700"
 category: Programming
-tags: Programming Python
+blog_tags: Programming Python
 ---
 When I found [a <mark>nice hack to get GOTO statements</mark> in Python](https://code.activestate.com/recipes/576944-the-goto-decorator/), I decided to <mark>make my own version</mark> of it. It has been <mark>tested on Python 2.7 but probably also works in Python 3</mark>.
 

@@ -2,7 +2,7 @@
 title: Wii Backup Problems -- Mario Kart
 date: "2009-11-20 14:17:00 -0700"
 category: Gaming
-tags: Gaming Nintendo Nintendo-Wii
+blog_tags: Gaming Nintendo Nintendo-Wii
 ---
 I just tried to play Mario Kart but it would not work. I got the `An error has occurred, please eject the disc...` message but it is <mark>not Error #002</mark>.
 

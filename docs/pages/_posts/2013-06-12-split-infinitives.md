@@ -2,7 +2,7 @@
 title: "Split Infinitives: a non-error"
 date: "2013-06-12 18:21:00 -0700"
 category: English
-tags: English Grammar
+blog_tags: English Grammar
 ---
 Some people are <mark>hypercritical and think *to boldly go* should be *to go boldly* or even the awkward *boldly to go*</mark>. However, the argument is that English should follow Latin's rules, but it is <mark>impossible to split infinitives in Latin, as there is no infinitive marker in Latin</mark>, effectively making the argument invalid.
 

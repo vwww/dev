@@ -2,7 +2,7 @@
 title: Racist English
 date: "2010-04-23 15:40:00 -0700"
 category: English
-tags: English
+blog_tags: English
 ---
 > ANGELS ARE WHITE: DEVILS ARE BLACK
 

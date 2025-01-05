@@ -2,7 +2,7 @@
 title: Rewriting the Grammar Bot
 date: "2013-08-08 11:53:00 -0700"
 category: Programming
-tags: English Grammar Programming Python Web
+blog_tags: English Grammar Programming Python Web
 ---
 I have rewritten [my Grammar bot](https://victorz.ca/bots/grammar). Previously, it had used <mark>regular expressions</mark> to find errors, which means that it must check every character against the rules. In addition, <mark>Python 2.7 doesn't support variable-length lookbehinds</mark>, which <mark>adds extra regular expression checks</mark> for some rules. Also, <mark>it cannot provide good quotes if there is an overlap</mark> between two matches.
 

@@ -2,7 +2,7 @@
 title: Eject Channel Lite
 date: "2009-07-20 12:23:00 -0700"
 category: Programming
-tags: C C++ Nintendo Nintendo-Wii Programming
+blog_tags: C C++ Nintendo Nintendo-Wii Programming
 ---
 I finished a <mark>lite version of my Eject Channel</mark> for the Nintendo Wii using devKitPro.
 

@@ -2,7 +2,7 @@
 title: How to play backups on a Wii
 date: "2009-07-16 12:59:00 -0700"
 category: Gaming
-tags: Gaming Hacks Nintendo Nintendo-Wii
+blog_tags: Gaming Hacks Nintendo Nintendo-Wii
 ---
 **DISCLAIMER:** I am <mark>not responsible for your bricked Wii</mark>(s). Also, this article is very old now.
 
