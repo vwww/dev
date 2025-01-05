@@ -1,25 +1,19 @@
 ---
-layout: misc-3d-template
+layout: base
 ---
-{%- from 'misc-3d.html' import url_img, url_page -%}
+{% extends './misc-3d-template.html' %}
 
-{%- set active_area = site.data.m3d.areas[area] -%}
-{%- set active_page = active_area.pages | get_3d(view) -%}
-{%- set loc = base + '/misc/3d/' -%}
+{%- block page_name -%}
+  {%- if show_all -%}
+    {{ active_area.name }}
+  {%- else -%}
+	{{ active_page }} <small>({{ active_area.name }})</small>
+  {%- endif -%}
+{%- endblock -%}
 
 {%- set show_all = view == 'base' -%}
 
-<div class="page-header">
-  <h1>
-  {%- if show_all %}
-    {{ active_area.name }}
-  {%- else %}
-	{{ active_page }} <small>({{ active_area.name }})</small>
-  {%- endif %}
-  </h1>
-  <hr class="my-3">
-</div>
-
+{%- block left -%}
 {%- if show_all -%}
 
 <h3>Camera Selection</h3>
@@ -45,7 +39,7 @@ layout: misc-3d-template
 
 <h3>Environments</h3>
 <div class="row">
-{%- for e, env in site.data.m3d.environments -%}
+{%- for e, env in data.environments -%}
   <div class="col-lg-6 d-flex align-items-center">
     <div class="flex-shrink-0">
       <a href="{{ url_img(area, view, 0, e) }}">
@@ -61,3 +55,4 @@ layout: misc-3d-template
 </div>
 
 {%- endif -%}
+{%- endblock -%}

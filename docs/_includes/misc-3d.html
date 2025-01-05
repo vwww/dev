@@ -1,7 +1,0 @@
-{%- macro url_img(area, p, t='', k='none') -%}
-https://vwww.github.io/3d/{{ area }}/{{ p }}{% if t %}_{% endif %}/{{ k }}.png
-{%- endmacro -%}
-
-{%- macro url_page(loc, area, b) -%}
-{{ loc }}{% if area != 'base' %}{{ area }}/{% endif %}{% if b != 'base' %}{{ b }}.html{% endif %}
-{%- endmacro -%}

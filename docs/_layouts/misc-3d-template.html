@@ -1,9 +1,13 @@
----
-layout: base
----
-{%- from 'misc-3d.html' import url_img, url_page -%}
+{%- macro url_img(area, p, t='', k='none') -%}
+https://vwww.github.io/3d/{{ area }}/{{ p }}{% if t %}_{% endif %}/{{ k }}.png
+{%- endmacro -%}
 
-{%- set active_area = site.data.m3d.areas[area] -%}
+{%- macro url_page(loc, area, b) -%}
+{{ loc }}{% if area != 'base' %}{{ area }}/{% endif %}{% if b != 'base' %}{{ b }}.html{% endif %}
+{%- endmacro -%}
+
+{%- set active_area = data.areas[area] -%}
+{%- set active_page = active_area.pages | get_3d(view) -%}
 {%- set loc = base + '/misc/3d/' -%}
 
 {%- include 'breadcrumbs.html' -%}
@@ -11,14 +15,18 @@ layout: base
 <div class="container row">
   <!-- left content -->
   <div class="col-12 col-sm-7 col-md-8 col-lg-9">
-    {{ content }}
+    <div class="page-header">
+      <h1>{% block page_name %}{% endblock %}</h1>
+      <hr class="my-3">
+    </div>
+    {% block left %}{% endblock %}
   </div>
 
   <!-- right nav -->
   <div class="col-12 col-sm-5 col-md-4 col-lg-3">
     <h2>Files</h2>
     <div class="list-group mb-3">
-    {%- for a, aInfo in site.data.m3d.areas %}
+    {%- for a, aInfo in data.areas %}
       <a href="{{ loc }}{% if a != 'base' %}{{ a }}/{% endif %}"
           class="list-group-item{% if a == area %} active{% endif %}">
         {{ aInfo.name }}
