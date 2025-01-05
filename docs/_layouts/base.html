@@ -26,7 +26,7 @@
     <link rel="stylesheet" id="theme-switcher" href="{{assets}}dist/bootstrap_theme.css">
     <meta name="theme-switcher" id="theme-bootstrap" content="{{assets}}dist/bootstrap.css">
     <meta name="theme-switcher" id="theme-bootstrap2" content="{{assets}}dist/bootstrap_theme.css">
-    {%- for theme, _ in site.data.themes.bootswatch %}
+    {%- for theme, _ in themes.bootswatch %}
     <meta name="theme-switcher" id="theme-bootswatch-{{ theme }}" content="{{assets}}dist/bootswatch_{{ theme }}.css">
     {%- endfor %}
     <link rel="stylesheet" href="{{assets}}dist/global.css">
@@ -91,11 +91,11 @@
     </footer>
 
     <!-- Scripts -->
-    {%- for file in site.data.manifest.js.global %}
+    {%- for file in manifest.js.global %}
       <script src="{{assets}}dist/{{ file }}.js"></script>
     {%- endfor %}
     {%- for entry in entry | to_array %}
-      {%- for file in site.data.manifest.js[entry] %}
+      {%- for file in manifest.js[entry] %}
       <script src="{{assets}}dist/{{ file }}.js"></script>
       {%- endfor %}
     {%- endfor %}

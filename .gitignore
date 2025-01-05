@@ -1,6 +1,6 @@
 #################### Site Build ####################
 docs/pass/assets/dist
-docs/_data/site/data/manifest.json
+docs/_data/manifest.json
 docs/_site
 
 #################### NPM ####################

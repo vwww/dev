@@ -8,14 +8,14 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
 {%- set href_check = page.url.slice(1) -%}
-{%- for item in site.data.navbar -%}
+{%- for item in navbar_root -%}
 {%- if item.dropdown %}
         <li class="nav-item dropdown">
           <a class="nav-link{% if page.url | starts_with(item.prefix, 1) %} active{% endif %} dropdown-toggle" href="#nav/{{ item.dropdown }}" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
           <ul class="dropdown-menu" role="menu">
           {%- set href2 = item.prefix + '/' -%}
             <li><a class="dropdown-item{% if href2 == href_check %} active{% endif %}" href="{{base}}/{{ href2 }}">List</a></li>
-          {%- for section in site.data.nav[item.dropdown] %}
+          {%- for section in navbar[item.dropdown] %}
             <li class="dropdown-divider"></li>
           {%- if section.name %}
             <li class="dropdown-header">{{ section.name }}</li>
@@ -66,7 +66,7 @@
             <li><button class="dropdown-item theme-switcher active" data-theme="bootstrap2">Bootstrap Theme</button></li>
             <li class="dropdown-divider"></li>
             <li class="dropdown-header">Bootswatch</li>
-            {%- for theme, nameTitle in site.data.themes.bootswatch %}
+            {%- for theme, nameTitle in themes.bootswatch %}
             <li><button class="dropdown-item theme-switcher" data-theme="bootswatch-{{ theme }}" title="{{ nameTitle[1] }}">{{ nameTitle[0] }}</button></li>
             {%- endfor %}
           </ul>

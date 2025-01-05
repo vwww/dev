@@ -119,7 +119,7 @@ mdate: 2023-01-21 23:31:21 -0700
 	</div>
 
 <!-- scripts -->
-{%- for file in site.data.manifest.js.misc_ilf %}
+{%- for file in manifest.js.misc_ilf %}
 <script src="{{assets}}dist/{{ file }}.js"></script>
 {%- endfor %}
 {% include '_scripts.html' %}

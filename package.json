@@ -11,7 +11,7 @@
     "build:css": "node build_esbuild",
     "build:scripts": "rspack",
     "build:final": "cd docs && npx @11ty/eleventy",
-    "clean": "rimraf docs/pass/assets/dist docs/_data/site/data/manifest.json docs/_site",
+    "clean": "rimraf docs/pass/assets/dist docs/_data/manifest.json docs/_site",
     "eslint": "eslint scripts || cd .",
     "eslint:fix": "npm run eslint --fix",
     "eslint:dump": "eslint --print-config ./.eslintrc.json",

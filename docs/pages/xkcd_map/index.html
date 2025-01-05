@@ -15,7 +15,7 @@ mdate: 2014-02-16 08:00:00 -0700
 		<img id="intro" src="https://vwww.github.io/xkcd-map/init.png" alt="init">
 		<div id="map"></div>
 		<script src="https://vwww.github.io/xkcd-map/converted.js"></script>
-		{%- for file in site.data.manifest.js.xkcd_map %}
+		{%- for file in manifest.js.xkcd_map %}
 		<script src="{{assets}}dist/{{ file }}.js"></script>
 		{%- endfor %}
 		<div id="autoclose"><script src="//d.victorz.ca/a/xkcd"></script></div>

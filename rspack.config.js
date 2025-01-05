@@ -70,7 +70,7 @@ module.exports = {
   devtool: devMode ? 'source-map' : false,
   plugins: [
     new RspackManifestPlugin({
-      fileName: path.resolve(__dirname, 'docs/_data/site/data/manifest.json'),
+      fileName: path.resolve(__dirname, 'docs/_data/manifest.json'),
       generate (_seed, _files, entrypoints) {
         const js = {}
         const css = {}

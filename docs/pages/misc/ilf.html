@@ -94,7 +94,7 @@ mdate: 2023-02-19 14:25:14 -0700
 		<a id="pageVer">v0</a>
 	</footer>
 
-{%- for file in site.data.manifest.js.misc_ilf %}
+{%- for file in manifest.js.misc_ilf %}
 <script src="{{assets}}dist/{{ file }}.js"></script>
 {%- endfor %}
 {% include '_scripts.html' %}
