@@ -50,3 +50,18 @@
 .file-file[data-ext='rm'] { background-image: url('rm.png'); }
 .file-file[data-ext='eps'] { background-image: url('eps.png'); }
 .file-file[data-ext='css'] { background-image: url('css.png'); }
+
+.breadcrumb-dl::before {
+	content: url('here.png');
+	padding: 0 0.5rem 0 0.25rem;
+}
+
+.sort-a::after {
+	content: url('s_a.png');
+}
+.sort-d::after {
+	content: url('s_d.png');
+}
+.sort-a::after, .sort-d::after {
+	padding-left: 0.4rem;
+}

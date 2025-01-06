@@ -79,14 +79,6 @@ function cmpProp(a: any, b: any, prop: string, reverse = false): number {
   return cmp(a[prop], b[prop]) * (reverse ? -1 : 1)
 }
 
-function sortText (isSort: boolean, reverse: boolean): string {
-  return isSort
-    ? reverse
-      ? ' (desc)'
-      : ' (asc)'
-    : ''
-}
-
 // Load from hash
 function updateLocationHash (replaceHash = false) {
   const newHash = getPathString(curPath)
@@ -134,7 +126,7 @@ void init()
 <svelte:window onhashchange={browseLocationHash} />
 
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
+  <ol class="breadcrumb breadcrumb-dl">
     {#each curPath as item, index}
       {#if index + 1 === curPath.length}
         <li class="breadcrumb-item active" aria-current="page">{item.name} ({formatSize(item.size)})</li>
@@ -148,10 +140,13 @@ void init()
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <th onclick={() => setSort('name')}>Name{sortText(curSort === 'name', curSortReverse)}</th>
-      <th onclick={() => setSort('size')}>Size{sortText(curSort === 'size', curSortReverse)}</th>
-      <th onclick={() => setSort('remark')}>Remarks{sortText(curSort === 'remark', curSortReverse)}</th>
-      <th onclick={() => setSort('mtime')}>Modified Time{sortText(curSort === 'mtime', curSortReverse)}</th>
+      {#snippet fileHeader (id: string, name: string)}
+        <th onclick={() => setSort(id)} class="sort-{curSort === id ? curSortReverse ? 'd' : 'a' : 'n'}">{name}</th>
+      {/snippet}
+      {@render fileHeader('name', 'Name')}
+      {@render fileHeader('size', 'Size')}
+      {@render fileHeader('remark', 'Remarks')}
+      {@render fileHeader('mtime', 'Modified Time')}
     </tr>
   </thead>
   <tbody>
