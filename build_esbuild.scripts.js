@@ -1,14 +1,15 @@
 // not used
 // esbuild is faster than rspack but does not support `optimization.splitChunks`, resulting in much larger JS size
 
-const fg = require('fast-glob')
-const path = require('path')
+import fg from 'fast-glob'
+import path from 'path'
 
-const esbuild = require('esbuild')
-const esbuildSvelte = require('esbuild-svelte')
-const sveltePreprocess = require('svelte-preprocess')
-const manifestPlugin = require('esbuild-plugin-manifest')
+import esbuild from 'esbuild'
+import esbuildSvelte from 'esbuild-svelte'
+import sveltePreprocess from 'svelte-preprocess'
+import manifestPlugin from 'esbuild-plugin-manifest'
 
+const __dirname = import.meta.dirname
 const devMode = process.env.NODE_ENV !== 'production'
 
 const entryPoints = {}

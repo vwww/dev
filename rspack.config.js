@@ -1,9 +1,12 @@
-const fg = require('fast-glob')
-const path = require('path')
+import fg from 'fast-glob'
+import path from 'path'
 
-const rspack = require('@rspack/core')
-const { RspackManifestPlugin } = require('rspack-manifest-plugin')
+import rspack from '@rspack/core'
+import { RspackManifestPlugin } from 'rspack-manifest-plugin'
 
+import sveltePreprocess from 'svelte-preprocess'
+
+const __dirname = import.meta.dirname
 const devMode = process.env.NODE_ENV !== 'production'
 
 const entry = {}
@@ -11,7 +14,7 @@ for (let e of fg.sync('*.ts', { cwd: path.resolve(__dirname, 'scripts') })) {
   entry[e.slice(0, -3)] = './scripts/' + e
 }
 
-module.exports = {
+export default {
   mode: devMode ? 'development' : 'production',
   entry,
   output: {
@@ -36,7 +39,7 @@ module.exports = {
               dev: devMode
             },
             hotReload: devMode,
-            preprocess: require('svelte-preprocess')({})
+            preprocess: sveltePreprocess({})
           }
         },
       },

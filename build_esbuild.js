@@ -2,12 +2,13 @@
 // but does not support `optimization.splitChunks`, resulting in much larger JS size
 // so we just use it for CSS only
 
-const fg = require('fast-glob')
-const path = require('path')
+import fg from 'fast-glob'
+import path from 'path'
 
-const esbuild = require('esbuild')
-const { sassPlugin } = require('esbuild-sass-plugin')
+import esbuild from 'esbuild'
+import { sassPlugin } from 'esbuild-sass-plugin'
 
+const __dirname = import.meta.dirname
 const devMode = process.env.NODE_ENV !== 'production'
 
 const entryCSS = {}

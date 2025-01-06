@@ -1,10 +1,10 @@
-const yaml = require('js-yaml')
-// const markdownIt = require('markdown-it')
-const markdownItAnchor = require('markdown-it-anchor')
-// const mila = require('markdown-it-link-attributes')
-const { DateTime } = require('luxon')
+import yaml from 'js-yaml'
+// import markdownIt from 'markdown-it'
+import markdownItAnchor from 'markdown-it-anchor'
+// import mila from 'markdown-it-link-attributes'
+import { DateTime } from 'luxon'
 
-module.exports = function (eleventyConfig) {
+export default function (eleventyConfig) {
 	eleventyConfig.setServerPassthroughCopyBehavior('passthrough')
 
 	// eleventyConfig.ignores.add('pass')
@@ -104,7 +104,7 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addDateParsing((d) => typeof d == 'string' && (d = DateTime.fromFormat(d, DATE_OVERRIDE.jekyll)).isValid && d.toJSDate())
 }
 
-module.exports.config = {
+export const config = {
 	dir: {
 		input: './pages',
 		includes: '../_includes',

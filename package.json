@@ -23,6 +23,7 @@
   },
   "author": "Victor",
   "license": "UNLICENSED",
+  "type": "module",
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
     "@rspack/cli": "^1.1.8",
