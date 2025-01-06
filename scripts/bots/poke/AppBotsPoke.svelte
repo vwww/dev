@@ -74,13 +74,12 @@ function updatePoke (data: Record<string, PokeInfo>): void {
   computeRanks()
 
   // Update plot
-  const last = data2.length - 1
   const firstTime = data2[0].time
-  const oldestTime = data2[last].time
+  const oldestTime = data2[data2.length - 1].time
   yData = [
     data1.map((x) => x.num),
     data2.map((x) => (firstTime - x.time) / 86400),
-    data2.map((_, i) => (data2[last - i].time - oldestTime) / 86400), // earlier time first
+    data2.map((x) => (x.time - oldestTime) / 86400),
   ]
 }
 
@@ -129,12 +128,14 @@ const highchartsOptions: Highcharts.Options = $derived({
   title: {
     text: undefined,
   },
-  xAxis: {
-    type: 'logarithmic',
-    title: {
-      text: 'rank'
+  xAxis: [
+    {
+      type: 'logarithmic',
+      title: {
+        text: 'rank'
+      },
     },
-  },
+  ],
   yAxis: [
     {
       type: 'logarithmic',
@@ -152,13 +153,14 @@ const highchartsOptions: Highcharts.Options = $derived({
     {
       type: 'logarithmic',
       title: {
-        text: 'days'
+        text: undefined
       },
       opposite: true,
     },
   ],
   tooltip: {
-    shared: true
+    shared: true,
+    crosshairs: true,
   },
   legend: {
     enabled: false
@@ -166,20 +168,46 @@ const highchartsOptions: Highcharts.Options = $derived({
   series: [
     {
       type: 'line',
-      name: 'highest first',
+      name: 'pokes (highest first)',
       data: yData[0],
+      pointStart: 1,
     },
     {
       type: 'line',
-      name: 'recent first',
+      name: 'pokes (lowest first)',
+      data: yData[0],
+      pointStart: yData[0]?.length,
+      pointInterval: -1,
+    },
+    {
+      type: 'line',
+      name: 'days before newest (recent first)',
       yAxis: 1,
       data: yData[1],
+      pointStart: 1,
     },
     {
       type: 'line',
-      name: 'oldest first',
+      name: 'days since oldest (oldest first)',
       yAxis: 2,
       data: yData[2],
+      pointStart: yData[0]?.length,
+      pointInterval: -1,
+    },
+    {
+      type: 'line',
+      name: 'days since oldest (recent first)',
+      yAxis: 2,
+      data: yData[2],
+      pointStart: 1,
+    },
+    {
+      type: 'line',
+      name: 'days before newest (oldest first)',
+      yAxis: 1,
+      data: yData[1],
+      pointStart: yData[0]?.length,
+      pointInterval: -1,
     },
   ]
 })
