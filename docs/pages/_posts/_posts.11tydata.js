@@ -1,5 +1,5 @@
 function parseJekyllTags (tags) {
-	return tags?.split(/\s+/)
+	return typeof tags == 'string' ? tags.split(/\s+/) : tags
 }
 
 export default {

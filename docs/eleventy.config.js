@@ -5,6 +5,8 @@ const markdownItAnchor = require('markdown-it-anchor')
 const { DateTime } = require('luxon')
 
 module.exports = function (eleventyConfig) {
+	eleventyConfig.setServerPassthroughCopyBehavior('passthrough')
+
 	// eleventyConfig.ignores.add('pass')
 
 	eleventyConfig.addPassthroughCopy({ pass: '/' })
