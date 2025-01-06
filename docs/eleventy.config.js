@@ -1,5 +1,5 @@
 const yaml = require('js-yaml')
-const markdownIt = require('markdown-it')
+// const markdownIt = require('markdown-it')
 const markdownItAnchor = require('markdown-it-anchor')
 // const mila = require('markdown-it-link-attributes')
 const { DateTime } = require('luxon')
@@ -90,8 +90,8 @@ module.exports = function (eleventyConfig) {
 		.use(mila, {
 			matcher: (href) => href.match(/^https?:\/\//),
 			attrs: {
-				target: "_blank",
-				rel: "noopener",
+				target: '_blank',
+				rel: 'noopener',
 			},
 		})
 		*/
