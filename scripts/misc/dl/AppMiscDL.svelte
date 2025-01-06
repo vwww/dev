@@ -1,11 +1,13 @@
 <script lang="ts">
-import fileRoot from './fileList'
-import type { NodeBrowse, NodeDirectory } from './nodeTypes'
+import { parseManifest, type NodeBrowse, type NodeDirectory } from './nodeTypes'
+
+const DOWNLOAD_PREFIX = 'https://v-dl.pages.dev/'
+const MANIFEST_URL = `${DOWNLOAD_PREFIX}manifest.json`
 
 // File browser
-let curPath = $state([fileRoot])
+let fileRoot: NodeDirectory | undefined = $state()
+let curPath: NodeDirectory[] = $state([])
 const curNode = $derived(curPath[curPath.length - 1])
-const curParent = $derived(curPath.length > 1 ? curPath[curPath.length - 2] : fileRoot)
 
 function up (count: number): void {
   count = Math.min(count, curPath.length - 1)
@@ -33,7 +35,7 @@ function getChildPath (path: NodeDirectory[], child: NodeBrowse): string {
 function formatSize (s: number, noreduce = false): string {
   if (s < 0) return s + ''
 
-  const p = ['', 'K', 'M'] // prefixes
+  const p = ['', 'Ki', 'Mi'] // prefixes
   const m = noreduce ? 0 : p.length - 1 // maximum...
   let i = 0
   while (i < m && s >= 1000) {
@@ -53,7 +55,7 @@ function ext (filename: string): string {
 }
 
 function getDownloadPath (path: NodeDirectory[], node: NodeBrowse): string {
-  return '../../assets/victorz/dl/' + getChildPath(path, node)
+  return DOWNLOAD_PREFIX + getChildPath(path, node)
 }
 
 // Sorting
@@ -96,11 +98,13 @@ function updateLocationHash (replaceHash = false) {
 }
 
 function browseToPath (path: string, replaceHash = false) {
+  if (!fileRoot) return
+
   const newPath = [fileRoot]
   let node = fileRoot
   for (const segment of path.split('/')) {
     const nextChild = node.children.find(c => c.name === segment)
-    if (!nextChild || nextChild.type !== 'dir') break
+    if (!nextChild || nextChild.type !== 'd') break
     newPath.push(node = nextChild)
   }
 
@@ -112,7 +116,19 @@ function browseLocationHash () {
   browseToPath(location.hash.slice(1), true)
 }
 
-browseLocationHash()
+async function init () {
+  try {
+    const req = await fetch(MANIFEST_URL)
+    const manifest = await req.json()
+    fileRoot = parseManifest(manifest)
+
+    browseLocationHash()
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+void init()
 </script>
 
 <svelte:window onhashchange={browseLocationHash} />
@@ -139,40 +155,58 @@ browseLocationHash()
     </tr>
   </thead>
   <tbody>
-    {#if curPath.length > 2}
-      <tr onclick={() => up(curPath.length - 1)}>
-        <!-- svelte-ignore a11y_invalid_attribute We actually want this to unset the hash -->
-        <td><a onclick={(event) => event.preventDefault()} href="" class="file-root">. (root)</a></td>
-        <td title={formatSize(fileRoot.size, true)}>{formatSize(fileRoot.size)}</td>
-        <td>Go to the top!</td>
-        <td>{formatDateTime(fileRoot.mtime)}</td>
-      </tr>
-    {/if}
-    {#if curPath.length > 1}
-      <tr onclick={() => up(1)}>
-        <td><a onclick={(event) => event.preventDefault()} href="#{getPathString(curPath.slice(0, -1))}" class="file-up">.. (up)</a></td>
-        <td title={formatSize(curParent.size, true)}>{formatSize(curParent.size)}</td>
-        <td>Move up the tree!</td>
-        <td>{formatDateTime(curParent.mtime)}</td>
-      </tr>
-    {/if}
-    {#each curNode.children.slice().sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
-      {#if child.type === 'dir'}
-        <tr onclick={() => enterChild(child)}>
-          <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir">{child.name}</a></td>
-          <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
-          <td>{child.remark}</td>
-          <td>{formatDateTime(child.mtime)}</td>
-        </tr>
-      {:else}
-        <tr>
-          <td><a href={getDownloadPath(curPath, child)} target="_blank" class="file-file" data-ext={ext(child.name)}>{child.name}</a></td>
-          <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
-          <td>{child.remark}</td>
-          <td>{formatDateTime(child.mtime)}</td>
+    {#if fileRoot}
+      {#if curPath.length > 2}
+        <tr class="table-success" onclick={() => up(curPath.length - 1)}>
+          <!-- svelte-ignore a11y_invalid_attribute We actually want this to unset the hash -->
+          <td><a onclick={(event) => event.preventDefault()} href="" class="file-root">. (root)</a></td>
+          <td title={formatSize(fileRoot.size, true)}>{formatSize(fileRoot.size)}</td>
+          <td>Go to the top!</td>
+          <td>{formatDateTime(fileRoot.mtime)}</td>
         </tr>
       {/if}
-    {/each}
+      {#if curPath.length > 1}
+        {@const curParent = curPath[curPath.length - 2]}
+        <tr class="table-warning" onclick={() => up(1)}>
+          <td><a onclick={(event) => event.preventDefault()} href="#{getPathString(curPath.slice(0, -1))}" class="file-up">.. (up)</a></td>
+          <td title={formatSize(curParent.size, true)}>{formatSize(curParent.size)}</td>
+          <td>Move up the tree!</td>
+          <td>{formatDateTime(curParent.mtime)}</td>
+        </tr>
+      {/if}
+      {#each curNode?.children.slice().sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
+        {#if child.type === 'd'}
+          <tr onclick={() => enterChild(child)}>
+            <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir">{child.name}</a></td>
+            <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
+            <td>{child.remark}</td>
+            <td>{formatDateTime(child.mtime)}</td>
+          </tr>
+        {:else if child.type === 'f'}
+          <tr>
+            <td><a href={getDownloadPath(curPath, child)} target="_blank" class="file-file" data-ext={ext(child.name)}>{child.name}</a></td>
+            <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
+            <td>{child.remark}</td>
+            <td>{formatDateTime(child.mtime)}</td>
+          </tr>
+        {:else if child.type === 'l'}
+          <tr>
+            <td><a href={child.href} target="_blank" class="file-link">{child.name}</a></td>
+            <td>-</td>
+            <td>{child.remark}</td>
+            <td>{formatDateTime(child.mtime)}</td>
+          </tr>
+        {/if}
+      {/each}
+    {:else}
+      <tr class="table-danger">
+        <!-- svelte-ignore a11y_invalid_attribute -->
+        <td><a href="#" target="_blank" class="file-loading">[Loading]</a></td>
+        <td><em>Unknown</em></td>
+        <td>Possible malfunction!</td>
+        <td>{formatDateTime(Date.now())}</td>
+      </tr>
+    {/if}
   </tbody>
 </table>
 

@@ -1,7 +1,10 @@
 .file-root,
 .file-up,
 .file-dir,
-.file-file {
+.file-dir2,
+.file-file,
+.file-link,
+.file-loading {
 	background-position: left;
 	background-repeat: no-repeat;
 	padding-left: 24px;
@@ -10,7 +13,10 @@
 .file-root { background-image: url('root.png'); }
 .file-up { background-image: url('up.png'); }
 .file-dir { background-image: url('folder.png'); }
+.file-dir2 { background-image: url('folder2.png'); }
 .file-file { background-image: url('unknown.png'); }
+.file-link { background-image: url('link.png'); }
+.file-loading { background-image: url('loading.png'); }
 .file-file[data-ext='jpg'],
 .file-file[data-ext='jpeg'] { background-image: url('jpg.png'); }
 .file-file[data-ext='bmp'] { background-image: url('bmp.png'); }
