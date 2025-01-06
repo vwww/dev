@@ -21,16 +21,8 @@
     "prettier:svelte": "prettier --write 'src/**/*.svelte'",
     "prettier:typescript": "prettier --write 'src/**/*.ts'"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/theonlypwner/www_dev.git"
-  },
   "author": "Victor",
   "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/theonlypwner/www_dev/issues"
-  },
-  "homepage": "https://github.com/theonlypwner/www_dev#readme",
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
     "@rspack/cli": "^1.1.8",
