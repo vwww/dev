@@ -172,7 +172,7 @@ void init()
       {#each curNode?.children.slice().sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
         {#if child.type === 'd'}
           <tr onclick={() => enterChild(child)}>
-            <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir">{child.name}</a></td>
+            <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir{child.name == '1337' ? '2' : ''}">{child.name}</a></td>
             <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
             <td>{child.remark}</td>
             <td>{formatDateTime(child.mtime)}</td>
