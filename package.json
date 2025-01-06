@@ -4,7 +4,8 @@
   "description": "Victor's Website",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=development npm run build:css && cross-env NODE_ENV=development concurrently \"rspack -w\" \"npm run serve\"",
+    "start": "cross-env NODE_ENV=development npm run build:css && npm run watch",
+    "watch": "cross-env NODE_ENV=development concurrently \"rspack -w\" \"npm run serve\"",
     "serve": "cd docs && npx @11ty/eleventy --serve --port=4000 --incremental --ignore-initial",
     "build": "cross-env-shell NODE_ENV=production \"npm run build:css && npm run build:scripts && npm run build:final\"",
     "build:dev": "cross-env-shell NODE_ENV=development \"npm run build:css && npm run build:scripts && npm run build:final || cd .\"",
