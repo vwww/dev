@@ -18,6 +18,7 @@ export default {
   mode: devMode ? 'development' : 'production',
   entry,
   output: {
+    filename: devMode ? '[name].js' : '[name].[contenthash:10].js',
     path: path.resolve(__dirname, 'docs/pass/assets/dist'),
   },
   module: {
