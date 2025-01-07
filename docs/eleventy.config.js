@@ -25,7 +25,6 @@ export default function (eleventyConfig) {
 		format = DATE_OVERRIDE[format] ?? format
 		return DateTime.fromJSDate(date).toFormat(format)
 	})
-	eleventyConfig.addFilter('entries', Object.entries)
 	eleventyConfig.addNunjucksFilter('to_array', (val) => Array.isArray(val) ? val : [val])
 	eleventyConfig.addFilter('excerpt', (content) => content.split('<!--more-->')[0])
 	eleventyConfig.addFilter('has_excerpt', (content) => content.includes('<!--more-->'))
@@ -73,6 +72,11 @@ export default function (eleventyConfig) {
 				}
 			},
 			(tagCount) => Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map((entry) => entry[0])
+		)
+	)
+	eleventyConfig.addCollection('postYears', (c) => parsePosts(c, new Set(),
+			(post, years) => years.add(post.date.getFullYear()),
+			(years) => Array.from(years).sort((a, b) => b - a)
 		)
 	)
 	eleventyConfig.addCollection('postsByYear', (c) => parsePosts(c, {},

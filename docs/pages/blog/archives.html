@@ -6,15 +6,14 @@ entry: blog_tag_cloud
 
 {{ blog.header(base, page_url) }}
 
-{%- set postsByYear = collections.postsByYear | entries | reverse -%}
-
 <div class="tag-cloud mb-4">
-	{%- for year, group in postsByYear %}
-	<a href="#{{ year }}" class="badge text-bg-secondary">{{ year }} <sup>{{ group.length }}</sup></a>
+	{%- for year in collections.postYears %}
+	<a href="#{{ year }}" class="badge text-bg-secondary">{{ year }} <sup>{{ collections.postsByYear[year].length }}</sup></a>
 	{%- endfor %}
 </div>
 
-{%- for year, group in postsByYear %}
+{%- for year in collections.postYears %}
+{%- set group = collections.postsByYear[year] %}
 <div id="{{ year }}" class="card mb-3">
 	<div class="card-header">
 		{{ year }} <sup>{{ group.length }}</sup>
