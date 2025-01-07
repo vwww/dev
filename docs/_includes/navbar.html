@@ -11,7 +11,7 @@
 {%- for item in navbar_root -%}
 {%- if item.dropdown %}
         <li class="nav-item dropdown">
-          <a class="nav-link{% if page.url | starts_with(item.prefix, 1) %} active{% endif %} dropdown-toggle" href="#nav/{{ item.dropdown }}" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
+          <a class="nav-link{% if page.url.startsWith(item.prefix, 1) %} active{% endif %} dropdown-toggle" href="#nav/{{ item.dropdown }}" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{item.name}}</a>
           <ul class="dropdown-menu" role="menu">
           {%- set href2 = item.prefix + '/' -%}
             <li><a class="dropdown-item{% if href2 == href_check %} active{% endif %}" href="{{base}}/{{ href2 }}">List</a></li>

@@ -25,7 +25,6 @@ export default function (eleventyConfig) {
 		format = DATE_OVERRIDE[format] ?? format
 		return DateTime.fromJSDate(date).toFormat(format)
 	})
-	eleventyConfig.addFilter('starts_with', (s, search, pos) => s.startsWith(search, pos))
 	eleventyConfig.addFilter('entries', Object.entries)
 	eleventyConfig.addNunjucksFilter('to_array', (val) => Array.isArray(val) ? val : [val])
 	eleventyConfig.addFilter('excerpt', (content) => content.split('<!--more-->')[0])

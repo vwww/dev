@@ -99,7 +99,7 @@
       <script src="{{assets}}dist/{{ file }}.js"></script>
       {%- endfor %}
     {%- endfor %}
-    {%- if page.url | starts_with('/blog/') %}
+    {%- if page.url.startsWith('/blog/') %}
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         tex2jax: {

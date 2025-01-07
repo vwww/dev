@@ -2,7 +2,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{base}}">Home</a></li>
     {%- for b in breadcrumbs %}
-      {%- if b.prefix != page.url and page_url | starts_with(b.prefix) %}
+      {%- if b.prefix != page.url and page_url.startsWith(b.prefix) %}
         <li class="breadcrumb-item">
           <a href="{{base}}{{ b.prefix }}">{{ b.name }}</a>
         </li>
