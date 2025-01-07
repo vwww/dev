@@ -38,51 +38,39 @@ export default function (eleventyConfig) {
 	// eleventyConfig.addCollection('code', (c) => c.getFilteredByGlob('_code/**'))
 	// eleventyConfig.addCollection('go', (c) => c.getFilteredByGlob('_go/**'))
 
-	function parsePosts (c, initialValue, postCallback, postProcess) {
+	function makePostCollections (c) {
 		const posts = c.getFilteredByTag('blog').reverse()
-		if (!(initialValue && postCallback)) return posts
+		const postsByTag = {}
+		const tagCount = {}
+		const postsByYear = {}
 
 		for (const post of posts) {
-			postCallback(post, initialValue)
-		}
-		return postProcess ? postProcess(initialValue) : initialValue
-	}
-	eleventyConfig.addCollection('posts', (c) => parsePosts(c))
-	eleventyConfig.addCollection('postsByTag', (c) => parsePosts(c, {},
-			(post, tagToPosts) => {
-				for (const tag of post.data.blog_tags) {
-					(tagToPosts[tag] ??= []).push(post)
-				}
+			for (const tag of post.data.blog_tags) {
+				(postsByTag[tag] ??= []).push(post)
+				tagCount[tag] = (tagCount[tag] ?? 0) + 1
 			}
-		)
-	)
-	eleventyConfig.addCollection('postTagsByName', (c) => parsePosts(c, new Set(),
-			(post, tags) => {
-				for (const tag of post.data.blog_tags) {
-					tags.add(tag)
-				}
-			},
-			(tags) => Array.from(tags).sort()
-		)
-	)
-	eleventyConfig.addCollection('postTagsBySize', (c) => parsePosts(c, [],
-			(post, tagCount) => {
-				for (const tag of post.data.blog_tags) {
-					tagCount[tag] = (tagCount[tag] ?? 0) + 1
-				}
-			},
-			(tagCount) => Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map((entry) => entry[0])
-		)
-	)
-	eleventyConfig.addCollection('postYears', (c) => parsePosts(c, new Set(),
-			(post, years) => years.add(post.date.getFullYear()),
-			(years) => Array.from(years).sort((a, b) => b - a)
-		)
-	)
-	eleventyConfig.addCollection('postsByYear', (c) => parsePosts(c, {},
-			(post, yearToPosts) => (yearToPosts[post.date.getFullYear()] ??= []).push(post)
-		)
-	)
+			(postsByYear[post.date.getFullYear()] ??= []).push(post)
+		}
+		return {
+			posts,
+			postsByTag,
+			postTagsByName: Object.keys(postsByTag).sort(),
+			postTagsBySize: Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map((entry) => entry[0]),
+			postsByYear,
+			postYears: Object.keys(postsByYear).sort((a, b) => b - a),
+		}
+	}
+	let postCollections
+	for (const c of [
+		'posts',
+		'postsByTag',
+		'postTagsByName',
+		'postTagsBySize',
+		'postsByYear',
+		'postYears',
+	]) {
+		eleventyConfig.addCollection(c, (collectionsApi) => (postCollections ??= makePostCollections(collectionsApi))[c])
+	}
 
 	eleventyConfig.addDataExtension('yml,yaml', (contents) => yaml.load(contents))
 
