@@ -52,7 +52,10 @@ export default {
       },
       {
         test: /\.css$/i,
-        use: 'css-loader',
+        use: [
+          rspack.CssExtractRspackPlugin.loader,
+          'css-loader',
+        ],
       },
       {
         test: /\.txt$/,
@@ -99,6 +102,10 @@ export default {
         }
       },
       serialize: JSON.stringify,
+    }),
+    new rspack.CssExtractRspackPlugin({
+      filename: '[name]', // [name] already has .css suffix
+      chunkFilename: devMode ? '[id].css' : '[id].[contenthash].css',
     }),
     new rspack.ProgressPlugin(),
   ],
