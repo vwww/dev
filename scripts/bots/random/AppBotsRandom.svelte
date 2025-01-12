@@ -70,9 +70,7 @@ p {
 </style>
 
 {#if rankedWords}
-  <div class="btn-group d-flex mb-3" role="group">
-    <button class="btn btn-primary" onclick={randomize}>Randomize</button>
-  </div>
+  <button class="btn btn-primary d-block w-100 mb-3" onclick={randomize}>Randomize</button>
 {:else}
   <div class="alert alert-danger" role="alert">This page is loading the word list&hellip;</div>
 {/if}
