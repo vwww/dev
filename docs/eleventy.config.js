@@ -20,14 +20,15 @@ export default function (eleventyConfig) {
 		'jekyll':
 			'yyyy-MM-dd HH:mm:ss ZZZ',
 	}
+	const EXCERPT_SEPARATOR = '<!--more-->'
 	eleventyConfig.addNunjucksFilter('date', (date, format) => {
 		date = date == 'now' ? new Date() : new Date(date)
 		format = DATE_OVERRIDE[format] ?? format
 		return DateTime.fromJSDate(date).toFormat(format)
 	})
 	eleventyConfig.addNunjucksFilter('to_array', (val) => Array.isArray(val) ? val : [val])
-	eleventyConfig.addFilter('excerpt', (content) => content.split('<!--more-->')[0])
-	eleventyConfig.addFilter('has_excerpt', (content) => content.includes('<!--more-->'))
+	eleventyConfig.addFilter('excerpt', (content) => content.split(EXCERPT_SEPARATOR)[0])
+	eleventyConfig.addFilter('has_excerpt', (content) => content.includes(EXCERPT_SEPARATOR))
 	eleventyConfig.addFilter('get_3d', (arr, key) => arr.find((v) => v[0] == key)[1])
 
 	eleventyConfig.setNunjucksEnvironmentOptions({
