@@ -162,22 +162,12 @@ const highchartsOptions: Highcharts.Options = $derived({
     shared: true,
     crosshairs: true,
   },
-  legend: {
-    enabled: false
-  },
   series: [
     {
       type: 'line',
       name: 'pokes (highest first)',
       data: yData[0],
       pointStart: 1,
-    },
-    {
-      type: 'line',
-      name: 'pokes (lowest first)',
-      data: yData[0],
-      pointStart: yData[0]?.length,
-      pointInterval: -1,
     },
     {
       type: 'line',
@@ -196,10 +186,19 @@ const highchartsOptions: Highcharts.Options = $derived({
     },
     {
       type: 'line',
+      name: 'pokes (lowest first)',
+      data: yData[0],
+      pointStart: yData[0]?.length,
+      pointInterval: -1,
+      visible: false,
+    },
+    {
+      type: 'line',
       name: 'days since oldest (recent first)',
       yAxis: 2,
       data: yData[2],
       pointStart: 1,
+      visible: false,
     },
     {
       type: 'line',
@@ -208,6 +207,7 @@ const highchartsOptions: Highcharts.Options = $derived({
       data: yData[1],
       pointStart: yData[0]?.length,
       pointInterval: -1,
+      visible: false,
     },
   ]
 })
