@@ -31,3 +31,22 @@ a.navbar-brand {
 	margin: 0.5rem 0 1rem;
 	border-left: 5px solid var(--bs-secondary);
 }
+
+/* Prism.js show language */
+pre[class*='language-'] {
+	position: relative;
+
+	&[data-language]::before {
+		content: attr(data-language);
+		color: black;
+		background-color: #ccc;
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-size: 0.9em;
+		border-radius: 0 0 0 5px;
+		padding: 0 0.5em;
+		text-shadow: none;
+	}
+}

@@ -3,8 +3,16 @@ import yaml from 'js-yaml'
 import markdownItAnchor from 'markdown-it-anchor'
 // import mila from 'markdown-it-link-attributes'
 import { DateTime } from 'luxon'
+import syntaxHighlight from '@11ty/eleventy-plugin-syntaxhighlight'
 
 export default function (eleventyConfig) {
+	eleventyConfig.addPlugin(syntaxHighlight, {
+		preAttributes: {
+			tabindex: 0,
+			'data-language': ({ language }) => language,
+		},
+	})
+
 	eleventyConfig.setServerPassthroughCopyBehavior('passthrough')
 
 	// eleventyConfig.ignores.add('pass')

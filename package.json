@@ -26,6 +26,7 @@
   "type": "module",
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
     "@rspack/cli": "^1.1.8",
     "@rspack/core": "^1.1.8",
     "@types/bootstrap": "^5.2.10",
@@ -51,6 +52,8 @@
     "eslint-plugin-svelte": "^2.46.1",
     "fast-glob": "^3.3.3",
     "markdown-it-anchor": "^9.2.0",
+    "prism-themes": "^1.9.0",
+    "prismjs": "^1.29.0",
     "rimraf": "^6.0.1",
     "rspack-manifest-plugin": "^5.0.3",
     "sass-embedded": "^1.83.1",
