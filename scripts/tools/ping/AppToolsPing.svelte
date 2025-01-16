@@ -95,29 +95,27 @@ function stop () {
   <div class="col-12">
     <h3>Results</h3>
     {#if rsPing && rsJitter}
-      {#snippet rollingStatsDisplay(stats: [name: string, stats: RollingStats][])}
-        <table class="table table-striped table-bordered table-hover w-auto">
-          <thead>
+      {@const stats: [name: string, stats: RollingStats][] = [['Ping', rsPing], ['Jitter', rsJitter]]}
+      <table class="table table-striped table-bordered table-hover w-auto">
+        <thead>
+          <tr>
+            <th>Value</th>
+            {#each stats as [name]}
+              <th scope="col">{name}</th>
+            {/each}
+          </tr>
+        </thead>
+        <tbody>
+          {#each metric as m}
             <tr>
-              <th>Value</th>
-              {#each stats as [name]}
-                <th scope="col">{name}</th>
+              <th scope="row">{m[0]}</th>
+              {#each stats as [_, stat]}
+                <td class="text-end">{m[1](stat)}</td>
               {/each}
             </tr>
-          </thead>
-          <tbody>
-            {#each metric as m}
-              <tr>
-                <th scope="row">{m[0]}</th>
-                {#each stats as [_, stat]}
-                  <td class="text-end">{m[1](stat)}</td>
-                {/each}
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      {/snippet}
-      {@render rollingStatsDisplay([['Ping', rsPing], ['Jitter', rsJitter]])}
+          {/each}
+        </tbody>
+      </table>
     {:else}
       Click Start!
     {/if}
