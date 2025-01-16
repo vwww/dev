@@ -10,7 +10,7 @@ interface Props {
   onDisconnect: () => void
   onSetActive: (active: boolean) => void
   onSetReady: (ready: boolean) => void
-  children?: Snippet
+  children: Snippet
 }
 
 const {
@@ -66,6 +66,6 @@ const {
     {/if}
   </div>
   <div class="card-body">
-    {@render children?.()}
+    {@render children()}
   </div>
 </div>

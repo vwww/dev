@@ -4,7 +4,7 @@ import type { Snippet } from 'svelte'
 interface Props {
   canClear: boolean
   onClear: () => void
-  children?: Snippet
+  children: Snippet
 }
 
 const { canClear, onClear, children }: Props = $props()
@@ -17,5 +17,5 @@ const { canClear, onClear, children }: Props = $props()
       class:d-none={canClear}
       onclick={onClear}>Clear</button>
   </div>
-  {@render children?.()}
+  {@render children()}
 </div>

@@ -5,7 +5,7 @@ import { Winner } from './game'
 
 interface Props {
   winner: Winner
-  children?: Snippet<[{ i: number }]>
+  children: Snippet<[{ i: number }]>
 }
 
 const { winner, children }: Props = $props()
@@ -18,7 +18,7 @@ const cellNumbers = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
     {#each cellNumbers as row}
       <tr>
       {#each row as i}
-        {@render children?.({ i })}
+        {@render children({ i })}
       {/each}
       </tr>
     {/each}

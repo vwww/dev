@@ -12,8 +12,8 @@ interface Props {
   disableNew?: boolean
   refreshTimeoutBase?: number
   refreshTimeoutJitter?: number
-  children?: Snippet
-  newRoom?: Snippet
+  children: Snippet
+  newRoom: Snippet
 }
 
 const {
@@ -70,7 +70,7 @@ onDestroy(() => clearTimeout(refreshTimeout))
   </div>
   <div class="card-body" class:d-none={collapsed} style="overflow-y: scroll; height: 50vh">
     <ProgressBar startTime={refreshLast} endTime={refreshNext} />
-    {@render children?.()}
+    {@render children()}
   </div>
 </div>
 
@@ -83,7 +83,7 @@ onDestroy(() => clearTimeout(refreshTimeout))
         <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        {@render newRoom?.()}
+        {@render newRoom()}
       </div>
       <div class="modal-footer">
         <button class="btn btn-danger me-auto" onclick={onResetRoomOptions}>Reset</button>
