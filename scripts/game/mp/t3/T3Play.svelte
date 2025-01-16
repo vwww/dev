@@ -82,16 +82,16 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
     {/if}
     Get 3 in a row to win.
   </p>
-  <Board  winner={$winner}>
-    {#snippet children({ i })}
-        <BoardCell
+  <Board winner={$winner}>
+    {#snippet cell(i)}
+      <BoardCell
         winner={$winner}
         mark={($boardState >> (i << 1)) & 3}
         markHover={canMove && !(($boardBad >> i) & 1) ? $myPlayer : 0}
         hintClass={(($boardState >> (i << 1)) & 3) || !(($boardBad >> i) & 1) ? '' : 'hlose'}
         onMove={() => gameState.sendMove(i)} />
-          {/snippet}
-    </Board>
+    {/snippet}
+  </Board>
 
   <div>
     Moves:
