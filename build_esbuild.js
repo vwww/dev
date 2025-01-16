@@ -17,6 +17,7 @@ for (let e of fg.sync('*.scss', { cwd: path.resolve(__dirname, 'styles') })) {
 }
 
 const config = {
+  logLevel: 'error',
   minify: !devMode,
   entryPoints: entryCSS,
   outdir: 'docs/pass/assets/dist',
