@@ -1,5 +1,5 @@
 <script lang="ts">
-import { parseManifest, type NodeBrowse, type NodeDirectory } from './nodeTypes'
+import { parseManifest, type NodeBrowse, type NodeDirectory } from './node'
 
 const DOWNLOAD_PREFIX = 'https://v-dl.pages.dev/'
 const MANIFEST_URL = `${DOWNLOAD_PREFIX}manifest.json`
