@@ -29,7 +29,7 @@ function getPathString (path: NodeDirectory[]): string {
 }
 
 function getChildPath (path: NodeDirectory[], child: NodeBrowse): string {
-  return path.slice(1).map(node => node.name + '/').join('') + child.name
+  return `${getPathString(path)}/${child.name}`
 }
 
 function formatSize (s: number, noreduce = false): string {
