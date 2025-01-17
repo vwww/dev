@@ -29,8 +29,8 @@ let modeCount = $state(false)
 const names = ['Rock', 'Paper', 'Scissors']
 let count = $state([1, 2, 3])
 const battleResult = $derived(
-  Array(3).fill(undefined).map((_, i) =>
-    Array(3).fill(undefined).map((_, j) => {
+  [0, 1, 2].map((i) =>
+    [0, 1, 2].map((j) => {
       if (i === j) return 0
       const defaultWin = ((i + 1) % 3 === j) === modeInverted
       if (modeCount) {
@@ -44,7 +44,7 @@ const battleResult = $derived(
     })
   )
 )
-const [totalPlayers, totalWins, totalLoss, totalTies, totalRound, ltw] = $derived.by(() => {
+const [totalPlayers, totalWins, totalLoss, totalTies, totalBattle, totalRound, ltw] = $derived.by(() => {
   let totalPlayers = 0
   let totalWins = 0
   let totalLoss = 0
@@ -67,7 +67,7 @@ const [totalPlayers, totalWins, totalLoss, totalTies, totalRound, ltw] = $derive
     totalRound += Math.sign(ltw[i][2] - ltw[i][0]) * count[i]
   }
 
-  return [totalPlayers, totalWins, totalLoss, totalTies, totalRound, ltw]
+  return [totalPlayers, totalWins, totalLoss, totalTies, totalWins - totalLoss, totalRound, ltw]
 })
 const totalResults = $derived(totalPlayers * (totalPlayers - 1))
 const totalBattles = $derived(totalResults / 2)
@@ -127,14 +127,16 @@ const PRESETS: Preset[] = [
   </thead>
   <tbody>
     {#each names as name, id}
+      {@const [loss, tie, win] = ltw[id]}
+      {@const delta = win - loss}
       <tr>
         <td>{name}</td>
         <td><input type="number" min="0" max="94906266" bind:value={count[id]}></td>
-        <td>{@render formatResult(ltw[id][2], count[id])}</td>
-        <td>{@render formatResult(ltw[id][0], count[id])}</td>
-        <td>{@render formatResult(ltw[id][1], count[id])}</td>
-        <td class={count[id] ? formatResultClass(ltw[id][2] - ltw[id][0]) : ''}>{@render formatResult(ltw[id][2] - ltw[id][0], count[id], formatScore)}</td>
-        <td class={count[id] ? formatResultClass(ltw[id][2] - ltw[id][0]) : ''}>{@render formatResult(Math.sign(ltw[id][2] - ltw[id][0]), count[id], formatScore)}</td>
+        <td>{@render formatResult(win, count[id])}</td>
+        <td>{@render formatResult(loss, count[id])}</td>
+        <td>{@render formatResult(tie, count[id])}</td>
+        <td class={count[id] ? formatResultClass(delta) : ''}>{@render formatResult(delta, count[id], formatScore)}</td>
+        <td class={count[id] ? formatResultClass(delta) : ''}>{@render formatResult(Math.sign(delta), count[id], formatScore)}</td>
       </tr>
     {/each}
     <tr>
@@ -150,7 +152,7 @@ const PRESETS: Preset[] = [
       <td>{formatNum(totalWins)}</td>
       <td>{formatNum(totalLoss)}</td>
       <td>{formatNum(totalTies)}</td>
-      <td class={formatResultClass(totalWins - totalLoss)}>{formatScore(totalWins - totalLoss)}</td>
+      <td class={formatResultClass(totalBattle)}>{formatScore(totalBattle)}</td>
       <td class={formatResultClass(totalRound)}>{formatScore(totalRound)}</td>
     </tr>
   </tbody>
