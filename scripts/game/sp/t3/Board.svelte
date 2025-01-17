@@ -29,11 +29,11 @@ const {
 
 <Board {winner}>
   {#snippet cell(i)}
-    {@const boardValue = $derived((board >> (i << 1)) & 3)}
+    {@const boardValue = (board >> (i << 1)) & 3}
 
-    {@const memoEntry = $derived(!boardValue && showHints && !winner && getMemo?.(board | (mark << (i << 1))))}
+    {@const memoEntry = !boardValue && showHints && !winner && getMemo?.(board | (mark << (i << 1)))}
 
-    {@const [hintClass, hintVal] = $derived.by(function () {
+    {@const [hintClass, hintVal] = (function () {
       if (!memoEntry) return []
 
       const [typeDep, countPathsRaw] = memoEntry
@@ -46,7 +46,7 @@ const {
       const scoreType = !val ? 'tie' : val < 0 ? 'win' : 'lose'
 
       return [`h${scoreType}${noWin ? ' noW' : ''}${noTie ? ' noT' : ''}${noLose ? ' noL': ''}`, val]
-    })}
+    })()}
     <BoardCell {winner} mark={boardValue} markHover={mark} {hintClass} {hintVal} onMove={() => onMove(i)} />
   {/snippet}
 </Board>
