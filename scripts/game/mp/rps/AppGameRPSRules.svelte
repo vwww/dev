@@ -13,20 +13,6 @@ function formatScore (score: number): string {
   return (score >= 0 ? '+' : '') + formatNum(score)
 }
 
-function formatResult (score: number, count: number, fmt?: (n: number) => string, zero?: string): string {
-  // TODO: move HTML-generating function to subcomponent
-  if (!count) return (zero || 'N/A')
-
-  if (!fmt) fmt = formatNum
-
-  var result = fmt(score)
-  if (count > 1) {
-    score *= count
-    result += ' each<br>' + fmt(score) + ' total'
-  }
-  return result
-}
-
 function formatResultClass (result: number): string {
   if (!result) {
     return 'table-warning'
@@ -40,31 +26,10 @@ function formatResultClass (result: number): string {
 let modeInverted = $state(false)
 let modeCount = $state(false)
 
-const emptyResult: [string, string] = ['', '']
-const emptyResultRow = [emptyResult, emptyResult, emptyResult]
-
 const names = ['Rock', 'Paper', 'Scissors']
 let count = $state([1, 2, 3])
-let ltw = $state([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
-let pairResults = $state([emptyResultRow, emptyResultRow, emptyResultRow])
-// let scores = [0, 0, 0]
-let totalPlayers = $state(0)
-let totalWins = $state(0)
-let totalLoss = $state(0)
-let totalTies = $state(0)
-let totalRound = $state(0)
-const totalResults = $derived(totalPlayers * (totalPlayers - 1))
-const totalBattles = $derived(totalResults / 2)
-
-$effect(() => {
-  totalPlayers = 0
-  totalWins = 0
-  totalLoss = 0
-  totalTies = 0
-  totalRound = 0
-  ltw = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-
-  const battleResult = Array(3).fill(undefined).map((_, i) =>
+const battleResult = $derived(
+  Array(3).fill(undefined).map((_, i) =>
     Array(3).fill(undefined).map((_, j) => {
       if (i === j) return 0
       const defaultWin = ((i + 1) % 3 === j) === modeInverted
@@ -78,38 +43,34 @@ $effect(() => {
       return defaultWin ? 1 : -1
     })
   )
+)
+const [totalPlayers, totalWins, totalLoss, totalTies, totalRound, ltw] = $derived.by(() => {
+  let totalPlayers = 0
+  let totalWins = 0
+  let totalLoss = 0
+  let totalTies = 0
+  let totalRound = 0
+  const ltw = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
   for (let i = 0; i < 3; ++i) {
     for (let j = 0; j < 3; ++j) {
-      let resultHTML = 'N/A'
-      let resultClass = ''
-
-      let times = count[j]
-      if (times && i === j) times--
+      const times = count[j] - (i === j ? 1 : 0)
       if (count[i] && times) {
-        let result = battleResult[i][j]
+        const result = battleResult[i][j]
         ltw[i][result + 1] += times
-        if (!result) {
-          resultHTML = 'Tie'
-        } else if (result > 0) {
-          resultHTML = 'Win'
-        } else {
-          resultHTML = 'Lose'
-        }
-        resultHTML += '<br>' + formatResult(times, count[i], formatTimes)
-        resultClass = formatResultClass(result)
       }
-
-      pairResults[i][j] = [resultHTML, resultClass]
     }
-
     totalPlayers += count[i]
     totalWins += ltw[i][2] * count[i]
     totalLoss += ltw[i][0] * count[i]
     totalTies += ltw[i][1] * count[i]
     totalRound += Math.sign(ltw[i][2] - ltw[i][0]) * count[i]
   }
+
+  return [totalPlayers, totalWins, totalLoss, totalTies, totalRound, ltw]
 })
+const totalResults = $derived(totalPlayers * (totalPlayers - 1))
+const totalBattles = $derived(totalResults / 2)
 
 type number3 = [r: number, p: number, s: number]
 type Preset = [...n: number3, desc: string]
@@ -125,6 +86,17 @@ const PRESETS: Preset[] = [
   [2, 1, 1, '1 each + 1'],
 ]
 </script>
+
+{#snippet formatResult(score: number, count: number, fmt: (n: number) => string = formatNum, zero: string = 'N/A')}
+{#if count}
+  {fmt(score)}
+  {#if count > 1}
+    each<br>{fmt(score * count)} total
+  {/if}
+{:else}
+  {zero}
+{/if}
+{/snippet}
 
 <div class="btn-group d-flex mb-2" role="group">
   <button onclick={() => modeInverted = !modeInverted} class="w-100 btn {modeInverted ? 'active btn' : 'btn-outline'}-success">Inverted</button>
@@ -158,11 +130,11 @@ const PRESETS: Preset[] = [
       <tr>
         <td>{name}</td>
         <td><input type="number" min="0" max="94906266" bind:value={count[id]}></td>
-        <td>{@html formatResult(ltw[id][2], count[id])}</td>
-        <td>{@html formatResult(ltw[id][0], count[id])}</td>
-        <td>{@html formatResult(ltw[id][1], count[id])}</td>
-        <td class={count[id] ? formatResultClass(ltw[id][2] - ltw[id][0]) : ''}>{@html formatResult(ltw[id][2] - ltw[id][0], count[id], formatScore)}</td>
-        <td class={count[id] ? formatResultClass(ltw[id][2] - ltw[id][0]) : ''}>{@html formatResult(Math.sign(ltw[id][2] - ltw[id][0]), count[id], formatScore)}</td>
+        <td>{@render formatResult(ltw[id][2], count[id])}</td>
+        <td>{@render formatResult(ltw[id][0], count[id])}</td>
+        <td>{@render formatResult(ltw[id][1], count[id])}</td>
+        <td class={count[id] ? formatResultClass(ltw[id][2] - ltw[id][0]) : ''}>{@render formatResult(ltw[id][2] - ltw[id][0], count[id], formatScore)}</td>
+        <td class={count[id] ? formatResultClass(ltw[id][2] - ltw[id][0]) : ''}>{@render formatResult(Math.sign(ltw[id][2] - ltw[id][0]), count[id], formatScore)}</td>
       </tr>
     {/each}
     <tr>
@@ -197,8 +169,18 @@ const PRESETS: Preset[] = [
     {#each names as name, i}
       <tr>
         <td>{name}</td>
-        {#each pairResults[i] as result}
-          <td class={result[1]}>{@html result[0]}</td>
+        {#each names, j}
+          {@const times = count[j] - (i === j ? 1 : 0)}
+          {#if count[i] && times}
+            {@const result = battleResult[i][j]}
+            <td class={formatResultClass(result)}>
+              {['Lose', 'Tie', 'Win'][result + 1]}
+              <br>
+              {@render formatResult(times, count[i], formatTimes)}
+            </td>
+          {:else}
+            <td>N/A</td>
+          {/if}
         {/each}
       </tr>
     {/each}
