@@ -52,7 +52,7 @@ const V4 = $derived(parts[4] === C2)
 const V5 = $derived(parts[5] === '01')
 const V7 = $derived(parts[7] === '000000')
 const VT = $derived(!!UTD && isFinite(+UTD))
-const VA = $derived(V1 && V4 && V5 && V7 && VT)
+const VA = $derived(V1 && V4 && V5 && V7)
 </script>
 
 <script lang="ts" module>
@@ -93,7 +93,7 @@ export function generate1_0 (timeHex: string, rHex: string): string {
   <div class="card-header">
     <h2 class="card-title">
       <a data-bs-toggle="collapse" href="#collapse1">
-        v1 Format <span class={(VA ? 'badge text-bg-success' : 'd-none')}>Valid</span>
+        v1 Format <span class={(VA ? `badge text-bg-${VT ? 'success' : 'warning'}` : 'd-none')}>Valid</span>
       </a>
     </h2>
   </div>
