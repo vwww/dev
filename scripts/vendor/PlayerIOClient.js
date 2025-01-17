@@ -1,4 +1,4 @@
-if (typeof (_pio) == 'undefined') { _pio = {} }
+if (typeof (window._pio) == 'undefined') { window._pio = {} }
 (function () {
 	_pio.channel = function () { };
 	_pio.channel.prototype.call = function (method, args, successCallback, errorCallback, converter) {
@@ -166,7 +166,7 @@ if (typeof (_pio) == 'undefined') { _pio = {} }
 * );
 * </listing>
 */
-PlayerIO = {
+window.PlayerIO = {
 	/**
 	* If set to true, all API Requests will be encrypted using TLS/SSL. Be aware that this will cause a performance degradation by introducting secure connection negotiation latency for all requests.
 	* @type bool
@@ -553,7 +553,7 @@ if (!JSON) {
 	var flashUrl = "http://192.168.30.154/html5client/FlashFallback/bin-debug/FlashFallback.swf"
 
 	// this method gets called back from flash
-	__pio_flashfallback_callback__ = function () {
+	window.__pio_flashfallback_callback__ = function () {
 		var callback = callbacks[arguments[0]];
 		if (callback) {
 			var args = []
@@ -854,7 +854,7 @@ if (!JSON) {
 * );
 * </listing>
 */
-PlayerIOError = function (code, message, stack) {
+window.PlayerIOError = function (code, message, stack) {
 	/** The PlayerIO error code for this error
 	* @type string
 	*/
@@ -905,7 +905,7 @@ PlayerIOError.prototype = new Error();
 * );
 * </listing>
 */
-PlayerIOErrorCode = {
+window.PlayerIOErrorCode = {
 	/** The method requested is not supported */
 	UnsupportedMethod:"UnsupportedMethod",
 	/** A general error occurred */
