@@ -48,7 +48,7 @@ ads:
       <td colspan="3"><a href="{{ ads.link }}">{{ ads.text }}</a></td>
     </tr>
     {%- for ad in ads.images %}
-    {%- set file = ad.file or ad.w + ' ' + ad.h %}
+    {%- set file = ad.file or ad.w + '-' + ad.h %}
     {%- set adl = ads.prefix + file + ads.suffix -%}
     {%- set adf %}<a href="{{ adl }}"><img src="{{ adl }}" alt="{{ ads.alt }}" width="{{ ad.w }}" height="{{ ad.h }}" /></a>{% endset -%}
     <tr>
