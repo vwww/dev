@@ -67,12 +67,13 @@ tick()
   border: solid 0.2em black;
   opacity: 0.5;
   overflow: hidden;
-}
-.play button {
-  position: relative;
-  width: 29%;
-  height: 15%;
-  font-size: 200%;
-  opacity: 1;
+
+  button {
+    position: relative;
+    width: 29%;
+    height: 15%;
+    font-size: 200%;
+    opacity: 1;
+  }
 }
 </style>

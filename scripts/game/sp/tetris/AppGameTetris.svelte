@@ -423,12 +423,12 @@ table {
 td {
   width: 3vmin;
   height: 3vmin;
-}
-td.ghost {
-  opacity: 0.2;
-}
-td.ghostLine {
-  animation: blinker 0.5s linear infinite;
+  &.ghost {
+    opacity: 0.2;
+  }
+  &.ghostLine {
+    animation: blinker 0.5s linear infinite;
+  }
 }
 
 @keyframes blinker {

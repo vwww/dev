@@ -78,19 +78,19 @@ function alignv (cell: CellInfo): string {
 
   color: #000;
   font: 2.5vmin monospace;
+
+  div {
+    position: absolute;
+  }
+
+  :nth-child(1) { width: 30%; height: 51%; left: 35%; top: 0; }
+  :nth-child(2) { width: 30%; height: 51%; left: 35%; bottom: 0; }
+  :nth-child(3) { width: 51%; height: 30%; left: 0; top: 35%; }
+  :nth-child(4) { width: 51%; height: 30%; right: 0; top: 35%; }
+
+  .fill-y { background-color: #444; }
+  .fill-m { background-color: #888; }
 }
-
-.fill div {
-  position: absolute;
-}
-
-.fill :nth-child(1) { width: 30%; height: 51%; left: 35%; top: 0; }
-.fill :nth-child(2) { width: 30%; height: 51%; left: 35%; bottom: 0; }
-.fill :nth-child(3) { width: 51%; height: 30%; left: 0; top: 35%; }
-.fill :nth-child(4) { width: 51%; height: 30%; right: 0; top: 35%; }
-
-.fill .fill-y { background-color: #444; }
-.fill .fill-m { background-color: #888; }
 
 /*
 inspired by

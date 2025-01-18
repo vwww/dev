@@ -36,73 +36,83 @@ td {
   margin: 0.6em;
   position: relative;
   width: 7rem;
+
+  &.win {
+    background-color: #696969;
+  }
+
+  &:before, &:after {
+    position: absolute;
+  }
+
+  &:before {
+    color: #eee;
+    left: 0.3em;
+    top: 0; /* there is spacing from the font? */
+  }
+
+  &:after {
+    color: white;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    text-align: center;
+    line-height: 7rem;
+  }
+
+  &:before { font-size: 2em }
+  &:after { font-size: 5.6em }
+  &.p0:after { font-size: 4.6rem }
+  &.hlose,
+  &.htie.noW { background-color: #cd5c5c }
+  &.hwin,
+  &.htie.noL { background-color: #20b2aa }
+
+  /* current player can force a win */
+  &.hwin:after {
+    /* & { content: "+T-" } */
+    &.noL { content: "+T" }
+    &.noT { content: "+-" }
+    &.noL.noT { content: "+" }
+  }
+
+  /* opponent can force a win */
+  &.hlose:after {
+    /*  { content: "-T+" } */
+    &.noW { content: "-T" }
+    &.noT { content: "-+" }
+    &.noW.noT { content: "-" }
+  }
+
+  /* win by move number (hide if pending) */
+  &[data-hintTurn]:not(:hover):before { content: attr(data-hintTurn) }
+
+  /* no player can force a win */
+  &.htie {
+    &.noL,
+    &.noW { opacity: 0.5 }
+    &.noL.noW { opacity: inherit }
+
+    &.noW:after { content: "-?" }
+    &.noL:after { content: "+?" }
+    &.noL.noW { background-color: #ffa500 }
+    &.noL.noW:after { content: "T" }
+  }
+
+  /* made and pending moves */
+  &.p1, &.p0.n1:hover {
+    background-color: #9acd32;
+    &:after { content: "X" }
+  }
+  &.p2, &.p0.n2:hover {
+    background-color: #ff7f50;
+    &:after { content: "O" }
+  }
+
+  &.p0.n1, &.p0.n2 {
+    cursor: pointer;
+    &:hover { opacity: 0.5 }
+  }
 }
-
-td.win {
-  background-color: #696969;
-}
-
-td:before, td:after {
-  position: absolute;
-}
-
-td:before {
-  color: #eee;
-  left: 0.3em;
-  top: 0; /* there is spacing from the font? */
-}
-
-td:after {
-  color: white;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  top: 0;
-  text-align: center;
-  line-height: 7rem;
-}
-
-td:before { font-size: 2em }
-td:after { font-size: 5.6em }
-td.p0:after { font-size: 4.6rem }
-td.hlose,
-td.htie.noW { background-color: #cd5c5c }
-td.hwin,
-td.htie.noL { background-color: #20b2aa }
-
-/* current player can force a win */
-/* td.hwin:after { content: "+T-" } */
-td.hwin.noL:after { content: "+T" }
-td.hwin.noT:after { content: "+-" }
-td.hwin.noL.noT:after { content: "+" }
-
-/* opponent can force a win */
-/* td.hlose:after { content: "-T+" } */
-td.hlose.noW:after { content: "-T" }
-td.hlose.noT:after { content: "-+" }
-td.hlose.noW.noT:after { content: "-" }
-
-/* win by move number (hide if pending) */
-td[data-hintTurn]:not(:hover):before { content: attr(data-hintTurn) }
-
-/* no player can force a win */
-td.htie.noL,
-td.htie.noW { opacity: 0.5 }
-td.htie.noL.noW { opacity: inherit }
-
-td.htie.noW:after { content: "-?" }
-td.htie.noL:after { content: "+?" }
-td.htie.noL.noW { background-color: #ffa500 }
-td.htie.noL.noW:after { content: "T" }
-
-/* made and pending moves */
-td.p1, td.p0.n1:hover { background-color: #9acd32 }
-td.p2, td.p0.n2:hover { background-color: #ff7f50 }
-
-td.p0.n1, td.p0.n2 { cursor: pointer; }
-
-td.p0.n1:hover, td.p0.n2:hover { opacity: 0.5 }
-
-td.p1:after, td.p0.n1:hover:after { content: "X" }
-td.p2:after, td.p0.n2:hover:after { content: "O" }
 </style>

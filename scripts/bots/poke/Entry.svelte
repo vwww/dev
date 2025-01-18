@@ -63,9 +63,9 @@ li {
   height: 80px;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-}
 
-li.indent { margin-left: 1em; }
+  &.indent { margin-left: 1em; }
+}
 
 h1 {
   position: absolute;
@@ -79,23 +79,23 @@ h1 {
   height: 38px;
   line-height: 38px;
   font-size: 1.5em;
-}
 
-h1.ranko {
-  left: inherit;
-  right: 80px;
-  background-color: #444;
-  min-width: 30px;
-  height: 19px;
-  line-height: 19px;
-  font-size: 1em;
+  &.ranko {
+    left: inherit;
+    right: 80px;
+    background-color: #444;
+    min-width: 30px;
+    height: 19px;
+    line-height: 19px;
+    font-size: 1em;
+  }
+  &.tie { background-color: #ee5500; }
+  &[data-rank="1"] { background-color: #0080b0; }
+  &[data-rank="2"] { background-color: #7ac9de; }
+  &[data-rank="3"] { background-color: #6aad2d; }
+  &[data-rank="4"] { background-color: #cc8300; }
+  &[data-rank="5"] { background-color: #cc1100; }
 }
-h1.tie { background-color: #ee5500; }
-h1[data-rank="1"] { background-color: #0080b0; }
-h1[data-rank="2"] { background-color: #7ac9de; }
-h1[data-rank="3"] { background-color: #6aad2d; }
-h1[data-rank="4"] { background-color: #cc8300; }
-h1[data-rank="5"] { background-color: #cc1100; }
 
 img {
   position: absolute;
@@ -115,10 +115,10 @@ h3 {
   left: 12px;
   bottom: 8px;
   font-size: 1.8em;
-}
-h3::before {
-  content: url('../../assets/victorz/poke.png');
-  padding-right: 0.25em;
+  &::before {
+    content: url('../../assets/victorz/poke.png');
+    padding-right: 0.25em;
+  }
 }
 
 span {

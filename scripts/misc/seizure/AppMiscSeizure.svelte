@@ -311,11 +311,13 @@ updateWindowSize()
   right: 0;
   z-index: 10000;
 }
-option.maxlag { background: #800 }
-option.lag { background: #f77 }
-option.def { background: #cf7 }
-option.slow { background: #fc7 }
-option.sslow { background: #7ad }
-option.ssslow { background: #ace }
+option {
+  &.maxlag { background: #800 }
+  &.lag { background: #f77 }
+  &.def { background: #cf7 }
+  &.slow { background: #fc7 }
+  &.sslow { background: #7ad }
+  &.ssslow { background: #ace }
+}
 optgroup { background: #aaa }
 </style>

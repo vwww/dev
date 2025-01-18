@@ -53,25 +53,29 @@ function cellClass (board: number, i: number, legalMove: boolean) {
   border-collapse: separate;
   border-spacing: .6vmin;
   background-color: #a9a9a9;
-}
 
-.innerGrid.p1 { background-color: #008000 }
-.innerGrid.p2 { background-color: #ffa07a }
-.innerGrid.p3 { background-color: #add8e6 }
+  &.p1 { background-color: #008000 }
+  &.p2 { background-color: #ffa07a }
+  &.p3 { background-color: #add8e6 }
+}
 
 .innerCell {
   width: 6vmin;
   height: 6vmin;
   opacity: 0.6;
+
+  &.p0 { background-color: #696969 }
+  &.p1 { background-color: #9acd32; opacity: 1; }
+  &.p2 { background-color: #ff7f50; opacity: 1; }
+  &.p3 { background-color: #98afc7 }
+
+  &.canMove {
+    &.p0 { cursor: not-allowed }
+    &.p3 { cursor: pointer }
+  }
+  &.p3:hover {
+    .m1 & { background-color: #9acd32 }
+    .m2 & { background-color: #ff7f50 }
+  }
 }
-
-.innerCell.p0 { background-color: #696969 }
-.innerCell.p1 { background-color: #9acd32; opacity: 1; }
-.innerCell.p2 { background-color: #ff7f50; opacity: 1; }
-.innerCell.p3 { background-color: #98afc7 }
-
-.innerCell.canMove.p0 { cursor: not-allowed }
-.innerCell.canMove.p3 { cursor: pointer }
-.m1 .innerCell.p3:hover { background-color: #9acd32 }
-.m2 .innerCell.p3:hover { background-color: #ff7f50 }
 </style>

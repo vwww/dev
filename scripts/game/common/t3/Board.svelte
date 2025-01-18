@@ -33,8 +33,9 @@ table {
   border-spacing: 10px;
   margin: auto;
   margin-bottom: 10px;
+
+  &.w1 { background-color: #008000 }
+  &.w2 { background-color: #ffa07a }
+  &.w3 { background-color: #a9a9a9 }
 }
-table.w1 { background-color: #008000 }
-table.w2 { background-color: #ffa07a }
-table.w3 { background-color: #a9a9a9 }
 </style>
