@@ -47,7 +47,6 @@ td.win, td.n0 {
 }
 
 td:before, td:after {
-  pointer-events: none;
   position: absolute;
 }
 

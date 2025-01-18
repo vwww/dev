@@ -91,7 +91,6 @@ function render (): void {
       .attr('y', (d) => 10 + 5 + d.y + d.height / 2)
       .attr('text-anchor', 'middle')
       .attr('fill', '#fff')
-      .style('pointer-events', 'none')
 
   const xNow = xScale(Date.now())
   curTimeLine
