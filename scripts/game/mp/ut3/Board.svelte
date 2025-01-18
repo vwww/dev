@@ -29,7 +29,6 @@ function cellClass (board: number, i: number, legalMove: boolean) {
                 <tr>
                 {#each row as j}
                   <td class="innerCell p{cellClass(boardState.boards[i], j, !((boardState.boardRestrict[i] >> j) & 1))}"
-                    class:canMove={markHover}
                     onclick={() => onMove(i, j)}></td>
                 {/each}
                 </tr>
@@ -69,7 +68,7 @@ function cellClass (board: number, i: number, legalMove: boolean) {
   &.p2 { background-color: #ff7f50; opacity: 1; }
   &.p3 { background-color: #98afc7 }
 
-  &.canMove {
+  .outerGrid.m1 &, .outerGrid.m2 & {
     cursor: not-allowed;
     &.p3 { cursor: pointer }
   }
