@@ -31,7 +31,7 @@ let {
 td {
   background-color: #98afc7;
   border-radius: 0.5em;
-  cursor: pointer;
+  cursor: not-allowed;
   height: 7rem;
   margin: 0.6em;
   position: relative;
@@ -40,10 +40,6 @@ td {
 
 td.win {
   background-color: #696969;
-}
-
-td.win, td.n0 {
-  cursor: not-allowed;
 }
 
 td:before, td:after {
@@ -103,7 +99,7 @@ td.htie.noL.noW:after { content: "T" }
 td.p1, td.p0.n1:hover { background-color: #9acd32 }
 td.p2, td.p0.n2:hover { background-color: #ff7f50 }
 
-td.p1, td.p2 { cursor: auto }
+td.p0.n1, td.p0.n2 { cursor: pointer; }
 
 td.p0.n1:hover, td.p0.n2:hover { opacity: 0.5 }
 
