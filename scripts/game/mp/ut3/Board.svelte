@@ -70,7 +70,7 @@ function cellClass (board: number, i: number, legalMove: boolean) {
   &.p3 { background-color: #98afc7 }
 
   &.canMove {
-    &.p0 { cursor: not-allowed }
+    cursor: not-allowed;
     &.p3 { cursor: pointer }
   }
   &.p3:hover {
