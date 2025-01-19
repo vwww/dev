@@ -1,15 +1,16 @@
 <script lang="ts">
+import { onMount } from 'svelte'
+
 import Board from './Board.svelte'
 import MoveTable from './MoveTable.svelte'
-import PlayerTypeSelector from './PlayerTypeSelector.svelte'
-import { initMemo, getMemo as getMemoOrig, playerTypes, type MemoEntry, type Bot } from '@gc/t3/ai'
+import { initMemo, getMemo as getMemoOrig, playerTypes, type MemoEntry } from '@gc/t3/ai'
 import { checkWin, occupied, remapWin, Winner, type WinnerMap } from '@gc/t3/game'
 import { randomArrayItem } from '@/util'
 import { pStore } from '@/util/svelte'
 
 // Options state
 const showHints = pStore('game/sp/t3/showHints', true)
-let playerType = $state([playerTypes[0][1], playerTypes[4][1]]) // TODO persist player type
+const playerTypeIndex = pStore('game/sp/t3/playerType', [0, 4])
 const winnerX = pStore('game/sp/t3/winnerX', 1)
 const winnerO = pStore('game/sp/t3/winnerO', 2)
 const winnerTie = pStore('game/sp/t3/winnerTie', 3)
@@ -55,8 +56,8 @@ function startGame (): void {
   moveBots()
 }
 
-function setPlayerType (p: 0 | 1, pType: Bot | undefined): void {
-  playerType[p] = pType
+function setPlayerType (p: 0 | 1, pType: number): void {
+  $playerTypeIndex[p] = pType
   startGame()
 }
 
@@ -88,7 +89,7 @@ function checkWinner (): void {
 function moveBots (): void {
   // Move bots as needed
   while (!winner) {
-    const botType = playerType[moveLength & 1]
+    const botType = playerTypes[$playerTypeIndex[moveLength & 1]][1]
     if (!botType) break
 
     let moves
@@ -110,7 +111,7 @@ function moveHuman (loc: number): void {
 }
 
 function swapTypes (): void {
-  playerType = [playerType[1], playerType[0]]
+  $playerTypeIndex = [$playerTypeIndex[1], $playerTypeIndex[0]]
   startGame()
 }
 
@@ -123,7 +124,7 @@ function undoMove (): void {
     mark ^= 3
     board ^= mark << (move << 1)
     // repeat until we have undone a human move
-  } while (playerType[moveLength & 1])
+  } while (playerTypes[$playerTypeIndex[moveLength & 1]][1])
 
   winner = 0
   undoLength--
@@ -139,7 +140,7 @@ setTimeout(function () {
   currentMessage = 'To build game tables, it took ' + (Date.now() - start) + ' ms.'
 }, 1)
 
-startGame()
+onMount(startGame)
 
 // UI
 const SETTINGS_X = [['X wins (Normal)', 'success'], ['O wins (Inverted)', 'danger'], ['Tie', 'warning']]
@@ -160,13 +161,23 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
 </script>
 
 <div class="row">
+  {#snippet playerTypeSelector(index: 0 | 1)}
+    <div class="btn-group d-flex mb-2" role="group">
+      {#each playerTypes as [name], i}
+        <button
+          onclick={() => setPlayerType(index, i)}
+          class="w-100 btn btn-outline-secondary"
+          class:active={i === $playerTypeIndex[index]}>{name}</button>
+      {/each}
+    </div>
+  {/snippet}
   <div class="col-md-6">
     <strong>Player X</strong>
-    <PlayerTypeSelector {playerTypes} playerType={playerType[0]} onSelectPlayerType={(pt) => setPlayerType(0, pt)} />
+    {@render playerTypeSelector(0)}
   </div>
   <div class="col-md-6">
     <strong>Player O</strong>
-    <PlayerTypeSelector {playerTypes} playerType={playerType[1]} onSelectPlayerType={(pt) => setPlayerType(1, pt)} />
+    {@render playerTypeSelector(1)}
   </div>
   <div class="col-12">
     <strong>Options</strong>
