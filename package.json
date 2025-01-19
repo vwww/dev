@@ -77,7 +77,7 @@
     "leaflet-hash": "^0.2.1",
     "leaflet-minimap": "^3.6.1",
     "packery": "^2.1.2",
-    "svelte": "^5.18.0",
+    "svelte": "^5.19.0",
     "svg-pan-zoom": "^3.6.2",
     "timeago": "^1.6.7"
   }
