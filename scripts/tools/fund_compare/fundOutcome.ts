@@ -141,7 +141,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
         } = year.dividendSplit
 
         bookValue -= dividendTotal * (returnOfCapital ?? 0) / total
-        const taxAmount = dividendTotal * (((otherIncome ?? 0) + (capitalGains ?? 0) * tax.capitalGainsRate + (foreignIncome ?? 0) + (foreignTax ?? 0)) * tax.taxRate) / total
+        const taxAmount = dividendTotal * (((otherIncome ?? 0) + (capitalGains ?? 0) * tax.capitalGainsRate + (foreignIncome ?? 0) - (foreignTax ?? 0)) * tax.taxRate + (foreignTax ?? 0)) / total
 
         if (taxAmount) {
           const sharesToSell = taxAmount / price
