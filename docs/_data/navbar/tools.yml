@@ -29,3 +29,6 @@
   - name: Match Win Calculator
     desc: Calculate the probability of winning first-to-n/best-of-(2n-1)
     href: tools/match_win
+  - name: Fund Comparison
+    desc: Compare outcomes of holding funds
+    href: tools/fund_compare
