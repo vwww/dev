@@ -66,7 +66,7 @@ function mergeYears (a: TaxYear[], b: TaxYear[]): ZipYear[] {
 }
 
 function makeMatrixRow (years: ZipYear[], i: number, a: number, tax?: TaxConfig): MatrixRowFund | undefined {
-  const [yearStr, baseYears] = years[i]
+  const [baseYearStr, baseYears] = years[i]
   const baseYear = baseYears[a]
   if (!baseYear) return
 
@@ -74,7 +74,7 @@ function makeMatrixRow (years: ZipYear[], i: number, a: number, tax?: TaxConfig)
   let bookValue = 1
 
   const initialLine: Line = {
-    date: `${yearStr}-${baseYear.startPrice[0]}`,
+    date: `${baseYearStr}-${baseYear.startPrice[0]}`,
     description: 'Initial investment',
     price: baseYear.startPrice[1],
     shares,
@@ -83,7 +83,8 @@ function makeMatrixRow (years: ZipYear[], i: number, a: number, tax?: TaxConfig)
   const lines = [initialLine]
   const cols: (MatrixCell | undefined)[] = []
   for (let j = i; j < years.length; j++) {
-    const year = years[j][1][a]
+    const [yearStr, yearFunds] = years[j]
+    const year = yearFunds[a]
     if (!year) {
       cols.push(undefined)
       continue
