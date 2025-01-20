@@ -1,8 +1,9 @@
+import { padMonthDay, padYear } from '@/util'
 import type { Comparison, TaxYear } from './fundInfo'
 
 export type OutcomeMatrix = MatrixRow[]
 
-export type MatrixRow = [year: string, [MatrixRowFund | undefined, MatrixRowFund | undefined]]
+export type MatrixRow = [year: number, [MatrixRowFund | undefined, MatrixRowFund | undefined]]
 
 export type MatrixRowFund = {
   lines: Line[]
@@ -42,7 +43,7 @@ export function generateComparisonMatrix (comparison: Comparison, tax?: TaxConfi
   ])
 }
 
-type ZipYear = [year: string, (TaxYear | undefined)[]]
+type ZipYear = [year: number, (TaxYear | undefined)[]]
 
 function mergeYears (a: TaxYear[], b: TaxYear[]): ZipYear[] {
   const zipYears: ZipYear[] = []
@@ -70,13 +71,14 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
   const baseYear = baseYears[a]
   if (!baseYear) return
 
-  let shares = 1 / baseYear.startPrice[1]
+  const [startDay, startPrice] = baseYear.startPrice
+  let shares = 1 / startPrice
   let bookValue = 1
 
   const initialLine: Line = {
-    date: `${baseYearStr}-${baseYear.startPrice[0]}`,
+    date: `${padYear(baseYearStr)}-01-${padMonthDay(startDay)}`,
     description: 'Initial investment',
-    price: baseYear.startPrice[1],
+    price: startPrice,
     shares,
     bookValue,
   }
@@ -128,7 +130,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
     const price = lastLine?.price ?? baseYear.startPrice[1]
 
     if (tax) {
-      const date = lastLine?.date ?? yearStr + '-12-31'
+      const date = lastLine?.date ?? padYear(yearStr) + '-12-31'
 
       if (dividendTotal && year.dividendSplit?.total) {
         const {

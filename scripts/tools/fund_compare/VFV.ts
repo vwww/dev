@@ -4,9 +4,9 @@ export default {
   name: 'VFV',
   taxYears: [
     {
-      year: '2023',
+      year: 2023,
       startPrice: [
-        '01-03',
+        3,
         92.76
       ],
       dividends: [

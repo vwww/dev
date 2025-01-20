@@ -1,13 +1,17 @@
 import type { Fund } from './fundInfo'
 
+// TODO handle stock splits
+// 2013-11-18 1:2 reverse split
+// 2021-07-05 2:1 split
+
 export default {
   name: 'HXS',
   taxYears: [
     /*
     {
-      year: '2013',
+      year: 2013,
       startPrice: [
-        '01-12',
+        2,
         12.71
       ],
       dividends: [
@@ -21,9 +25,9 @@ export default {
     },
     */
     {
-      year: '2023',
+      year: 2023,
       startPrice: [
-        '01-03',
+        3,
         52.45
       ],
       dividends: [

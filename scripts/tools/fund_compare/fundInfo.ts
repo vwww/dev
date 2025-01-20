@@ -6,9 +6,9 @@ export type Fund = {
 }
 
 export type TaxYear = {
-  year: string // YYYY
+  year: number
   startPrice: [
-    date: string, // MM-DD
+    day: number,
     price: number,
   ]
   dividends: DividendPrice[]

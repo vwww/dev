@@ -4,9 +4,9 @@ export default {
   name: 'QQC',
   taxYears: [
     {
-      year: '2022',
+      year: 2022,
       startPrice: [
-        '01-04',
+        4,
         24.75
       ],
       dividends: [
@@ -50,9 +50,9 @@ export default {
       }
     },
     {
-      year: '2023',
+      year: 2023,
       startPrice: [
-        '01-03',
+        3,
         17.71
       ],
       dividends: [

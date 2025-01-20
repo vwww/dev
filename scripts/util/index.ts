@@ -11,10 +11,22 @@ export function randomAlphaNumeric (length: number): string {
   return s
 }
 
+// color
+
 export function formatHexColor (v: number | string): string {
   return '#' + ('00000' + v.toString(16)).slice(-6)
 }
 
 export function randomHexColor (): string {
   return formatHexColor((Math.random() * 0x1000000) | 0)
+}
+
+// date
+
+export function padYear (year: number | string): string {
+  return (year + '').padStart(4, '0')
+}
+
+export function padMonthDay (md: number | string): string {
+  return (md + '').padStart(2, '0')
 }

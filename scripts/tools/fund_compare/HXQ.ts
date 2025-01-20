@@ -1,12 +1,16 @@
 import type { Fund } from './fundInfo'
 
+// TODO handle stock splits
+// 2021-07-05 2:1 split
+// 2021-07-06 2:1 split
+
 export default {
   name: 'HXQ',
   taxYears: [
     {
-      year: '2022',
+      year: 2022,
       startPrice: [
-        '01-04',
+        4,
         58.49
       ],
       dividends: [
@@ -19,9 +23,9 @@ export default {
       ]
     },
     {
-      year: '2023',
+      year: 2023,
       startPrice: [
-        '2023-01-03',
+        3,
         42.21
       ],
       dividends: [

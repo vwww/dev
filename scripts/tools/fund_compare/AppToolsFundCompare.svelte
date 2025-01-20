@@ -1,4 +1,5 @@
 <script lang="ts">
+import { padYear } from '@/util'
 import { pStore } from '@/util/svelte'
 
 import exampleHXS from './HXS'
@@ -8,6 +9,9 @@ import exampleVFV from './VFV'
 
 import { copyFundInfo, loadComparison, type Comparison } from './fundInfo'
 import { generateComparisonMatrix, type MatrixRowFund, type OutcomeMatrix } from './fundOutcome'
+
+const STEP_CENT = 0.01
+const STEP_DIST = 0.000001
 
 const EXAMPLES: readonly Example[] = [
   ['HXQ and QQC', exampleHXQ, exampleQQC],
@@ -80,17 +84,134 @@ function formatDollarsUnrounded (dollars: number): string {
 
 <div class="tab-content">
   <div class="tab-pane show active" id="funds" role="tabpanel" aria-labelledby="funds-tab">
-    <div class="alert alert-secondary" role="alert">
-      <h4 class="alert-heading">Under Construction!</h4>
-      This tab is still under construction, although the other tabs are working.
-    </div>
-
-    <button class="btn btn-outline-primary d-block w-100 mb-3" onclick={() => comparison = [comparison[1], comparison[0]]}>Swap</button>
     {#snippet fundEditor(i: number)}
       {@const fund = comparison[i]}
       <div class="col-md-6">
-        <h2>Fund {i+1}</h2>
-        <input type="text" class="form-control mb-2" placeholder="Fund Name" bind:value={fund.name}>
+        <div class="input-group mb-3">
+          <span class="input-group-text">Fund</span>
+          <input type="text" class="form-control" placeholder="Fund Name" bind:value={fund.name}>
+          <button class="btn btn-outline-primary" onclick={() => comparison = [comparison[1], comparison[0]]}>Swap</button>
+        </div>
+        {#each fund.taxYears as year, yearIndex}
+          {@const { startPrice, dividends, dividendSplit } = year}
+          <div class="card mb-3">
+            <div class="card-header">
+              <div class="input-group">
+                <input type="number" class="form-control" bind:value={year.year}>
+                <button class="btn btn-outline-danger" onclick={() => fund.taxYears.splice(yearIndex, 1)}>-</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="input-group mb-3">
+                <span class="input-group-text">
+                  Initial Investment
+                </span>
+                <span class="input-group-text">
+                  {padYear(year.year)}-01-
+                </span>
+                <input type="number" class="form-control" min="1" max="31" bind:value={startPrice[0]}>
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control text-end w-auto" step={STEP_CENT} bind:value={startPrice[1]}>
+              </div>
+              {#each dividends as dividend, dividendIndex}
+                <div class="card my-3">
+                  <div class="card-header">
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Amount</span>
+                      <span class="input-group-text">$</span>
+                      <input type="number" class="form-control text-end" step={STEP_DIST} placeholder="&mdash;" bind:value={dividend[4]}>
+                      <button class="btn btn-outline-danger" onclick={() => dividends.splice(dividendIndex, 1)}>-</button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Ex Date</span>
+                      <input type="date" class="form-control text-end" bind:value={dividend[0]}>
+                    </div>
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Record Date</span>
+                      <input type="date" class="form-control text-end" bind:value={dividend[1]}>
+                    </div>
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Payment Date</span>
+                      <input type="date" class="form-control text-end" bind:value={dividend[2]}>
+                    </div>
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Reinvestment Price</span>
+                      <span class="input-group-text">$</span>
+                      <input type="number" class="form-control text-end" step={STEP_CENT} bind:value={dividend[3]}>
+                    </div>
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Phantom</span>
+                      <span class="input-group-text">$</span>
+                      <input type="number" class="form-control text-end" step={STEP_DIST} placeholder="&mdash;" bind:value={dividend[5]}>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+              <button class="btn btn-outline-success mb-2 w-100" onclick={() => {
+                const date = padYear(year.year) + '-01-01'
+                const price = dividends[dividends.length - 1]?.[3] ?? year.startPrice[1]
+                dividends.push([date, date, date, price])
+              }}>Add Dividend</button>
+              {#if dividendSplit}
+                <div class="input-group my-2">
+                  <span class="input-group-text">Total</span>
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control text-end" min="0" step={STEP_DIST} bind:value={dividendSplit.total}>
+                  <button class="btn btn-outline-danger" onclick={() => year.dividendSplit = undefined}>-</button>
+                </div>
+                {@const expectedTotal =
+                  + (dividendSplit?.returnOfCapital ?? 0)
+                  + (dividendSplit?.capitalGains ?? 0)
+                  + (dividendSplit?.otherIncome ?? 0)
+                  + (dividendSplit?.foreignIncome ?? 0)
+                  + (dividendSplit?.foreignTax ?? 0)}
+                <div class="my-2">Sum of below: ${expectedTotal}, Difference: ${expectedTotal - dividendSplit.total}</div>
+                <div class="input-group my-2">
+                  <span class="input-group-text">Return of Capital</span>
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control text-end" placeholder="&mdash;" min="0" step={STEP_DIST} bind:value={dividendSplit.returnOfCapital}>
+                </div>
+                <div class="input-group my-2">
+                  <span class="input-group-text">Capital Gains</span>
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control text-end" placeholder="&mdash;" min="0" step={STEP_DIST} bind:value={dividendSplit.capitalGains}>
+                </div>
+                <div class="input-group my-2">
+                  <span class="input-group-text">Other Income</span>
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control text-end" placeholder="&mdash;" min="0" step={STEP_DIST} bind:value={dividendSplit.otherIncome}>
+                </div>
+                <div class="input-group my-2">
+                  <span class="input-group-text">Foreign Income</span>
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control text-end" placeholder="&mdash;" min="0" step={STEP_DIST} bind:value={dividendSplit.foreignIncome}>
+                </div>
+                <div class="input-group my-2">
+                  <span class="input-group-text">Foreign Tax Paid (enter as negative)</span>
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control text-end" placeholder="&mdash;" max="0" step={STEP_DIST} bind:value={dividendSplit.foreignTax}>
+                </div>
+              {:else}
+                <button class="btn btn-outline-success mb-2 w-100" onclick={() => year.dividendSplit = { total: 0 }}>Add Dividend Split</button>
+              {/if}
+            </div>
+          </div>
+        {/each}
+        <div class="btn-group d-flex mb-3">
+          <button class="btn btn-outline-success w-100" onclick={() => {
+            const lastYear = fund.taxYears.length ? fund.taxYears[fund.taxYears.length - 1] : undefined
+            const lastDividend = lastYear?.dividends[lastYear.dividends.length - 1]
+            const price = lastDividend?.[3] ?? lastYear?.startPrice[1] ?? 1
+            fund.taxYears.push({
+              year: (lastYear?.year ?? 1336) + 1,
+              startPrice: [1, price],
+              dividends: [],
+            })
+          }}>Add Tax Year</button>
+          <button class="btn btn-outline-secondary" onclick={() => fund.taxYears.sort((a, b) => a.year - b.year)}>Sort</button>
+        </div>
       </div>
     {/snippet}
     <div class="row">
