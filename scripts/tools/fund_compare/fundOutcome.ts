@@ -31,13 +31,13 @@ export type TaxConfig = {
 export function generateComparisonMatrix (comparison: Comparison, tax?: TaxConfig): OutcomeMatrix {
   const [a, b] = comparison
 
-  const years = mergeYears(a.taxYears, b.taxYears)
+  const zipYears = mergeYears(a.taxYears, b.taxYears)
 
-  return years.map(([year], i) => [
+  return zipYears.map(([year], i) => [
     year,
     [
-      makeMatrixRow(years, i, 0, tax),
-      makeMatrixRow(years, i, 1, tax)
+      makeMatrixRow(zipYears, i, 0, tax),
+      makeMatrixRow(zipYears, i, 1, tax)
     ]
   ])
 }
@@ -45,7 +45,7 @@ export function generateComparisonMatrix (comparison: Comparison, tax?: TaxConfi
 type ZipYear = [year: string, (TaxYear | undefined)[]]
 
 function mergeYears (a: TaxYear[], b: TaxYear[]): ZipYear[] {
-  const years: ZipYear[] = []
+  const zipYears: ZipYear[] = []
   let i = 0, j = 0
   for (;;) {
     const hasA = i < a.length
@@ -55,18 +55,18 @@ function mergeYears (a: TaxYear[], b: TaxYear[]): ZipYear[] {
       const useB = hasB && a[i].year == b[j].year
       const ay = a[i++]
       const by = useB ? b[j++] : undefined
-      years.push([ay.year, [ay, by]])
+      zipYears.push([ay.year, [ay, by]])
     } else if (hasB) {
       const by = b[j++]
-      years.push([by.year, [undefined, by]])
+      zipYears.push([by.year, [undefined, by]])
     } else {
-      return years
+      return zipYears
     }
   }
 }
 
-function makeMatrixRow (years: ZipYear[], i: number, a: number, tax?: TaxConfig): MatrixRowFund | undefined {
-  const [baseYearStr, baseYears] = years[i]
+function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConfig): MatrixRowFund | undefined {
+  const [baseYearStr, baseYears] = zipYears[i]
   const baseYear = baseYears[a]
   if (!baseYear) return
 
@@ -82,9 +82,9 @@ function makeMatrixRow (years: ZipYear[], i: number, a: number, tax?: TaxConfig)
   }
   const lines = [initialLine]
   const cols: (MatrixCell | undefined)[] = []
-  for (let j = i; j < years.length; j++) {
-    const [yearStr, yearFunds] = years[j]
-    const year = yearFunds[a]
+  for (let j = i; j < zipYears.length; j++) {
+    const [yearStr, years] = zipYears[j]
+    const year = years[a]
     if (!year) {
       cols.push(undefined)
       continue
