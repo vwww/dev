@@ -21,6 +21,9 @@ export type TaxYear = {
     foreignTax?: number
     // eligibleDividend?: number // not supported
   }
+
+  // for UI
+  expanded?: boolean
 }
 
 export type DividendPrice = [
@@ -33,6 +36,9 @@ export type DividendPrice = [
   dividend?: number, // actual cash dividend per share
 
   reinvestment?: number, // actual reinvested dividend per share
+
+  // for UI
+  expanded?: boolean
 ]
 
 export function loadComparison (s: string): Comparison {

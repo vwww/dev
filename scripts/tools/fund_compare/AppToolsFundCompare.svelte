@@ -112,10 +112,21 @@ function formatDollarsDiff (dollars: number): string {
             <div class="card-header">
               <div class="input-group">
                 <input type="number" class="form-control" bind:value={year.year}>
+                <button class="btn btn-outline-warning"
+                  onclick={() => year.expanded = !year.expanded}
+                  >{year.expanded ? '🔼' : '🔽'}</button>
+                <button class="btn btn-outline-secondary"
+                  class:disabled={!yearIndex}
+                  onclick={() => [fund.taxYears[yearIndex - 1], fund.taxYears[yearIndex]] = [fund.taxYears[yearIndex], fund.taxYears[yearIndex - 1]]}
+                  >⬆️</button>
+                <button class="btn btn-outline-secondary"
+                  class:disabled={yearIndex + 1 >= fund.taxYears.length}
+                  onclick={() => [fund.taxYears[yearIndex], fund.taxYears[yearIndex + 1]] = [fund.taxYears[yearIndex + 1], fund.taxYears[yearIndex]]}
+                  >⬇️</button>
                 <button class="btn btn-outline-danger" onclick={() => fund.taxYears.splice(yearIndex, 1)}>-</button>
               </div>
             </div>
-            <div class="card-body">
+            <div class="card-body" class:d-none={!year.expanded}>
               <div class="input-group mb-3">
                 <span class="input-group-text">
                   Initial Investment
@@ -134,10 +145,21 @@ function formatDollarsDiff (dollars: number): string {
                       <span class="input-group-text">Amount</span>
                       <span class="input-group-text">$</span>
                       <input type="number" class="form-control text-end" step={STEP_DIST} placeholder="&mdash;" bind:value={dividend[4]}>
+                      <button class="btn btn-outline-warning"
+                        onclick={() => dividend[6] = !dividend[6]}
+                        >{dividend[6] ? '🔼' : '🔽'}</button>
+                      <button class="btn btn-outline-secondary"
+                        class:disabled={!dividendIndex}
+                        onclick={() => [dividends[dividendIndex - 1], dividends[dividendIndex]] = [dividends[dividendIndex], dividends[dividendIndex - 1]]}
+                        >⬆️</button>
+                      <button class="btn btn-outline-secondary"
+                        class:disabled={dividendIndex + 1 >= dividends.length}
+                        onclick={() => [dividends[dividendIndex], dividends[dividendIndex + 1]] = [dividends[dividendIndex + 1], dividends[dividendIndex]]}
+                        >⬇️</button>
                       <button class="btn btn-outline-danger" onclick={() => dividends.splice(dividendIndex, 1)}>-</button>
                     </div>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body" class:d-none={!dividend[6]}>
                     <div class="input-group mb-2">
                       <span class="input-group-text">Ex Date</span>
                       <input type="date" class="form-control text-end" bind:value={dividend[0]}>
@@ -163,11 +185,22 @@ function formatDollarsDiff (dollars: number): string {
                   </div>
                 </div>
               {/each}
-              <button class="btn btn-outline-success mb-2 w-100" onclick={() => {
-                const date = padYear(year.year) + '-01-01'
-                const price = dividends[dividends.length - 1]?.[3] ?? year.startPrice[1]
-                dividends.push([date, date, date, price])
-              }}>Add Dividend</button>
+
+              <div class="btn-group d-flex mb-2">
+                <button class="btn btn-outline-success w-100" onclick={() => {
+                  const date = padYear(year.year) + '-01-01'
+                  const price = dividends[dividends.length - 1]?.[3] ?? year.startPrice[1]
+                  dividends.push([date, date, date, price])
+                }}>Add Dividend</button>
+
+                <button class="btn btn-outline-warning"
+                  onclick={() => dividends.forEach((dividend) => dividend[6] = false)}
+                  >🔼All</button>
+                <button class="btn btn-outline-warning"
+                  onclick={() => dividends.forEach((dividend) => dividend[6] = true)}
+                  >🔽All</button>
+              </div>
+
               {#if dividendSplit}
                 <div class="input-group my-2">
                   <span class="input-group-text">Total</span>
@@ -229,8 +262,16 @@ function formatDollarsDiff (dollars: number): string {
               year: (lastYear?.year ?? 1336) + 1,
               startPrice: [1, price],
               dividends: [],
+              expanded: true,
             })
           }}>Add Tax Year</button>
+
+          <button class="btn btn-outline-warning"
+            onclick={() => fund.taxYears.forEach((year) => year.expanded = false)}
+            >🔼All</button>
+          <button class="btn btn-outline-warning"
+            onclick={() => fund.taxYears.forEach((year) => year.expanded = true)}
+            >🔽All</button>
           <button class="btn btn-outline-secondary" onclick={() => fund.taxYears.sort((a, b) => a.year - b.year)}>Sort</button>
         </div>
       </div>
