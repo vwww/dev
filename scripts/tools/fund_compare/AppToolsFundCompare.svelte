@@ -57,7 +57,7 @@ function formatPercentChange (multiplier: number): string {
   return (multiplier - 1).toLocaleString(undefined, {
     style: 'percent',
     minimumFractionDigits: 3,
-    signDisplay: 'exceptZero',
+    signDisplay: 'always',
   })
 }
 
@@ -357,7 +357,7 @@ function formatDollarsDiff (dollars: number): string {
                   <td
                     class:table-warning={selectedPeriod?.[1] == outcomeIndex && selectedPeriod[2] == i && selectedPeriod[3] == j}
                     role="button" onclick={() => selectedPeriod = [name, outcomeIndex, i, j]}>
-                    {#if $showResultType & 1}{resultDiff}{/if}
+                    {#if $showResultType & 1}<span class="{colA && colB && colA.value != colB.value ? colA.value > colB.value ? 'text-success' : 'text-danger' : ''}">{resultDiff}</span>{/if}
                     {#if $showResultType == 3}<br>{/if}
                     {#if $showResultType & 2}{resultA}<br>{resultB}{/if}
                   </td>
