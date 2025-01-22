@@ -31,8 +31,8 @@ const {
 
 let name = pStore('game/mp/_shared/name', '')
 
-function formatGameMode ({optTurnTime, optInverted, optChecked, optQuick}: any) {
-  return getGameModeString(optInverted === 'true', optChecked === 'true', optQuick === 'true', +optTurnTime)
+function formatGameMode ({optTurnTime, optInverted, optChecked, optQuick, optAnyBoard}: any) {
+  return getGameModeString(optInverted === 'true', optChecked === 'true', optQuick === 'true', optAnyBoard === 'true', +optTurnTime)
 }
 </script>
 

@@ -33,6 +33,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
   public readonly modeInverted = valueStore(false)
   public readonly modeChecked = valueStore(false)
   public readonly modeQuick = valueStore(false)
+  public readonly modeAnyBoard = valueStore(false)
 
   public readonly boardStates = valueStore([INITIAL_STATE])
   public readonly boardIndex = valueStore(0)
@@ -95,6 +96,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
     this.modeInverted.set(m.getBool())
     this.modeChecked.set(m.getBool())
     this.modeQuick.set(m.getBool())
+    this.modeAnyBoard.set(m.getBool())
   }
 
   protected makePlayer (): UT3Client {
@@ -145,14 +147,15 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
         } else {
           // uninverted: cannot move if it'd allow a loss
           const newFlags = boards[movePos] | (moveBoard === movePos ? posFlag : 0)
-          if (!this.modeQuick.get() &&
+          if (this.modeAnyBoard.get() || !this.modeQuick.get() &&
               ((boardFinal & (1 << movePos)) ||
                 isFull(newFlags) ||
                 isWin(newFlags, !parity))) {
+            // next move can be on any board
             for (let i = 0; i < 9; i++) {
               if (!(boardFinal & (1 << i)) &&
                 isNearWin(boards[i] | (i === moveBoard ? posFlag : 0), !parityInv) &&
-                isWin(board | (1 << ((i << 1) + parity)), !parityInv)) {
+                (this.modeQuick.get() || isWin(board | (1 << ((i << 1) + parity)), !parityInv))) {
                 return true
               }
             }

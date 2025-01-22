@@ -34,6 +34,7 @@ const {
   modeInverted,
   modeChecked,
   modeQuick,
+  modeAnyBoard,
 } = gameState
 
 const playing = $derived($isActive && $roundState === 2 && $inRound)
@@ -134,7 +135,7 @@ const boardState = $derived($boardStates[$boardIndex])
 {/if}
 
 <div>
-  Game Mode: {getGameModeString($modeInverted, $modeChecked, $modeQuick, $modeTurnTime)}
+  Game Mode: {getGameModeString($modeInverted, $modeChecked, $modeQuick, $modeAnyBoard, $modeTurnTime)}
 </div>
 
 <b>Lobby</b>
