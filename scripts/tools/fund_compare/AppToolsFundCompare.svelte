@@ -355,6 +355,7 @@ function formatDollarsDiff (dollars: number): string {
                   {@const resultB = colB ? formatPercentChange(colB.value) : 'N/A'}
                   {@const resultDiff = colA && colB ? formatPercentChange(colA.value / colB.value) : '?'}
                   <td
+                    class="ra"
                     class:table-warning={selectedPeriod?.[1] == outcomeIndex && selectedPeriod[2] == i && selectedPeriod[3] == j}
                     role="button" onclick={() => selectedPeriod = [name, outcomeIndex, i, j]}>
                     {#if $showResultType & 1}<span class="{colA && colB && colA.value != colB.value ? colA.value > colB.value ? 'text-success' : 'text-danger' : ''}">{resultDiff}</span>{/if}
@@ -399,11 +400,11 @@ function formatDollarsDiff (dollars: number): string {
                 {#each row.lines.slice(0, cell.lineCount).concat(...cell.lineAdditional ?? []) as line}
                   <tr>
                     <td>{line.date}</td>
-                    <td class="text-end">{formatDollars(line.price)}</td>
-                    <td class="text-end">{formatShares(line.shares * $initialInvestment)}</td>
-                    <td class="text-end">{formatDollarsUnrounded(line.shares * line.price * $initialInvestment)}</td>
-                    <td class="text-end">{formatDollarsUnrounded(line.bookValue * $initialInvestment)}</td>
-                    <td class="text-end">{formatDollarsUnrounded(line.bookValue / line.shares)}</td>
+                    <td class="ra">{formatDollars(line.price)}</td>
+                    <td class="ra">{formatShares(line.shares * $initialInvestment)}</td>
+                    <td class="ra">{formatDollarsUnrounded(line.shares * line.price * $initialInvestment)}</td>
+                    <td class="ra">{formatDollarsUnrounded(line.bookValue * $initialInvestment)}</td>
+                    <td class="ra">{formatDollarsUnrounded(line.bookValue / line.shares)}</td>
                     <td>{line.description}</td>
                   </tr>
                 {/each}
@@ -424,3 +425,10 @@ function formatDollarsDiff (dollars: number): string {
     {/if}
   </div>
 </div>
+
+<style>
+.ra {
+  font-family: monospace;
+  text-align: end;
+}
+</style>
