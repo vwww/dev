@@ -132,7 +132,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
       boardFinal |= boardFlagFinal
     }
 
-    const boardMustMove = boardFinal & posFlagFinal ? -1 : movePos
+    const boardMustMove = this.modeAnyBoard.get() || (boardFinal & posFlagFinal) ? -1 : movePos
 
     const moveDisallowed = (moveBoard: number, movePos: number): boolean => {
       // Special Checks
