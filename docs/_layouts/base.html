@@ -95,7 +95,7 @@
       <script src="{{assets}}dist/{{ file }}.js"></script>
     {%- endfor %}
     {%- for entry in entry | to_array %}
-      {%- for file in manifest.js[entry] %}
+      {%- for file in manifest.jsNoGlobal[entry] %}
       <script src="{{assets}}dist/{{ file }}.js"></script>
       {%- endfor %}
     {%- endfor %}

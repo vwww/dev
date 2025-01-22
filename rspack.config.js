@@ -95,8 +95,15 @@ export default {
           }
         }
 
+        const globalSet = new Set(js.global ?? [])
+        const jsNoGlobal = Object.fromEntries(
+          Object.entries(js)
+            .map(([k, v]) => [k, v.filter((f) => !globalSet.has(f))])
+        )
+
         return {
           js,
+          jsNoGlobal,
           css,
           unknown
         }
