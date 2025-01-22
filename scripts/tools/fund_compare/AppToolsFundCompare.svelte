@@ -1,5 +1,5 @@
 <script lang="ts">
-import { padYear } from '@/util'
+import { padYear, sum } from '@/util'
 import { pStore } from '@/util/svelte'
 
 import exampleHXS from './HXS'
@@ -54,7 +54,11 @@ function fundExport (): void {
 }
 
 function formatPercentChange (multiplier: number): string {
-  return (multiplier - 1).toLocaleString('en', { style: 'percent', minimumFractionDigits: 3, signDisplay: 'always' })
+  return (multiplier - 1).toLocaleString(undefined, {
+    style: 'percent',
+    minimumFractionDigits: 3,
+    signDisplay: 'exceptZero',
+  })
 }
 
 function formatShares (shares: number): string {
@@ -66,7 +70,17 @@ function formatDollars (dollars: number): string {
 }
 
 function formatDollarsUnrounded (dollars: number): string {
-  return dollars.toLocaleString('en', { minimumFractionDigits: 3 })
+  return dollars.toLocaleString(undefined, { minimumFractionDigits: 3 })
+}
+
+function formatDollarsDiff (dollars: number): string {
+  return dollars.toLocaleString(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 100,
+    trailingZeroDisplay: 'stripIfInteger',
+    signDisplay: 'always',
+  })
 }
 </script>
 
@@ -161,13 +175,20 @@ function formatDollarsUnrounded (dollars: number): string {
                   <input type="number" class="form-control text-end" min="0" step={STEP_DIST} bind:value={dividendSplit.total}>
                   <button class="btn btn-outline-danger" onclick={() => year.dividendSplit = undefined}>-</button>
                 </div>
-                {@const expectedTotal =
-                  + (dividendSplit?.returnOfCapital ?? 0)
-                  + (dividendSplit?.capitalGains ?? 0)
-                  + (dividendSplit?.otherIncome ?? 0)
-                  + (dividendSplit?.foreignIncome ?? 0)
-                  + (dividendSplit?.foreignTax ?? 0)}
-                <div class="my-2">Sum of below: ${expectedTotal}, Difference: ${expectedTotal - dividendSplit.total}</div>
+                {@const MUL_TO_INT = 100 / STEP_DIST}
+                {@const MUL_UNDO = STEP_DIST / 100}
+                {@const sumAbove = sum(dividends.map((d) => ((d[4] ?? 0) + (d[5] ?? 0)) * MUL_TO_INT)) * MUL_UNDO}
+                {@const sumBelow = MUL_UNDO * (
+                  + (dividendSplit?.returnOfCapital ?? 0) * MUL_TO_INT
+                  + (dividendSplit?.capitalGains ?? 0) * MUL_TO_INT
+                  + (dividendSplit?.otherIncome ?? 0) * MUL_TO_INT
+                  + (dividendSplit?.foreignIncome ?? 0) * MUL_TO_INT
+                  + (dividendSplit?.foreignTax ?? 0) * MUL_TO_INT
+                )}
+                {@const diffAbove = (sumAbove * MUL_TO_INT - dividendSplit.total * MUL_TO_INT) * MUL_UNDO}
+                {@const diffBelow = (sumBelow * MUL_TO_INT - dividendSplit.total * MUL_TO_INT) * MUL_UNDO}
+                <div class="my-2">Sum above: ${sumAbove} <span class="badge text-bg-{diffAbove ? 'danger' : 'secondary'}">{formatDollarsDiff(diffAbove)}</span></div>
+                <div class="my-2">Sum below: ${sumBelow} <span class="badge text-bg-{diffBelow ? 'danger' : 'secondary'}">{formatDollarsDiff(diffBelow)}</span></div>
                 <div class="input-group my-2">
                   <span class="input-group-text">Return of Capital</span>
                   <span class="input-group-text">$</span>
