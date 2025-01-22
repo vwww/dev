@@ -141,7 +141,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
         if (this.modeInverted.get()) {
           // inverted: cannot move if it'd cause a win
           if (isWin(boards[moveBoard] | posFlag, !parity) &&
-            (this.modeQuick.get() || isWin(board | posFlag, !parity))) {
+            (this.modeQuick.get() || isWin(board | 1 << ((moveBoard << 1) + parityInv), !parity))) {
             return true
           }
         } else {
