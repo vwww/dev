@@ -5,10 +5,7 @@ export default {
   taxYears: [
     {
       year: 2022,
-      startPrice: [
-        4,
-        24.75
-      ],
+      startPrice: [4, 24.75],
       dividends: [
         [
           '2022-03-29',
@@ -38,7 +35,7 @@ export default {
           17.77,
           0.03666,
           0.27337
-        ]
+        ],
       ],
       dividendSplit: {
         total: 0.43360,
@@ -51,10 +48,7 @@ export default {
     },
     {
       year: 2023,
-      startPrice: [
-        3,
-        17.71
-      ],
+      startPrice: [3, 17.71],
       dividends: [
         [
           '2023-03-29',
@@ -84,7 +78,7 @@ export default {
           26.46,
           0.05167,
           0.64792
-        ]
+        ],
       ],
       dividendSplit: {
         total: 0.79186,

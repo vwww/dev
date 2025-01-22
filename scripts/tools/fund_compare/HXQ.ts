@@ -7,35 +7,7 @@ import type { Fund } from './fundInfo'
 export default {
   name: 'HXQ',
   taxYears: [
-    {
-      year: 2022,
-      startPrice: [
-        4,
-        58.49
-      ],
-      dividends: [
-        [
-          '2023-01-09',
-          '2023-01-09',
-          '2023-01-09',
-          42.27
-        ]
-      ]
-    },
-    {
-      year: 2023,
-      startPrice: [
-        3,
-        42.21
-      ],
-      dividends: [
-        [
-          '2024-01-08',
-          '2024-01-08',
-          '2024-01-08',
-          63.44
-        ]
-      ]
-    },
+    { year: 2022, startPrice: [4, 58.49], dividends: [['2023-01-09', '2023-01-09', '2023-01-09', 42.27]] },
+    { year: 2023, startPrice: [3, 42.21], dividends: [['2024-01-08', '2024-01-08', '2024-01-08', 63.44]] },
   ]
 } as Fund

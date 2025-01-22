@@ -5,10 +5,7 @@ export default {
   taxYears: [
     {
       year: 2023,
-      startPrice: [
-        3,
-        92.76
-      ],
+      startPrice: [3, 92.76],
       dividends: [
         [
           '2023-03-24',
