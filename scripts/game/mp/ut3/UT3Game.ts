@@ -125,7 +125,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
     const boardFlag = 1 << ((moveBoard << 1) + parity)
     const boardFlagFinal = 1 << moveBoard
     boards[moveBoard] |= posFlag
-    if (!(boardFinal & posFlagFinal)) {
+    if (!(boardFinal & boardFlagFinal)) {
       if (isWin(boards[moveBoard], !!parity)) {
         board |= boardFlag
         boardFinal |= boardFlagFinal
