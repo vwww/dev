@@ -135,9 +135,6 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
     const boardMustMove = this.modeAnyBoard.get() || (boardFinal & posFlagFinal) ? -1 : movePos
 
     const moveDisallowed = (moveBoard: number, movePos: number): boolean => {
-      if (boardFinal & (1 << movePos)) {
-        return true
-      }
       // Special Checks
       if (this.modeChecked.get()) {
         const posFlag = 1 << ((movePos << 1) + parityInv)
@@ -178,7 +175,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
       boardFinal,
       boardMustMove,
       boardRestrict: [0, 1, 2, 3, 4, 5, 6, 7, 8].map((board) => {
-        if (!(boardMustMove < 0 || board === boardMustMove)) return 0b111111111
+        if (!(board === boardMustMove || boardMustMove < 0 && !(boardFinal & (1 << board)))) return 0b111111111
         let r = 0
         for (let pos = 0; pos < 9; pos++) {
           if (moveDisallowed(board, pos)) {
