@@ -1,7 +1,7 @@
 ---
 title: Rules for Ultimate Tic-Tac-Toe
 date: "2020-01-12 16:28:00 -0700"
-mdate: 2025-01-22 17:43:00 -0700
+mdate: 2025-01-22 22:33:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'ut3') }}
@@ -11,18 +11,20 @@ mdate: 2025-01-22 17:43:00 -0700
 
 <p>
   Winning on a small board is the same as in regular Tic-Tac-Toe.
-  The first player to win a small board wins that board.
+  The first player to win a small board wins it.
   Each small board has either zero or one winner.
+  If a small board is won or full, it is complete, and no further moves may be made in it.
 </p>
 
 <p>
   The first player may start in any small board.
-  Making a move "sends" the opponent to the corresponding small board, unless that board was already won or full, which allows the next move to be made in any other board.
+  Making a move "sends" the opponent to the corresponding small board.
+  If that board is complete, the next move can be made in any other board.
 </p>
 
 <p>
   To win the match, a player must win on the big board by winning three small boards in a line, as if the small boards were the cells in regular Tic-Tac-Toe.
-  If all small boards are won or full, and the big board is not won, the game ends in a draw.
+  If all small boards are complete, and the big board is not won, the match ends in a draw.
 </p>
 
 <h1>Time Control</h1>
@@ -41,11 +43,11 @@ mdate: 2025-01-22 17:43:00 -0700
 <p>
   This disallows obviously bad moves.
   If the opponent can win in one move (zero moves in Inverted), you are in check. Moves that make you in check (or lose in Inverted) are invalid.
-  If you have no valid moves, you lose by checkmate.
+  If you have no valid moves, and the game is not drawn, you lose by checkmate.
 </p>
 
 <h2>Quick <small>(default: off)</small></h2>
 <p>Capture one small board to win (enabling Checked is recommended, to avoid misclicks).</p>
 
 <h2>Open <small>(default: off)</small></h2>
-<p>Moves are always allowed on any board, in any unoccupied cell.</p>
+<p>Moves are allowed on any incomplete small board, in any unoccupied cell.</p>

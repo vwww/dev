@@ -125,18 +125,19 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
     const boardFlag = 1 << ((moveBoard << 1) + parity)
     const boardFlagFinal = 1 << moveBoard
     boards[moveBoard] |= posFlag
-    if (!(boardFinal & boardFlagFinal)) {
-      if (isWin(boards[moveBoard], !!parity)) {
-        board |= boardFlag
-        boardFinal |= boardFlagFinal
-      } else if (isFull(boards[moveBoard])) {
-        boardFinal |= boardFlagFinal
-      }
+    if (isWin(boards[moveBoard], !!parity)) {
+      board |= boardFlag
+      boardFinal |= boardFlagFinal
+    } else if (isFull(boards[moveBoard])) {
+      boardFinal |= boardFlagFinal
     }
 
     const boardMustMove = this.modeAnyBoard.get() || (boardFinal & posFlagFinal) ? -1 : movePos
 
     const moveDisallowed = (moveBoard: number, movePos: number): boolean => {
+      if (boardFinal & (1 << movePos)) {
+        return true
+      }
       // Special Checks
       if (this.modeChecked.get()) {
         const posFlag = 1 << ((movePos << 1) + parityInv)
