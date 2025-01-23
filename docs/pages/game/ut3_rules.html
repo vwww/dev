@@ -1,7 +1,7 @@
 ---
 title: Rules for Ultimate Tic-Tac-Toe
 date: "2020-01-12 16:28:00 -0700"
-mdate: 2020-10-20 19:18:15 -0600
+mdate: 2025-01-22 17:43:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'ut3') }}
@@ -10,11 +10,19 @@ mdate: 2020-10-20 19:18:15 -0600
 <p>Ultimate Tic-Tac-Toe is a more advanced version of the two-player board game Tic-Tac-Toe.</p>
 
 <p>
-  The first player may start in any small board.
-  To win, a player must win on the big board by winning three small boards in a row.
   Winning on a small board is the same as in regular Tic-Tac-Toe.
-  After a small board is full, no more moves may be made in it.
+  The first player to win a small board wins that board.
+  Each small board has either zero or one winner.
+</p>
+
+<p>
+  The first player may start in any small board.
   Making a move "sends" the opponent to the corresponding small board, unless that board was already won or full, which allows the next move to be made in any other board.
+</p>
+
+<p>
+  To win the match, a player must win on the big board by winning three small boards in a line, as if the small boards were the cells in regular Tic-Tac-Toe.
+  If all small boards are won or full, and the big board is not won, the game ends in a draw.
 </p>
 
 <h1>Time Control</h1>
