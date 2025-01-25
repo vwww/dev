@@ -92,7 +92,7 @@
     badges:
       - [success, NEW]
   - name: Tic-Tac-Toe
-    desc: Get 3 in a row to win!
+    desc: Get 3 in a line to win!
     href: game/t3_multi
     hrefs:
       - name: Rules
@@ -101,7 +101,7 @@
     badges:
       - [success, NEW]
   - name: Ultimate Tic-Tac-Toe
-    desc: Win small local boards to win the big global board.
+    desc: Win small boards to win the big board.
     href: game/ut3
     hrefs:
       - name: Rules
