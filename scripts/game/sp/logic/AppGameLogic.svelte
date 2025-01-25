@@ -36,7 +36,7 @@ interface RawPreset extends PresetCommon {
 }
 
 interface Preset extends PresetCommon {
-  num: string
+  num: number
   solution?: string[][]
 }
 
@@ -51,17 +51,16 @@ function loadPreset (preset: Preset): void {
 
 void fetch('logic.json')
   .then((resp) => resp.json())
-  .then((p: Record<string, Record<string, RawPreset>>) => {
-    const sortedLogicKeys = Object.keys(p).sort()
-    for (const presetKey of sortedLogicKeys) {
+  .then((p: Record<string, (RawPreset | null)[]>) => {
+    logicPresets = Object.keys(p).sort().map((presetKey) => {
       const preset = p[presetKey]
-      const sortedPuzzleKeys = Object.keys(preset).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
 
       const puzzles: Preset[] = []
-      for (const puzzleKey of sortedPuzzleKeys) {
-        const puzzle: RawPreset = preset[puzzleKey]
+      preset.forEach((puzzle, num) => {
+        if (!puzzle) return
+
         const p = {
-          num: puzzleKey,
+          num,
           name: puzzle.name,
           desc: puzzle.desc.trim(),
           clues: puzzle.clues.map((c) => c.trim()),
@@ -73,10 +72,10 @@ void fetch('logic.json')
           p.solution = puzzle.solution2.map((x) => [...x].map((y, i) => p.types[i].vals[+y]))
         }
         puzzles.push(p)
-      }
+      })
 
-      logicPresets.push(puzzles)
-    }
+      return puzzles
+    })
   })
 </script>
 
