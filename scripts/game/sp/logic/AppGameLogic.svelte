@@ -82,7 +82,7 @@ loadLogic()
   </div>
 
   <div class="col-lg-6 mb-2">
-    <h3>Clues <button class="btn btn-success mb-2" onclick={() => { $clues = [...$clues, ''] }}>+</button></h3>
+    <h3>Clues <button class="btn btn-outline-success mb-2" onclick={() => { $clues = [...$clues, ''] }}>+</button></h3>
 
     <ol>
       {#each $clues, i}
@@ -90,7 +90,7 @@ loadLogic()
         <div class="input-group mb-3">
           <div class="input-group">
             <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={$clues[i]} rows="2"></textarea>
-            <button class="btn btn-danger" onclick={() => {
+            <button class="btn btn-outline-danger" onclick={() => {
               $clues.splice(i, 1)
               $clues = $clues
             }}>-</button>
