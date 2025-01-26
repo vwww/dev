@@ -49,6 +49,14 @@ function loadPreset (preset: Preset): void {
   $solution = preset.solution
 }
 
+function reset (): void {
+  $title = $description = ''
+  $clues = []
+  $puzzleTypes = []
+  $puzzleRules = []
+  $solution = undefined
+}
+
 async function loadLogic () {
   const resp = await fetch('logic.json')
   const p: Record<string, (RawPreset | null)[]> = await resp.json()
@@ -74,7 +82,7 @@ loadLogic()
 
 <div class="row">
   <div class="col-lg-6 mb-3">
-    <h2>Puzzle Info</h2>
+    <h2>Puzzle Info <button class="btn btn-outline-danger mb-2" onclick={reset}>Reset</button></h2>
 
     <input type="text" class="form-control mb-2" placeholder="Title" bind:value={$title}>
 
