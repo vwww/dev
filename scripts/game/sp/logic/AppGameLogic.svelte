@@ -49,34 +49,27 @@ function loadPreset (preset: Preset): void {
   $solution = preset.solution
 }
 
-void fetch('logic.json')
-  .then((resp) => resp.json())
-  .then((p: Record<string, (RawPreset | null)[]>) => {
-    logicPresets = Object.keys(p).sort().map((presetKey) => {
-      const preset = p[presetKey]
+async function loadLogic () {
+  const resp = await fetch('logic.json')
+  const p: Record<string, (RawPreset | null)[]> = await resp.json()
 
-      const puzzles: Preset[] = []
-      preset.forEach((puzzle, num) => {
-        if (!puzzle) return
-
-        const p = {
+  logicPresets = Object.keys(p).sort().map((presetKey) => p[presetKey]
+    .flatMap((puzzle, num) => puzzle
+      ? {
           num,
           name: puzzle.name,
           desc: puzzle.desc.trim(),
           clues: puzzle.clues.map((c) => c.trim()),
           types: puzzle.types || [],
           rules: puzzle.rules || [],
-          solution: puzzle.solution,
+          solution: puzzle.solution2 ? puzzle.solution2.map((x) => [...x].map((y, i) => puzzle.types[i].vals[+y])) : puzzle.solution,
         }
-        if (puzzle.solution2) {
-          p.solution = puzzle.solution2.map((x) => [...x].map((y, i) => p.types[i].vals[+y]))
-        }
-        puzzles.push(p)
-      })
+      : []
+    )
+  )
+}
 
-      return puzzles
-    })
-  })
+loadLogic()
 </script>
 
 <div class="row">
