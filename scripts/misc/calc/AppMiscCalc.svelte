@@ -162,7 +162,7 @@ function onClickOperator (this: HTMLElement): void { doOp(this.innerText) }
 
 const calcButton: Record<string, HTMLElement> = $state({})
 
-function onKeyDown (event: KeyboardEvent): void {
+function onkeydown (event: KeyboardEvent): void {
   let key = event.key
   switch (key) {
     case '0': case '1': case '2': case '3': case '4':
@@ -234,7 +234,7 @@ const buttons: [string, (this: HTMLButtonElement, event: MouseEvent) => void][][
 ]
 </script>
 
-<svelte:window onkeydown={onKeyDown} />
+<svelte:window {onkeydown} />
 
 <div style="max-width: 576px; margin: auto">
   <div class="row mb-3"><input class="form-control text-center" value="{display}{memNum ? ' M' : ''}" readonly></div>
