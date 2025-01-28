@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { CheatGameHistory } from './CheatGame'
+import type { CheatGameHistory } from './CheatGame.svelte'
 
 interface Props {
   results: CheatGameHistory[]

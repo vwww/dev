@@ -7,9 +7,9 @@ import PlayCard from '@gmc/PlayCard.svelte'
 
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState'
+import ChatState from '@gmc/ChatState.svelte'
 
-import RPSGame from './RPSGame'
+import RPSGame from './RPSGame.svelte'
 import RPSHistory from './RPSHistory.svelte'
 import RPSPlay from './RPSPlay.svelte'
 
@@ -27,7 +27,7 @@ const {
   pastGames,
   clientsSorted,
   roundState,
-} = gameState
+} = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
 
@@ -53,10 +53,10 @@ function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBo
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={$inGame}
-  isActive={$isActive}
-  canReady={$roundState === 1}
-  isReady={$isReady}
+  {inGame}
+  {isActive}
+  canReady={roundState === 1}
+  {isReady}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
@@ -67,12 +67,12 @@ function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBo
 <div class="row">
   <div class="col-12 col-xl-8">
     <GameHistoryCard
-      canClear={!$pastGames.length}
+      canClear={!pastGames.length}
       onClear={() => gameState.clearHistory()}>
-      <RPSHistory results={$pastGames} />
+      <RPSHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={$clientsSorted} columns={[
+    <Leaderboard players={clientsSorted} columns={[
       ['Streak', (p) => p.roundStreak],
       ['Score', (p) => p.roundScore],
       ['Round Win', (p) => [p.roundWins, p.roundTotal]],

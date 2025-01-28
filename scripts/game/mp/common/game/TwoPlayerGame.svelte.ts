@@ -1,8 +1,7 @@
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from './ByteReader'
 import { ByteWriter } from './ByteWriter'
-import { CommonGame } from './CommonGame'
-import { type TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'
+import { CommonGame } from './CommonGame.svelte'
+import { type TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame.svelte'
 
 export interface TPTurnClient extends TurnBasedClient {
   score: number
@@ -46,11 +45,11 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
 
   protected p0 = -1
   protected p1 = -1
-  protected ply = valueStore(0)
-  protected winner = valueStore(0)
-  protected myTurn = valueStore(false)
-  protected myPlayer = valueStore(0)
-  protected drawOffer = valueStore(0)
+  protected ply = $state(0)
+  protected winner = $state(0)
+  protected myTurn = $state(false)
+  protected myPlayer = $state(0)
+  protected drawOffer = $state(0)
 
   public override sendMoveEnd (): void {
     this.room?.send(new ByteWriter()
@@ -109,12 +108,12 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
       p1Name: CommonGame.formatPlayerName(p1, this.p1),
       winner,
       earlyEnd,
-      ply: this.ply.get(),
+      ply: this.ply,
     }
     this.addHistory(entry)
 
-    this.winner.set(winner + 1)
-    this.drawOffer.set(0)
+    this.winner = winner + 1
+    this.drawOffer = 0
   }
 
   protected processWelcomePlayer (m: ByteReader, p: C): void {
@@ -138,9 +137,9 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
   protected processEndTurn (m: ByteReader): void {
     this.processEndTurn2(m)
 
-    this.ply.update((v) => v + 1)
-    const myPlayer = this.myPlayer.get()
-    this.myTurn.set(!!myPlayer && (this.ply.get() & 1) === myPlayer - 1)
+    this.ply++
+    const myPlayer = this.myPlayer
+    this.myTurn = !!myPlayer && (this.ply & 1) === myPlayer - 1
 
     this.setTimer(this.ROUND_TIME)
   }
@@ -153,7 +152,7 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
         const drawReq = m.getInt()
         const cn = m.getInt()
 
-        this.drawOffer.set(drawReq && (cn === this.myCn ? 1 : 2))
+        this.drawOffer = drawReq && (cn === this.myCn ? 1 : 2)
         break
       }
       default:
@@ -163,22 +162,22 @@ export abstract class TPTurnGame<C extends TPTurnClient> extends TurnBasedGame<C
   }
 
   private resetRound (): void {
-    this.ply.set(0)
-    this.winner.set(0)
-    this.drawOffer.set(0)
+    this.ply = 0
+    this.winner = 0
+    this.drawOffer = 0
   }
 
   private processPlayerInfo (m: ByteReader): void {
     this.p0 = m.getInt()
     this.p1 = m.getInt()
 
-    this.myPlayer.set(
+    this.myPlayer =
       this.p0 === this.myCn
         ? 1
         : this.p1 === this.myCn
           ? 2
-          : 0)
-    this.myTurn.set(this.p0 === this.myCn)
+          : 0
+    this.myTurn = (this.p0 === this.myCn)
   }
 
   private setResult (p: C, win: number): void {

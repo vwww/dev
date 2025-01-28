@@ -1,10 +1,9 @@
 import { clamp } from '@/util'
-import { valueStore } from '@/util/svelte'
 import { isFull, isNearWin, isWin } from '@gc/t3/game'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
-import { type TPTurnClient, TPTurnGame } from '@gmc/game/TwoPlayerGame'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
+import { type TPTurnClient, TPTurnGame } from '@/game/mp/common/game/TwoPlayerGame.svelte'
 
 interface UT3Client extends TPTurnClient { }
 
@@ -29,15 +28,15 @@ const INITIAL_STATE: BoardState = {
 const MAX_TURNS = 81
 
 export default class UT3Game extends TPTurnGame<UT3Client> {
-  public readonly modeTurnTime = valueStore(0)
-  public readonly modeInverted = valueStore(false)
-  public readonly modeChecked = valueStore(false)
-  public readonly modeQuick = valueStore(false)
-  public readonly modeAnyBoard = valueStore(false)
+  public modeTurnTime = $state(0)
+  public modeInverted = $state(false)
+  public modeChecked = $state(false)
+  public modeQuick = $state(false)
+  public modeAnyBoard = $state(false)
 
-  public readonly boardStates = valueStore([INITIAL_STATE])
-  public readonly boardIndex = valueStore(0)
-  public readonly moveHistory = valueStore([] as [number, number][])
+  public boardStates = $state([INITIAL_STATE])
+  public boardIndex = $state(0)
+  public moveHistory = $state([] as [number, number][])
 
   protected override ROUND_TIME = 0 // set by mode
 
@@ -49,7 +48,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
 
   sendMove (board: number, pos: number): void {
     // if rewinded, don't send
-    if (this.boardIndex.get() !== this.ply.get()) return
+    if (this.boardIndex !== this.ply) return
 
     this.room?.send(new ByteWriter()
       .putInt(TurnC2S.MOVE)
@@ -60,7 +59,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
   }
 
   historyGo (index: number): void {
-    this.boardIndex.set(clamp(index, 0, this.moveHistory.get().length))
+    this.boardIndex = clamp(index, 0, this.moveHistory.length)
   }
 
   protected processMoveConfirm (m: ByteReader): void {
@@ -73,7 +72,7 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
     for (let i = 0; i <= MAX_TURNS; i++) {
       const board = m.getInt()
       if (board < 0) {
-        this.ply.set(i)
+        this.ply = i
         break
       }
       const pos = m.getInt()
@@ -92,11 +91,11 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeTurnTime.set(this.ROUND_TIME = m.getInt())
-    this.modeInverted.set(m.getBool())
-    this.modeChecked.set(m.getBool())
-    this.modeQuick.set(m.getBool())
-    this.modeAnyBoard.set(m.getBool())
+    this.modeTurnTime = this.ROUND_TIME = m.getInt()
+    this.modeInverted = m.getBool()
+    this.modeChecked = m.getBool()
+    this.modeQuick = m.getBool()
+    this.modeAnyBoard = m.getBool()
   }
 
   protected makePlayer (): UT3Client {
@@ -104,14 +103,14 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
   }
 
   private reset (): void {
-    this.boardStates.set([INITIAL_STATE])
-    this.boardIndex.set(0)
-    this.moveHistory.set([])
+    this.boardStates = [INITIAL_STATE]
+    this.boardIndex = 0
+    this.moveHistory = []
   }
 
   private applyMove (moveBoard: number, movePos: number): void {
-    const boardStates = this.boardStates.get()
-    const moveHistory = this.moveHistory.get()
+    const boardStates = this.boardStates
+    const moveHistory = this.moveHistory
 
     const state = boardStates[boardStates.length - 1]
     const parityInv = (boardStates.length & 1)
@@ -132,22 +131,22 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
       boardFinal |= boardFlagFinal
     }
 
-    const boardMustMove = this.modeAnyBoard.get() || (boardFinal & posFlagFinal) ? -1 : movePos
+    const boardMustMove = this.modeAnyBoard || (boardFinal & posFlagFinal) ? -1 : movePos
 
     const moveDisallowed = (moveBoard: number, movePos: number): boolean => {
       // Special Checks
-      if (this.modeChecked.get()) {
+      if (this.modeChecked) {
         const posFlag = 1 << ((movePos << 1) + parityInv)
-        if (this.modeInverted.get()) {
+        if (this.modeInverted) {
           // inverted: cannot move if it'd cause a win
           if (isWin(boards[moveBoard] | posFlag, !parity) &&
-            (this.modeQuick.get() || isWin(board | 1 << ((moveBoard << 1) + parityInv), !parity))) {
+            (this.modeQuick || isWin(board | 1 << ((moveBoard << 1) + parityInv), !parity))) {
             return true
           }
         } else {
           // uninverted: cannot move if it'd allow a loss
           const newFlags = boards[movePos] | (moveBoard === movePos ? posFlag : 0)
-          if (this.modeAnyBoard.get() || !this.modeQuick.get() &&
+          if (this.modeAnyBoard || !this.modeQuick &&
               ((boardFinal & (1 << movePos)) ||
                 isFull(newFlags) ||
                 isWin(newFlags, !parity))) {
@@ -155,12 +154,12 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
             for (let i = 0; i < 9; i++) {
               if (!(boardFinal & (1 << i)) &&
                 isNearWin(boards[i] | (i === moveBoard ? posFlag : 0), !parityInv) &&
-                (this.modeQuick.get() || isWin(board | (1 << ((i << 1) + parity)), !parityInv))) {
+                (this.modeQuick || isWin(board | (1 << ((i << 1) + parity)), !parityInv))) {
                 return true
               }
             }
           } else if (isNearWin(newFlags, !parityInv) &&
-              (this.modeQuick.get() ||
+              (this.modeQuick ||
                 isWin(board | (1 << ((movePos << 1) + parity)), !parityInv))) {
             return true
           }
@@ -187,8 +186,10 @@ export default class UT3Game extends TPTurnGame<UT3Client> {
     })
     moveHistory.push([moveBoard, movePos])
 
-    this.boardStates.set(boardStates)
-    this.moveHistory.set(moveHistory)
-    this.boardIndex.update((i) => i === boardStates.length - 2 ? i + 1 : i)
+    this.boardStates = boardStates
+    this.moveHistory = moveHistory
+    if (this.boardIndex === boardStates.length - 2) {
+      this.boardIndex++
+    }
   }
 }

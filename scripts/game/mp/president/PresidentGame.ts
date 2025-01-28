@@ -1,9 +1,8 @@
 import { clamp, sum } from '@/util'
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
+import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@/game/mp/common/game/RoundRobinGame.svelte'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
 
 interface PClient extends RRTurnClient {
   score: number
@@ -44,47 +43,47 @@ export type PRankType = number // -2 = scum, -1 = vice scum, 0 = neutral, 1 = vi
 const MAX_DECKS = 166_799_986_198_907
 
 export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDiscInfo, PGameHistory> {
-  public readonly modeDeck = valueStore(0)
-  public readonly modeJoker = valueStore(0)
-  public readonly modeRevolution = valueStore(0 as OptRevolution)
-  public readonly modeRevEndTrick = valueStore(false)
-  public readonly mode1Fewer2 = valueStore(false)
-  public readonly modePlayAfterPass = valueStore(false)
-  public readonly modeEqualize = valueStore(0 as OptEqualize)
-  public readonly modeEqualizeEndTrick = valueStore(0 as OptEqualizeEndTrick)
-  public readonly modeEqualizeOnlyScum = valueStore(false)
-  public readonly modeFirstTrick = valueStore(0 as OptFirstTrick)
-  public readonly mode4inARow = valueStore(false)
-  public readonly mode8 = valueStore(false)
-  public readonly modeSingleTurn = valueStore(false)
-  public readonly modePenalizeFinal2 = valueStore(false)
-  public readonly modePenalizeFinalJoker = valueStore(false)
+  public modeDeck = $state(0)
+  public modeJoker = $state(0)
+  public modeRevolution = $state(0 as OptRevolution)
+  public modeRevEndTrick = $state(false)
+  public mode1Fewer2 = $state(false)
+  public modePlayAfterPass = $state(false)
+  public modeEqualize = $state(0 as OptEqualize)
+  public modeEqualizeEndTrick = $state(0 as OptEqualizeEndTrick)
+  public modeEqualizeOnlyScum = $state(false)
+  public modeFirstTrick = $state(0 as OptFirstTrick)
+  public mode4inARow = $state(false)
+  public mode8 = $state(false)
+  public modeSingleTurn = $state(false)
+  public modePenalizeFinal2 = $state(false)
+  public modePenalizeFinalJoker = $state(false)
 
-  public readonly gamePhase = valueStore(0 as GamePhase)
+  public gamePhase = $state(0 as GamePhase)
 
-  public readonly pres = valueStore(0)
-  public readonly scum = valueStore(0)
-  public readonly vicePres = valueStore(0)
-  public readonly viceScum = valueStore(0)
+  public pres = $state(0)
+  public scum = $state(0)
+  public vicePres = $state(0)
+  public viceScum = $state(0)
 
-  public readonly lowGive0 = valueStore(0)
-  public readonly lowGive1 = valueStore(0)
-  public readonly hiGive0 = valueStore(0)
-  public readonly hiGive1 = valueStore(0)
+  public lowGive0 = $state(0)
+  public lowGive1 = $state(0)
+  public hiGive0 = $state(0)
+  public hiGive1 = $state(0)
 
-  public readonly revolution = valueStore(false)
-  public readonly trickCount = valueStore(0)
-  public readonly trickValue = valueStore(0)
-  public readonly trickMaxed = valueStore(false)
+  public revolution = $state(false)
+  public trickCount = $state(0)
+  public trickValue = $state(0)
+  public trickMaxed = $state(false)
 
-  public readonly cardCountMine = valueStore(newZeroCardCount())
-  public readonly cardCountOthers = valueStore(newZeroCardCount())
-  public readonly cardCountDiscard = valueStore(newZeroCardCount())
-  public readonly cardCountTotal = valueStore(newZeroCardCount())
-  public readonly moveHistory = valueStore([] as PGameHistory[])
+  public cardCountMine = $state(newZeroCardCount())
+  public cardCountOthers = $state(newZeroCardCount())
+  public cardCountDiscard = $state(newZeroCardCount())
+  public cardCountTotal = $state(newZeroCardCount())
+  public moveHistory = $state([] as PGameHistory[])
 
-  public readonly pendingMove = valueStore(0)
-  public readonly pendingMoveCount = valueStore(0)
+  public pendingMove = $state(0)
+  public pendingMoveCount = $state(0)
 
   protected override readonly playersSortProps = [
     (p: PClient) => p.score,
@@ -115,14 +114,14 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMove.set(m.getInt())
-    this.pendingMoveCount.set(m.getInt())
+    this.pendingMove = m.getInt()
+    this.pendingMoveCount = m.getInt()
   }
 
   protected processPrivateInfo (m: ByteReader): void {
     switch (m.getInt()) {
       case 0: // my card count
-        this.cardCountMine.set(readCardCount(m))
+        this.cardCountMine = readCardCount(m)
         // this.recalcCards()
         break
       case 1: // (vice-)scum cards
@@ -136,10 +135,10 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   protected processRoundStartInfo (m: ByteReader): void {
     const noPres = m.getBool()
     if (noPres) {
-      this.gamePhase.set(GamePhase.NEW_TRICK)
+      this.gamePhase = GamePhase.NEW_TRICK
       // TODO
     } else {
-      this.gamePhase.set(GamePhase.GIVE_CARDS)
+      this.gamePhase = GamePhase.GIVE_CARDS
       this.processGiveCardInfo(m)
     }
     // TODO init cards
@@ -148,7 +147,7 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   protected processRoundInfo (m: ByteReader): void {
     // TODO just discard count, calc others?
     const phase = m.getInt()
-    this.gamePhase.set(phase)
+    this.gamePhase = phase
     switch (phase) {
       case GamePhase.GIVE_CARDS:
         this.processGiveCardInfo(m)
@@ -156,7 +155,7 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
       case GamePhase.IN_TRICK:
       case GamePhase.NEW_TRICK: {
         const discardCount = readCardCount(m)
-        this.cardCountDiscard.set(discardCount)
+        this.cardCountDiscard = discardCount
         // TODO infer from discarded?
       }
     }
@@ -180,8 +179,8 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
 
     const c = this.clients.get(p.owner)
     if (c) {
-      // const rank = this.playerInfo.get().length
-      // updateScore(c, rank, rank + this.playerDiscInfo.get().length)
+      // const rank = this.playerInfo.length
+      // updateScore(c, rank, rank + this.playerDiscInfo.length)
     }
 
     return isFirst
@@ -195,7 +194,7 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   }
 
   protected processEndRound (m: ByteReader): void {
-    // const playerInfos = this.playerInfo.get()
+    // const playerInfos = this.playerInfo
 
     // for (const p of playerInfos) {
     //   p.hand = readCardCount(m)
@@ -206,21 +205,21 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeDeck.set(clamp(m.getInt(), 1, MAX_DECKS))
-    this.modeJoker.set(clamp(m.getInt(), 0, 2))
-    this.modeRevolution.set(clamp(m.getInt(), 0, OptRevolution._NUM - 1))
-    this.modeRevEndTrick.set(m.getBool())
-    this.mode1Fewer2.set(m.getBool())
-    this.modePlayAfterPass.set(m.getBool())
-    this.modeEqualize.set(clamp(m.getInt(), 0, OptEqualize._NUM - 1))
-    this.modeEqualizeEndTrick.set(clamp(m.getInt(), 0, OptEqualizeEndTrick._NUM - 1))
-    this.modeEqualizeOnlyScum.set(m.getBool())
-    this.modeFirstTrick.set(clamp(m.getInt(), 0, OptFirstTrick._NUM - 1))
-    this.mode4inARow.set(m.getBool())
-    this.mode8.set(m.getBool())
-    this.modeSingleTurn.set(m.getBool())
-    this.modePenalizeFinal2.set(m.getBool())
-    this.modePenalizeFinalJoker.set(m.getBool())
+    this.modeDeck = clamp(m.getInt(), 1, MAX_DECKS)
+    this.modeJoker = clamp(m.getInt(), 0, 2)
+    this.modeRevolution = clamp(m.getInt(), 0, OptRevolution._NUM - 1)
+    this.modeRevEndTrick = m.getBool()
+    this.mode1Fewer2 = m.getBool()
+    this.modePlayAfterPass = m.getBool()
+    this.modeEqualize = clamp(m.getInt(), 0, OptEqualize._NUM - 1)
+    this.modeEqualizeEndTrick = clamp(m.getInt(), 0, OptEqualizeEndTrick._NUM - 1)
+    this.modeEqualizeOnlyScum = m.getBool()
+    this.modeFirstTrick = clamp(m.getInt(), 0, OptFirstTrick._NUM - 1)
+    this.mode4inARow = m.getBool()
+    this.mode8 = m.getBool()
+    this.modeSingleTurn = m.getBool()
+    this.modePenalizeFinal2 = m.getBool()
+    this.modePenalizeFinalJoker = m.getBool()
   }
 
   protected processWelcomePlayer (m: ByteReader, p: PClient): void {
@@ -277,10 +276,10 @@ export default class PresidentGame extends RRTurnGame<PClient, PPlayerInfo, PDis
     const scum = m.getInt()
     const vicePres = m.getInt()
     const viceScum = m.getInt()
-    this.pres.set(pres)
-    this.scum.set(scum)
-    this.vicePres.set(vicePres)
-    this.viceScum.set(viceScum)
+    this.pres = pres
+    this.scum = scum
+    this.vicePres = vicePres
+    this.viceScum = viceScum
   }
 }
 

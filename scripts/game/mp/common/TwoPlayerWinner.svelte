@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { TPHistoryEntry } from './game/TwoPlayerGame'
+import type { TPHistoryEntry } from './game/TwoPlayerGame.svelte'
 
 interface Props {
   results: ArrayLike<TPHistoryEntry>

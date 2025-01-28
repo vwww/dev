@@ -5,7 +5,7 @@ import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 
 import DiscardMoveHistory from './DiscardMoveHistory.svelte'
 
-import DiscardGame from './DiscardGame'
+import DiscardGame from './DiscardGame.svelte'
 
 import { getGameModeString, playerColor } from './common'
 
@@ -39,11 +39,11 @@ const {
   pendingMoveGuess,
   modeTurnTime,
   modeDeck,
-} = gameState
+} = $derived(gameState)
 
-const playing = $derived($isActive && $roundState === 2 && $inRound)
-const canMove = $derived(playing && gameState.playerIsMe($playerInfo[0]))
-const pendingMove = $derived($pendingMoveUseHand ? $myHand : $myAltMove)
+const playing = $derived(isActive && roundState === 2 && inRound)
+const canMove = $derived(playing && gameState.playerIsMe(playerInfo[0]))
+const pendingMove = $derived(pendingMoveUseHand ? myHand : myAltMove)
 
 function getCardDesc (card: number, ll: boolean): string {
   if (card < 1 || card > 8) return 'unknown'
@@ -100,17 +100,17 @@ export function getCardName (card: number, ll: boolean): string | number {
 }
 </script>
 
-{#if $roundState === 0}
+{#if roundState === 0}
   Waiting for players&hellip;
 {:else}
-  {#if $roundState === 1}
+  {#if roundState === 1}
     Intermission:
   {:else if canMove}
     Make a move:
   {:else}
     Waiting for others to move&hellip;
   {/if}
-  <ProgressBar startTime={$roundTimerStart} endTime={$roundTimerEnd} />
+  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
 {/if}
 
 <div class="row">
@@ -127,28 +127,28 @@ export function getCardName (card: number, ll: boolean): string | number {
         <div class="card-body">
           <ul>
             {#each [1, 2, 3, 4, 5, 6, 7, 8] as card}
-              <li class:fw-bold={$roundState === 2 && playing && (card === $myHand || (canMove && card === $myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
+              <li class:fw-bold={roundState === 2 && playing && (card === myHand || (canMove && card === myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
             {/each}
           </ul>
         </div>
       </div>
     </div>
   </div>
-  {#if $roundState === 2 && playing}
+  {#if roundState === 2 && playing}
     <div class="col-12">
-      Your hand: <span class="badge text-bg-dark">{getCardName($myHand, ll)}</span>
+      Your hand: <span class="badge text-bg-dark">{getCardName(myHand, ll)}</span>
       {#if canMove}
-        <span class="badge text-bg-dark">{getCardName($myAltMove, ll)}</span>
+        <span class="badge text-bg-dark">{getCardName(myAltMove, ll)}</span>
       {/if}
     </div>
     {#if canMove}
       <div class="col-12">
         <div class="btn-group d-flex mb-3" role="group">
           <span class="input-group-text">Discard</span>
-          <button class:active={$pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor($myHand, $myAltMove)}"
-            onclick={() => gameState.sendMoveUseHand(true)}>{getCardName($myHand, ll)}</button>
-          <button class:active={!$pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor($myAltMove, $myHand)}"
-            onclick={() => gameState.sendMoveUseHand(false)}>{getCardName($myAltMove, ll)}</button>
+          <button class:active={pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor(myHand, myAltMove)}"
+            onclick={() => gameState.sendMoveUseHand(true)}>{getCardName(myHand, ll)}</button>
+          <button class:active={!pendingMoveUseHand} class="fw-bold w-100 btn btn-outline-{moveColor(myAltMove, myHand)}"
+            onclick={() => gameState.sendMoveUseHand(false)}>{getCardName(myAltMove, ll)}</button>
         </div>
       </div>
       <div class="col-12 col-sm-6 mb-2">
@@ -156,12 +156,12 @@ export function getCardName (card: number, ll: boolean): string | number {
           Target<br>
           <button class="btn btn-outline-{pendingMove !== 4 && pendingMove < 7 ? 'primary' : 'secondary'} dropdown-toggle"
             id="dropdownMenuButtonTarget" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {$pendingMoveTarget < 0 ? 'auto' : gameState.getNameFromPlayer(gameState.getPlayerInfo($pendingMoveTarget), $pendingMoveTarget)}
+            {pendingMoveTarget < 0 ? 'auto' : gameState.getNameFromPlayer(gameState.getPlayerInfo(pendingMoveTarget), pendingMoveTarget)}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonTarget">
-            <button class="dropdown-item" class:active={$pendingMoveTarget < 0} onclick={() => gameState.sendMoveTarget(-1)}>auto</button>
-            {#each $playerInfo as p, i}
-              <button class="dropdown-item" class:text-bg-danger={!i && pendingMove !== 5 || p.immune} class:active={$pendingMoveTarget === i}
+            <button class="dropdown-item" class:active={pendingMoveTarget < 0} onclick={() => gameState.sendMoveTarget(-1)}>auto</button>
+            {#each playerInfo as p, i}
+              <button class="dropdown-item" class:text-bg-danger={!i && pendingMove !== 5 || p.immune} class:active={pendingMoveTarget === i}
                 onclick={() => gameState.sendMoveTarget(i)}>{gameState.getNameFromPlayer(p)}</button>
             {/each}
           </div>
@@ -173,13 +173,13 @@ export function getCardName (card: number, ll: boolean): string | number {
           Guess<br>
           <button class="btn btn-outline-{pendingMove === 1 ? 'info' : 'secondary'} dropdown-toggle"
             id="dropdownMenuButtonGuess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {$pendingMoveGuess > 1 ? cardShortNames[$pendingMoveGuess] : 'auto'}
+            {pendingMoveGuess > 1 ? cardShortNames[pendingMoveGuess] : 'auto'}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonGuess">
-            <button class="dropdown-item" class:active={$pendingMoveGuess < 2}
+            <button class="dropdown-item" class:active={pendingMoveGuess < 2}
               onclick={() => gameState.sendMoveGuess(0)}>auto</button>
             {#each cardShortNames.slice(2) as m, i}
-              <button class="dropdown-item" class:active={$pendingMoveGuess === i+2}
+              <button class="dropdown-item" class:active={pendingMoveGuess === i+2}
                 onclick={() => gameState.sendMoveGuess(i+2)}>{m}</button>
             {/each}
           </div>
@@ -194,11 +194,11 @@ export function getCardName (card: number, ll: boolean): string | number {
   <div class="col-12 col-sm-4">
     <div class="mb-2">
       <b>Active Players</b>
-      {#each $playerInfo as p, i}
+      {#each playerInfo as p, i}
         <br><span class="badge text-bg-{playerColor(gameState.playerIsMe(p))}">{gameState.getNameFromPlayer(p)}</span>
-        <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName($myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
-        {#if !i && $roundState === 2}
-          <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName($myAltMove, ll) : '?'}</span>
+        <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
+        {#if !i && roundState === 2}
+          <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName(myAltMove, ll) : '?'}</span>
         {/if}
         {#if p.immune}<badge class="badge text-bg-info">IMMUNE</badge>{/if}
         {p.discardSum}
@@ -209,7 +209,7 @@ export function getCardName (card: number, ll: boolean): string | number {
     </div>
     <div>
       <b>Eliminated</b>
-      {#each $playerDiscInfo as p}
+      {#each playerDiscInfo as p}
         <br><span class="badge text-bg-secondary">{p.ownerName}</span>
         {p.discardSum}
         {#each p.discarded as d}
@@ -219,17 +219,17 @@ export function getCardName (card: number, ll: boolean): string | number {
     </div>
   </div>
   <div class="col-12 col-sm-8">
-    <DiscardMoveHistory moves={$moveHistory} {ll} />
+    <DiscardMoveHistory moves={moveHistory} {ll} />
   </div>
   <div class="col mt-2">
-    There {$deckSize === 1 ? 'is 1 card' : `are ${$deckSize} cards`} in the draw pile.
+    There {deckSize === 1 ? 'is 1 card' : `are ${deckSize} cards`} in the draw pile.
     {#if showCardCount}
       <CardCountTable
         ranks={['1', '2', '3', '4', '5', '6', '7', '8', 'Total']}
         counts={[
-          ['Unplayed', $cardCountRemain],
-          ['Discarded', $cardCountDiscard],
-          ['Total', $cardCountTotal]
+          ['Unplayed', cardCountRemain],
+          ['Discarded', cardCountDiscard],
+          ['Total', cardCountTotal]
         ]}
       />
     {/if}
@@ -237,8 +237,8 @@ export function getCardName (card: number, ll: boolean): string | number {
 </div>
 
 <div>
-  Game Mode: {getGameModeString($modeDeck, $modeTurnTime)}
+  Game Mode: {getGameModeString(modeDeck, modeTurnTime)}
 </div>
 
 <b>Lobby</b>
-<RoundPlayerList inGame={$roundPlayers} inQueue={$roundPlayerQueue} />
+<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />

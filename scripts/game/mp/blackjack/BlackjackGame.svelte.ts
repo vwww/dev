@@ -1,8 +1,7 @@
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
+import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@/game/mp/common/game/RoundRobinGame.svelte'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
 
 interface BClient extends RRTurnClient {
   score: number
@@ -34,19 +33,19 @@ export interface BGameHistoryPlayer {
 }
 
 export default class BlackjackGame extends RRTurnGame<BClient, BPlayerInfo, BDiscInfo, BGameHistory> {
-  public readonly modeInverted = valueStore(false)
-  public readonly mode21 = valueStore(false)
-  public readonly modeDecks = valueStore(0)
-  public readonly modeDealerHitSoft = valueStore(false)
-  public readonly modeDealerPeek = valueStore(false)
-  public readonly modeDouble = valueStore(0/* BAny.Off */)
-  public readonly modeDoubleAfterSplit = valueStore(false)
-  public readonly modeSurrender = valueStore(0/* BSurrender.Off */)
-  public readonly modeSplitNonAce = valueStore(0)
-  public readonly modeSplitAce = valueStore(0)
-  public readonly modeHitSplitAce = valueStore(false)
+  public modeInverted = $state(false)
+  public mode21 = $state(false)
+  public modeDecks = $state(0)
+  public modeDealerHitSoft = $state(false)
+  public modeDealerPeek = $state(false)
+  public modeDouble = $state(0/* BAny.Off */)
+  public modeDoubleAfterSplit = $state(false)
+  public modeSurrender = $state(0/* BSurrender.Off */)
+  public modeSplitNonAce = $state(0)
+  public modeSplitAce = $state(0)
+  public modeHitSplitAce = $state(false)
 
-  public readonly pendingMove = valueStore(0)
+  public pendingMove = $state(0)
 
   protected override readonly playersSortProps = [
     (p: BClient) => p.score,
@@ -63,7 +62,7 @@ export default class BlackjackGame extends RRTurnGame<BClient, BPlayerInfo, BDis
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMove.set(m.getInt())
+    this.pendingMove = m.getInt()
   }
 
   protected processPrivateInfo (m: ByteReader): void {
@@ -99,8 +98,8 @@ export default class BlackjackGame extends RRTurnGame<BClient, BPlayerInfo, BDis
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeInverted.set(m.getBool())
-    this.mode21.set(m.getBool())
+    this.modeInverted = m.getBool()
+    this.mode21 = m.getBool()
   }
 
   protected processWelcomePlayer (m: ByteReader, p: BClient): void {

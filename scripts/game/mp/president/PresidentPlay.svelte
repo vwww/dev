@@ -11,12 +11,12 @@ const { gameState }: Props = $props()
 const {
   // isActive,
   gamePhase,
-} = gameState
+} = $derived(gameState)
 
 const canPass = false // temporary
 </script>
 
-{#if !$gamePhase}<!-- global (transfer) -->
+{#if !gamePhase}<!-- global (transfer) -->
   Scum [pl] gives the two highest cards to President [pl], who must choose two cards to give back.
   High-Scum [pl] gives the two highest cards to Vice-President [pl], who must choose two cards to give back.
   <!-- scum -->
@@ -28,7 +28,7 @@ const canPass = false // temporary
   [cards1]
   <button class="btn btn-primary d-block w-100">Confirm</button>
 {:else}
-  {#if $gamePhase === 1}<!-- Possible Move UI (first move) -->
+  {#if gamePhase === 1}<!-- Possible Move UI (first move) -->
     Card: [buttons]
     Cardinality: [number] [slider]
     Jokers: [number] [slider]

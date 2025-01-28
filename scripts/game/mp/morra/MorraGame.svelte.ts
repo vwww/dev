@@ -1,9 +1,8 @@
-import { valueStore } from '@/util/svelte'
-import ChatState from '@gmc/ChatState'
+import ChatState from '@gmc/ChatState.svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { type OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
 
 interface MorraClient extends OneTurnClient {
   wins: number
@@ -34,11 +33,11 @@ interface MorraGameHistoryPlayer {
 }
 
 export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
-  public readonly modeInverted = valueStore(false)
-  public readonly modeAddRandom = valueStore(false)
-  public readonly modeTeams = valueStore(0)
+  public modeInverted = $state(false)
+  public modeAddRandom = $state(false)
+  public modeTeams = $state(0)
 
-  public readonly pendingMove = valueStore(0)
+  public pendingMove = $state(0)
 
   protected override readonly playersSortProps = [
     (p: MorraClient) => p.streak,
@@ -59,7 +58,7 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
   }
 
   protected override processMoveConfirm (m: ByteReader): void {
-    this.pendingMove.set(m.getFloat64())
+    this.pendingMove = m.getFloat64()
   }
 
   protected override processRoundStart (_: ByteReader): void {
@@ -73,7 +72,7 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
     const moveSum = m.getFloat64()
     const moveRnd = m.getInt()
     const playerCount = Math.min(m.getInt(), this.clients.size)
-    const inverted = this.modeInverted.get()
+    const inverted = this.modeInverted
     const winner = moveSum % teamCount
 
     const gameHistoryEntry: MorraGameHistory = {
@@ -124,9 +123,9 @@ export default class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeInverted.set(m.getBool())
-    this.modeAddRandom.set(m.getBool())
-    this.modeTeams.set(m.getInt())
+    this.modeInverted = m.getBool()
+    this.modeAddRandom = m.getBool()
+    this.modeTeams = m.getInt()
   }
 
   protected processWelcomePlayer (m: ByteReader, p: MorraClient): void {

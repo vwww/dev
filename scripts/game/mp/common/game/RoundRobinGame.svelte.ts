@@ -1,7 +1,6 @@
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from './ByteReader'
-import { CommonGame } from './CommonGame'
-import { type TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame'
+import { CommonGame } from './CommonGame.svelte'
+import { type TurnBasedClient, TurnBasedGame, TurnC2S, TurnS2C } from './TurnBasedGame.svelte'
 
 export interface RRTurnClient extends TurnBasedClient {
 }
@@ -40,8 +39,8 @@ export abstract class RRTurnGame<
     ownerName: '',
   }
 
-  public readonly playerInfo = valueStore([] as P[])
-  public readonly playerDiscInfo = valueStore([] as D[])
+  public playerInfo = $state([] as P[])
+  public playerDiscInfo = $state([] as D[])
 
   getClientFromPlayer (p?: RRTurnPlayerInfo): C | undefined {
     return p && this.clients.get(p.owner)
@@ -56,12 +55,12 @@ export abstract class RRTurnGame<
   }
 
   getPlayerInfo (pn: number): P | undefined {
-    const playerInfos = this.playerInfo.get()
+    const playerInfos = this.playerInfo
     return (0 <= pn && pn <= playerInfos.length) ? playerInfos[pn] : undefined
   }
 
   protected updatePlayerInfo (): void {
-    this.playerInfo.update((v) => v)
+    this.playerInfo = this.playerInfo
   }
 
   protected override processRoundStart (m: ByteReader): void {
@@ -74,8 +73,8 @@ export abstract class RRTurnGame<
       p.owner = owner
       playerInfo.push(p)
     }
-    this.playerInfo.set(playerInfo)
-    this.playerDiscInfo.set([])
+    this.playerInfo = playerInfo
+    this.playerDiscInfo = []
 
     this.processRoundStartInfo(m)
   }
@@ -89,11 +88,9 @@ export abstract class RRTurnGame<
   protected processEndTurn (m: ByteReader): void {
     this.setTimer(this.processEndTurn2(m) ?? this.ROUND_TIME)
 
-    this.playerInfo.update((p) => {
-      const v = p.shift()
-      if (v) p.push(v)
-      return p
-    })
+    if (this.playerInfo.length) {
+      this.playerInfo.push(this.playerInfo.shift()!)
+    }
   }
 
   protected abstract processEndTurn2 (m: ByteReader): number | undefined
@@ -121,14 +118,11 @@ export abstract class RRTurnGame<
         newDiscInfo.ownerName = CommonGame.formatPlayerName(c, playerInfo.owner)
 
         const isFirst = this.processEliminate(m, newDiscInfo, playerInfo)
-        this.playerInfo.update((p) => {
-          p.splice(pNum, 1)
-          return p
-        })
+        this.playerInfo.splice(pNum, 1)
         if (isFirst) {
           // TODO
         } else {
-          this.playerDiscInfo.update((d) => [...d, newDiscInfo])
+          this.playerDiscInfo.push(newDiscInfo)
         }
         break
       }
@@ -159,7 +153,7 @@ export abstract class RRTurnGame<
       this.processPlayerInfo(m, p)
       playerInfo.push(p)
     }
-    this.playerInfo.set(playerInfo)
+    this.playerInfo = playerInfo
   }
 
   private processDiscInfos (m: ByteReader): void {
@@ -173,6 +167,6 @@ export abstract class RRTurnGame<
       this.processDiscInfo(m, p)
       discInfo.push(p)
     }
-    this.playerDiscInfo.set(discInfo)
+    this.playerDiscInfo = discInfo
   }
 }

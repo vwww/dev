@@ -1,7 +1,6 @@
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from './ByteReader'
 import { ByteWriter } from './ByteWriter'
-import { type BaseClient, CommonC2S, CommonGame, CommonS2C } from './CommonGame'
+import { type BaseClient, CommonC2S, CommonGame, CommonS2C } from './CommonGame.svelte'
 
 export interface TurnBasedClient extends BaseClient {
   ready: boolean
@@ -39,16 +38,16 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, G> extends Common
     inRound: false,
   }
 
-  public readonly isReady = valueStore(false)
+  public isReady = $state(false)
 
-  public readonly inRound = valueStore(false)
+  public inRound = $state(false)
 
-  public readonly roundState = valueStore(0)
-  public readonly roundTimerStart = valueStore(0)
-  public readonly roundTimerEnd = valueStore(0)
+  public roundState = $state(0)
+  public roundTimerStart = $state(0)
+  public roundTimerEnd = $state(0)
 
-  public readonly roundPlayers = valueStore([] as C[])
-  public readonly roundPlayerQueue = valueStore([] as C[])
+  public roundPlayers = $state([] as C[])
+  public roundPlayerQueue = $state([] as C[])
 
   protected INTERMISSION_TIME = 30000
   protected ROUND_TIME = 20000
@@ -69,34 +68,34 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, G> extends Common
   }
 
   protected roundWait (): void {
-    this.roundState.set(GameState.WAITING)
+    this.roundState = GameState.WAITING
     this.unsetReady()
   }
 
   protected roundIntermission (remain: number): void {
-    this.roundState.set(GameState.INTERMISSION)
+    this.roundState = GameState.INTERMISSION
     this.setTimer(remain)
     this.unsetReady()
-    this.isReady.set(false)
+    this.isReady = false
   }
 
   protected roundStart (remain: number): void {
-    this.roundState.set(GameState.ACTIVE)
+    this.roundState = GameState.ACTIVE
     this.setTimer(remain)
     this.unsetReady()
   }
 
   protected roundSetPlayers (playerList: C[]): void {
-    this.roundPlayers.set(playerList)
+    this.roundPlayers = playerList
   }
 
   protected roundSetPlayerQueue (playerList: C[]): void {
-    this.roundPlayerQueue.set(playerList)
+    this.roundPlayerQueue = playerList
   }
 
   protected setTimer (remain: number): void {
-    this.roundTimerStart.set(Date.now())
-    this.roundTimerEnd.set(Date.now() + remain)
+    this.roundTimerStart = Date.now()
+    this.roundTimerEnd = Date.now() + remain
   }
 
   protected processWelcomeGame (m: ByteReader): void {
@@ -143,14 +142,14 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, G> extends Common
   protected processWelcomeGame2 (m: ByteReader): void { /* ignore */ }
 
   protected playerActivated (player: C): void {
-    this.roundPlayerQueue.update((q) => [...q, player])
+    this.roundPlayerQueue.push(player)
   }
 
   protected playerDeactivated (player: C): void {
-    this.roundPlayers.update((q) => q.filter((p) => p !== player))
-    this.roundPlayerQueue.update((q) => q.filter((p) => p !== player))
+    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
+    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
     player.inRound = false
-    if (player.isMe) this.inRound.set(false)
+    if (player.isMe) this.inRound = false
   }
 
   protected processMessage2 (type: number, m: ByteReader): boolean {
@@ -174,7 +173,7 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, G> extends Common
           p.inRound = true
           curRoundPlayers.push(p)
         }
-        this.inRound.set(this.clients.get(this.myCn)?.inRound ?? false)
+        this.inRound = this.clients.get(this.myCn)?.inRound ?? false
 
         this.roundSetPlayers(curRoundPlayers)
         this.roundSetPlayerQueue([])
@@ -189,11 +188,9 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, G> extends Common
         if (p) {
           p.ready = ready
           if (cn === this.myCn) {
-            this.isReady.set(ready)
+            this.isReady = ready
           }
           this.updatePlayers(true)
-          this.roundPlayers.update((c) => c)
-          this.roundPlayerQueue.update((c) => c)
         }
         break
       }

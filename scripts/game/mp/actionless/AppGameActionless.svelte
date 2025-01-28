@@ -7,9 +7,9 @@ import PlayCard from '@gmc/PlayCard.svelte'
 
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState'
+import ChatState from '@gmc/ChatState.svelte'
 
-import ActionlessGame from './ActionlessGame'
+import ActionlessGame from './ActionlessGame.svelte'
 import ActionlessHistory from './ActionlessHistory.svelte'
 import ActionlessPlay from './ActionlessPlay.svelte'
 
@@ -27,7 +27,7 @@ const {
   pastGames,
   clientsSorted,
   roundState,
-} = gameState
+} = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
 
@@ -46,10 +46,10 @@ function formatGameMode ({optIndependent, optTeams}: any) {
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={$inGame}
-  isActive={$isActive}
-  canReady={$roundState === 1}
-  isReady={$isReady}
+  {inGame}
+  {isActive}
+  canReady={roundState === 1}
+  {isReady}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
@@ -60,12 +60,12 @@ function formatGameMode ({optIndependent, optTeams}: any) {
 <div class="row">
   <div class="col-12 col-lg-8">
     <GameHistoryCard
-      canClear={!$pastGames.length}
+      canClear={!pastGames.length}
       onClear={() => gameState.clearHistory()}>
-      <ActionlessHistory results={$pastGames} />
+      <ActionlessHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={$clientsSorted} columns={[
+    <Leaderboard players={clientsSorted} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.wins - p.losses],
       ['Win', (p) => [p.wins, p.total]],

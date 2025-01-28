@@ -1,4 +1,3 @@
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { type OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame'
 
@@ -26,8 +25,8 @@ interface AGameHistoryWinPlayer {
 }
 
 export default class AGame extends OneTurnGame<AClient, AGameHistory> {
-  public readonly modeIndependent = valueStore(false)
-  public readonly modeTeam = valueStore(0)
+  public modeIndependent = $state(false)
+  public modeTeam = $state(0)
 
   protected override readonly playersSortProps = [
     (p: AClient) => p.streak,
@@ -78,8 +77,8 @@ export default class AGame extends OneTurnGame<AClient, AGameHistory> {
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeIndependent.set(m.getBool())
-    this.modeTeam.set(m.getInt())
+    this.modeIndependent = m.getBool()
+    this.modeTeam = m.getInt()
   }
 
   protected processWelcomePlayer (m: ByteReader, p: AClient): void {

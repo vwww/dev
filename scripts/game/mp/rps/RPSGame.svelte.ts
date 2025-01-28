@@ -1,8 +1,7 @@
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { type OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
 
 interface RPSClient extends OneTurnClient {
   roundScore: number
@@ -45,13 +44,13 @@ interface RPSGameHistoryPlayer {
 }
 
 export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
-  public readonly modeClassic = valueStore(false)
-  public readonly modeInverted = valueStore(false)
-  public readonly modeCount = valueStore(false)
-  public readonly modeRoundTime = valueStore(0)
-  public readonly modeBotBalance = valueStore(0)
+  public modeClassic = $state(false)
+  public modeInverted = $state(false)
+  public modeCount = $state(false)
+  public modeRoundTime = $state(0)
+  public modeBotBalance = $state(0)
 
-  public readonly pendingMove = valueStore(0)
+  public pendingMove = $state(0)
 
   protected override readonly playersSortProps = [
     (p: RPSClient) => p.roundStreak,
@@ -72,7 +71,7 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMove.set(m.getInt())
+    this.pendingMove = m.getInt()
   }
 
   protected processEndRound (m: ByteReader): void {
@@ -80,7 +79,7 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
     const outcomes: number3 = [filterOutcome(m.getInt()), filterOutcome(m.getInt()), filterOutcome(m.getInt())]
     const count: number3 = [m.getFloat64(), m.getFloat64(), m.getFloat64()]
     const botCount = count.slice() as number3
-    const modeClassic = this.modeClassic.get()
+    const { modeClassic } = this
     const humanCount = Math.min(m.getInt(), this.clients.size)
 
     const ltw = calculateLTW(count, outcomes)
@@ -149,11 +148,11 @@ export default class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeClassic.set(m.getBool())
-    this.modeInverted.set(m.getBool())
-    this.modeCount.set(m.getBool())
-    this.modeRoundTime.set(this.ROUND_TIME = m.getInt())
-    this.modeBotBalance.set(m.getInt())
+    this.modeClassic = m.getBool()
+    this.modeInverted = m.getBool()
+    this.modeCount = m.getBool()
+    this.modeRoundTime = this.ROUND_TIME = m.getInt()
+    this.modeBotBalance = m.getInt()
   }
 
   protected processWelcomePlayer (m: ByteReader, p: RPSClient): void {

@@ -2,7 +2,7 @@
 import Board from '@gc/t3/Board.svelte'
 import BoardCell from '@gc/t3/BoardCell.svelte'
 
-import T3Game from './T3Game'
+import T3Game from './T3Game.svelte'
 
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
@@ -36,10 +36,10 @@ const {
   modeInverted,
   modeChecked,
   modeQuick,
-} = gameState
+} = $derived(gameState)
 
-const playing = $derived($isActive && $roundState === 2 && $inRound)
-const canMove = $derived(playing && $myTurn)
+const playing = $derived(isActive && roundState === 2 && inRound)
+const canMove = $derived(playing && myTurn)
 
 const isomorphism1 = [[1, 5], [2, 0], [3, 7], [4, 6], [5, 4], [6, 2], [7, 1], [8, 8], [9, 3]] as const
 const isomorphism2 = [
@@ -55,47 +55,47 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
 }
 </script>
 
-{#if !$roundState}
+{#if !roundState}
   Waiting for players&hellip;
 {:else}
-  {#if $roundState === 1}
+  {#if roundState === 1}
     Intermission:
   {:else if canMove}
     Make a move:
-  {:else if $inRound}
+  {:else if inRound}
     Waiting for opponent to move&hellip;
   {:else}
     Spectating:
   {/if}
-  <ProgressBar startTime={$roundTimerStart} endTime={$roundTimerEnd} />
+  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
 {/if}
 
 {#if !t3Isomorphism}
   <p>
     You are
-    {#if !$myPlayer}
+    {#if !myPlayer}
       <span class="badge text-bg-secondary">spectating</span>.
-    {:else if $myPlayer === 1}
+    {:else if myPlayer === 1}
       <span class="badge text-bg-success">player X</span>.
     {:else}
       <span class="badge text-bg-danger">player O</span>.
     {/if}
     Get 3 in a row to win.
   </p>
-  <Board winner={$winner}>
+  <Board {winner}>
     {#snippet cell(i)}
       <BoardCell
-        winner={$winner}
-        mark={($boardState >> (i << 1)) & 3}
-        markHover={canMove && !(($boardBad >> i) & 1) ? $myPlayer : 0}
-        hintClass={(($boardState >> (i << 1)) & 3) || !(($boardBad >> i) & 1) ? '' : 'hlose'}
+        {winner}
+        mark={(boardState >> (i << 1)) & 3}
+        markHover={canMove && !((boardBad >> i) & 1) ? myPlayer : 0}
+        hintClass={((boardState >> (i << 1)) & 3) || !((boardBad >> i) & 1) ? '' : 'hlose'}
         onMove={() => gameState.sendMove(i)} />
     {/snippet}
   </Board>
 
   <div>
     Moves:
-    {#each $moveHistory as move, i}
+    {#each moveHistory as move, i}
       <span class="badge text-bg-{(i & 1) ? 'danger' : 'success'} me-1">{move}</span>
     {:else}
       (none)
@@ -104,9 +104,9 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
 {:else}
   <p>
     You are
-    {#if !$myPlayer}
+    {#if !myPlayer}
       <span class="badge text-bg-secondary">spectating</span>.
-    {:else if $myPlayer === 1}
+    {:else if myPlayer === 1}
       <span class="badge text-bg-success">player X</span>.
     {:else}
       <span class="badge text-bg-primary">player O</span>.
@@ -117,7 +117,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
     <div class="btn-group">
       {#each (t3Isomorphism === 1 ? isomorphism1 : isomorphism2) as [displayText, i]}
         <button
-          class="btn btn-{formatButtonClass(i, $boardState, $boardBad, canMove)}"
+          class="btn btn-{formatButtonClass(i, boardState, boardBad, canMove)}"
           onclick={() => gameState.sendMove(i)}
         >{displayText}</button>
       {/each}
@@ -133,7 +133,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   {/if}
 
   <TwoPlayerEarlyEnd
-    drawOffer={$drawOffer}
+    {drawOffer}
     onResign={() => gameState.sendResign()}
     onDrawOffer={() => gameState.sendDrawOffer()}
     onDrawReject={() => gameState.sendDrawReject()}
@@ -141,8 +141,8 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
 {/if}
 
 <div>
-  Game Mode: {getGameModeString($modeInverted, $modeChecked, $modeQuick, $modeTurnTime)}
+  Game Mode: {getGameModeString(modeInverted, modeChecked, modeQuick, modeTurnTime)}
 </div>
 
 <b>Lobby</b>
-<RoundPlayerList inGame={$roundPlayers} inQueue={$roundPlayerQueue} />
+<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />

@@ -1,5 +1,3 @@
-import { valueStore } from '@/util/svelte'
-
 type ChatJoin = {
   type: 'join'
   name: string
@@ -48,15 +46,15 @@ export default class ChatState {
   private readonly queue: ChatEntry[] = []
   private holdMode = HoldMode.None
 
-  public readonly messages = valueStore(this.messageBuf)
-  public readonly queueLength = valueStore(0)
+  public messages = $state(this.messageBuf)
+  public queueLength = $state(0)
 
   constructor (private readonly maxChatMessages = 100) { }
 
   clear (): void {
     this.messageBuf.length = 0
     this.queue.length = 0
-    this.queueLength.set(0)
+    this.queueLength = 0
     this.invalidate()
   }
 
@@ -79,12 +77,12 @@ export default class ChatState {
           this.queue.shift()
         }
         this.queue.push(obj)
-        this.queueLength.update((x) => x + 1)
+        this.queueLength++
     }
   }
 
   setHoldMode (holdMode: number): void {
-    if (holdMode === HoldMode.AfterNext && this.queueLength.get() > this.maxChatMessages) {
+    if (holdMode === HoldMode.AfterNext && this.queueLength > this.maxChatMessages) {
       // queue overflowed
       holdMode = HoldMode.All
     }
@@ -100,13 +98,13 @@ export default class ChatState {
         this.queue.length = 0
 
         this.invalidate()
-        this.queueLength.set(0)
+        this.queueLength = 0
       } else if (holdMode === HoldMode.AfterNext) {
         // load one message, allowing temporary oversizing
         this.messageBuf.push(this.queue.shift()!)
 
         this.invalidate()
-        this.queueLength.update((x) => x - 1)
+        this.queueLength--
       }
     } else if (holdMode === HoldMode.None) {
       // fix oversized message buffer
@@ -165,6 +163,6 @@ export default class ChatState {
   }
 
   private invalidate (): void {
-    this.messages.set(this.messageBuf)
+    this.messages = this.messageBuf
   }
 }

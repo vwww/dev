@@ -1,9 +1,8 @@
 import { clamp } from '@/util'
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
+import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@/game/mp/common/game/RoundRobinGame.svelte'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
 
 interface CheatClient extends RRTurnClient {
   score: number
@@ -41,37 +40,37 @@ export interface CheatGameHistoryPlayer {
 const MAX_DECKS = 166_799_986_198_907
 
 export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, CheatDiscInfo, CheatGameHistory> {
-  public readonly modeDecks = valueStore(0)
-  public readonly modeCountSame = valueStore(false)
-  public readonly modeCountMore = valueStore(false)
-  public readonly modeCountLess = valueStore(false)
-  public readonly modeTricks = valueStore(0 as OptTrick)
-  public readonly modeRank0 = valueStore(false)
-  public readonly modeRank1u = valueStore(false)
-  public readonly modeRank1uw = valueStore(false)
-  public readonly modeRank1d = valueStore(false)
-  public readonly modeRank1dw = valueStore(false)
-  public readonly modeRank2u = valueStore(false)
-  public readonly modeRank2uw = valueStore(false)
-  public readonly modeRank2d = valueStore(false)
-  public readonly modeRank2dw = valueStore(false)
-  public readonly modeRankother = valueStore(false)
+  public modeDecks = $state(0)
+  public modeCountSame = $state(false)
+  public modeCountMore = $state(false)
+  public modeCountLess = $state(false)
+  public modeTricks = $state(0 as OptTrick)
+  public modeRank0 = $state(false)
+  public modeRank1u = $state(false)
+  public modeRank1uw = $state(false)
+  public modeRank1d = $state(false)
+  public modeRank1dw = $state(false)
+  public modeRank2u = $state(false)
+  public modeRank2uw = $state(false)
+  public modeRank2d = $state(false)
+  public modeRank2dw = $state(false)
+  public modeRankother = $state(false)
 
-  public readonly canCallCheat = valueStore(false)
-  public readonly trickCount = valueStore(0)
-  public readonly trickValue = valueStore(0)
+  public canCallCheat = $state(false)
+  public trickCount = $state(0)
+  public trickValue = $state(0)
 
-  public readonly cardCountHandMine = valueStore(newZeroCardCount())
-  public readonly cardCountAllMine = valueStore(newZeroCardCount())
-  public readonly cardCountAllOthers = valueStore(newZeroCardCount())
-  public readonly cardCountClaimMine = valueStore(newZeroCardCount())
-  public readonly cardCountClaimOthers = valueStore(newZeroCardCount())
-  public readonly cardCountClaimRemain = valueStore(newZeroCardCount())
-  public readonly cardCountTotal = valueStore(newZeroCardCount())
-  public readonly moveHistory = valueStore([] as CheatGameHistory[])
+  public cardCountHandMine = $state(newZeroCardCount())
+  public cardCountAllMine = $state(newZeroCardCount())
+  public cardCountAllOthers = $state(newZeroCardCount())
+  public cardCountClaimMine = $state(newZeroCardCount())
+  public cardCountClaimOthers = $state(newZeroCardCount())
+  public cardCountClaimRemain = $state(newZeroCardCount())
+  public cardCountTotal = $state(newZeroCardCount())
+  public moveHistory = $state([] as CheatGameHistory[])
 
-  public readonly pendingMove = valueStore(newZeroCardCount())
-  public readonly pendingMoveClaim = valueStore(0)
+  public pendingMove = $state(newZeroCardCount())
+  public pendingMoveClaim = $state(0)
 
   protected override readonly playersSortProps = [
     (p: CheatClient) => p.score,
@@ -100,15 +99,15 @@ export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, 
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMove.set(readCardCount(m))
-    this.pendingMoveClaim.set(m.getInt())
+    this.pendingMove = readCardCount(m)
+    this.pendingMoveClaim = m.getInt()
   }
 
   protected processPrivateInfo (m: ByteReader): void {
     // TODO
     switch (m.getInt()) {
       case 0: // my cards
-        this.cardCountHandMine.set(readCardCount(m))
+        this.cardCountHandMine = readCardCount(m)
         break
     }
   }
@@ -124,10 +123,10 @@ export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, 
     const cardsTotal = newTotalCardCount(1) // TODO use mode count
     // const cardsClaimRemain = [] // calc from total
 
-    this.cardCountAllOthers.set(cardsRemain)
-    this.cardCountClaimOthers.set(cardsClaim)
-    this.cardCountTotal.set(cardsTotal)
-    // this.cardCountClaimRemain.set(cardsClaimRemain)
+    this.cardCountAllOthers = cardsRemain
+    this.cardCountClaimOthers = cardsClaim
+    this.cardCountTotal = cardsTotal
+    // this.cardCountClaimRemain = cardsClaimRemain
   }
 
   protected processPlayerInfo (m: ByteReader, p: CheatPlayerInfo): void {
@@ -155,21 +154,21 @@ export default class CheatGame extends RRTurnGame<CheatClient, CheatPlayerInfo, 
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeDecks.set(clamp(m.getFloat64(), 1, MAX_DECKS))
-    this.modeCountSame.set(m.getBool())
-    this.modeCountMore.set(m.getBool())
-    this.modeCountLess.set(m.getBool())
-    this.modeTricks.set(clamp(m.getInt(), 0, OptTrick._NUM - 1))
-    this.modeRank0.set(m.getBool())
-    this.modeRank1u.set(m.getBool())
-    this.modeRank1uw.set(m.getBool())
-    this.modeRank1d.set(m.getBool())
-    this.modeRank1dw.set(m.getBool())
-    this.modeRank2u.set(m.getBool())
-    this.modeRank2uw.set(m.getBool())
-    this.modeRank2d.set(m.getBool())
-    this.modeRank2dw.set(m.getBool())
-    this.modeRankother.set(m.getBool())
+    this.modeDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
+    this.modeCountSame = m.getBool()
+    this.modeCountMore = m.getBool()
+    this.modeCountLess = m.getBool()
+    this.modeTricks = clamp(m.getInt(), 0, OptTrick._NUM - 1)
+    this.modeRank0 = m.getBool()
+    this.modeRank1u = m.getBool()
+    this.modeRank1uw = m.getBool()
+    this.modeRank1d = m.getBool()
+    this.modeRank1dw = m.getBool()
+    this.modeRank2u = m.getBool()
+    this.modeRank2uw = m.getBool()
+    this.modeRank2d = m.getBool()
+    this.modeRank2dw = m.getBool()
+    this.modeRankother = m.getBool()
   }
 
   protected processWelcomePlayer (m: ByteReader, p: CheatClient): void {

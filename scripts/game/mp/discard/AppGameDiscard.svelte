@@ -7,9 +7,9 @@ import PlayCard from '@gmc/PlayCard.svelte'
 
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState'
+import ChatState from '@gmc/ChatState.svelte'
 
-import DiscardGame from './DiscardGame'
+import DiscardGame from './DiscardGame.svelte'
 import DiscardPlay from './DiscardPlay.svelte'
 import DiscardGameHistory from './DiscardGameHistory.svelte'
 
@@ -27,7 +27,7 @@ const {
   pastGames,
   clientsSorted,
   roundState,
-} = gameState
+} = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
 let showLLNames = pState('game/mp/discard/LL', true)
@@ -64,10 +64,10 @@ function formatGameMode ({optDecks, optTurnTime}: any) {
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={$inGame}
-  isActive={$isActive}
-  canReady={$roundState === 1}
-  isReady={$isReady}
+  {inGame}
+  {isActive}
+  canReady={roundState === 1}
+  {isReady}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
@@ -78,12 +78,12 @@ function formatGameMode ({optDecks, optTurnTime}: any) {
 <div class="row">
   <div class="col-12 col-xl-8">
     <GameHistoryCard
-      canClear={!$pastGames.length}
+      canClear={!pastGames.length}
       onClear={() => gameState.clearHistory()}>
-      <DiscardGameHistory results={$pastGames} ll={showLLNames.value} />
+      <DiscardGameHistory results={pastGames} ll={showLLNames.value} />
     </GameHistoryCard>
 
-    <Leaderboard players={$clientsSorted} columns={[
+    <Leaderboard players={clientsSorted} columns={[
       ['Score', (p) => p.score],
       ['Streak', (p) => p.streak],
       ['Win', (p) => p.wins],

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { DiscardMoveInfo } from './DiscardGame'
+import type { DiscardMoveInfo } from './DiscardGame.svelte'
 
 import { getCardName } from './DiscardPlay.svelte'
 

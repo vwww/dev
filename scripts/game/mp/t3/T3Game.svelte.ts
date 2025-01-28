@@ -1,24 +1,23 @@
 import { clamp } from '@/util'
-import { valueStore } from '@/util/svelte'
 import { isNearWin, isWin } from '@gc/t3/game'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
-import { type TPTurnClient, TPTurnGame } from '@gmc/game/TwoPlayerGame'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
+import { type TPTurnClient, TPTurnGame } from '@/game/mp/common/game/TwoPlayerGame.svelte'
 
 interface T3Client extends TPTurnClient { }
 
 const MAX_TURNS = 9
 
 export default class T3Game extends TPTurnGame<T3Client> {
-  public readonly modeTurnTime = valueStore(0)
-  public readonly modeInverted = valueStore(false)
-  public readonly modeChecked = valueStore(false)
-  public readonly modeQuick = valueStore(false)
+  public modeTurnTime = $state(0)
+  public modeInverted = $state(false)
+  public modeChecked = $state(false)
+  public modeQuick = $state(false)
 
-  public readonly boardState = valueStore(0)
-  public readonly boardBad = valueStore(0)
-  public readonly moveHistory = valueStore([] as number[])
+  public boardState = $state(0)
+  public boardBad = $state(0)
+  public moveHistory = $state([] as number[])
 
   protected override ROUND_TIME = 0 // set by mode
 
@@ -43,7 +42,7 @@ export default class T3Game extends TPTurnGame<T3Client> {
   protected processRoundInfo (m: ByteReader): void {
     this.reset()
     for (let i = 0; i <= MAX_TURNS; i++) {
-      this.ply.set(i) // applyMove needs correct ply
+      this.ply = i // applyMove needs correct ply
       const move = m.getInt()
       if (move < 0) {
         break
@@ -62,10 +61,10 @@ export default class T3Game extends TPTurnGame<T3Client> {
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeTurnTime.set(this.ROUND_TIME = m.getInt())
-    this.modeInverted.set(m.getBool())
-    this.modeChecked.set(m.getBool())
-    this.modeQuick.set(m.getBool())
+    this.modeTurnTime = this.ROUND_TIME = m.getInt()
+    this.modeInverted = m.getBool()
+    this.modeChecked = m.getBool()
+    this.modeQuick = m.getBool()
   }
 
   protected makePlayer (): T3Client {
@@ -73,29 +72,29 @@ export default class T3Game extends TPTurnGame<T3Client> {
   }
 
   private reset (): void {
-    this.boardState.set(0)
-    this.boardBad.set(0)
-    this.moveHistory.set([])
+    this.boardState = 0
+    this.boardBad = 0
+    this.moveHistory = []
   }
 
   private applyMove (move: number): void {
-    const mark = 1 << (this.ply.get() & 1)
+    const mark = 1 << (this.ply & 1)
 
-    const board = this.boardState.get() | (mark << (move << 1))
-    this.boardState.set(board)
-    this.boardBad.set(this.calcBoardBadMoves(board, this.ply.get() + 1))
+    const board = this.boardState | (mark << (move << 1))
+    this.boardState = board
+    this.boardBad = this.calcBoardBadMoves(board, this.ply + 1)
 
-    this.moveHistory.update((moves) => (moves.push(move), moves))
+    this.moveHistory.push(move)
   }
 
   private calcBoardBadMoves (board: number, ply: number): number {
     let bad = 0
-    if (this.modeChecked.get()) {
+    if (this.modeChecked) {
       const parity = ply & 1
       const mark = 1 << parity
       for (let i = 0; i < 9; i++) {
         const boardNext = board | (mark << (i << 1))
-        if (this.modeInverted.get() ? isWin(boardNext, !!parity) : isNearWin(boardNext, !parity)) {
+        if (this.modeInverted ? isWin(boardNext, !!parity) : isNearWin(boardNext, !parity)) {
           bad |= 1 << i
         }
       }

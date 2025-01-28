@@ -10,9 +10,9 @@ import TwoPlayerWinner from '@gmc/TwoPlayerWinner.svelte'
 
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState'
+import ChatState from '@gmc/ChatState.svelte'
 
-import T3Game from './T3Game'
+import T3Game from './T3Game.svelte'
 import T3Play from './T3Play.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
@@ -27,7 +27,7 @@ const {
   pastGames,
   clientsSorted,
   roundState,
-} = gameState
+} = $derived(gameState)
 
 let t3Isomorphism = pState('game/mp/t3/isomorphism', 0)
 let name = pState('game/mp/_shared/name', '')
@@ -61,10 +61,10 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={$inGame}
-  isActive={$isActive}
-  canReady={$roundState === 1}
-  isReady={$isReady}
+  {inGame}
+  {isActive}
+  canReady={roundState === 1}
+  {isReady}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
@@ -75,12 +75,12 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
 <div class="row">
   <div class="col-12 col-xl-8">
     <GameHistoryCard
-      canClear={!$pastGames.length}
+      canClear={!pastGames.length}
       onClear={() => gameState.clearHistory()}>
-      <TwoPlayerWinner results={$pastGames} />
+      <TwoPlayerWinner results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={$clientsSorted} columns={[
+    <Leaderboard players={clientsSorted} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.score],
       ['Win', (p) => [p.wins, p.total]],

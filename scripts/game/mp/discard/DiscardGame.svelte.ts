@@ -1,10 +1,9 @@
 import { clamp, sum } from '@/util'
-import { valueStore } from '@/util/svelte'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { CommonGame } from '@gmc/game/CommonGame'
-import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame'
-import { TurnC2S } from '@gmc/game/TurnBasedGame'
+import { CommonGame } from '@/game/mp/common/game/CommonGame.svelte'
+import { type RRTurnClient, type RRTurnDiscInfo, RRTurnGame, type RRTurnPlayerInfo } from '@/game/mp/common/game/RoundRobinGame.svelte'
+import { TurnC2S } from '@/game/mp/common/game/TurnBasedGame.svelte'
 
 interface DClient extends RRTurnClient {
   score: number
@@ -87,20 +86,20 @@ const CARDS_PER_DECK = 15
 const MAX_DECKS = 3
 
 export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscInfo, DGameHistory> {
-  public readonly modeTurnTime = valueStore(0)
-  public readonly modeDeck = valueStore(0)
+  public modeTurnTime = $state(0)
+  public modeDeck = $state(0)
 
-  public readonly myHand = valueStore(0)
-  public readonly myAltMove = valueStore(0)
-  public readonly deckSize = valueStore(0)
-  public readonly cardCountDiscard = valueStore(newZeroCardCount())
-  public readonly cardCountRemain = valueStore(newZeroCardCount())
-  public readonly cardCountTotal = valueStore(newZeroCardCount())
-  public readonly moveHistory = valueStore([] as DiscardMoveInfo[])
+  public myHand = $state(0)
+  public myAltMove = $state(0)
+  public deckSize = $state(0)
+  public cardCountDiscard = $state(newZeroCardCount())
+  public cardCountRemain = $state(newZeroCardCount())
+  public cardCountTotal = $state(newZeroCardCount())
+  public moveHistory = $state([] as DiscardMoveInfo[])
 
-  public readonly pendingMoveUseHand = valueStore(false)
-  public readonly pendingMoveTarget = valueStore(0)
-  public readonly pendingMoveGuess = valueStore(0)
+  public pendingMoveUseHand = $state(false)
+  public pendingMoveTarget = $state(0)
+  public pendingMoveGuess = $state(0)
 
   protected override readonly playersSortProps = [
     (p: DClient) => p.score,
@@ -119,31 +118,31 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
   }
 
   sendMoveUseHand (uh: boolean): void {
-    this.sendMove(uh, this.pendingMoveTarget.get(), this.pendingMoveGuess.get())
+    this.sendMove(uh, this.pendingMoveTarget, this.pendingMoveGuess)
   }
 
   sendMoveTarget (target: number): void {
-    this.sendMove(this.pendingMoveUseHand.get(), target, this.pendingMoveGuess.get())
+    this.sendMove(this.pendingMoveUseHand, target, this.pendingMoveGuess)
   }
 
   sendMoveGuess (guess: number): void {
-    this.sendMove(this.pendingMoveUseHand.get(), this.pendingMoveTarget.get(), guess)
+    this.sendMove(this.pendingMoveUseHand, this.pendingMoveTarget, guess)
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMoveUseHand.set(m.getBool())
-    this.pendingMoveTarget.set(m.getInt())
-    this.pendingMoveGuess.set(m.getInt())
+    this.pendingMoveUseHand = m.getBool()
+    this.pendingMoveTarget = m.getInt()
+    this.pendingMoveGuess = m.getInt()
   }
 
   protected processPrivateInfo (m: ByteReader): void {
     const x = m.getInt()
     switch (x) {
       case -1:
-        this.myHand.set(m.getInt())
+        this.myHand = m.getInt()
         break
       case 0:
-        this.myAltMove.set(m.getInt())
+        this.myAltMove = m.getInt()
         break
       case 2:
       case 3:
@@ -160,25 +159,25 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
               player.hand = hand
               this.updatePlayerInfo()
             }
-            this.moveHistory.update((h) => [...h, { type: 'reveal', playerName, hand }])
+            this.moveHistory.push({ type: 'reveal', playerName, hand })
             break
           case 3: {
-            const ours = this.myHand.get()
+            const ours = this.myHand
             if (player) {
               player.hand = hand
               this.updatePlayerInfo()
             }
-            this.moveHistory.update((h) => [...h, { type: 'cmp', ours, theirs: hand, playerName }])
+            this.moveHistory.push({ type: 'cmp', ours, theirs: hand, playerName })
             break
           }
           case 6: {
-            const oldHand = this.myHand.get()
-            this.moveHistory.update((h) => [...h, { type: 'trade', oldHand, newHand: hand, playerName }])
+            const oldHand = this.myHand
+            this.moveHistory.push({ type: 'trade', oldHand, newHand: hand, playerName })
             if (player) {
               player.hand = oldHand
               this.updatePlayerInfo()
             }
-            this.myHand.set(hand)
+            this.myHand = hand
             break
           }
         }
@@ -190,16 +189,16 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
   protected processRoundStartInfo (m: ByteReader): void {
     // infer deck size by dealing 1 card per player, then first player card
     // special case: (15 * decks) players => 0 turns
-    this.deckSize.set(Math.max(0, this.modeDeck.get() * CARDS_PER_DECK - this.playerInfo.get().length - 1))
-    this.cardCountDiscard.set(newZeroCardCount())
-    this.cardCountRemain.set(newTotalCardCount(this.modeDeck.get()))
-    this.cardCountTotal.set(newTotalCardCount(this.modeDeck.get()))
+    this.deckSize = Math.max(0, this.modeDeck * CARDS_PER_DECK - this.playerInfo.length - 1)
+    this.cardCountDiscard = newZeroCardCount()
+    this.cardCountRemain = newTotalCardCount(this.modeDeck)
+    this.cardCountTotal = newTotalCardCount(this.modeDeck)
 
-    this.moveHistory.set([])
+    this.moveHistory = []
   }
 
   protected processRoundInfo (m: ByteReader): void {
-    this.deckSize.set(m.getInt())
+    this.deckSize = m.getInt()
     const discardCount: CardCountTotal = [
       m.getInt(), m.getInt(), m.getInt(), m.getInt(),
       m.getInt(), m.getInt(), m.getInt(), m.getInt(),
@@ -207,12 +206,12 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
     ]
     discardCount[8] = sum(discardCount.slice(0, 8))
 
-    const totalCard = newTotalCardCount(this.modeDeck.get())
-    this.cardCountDiscard.set(discardCount)
-    this.cardCountRemain.set(totalCard.map((v, i) => v - discardCount[i]) as CardCountTotal)
-    this.cardCountTotal.set(totalCard)
+    const totalCard = newTotalCardCount(this.modeDeck)
+    this.cardCountDiscard = discardCount
+    this.cardCountRemain = totalCard.map((v, i) => v - discardCount[i]) as CardCountTotal
+    this.cardCountTotal = totalCard
 
-    this.moveHistory.set([])
+    this.moveHistory = []
   }
 
   protected processPlayerInfo (m: ByteReader, p: DPlayerInfo): void {
@@ -236,8 +235,8 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
 
     const c = this.clients.get(p.owner)
     if (c) {
-      const rank = this.playerInfo.get().length
-      updateScore(c, rank, rank + this.playerDiscInfo.get().length)
+      const rank = this.playerInfo.length
+      updateScore(c, rank, rank + this.playerDiscInfo.length)
     }
 
     return false
@@ -264,8 +263,8 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
       info: 0,
     }
 
-    if (c?.isMe && move === this.myHand.get()) {
-      this.myHand.set(this.myAltMove.get())
+    if (c?.isMe && move === this.myHand) {
+      this.myHand = this.myAltMove
     }
     if (p.hand === move) {
       // if other players' revealed card is used, it is now unknown
@@ -324,7 +323,7 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
           p.discarded.push(discarded)
           p.discardSum += discarded
           this.updateDiscardCount(discarded)
-          this.deckSize.update((s) => s - 1)
+          this.deckSize--
         } else {
           // other players' known hands can become unknown
           // when they are forced to draw
@@ -347,8 +346,8 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
     }
 
     // pre-deal out next card (not if less than 2 left)
-    this.deckSize.update((s) => s > 1 ? s - 1 : s)
-    this.moveHistory.update((h) => [...h, moveHistoryEntry])
+    if (this.deckSize > 1) this.deckSize--
+    this.moveHistory.push(moveHistoryEntry)
 
     const nextPlayer = this.getPlayerInfo(1)
     if (nextPlayer) {
@@ -358,13 +357,13 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
   }
 
   protected processEndRound (m: ByteReader): void {
-    const playerInfos = this.playerInfo.get()
+    const playerInfos = this.playerInfo
 
     for (const p of playerInfos) {
       p.hand = m.getInt()
     }
 
-    const eliminated = this.playerDiscInfo.get().map((d) => ({ ...d, name: d.ownerName }))
+    const eliminated = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
     eliminated.reverse()
 
     const gameHistoryEntry: DGameHistory = {
@@ -372,7 +371,7 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
       eliminated,
     }
 
-    const totalPlayers = playerInfos.length + this.playerDiscInfo.get().length
+    const totalPlayers = playerInfos.length + this.playerDiscInfo.length
 
     const sortedPlayers = [...playerInfos].sort(comparePlayerInfo)
     let rank = 1
@@ -400,8 +399,8 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.modeTurnTime.set(this.ROUND_TIME = m.getInt())
-    this.modeDeck.set(clamp(m.getInt(), 1, MAX_DECKS))
+    this.modeTurnTime = this.ROUND_TIME = m.getInt()
+    this.modeDeck = clamp(m.getInt(), 1, MAX_DECKS)
   }
 
   protected processWelcomePlayer (m: ByteReader, p: DClient): void {
@@ -457,17 +456,11 @@ export default class DiscardGame extends RRTurnGame<DClient, DPlayerInfo, DDiscI
   private updateDiscardCount (card: number): void {
     card-- // convert to 0-based index
 
-    this.cardCountDiscard.update((c) => {
-      c[card]++
-      c[8]++
-      return c
-    })
+    this.cardCountDiscard[card]++
+    this.cardCountDiscard[8]++
 
-    this.cardCountRemain.update((c) => {
-      c[card]--
-      c[8]--
-      return c
-    })
+    this.cardCountRemain[card]--
+    this.cardCountRemain[8]--
   }
 }
 

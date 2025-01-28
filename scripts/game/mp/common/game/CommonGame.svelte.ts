@@ -1,5 +1,4 @@
-import { valueStore } from '@/util/svelte'
-import ChatState from '../ChatState'
+import ChatState from '../ChatState.svelte'
 import type { BaseGameRoom } from '../remote/BaseGameRoom'
 import { ByteReader } from './ByteReader'
 import { ByteWriter } from './ByteWriter'
@@ -30,11 +29,11 @@ export abstract class CommonGame<C extends BaseClient, G> {
     ping: -1,
   }
 
-  public readonly inGame = valueStore(false)
-  public readonly isActive = valueStore(false)
-  public readonly pastGames = valueStore([] as G[])
+  public inGame = $state(false)
+  public isActive = $state(false)
+  public pastGames = $state([] as G[])
 
-  public readonly clientsSorted = valueStore([] as C[])
+  public clientsSorted = $state([] as C[])
 
   protected myCn = -1
   protected clients = new Map<number, C>()
@@ -81,7 +80,7 @@ export abstract class CommonGame<C extends BaseClient, G> {
     room.registerDisc(() => {
       if (room === this.room) {
         this.chat.addSysMessage('You disconnected.')
-        this.inGame.set(false)
+        this.inGame = false
       } else {
         this.chat.addSysMessage('You disconnected from the old room.')
       }
@@ -92,7 +91,7 @@ export abstract class CommonGame<C extends BaseClient, G> {
     welcomeBuf.putString(name)
     room.send(welcomeBuf.toArray())
 
-    this.inGame.set(true)
+    this.inGame = true
 
     this.chat.addSysMessage('You are joining the game.')
   }
@@ -231,11 +230,13 @@ export abstract class CommonGame<C extends BaseClient, G> {
   }
 
   addHistory (history: G): void {
-    this.pastGames.update((v) => [history, ...v.slice(0, MAX_HISTORY_LEN - 1)])
+    if (this.pastGames.length >= MAX_HISTORY_LEN)
+      this.pastGames.pop()
+    this.pastGames.unshift(history)
   }
 
   clearHistory (): void {
-    this.pastGames.set([])
+    this.pastGames = []
   }
 
   protected processMessages (m: ByteReader): void {
@@ -278,7 +279,7 @@ export abstract class CommonGame<C extends BaseClient, G> {
 
         this.clients.clear()
 
-        this.isActive.set(false)
+        this.isActive = false
         this.myCn = m.getInt()
 
         this.processWelcomeMode(m)
@@ -344,7 +345,7 @@ export abstract class CommonGame<C extends BaseClient, G> {
         if (p) {
           p.active = active
           if (cn === this.myCn) {
-            this.isActive.set(active)
+            this.isActive = active
           }
           if (active) {
             this.playerActivated(p)
@@ -394,7 +395,6 @@ export abstract class CommonGame<C extends BaseClient, G> {
 
   protected updatePlayers (noRebuild?: boolean): void {
     if (noRebuild) {
-      this.clientsSorted.update((v) => v)
       return
     }
 
@@ -428,7 +428,7 @@ export abstract class CommonGame<C extends BaseClient, G> {
     })
 
     // Update player store
-    this.clientsSorted.set(sortedPlayers)
+    this.clientsSorted = sortedPlayers
   }
 
   protected addPlayer (p: C): void {

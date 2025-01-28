@@ -1,5 +1,5 @@
 <script lang="ts" generics="P extends BaseClient">
-import type { BaseClient } from './game/CommonGame'
+import type { BaseClient } from './game/CommonGame.svelte'
 
 type Score = number | string | [number, number]
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { BGameHistory } from './BlackjackGame'
+import type { BGameHistory } from './BlackjackGame.svelte'
 
 interface Props {
   results: BGameHistory[]

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { TurnBasedClient } from './game/TurnBasedGame'
+import type { TurnBasedClient } from './game/TurnBasedGame.svelte'
 
 interface Props {
   inGame: ArrayLike<TurnBasedClient>
