@@ -1,12 +1,10 @@
 <script lang="ts" module>
-import type { ValueStore } from '@/util/svelte'
-
 export type Options<T, K extends string, E extends unknown[] = []> = readonly [id: string, type: K, defaultValue: T, name: string, description: string, ...rest: E]
 export type OptionsBool = Options<boolean, 'b'>
 export type OptionsInt = Options<number, 'i', [min: number, max: number, extraProps?: object]>
 export type OptionsEnum = Options<number, 'e', [options: readonly string[]]>
 
-export type OptionStore<O> = O extends Options<infer T, string, unknown[]> ? [O, ValueStore<T>] : never
+export type OptionStore<O> = O extends Options<infer T, string, unknown[]> ? [O, { value: T }] : never
 export type OptionStoreBool = OptionStore<OptionsBool>
 export type OptionStoreInt = OptionStore<OptionsInt>
 export type OptionStoreEnum = OptionStore<OptionsEnum>

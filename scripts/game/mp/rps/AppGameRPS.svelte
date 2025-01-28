@@ -13,7 +13,7 @@ import RPSGame from './RPSGame'
 import RPSHistory from './RPSHistory.svelte'
 import RPSPlay from './RPSPlay.svelte'
 
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
@@ -29,7 +29,7 @@ const {
   roundState,
 } = gameState
 
-let name = pStore('game/mp/_shared/name', '')
+let name = pState('game/mp/_shared/name', '')
 
 function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBotBalance}: any) {
   return getGameModeString(
@@ -42,13 +42,13 @@ function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBo
 }
 </script>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <PIORoomList
   gameId="rps-oj40aopjv0w7gnc1pj9zpq"
   roomType="RPSRoom"
-  joinData={{ name: $name }}
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  joinData={{ name: name.value }}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 

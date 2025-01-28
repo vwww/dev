@@ -13,7 +13,7 @@ import ChatState from '@gmc/ChatState'
 import UT3Game from './UT3Game'
 import UT3Play from './UT3Play.svelte'
 
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
@@ -29,20 +29,20 @@ const {
   roundState,
 } = gameState
 
-let name = pStore('game/mp/_shared/name', '')
+let name = pState('game/mp/_shared/name', '')
 
 function formatGameMode ({optTurnTime, optInverted, optChecked, optQuick, optAnyBoard}: any) {
   return getGameModeString(optInverted === 'true', optChecked === 'true', optQuick === 'true', optAnyBoard === 'true', +optTurnTime)
 }
 </script>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <PIORoomList
   gameId="ut3-zpfnljsogeu8x8fopwhylg"
   roomType="UT3Room"
-  joinData={{ name: $name }}
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  joinData={{ name: name.value }}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 

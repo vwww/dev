@@ -4,7 +4,7 @@ import boards from './boards.txt'
 import FillTable, { type CellInfo } from './FillTable.svelte'
 
 import { Solver } from './Solver'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 const BOARDS = boards.trim().split(/[\r\n]+/)
 
@@ -14,9 +14,9 @@ const COLS = 8
 
 const solver = new Solver(ROWS, COLS)
 
-const gridLevel = pStore('game/sp/fill/gridLevel', LEVEL_OFFSET)
-const gridText = pStore('game/sp/fill/gridText', '')
-const maxComplexity = pStore('game/sp/fill/maxComplexity', 7)
+const gridLevel = pState('game/sp/fill/gridLevel', LEVEL_OFFSET)
+const gridText = pState('game/sp/fill/gridText', '')
+const maxComplexity = pState('game/sp/fill/maxComplexity', 7)
 let gridTextTxt = $state('')
 let cells: CellInfo[][] = $state(Array(ROWS).fill(undefined).map(() => Array(COLS).fill(undefined).map(() => undefined as unknown as CellInfo)))
 let status: number | undefined = $state()
@@ -55,9 +55,9 @@ function updateRendering () {
 }
 
 function recompute () {
-  solver.solve($maxComplexity)
+  solver.solve(maxComplexity.value)
   updateRendering()
-  $gridText = gridTextTxt = solver.toString()
+  gridText.value = gridTextTxt = solver.toString()
 }
 
 function loadString (s: string) {
@@ -71,7 +71,7 @@ function loadBoard (b: number) {
   }
 }
 
-loadString($gridText)
+loadString(gridText.value)
 
 // dev only
 if (process.env.NODE_ENV !== 'production') {
@@ -103,7 +103,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-function onBoardChange () { loadBoard($gridLevel - LEVEL_OFFSET) }
+function onBoardChange () { loadBoard(gridLevel.value - LEVEL_OFFSET) }
 </script>
 
 <div class="row">
@@ -111,11 +111,11 @@ function onBoardChange () { loadBoard($gridLevel - LEVEL_OFFSET) }
     <input type="number"
       class="form-control"
       min={LEVEL_OFFSET} max={BOARDS.length + (LEVEL_OFFSET - 1)}
-      bind:value={$gridLevel}>
+      bind:value={gridLevel.value}>
     <input type="range"
       class="form-range"
       min={LEVEL_OFFSET} max={BOARDS.length + (LEVEL_OFFSET - 1)}
-      bind:value={$gridLevel}>
+      bind:value={gridLevel.value}>
   </div>
   <div class="col-4 col-sm-3 col-md-2">
     <button class="btn btn-primary w-100" onclick={onBoardChange}>Load Stage</button>
@@ -155,5 +155,5 @@ function onBoardChange () { loadBoard($gridLevel - LEVEL_OFFSET) }
 
 <div class="input-group mt-2 mb-3">
   <span class="input-group-text">Maximum Search Depth</span>
-  <input type="number" onchange={recompute} min="0" max="100" bind:value={$maxComplexity} class="form-control">
+  <input type="number" onchange={recompute} min="0" max="100" bind:value={maxComplexity.value} class="form-control">
 </div>

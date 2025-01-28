@@ -3,12 +3,12 @@ import RoomOption, { type OptionsAny, type OptionStoreAny } from './RoomOption.s
 import RoomList from './RoomList.svelte'
 
 import type { BaseGameRoom } from './remote/BaseGameRoom'
+import { PIOClient } from './remote/playerio/PIOClient'
 import { PIOAdapter, PIORoom } from './remote/playerio/PIORoom'
 import { PIOConnectionManager } from './remote/playerio/PIOConnectionManager'
 
 import { randomAlphaNumeric } from '@/util'
-import { pStore } from '@/util/svelte'
-    import { PIOClient } from './remote/playerio/PIOClient';
+import { pState } from '@/util/svelte.svelte'
 
 type RoomInfoFormatter = (r: PIO.roomInfo) => string
 
@@ -45,14 +45,14 @@ function formatPlayerCount (r: PIO.roomInfo): string {
 
 const cm = new PIOConnectionManager(gameId)
 
-const roomCreateData: readonly OptionStoreAny[] = (roomCreateOptions ?? []).map(o => [o, pStore(`game/mp/_roomCreate/${roomType}/${o[0]}`, o[2])])
+const roomCreateData: readonly OptionStoreAny[] = (roomCreateOptions ?? []).map(o => [o, pState(`game/mp/_roomCreate/${roomType}/${o[0]}`, o[2])])
 
 function getRoomData (): object | null {
-  return roomCreateData.length ? Object.fromEntries(roomCreateData.map(([o, s]) => [o[0], s.get()])) : null
+  return roomCreateData.length ? Object.fromEntries(roomCreateData.map(([o, s]) => [o[0], s.value])) : null
 }
 
 function resetRoomOptions () {
-  roomCreateData.forEach((s) => s[1].set(s[0][2]))
+  roomCreateData.forEach((s) => s[1].value = s[0][2])
 }
 
 let rooms: PIO.roomInfo[] = $state([])

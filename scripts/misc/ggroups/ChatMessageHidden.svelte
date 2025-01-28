@@ -1,22 +1,20 @@
 <script lang="ts">
 import ChatMessageFromText from './ChatMessageFromText.svelte'
 
-import type { Writable } from 'svelte/store'
-
 interface Props {
   allowSecretSystemMessages: boolean
   rawTexts: string[]
-  showStore: Writable<boolean>
+  show: boolean
 }
 
-const { allowSecretSystemMessages, rawTexts, showStore }: Props = $props()
+let { allowSecretSystemMessages, rawTexts, show = $bindable() }: Props = $props()
 
 function reveal () {
-  $showStore = true
+  show = true
 }
 </script>
 
-{#if $showStore}
+{#if show}
   {#each rawTexts as rawText}
     <ChatMessageFromText {rawText} {allowSecretSystemMessages} />
   {/each}

@@ -13,7 +13,7 @@ import MorraGame from './MorraGame'
 import MorraHistory from './MorraHistory.svelte'
 import MorraPlay from './MorraPlay.svelte'
 
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
@@ -31,20 +31,20 @@ const {
   roundState,
 } = gameState
 
-let name = pStore('game/mp/_shared/name', '')
+let name = pState('game/mp/_shared/name', '')
 
 function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
   return getGameModeString(optInverted === 'true', optAddRandom === 'true', +optTeams)
 }
 </script>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <PIORoomList
   gameId="morra-prb9sv8g70oyhq9eznhkyq"
   roomType="MorraRoom"
-  joinData={{ name: $name }}
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  joinData={{ name: name.value }}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 

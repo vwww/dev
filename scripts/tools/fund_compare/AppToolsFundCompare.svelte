@@ -1,6 +1,6 @@
 <script lang="ts">
 import { padYear, sum } from '@/util'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import exampleHXS from './HXS'
 import exampleHXQ from './HXQ'
@@ -24,13 +24,13 @@ function loadExample (example: Example): Comparison {
   return [copyFundInfo(example[1]), copyFundInfo(example[2])]
 }
 
-const initialInvestment = pStore('tool/fund/initialInvestment', 10000)
-const capitalGainsRatePercent = pStore('tool/fund/capitalGainsRateP', 50)
-const taxRatePercent = pStore('tool/fund/taxRateP', 30)
-const showResultType = pStore('tool/fund/showResultType', 3)
+const initialInvestment = pState('tool/fund/initialInvestment', 10000)
+const capitalGainsRatePercent = pState('tool/fund/capitalGainsRateP', 50)
+const taxRatePercent = pState('tool/fund/taxRateP', 30)
+const showResultType = pState('tool/fund/showResultType', 3)
 
-const capitalGainsRate = $derived($capitalGainsRatePercent / 100)
-const taxRate = $derived($taxRatePercent / 100)
+const capitalGainsRate = $derived(capitalGainsRatePercent.value / 100)
+const taxRate = $derived(taxRatePercent.value / 100)
 
 let comparison = $state(loadExample(EXAMPLES[0]))
 
@@ -298,25 +298,25 @@ function formatDollarsDiff (dollars: number): string {
   <div class="tab-pane" id="results" role="tabpanel" aria-labelledby="results-tab">
     <h2>Settings</h2>
     <p>Tax Rate / %</p>
-    <input type="number" class="form-control" min=0 bind:value={$taxRatePercent}>
-    <input type="range" class="form-range" min=0 max=100 bind:value={$taxRatePercent}>
+    <input type="number" class="form-control" min=0 bind:value={taxRatePercent.value}>
+    <input type="range" class="form-range" min=0 max=100 bind:value={taxRatePercent.value}>
     <p>Capital Gains Inclusion Rate / %</p>
-    <input type="number" class="form-control" min=0 bind:value={$capitalGainsRatePercent}>
-    <input type="range" class="form-range" min=0 max=100 bind:value={$capitalGainsRatePercent}>
+    <input type="number" class="form-control" min=0 bind:value={capitalGainsRatePercent.value}>
+    <input type="range" class="form-range" min=0 max=100 bind:value={capitalGainsRatePercent.value}>
     <p>Initial Investment / $</p>
-    <input type="number" class="form-control" bind:value={$initialInvestment}>
+    <input type="number" class="form-control" bind:value={initialInvestment.value}>
     <div class="my-2">
       <b class="me-3">Show as</b>
       <label class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" bind:group={$showResultType} value={1}>
+        <input type="radio" class="form-check-input" bind:group={showResultType.value} value={1}>
         <span class="form-check-label">Difference</span>
       </label>
       <label class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" bind:group={$showResultType} value={2}>
+        <input type="radio" class="form-check-input" bind:group={showResultType.value} value={2}>
         <span class="form-check-label">Returns</span>
       </label>
       <label class="form-check form-check-inline">
-        <input type="radio" class="form-check-input" bind:group={$showResultType} value={3}>
+        <input type="radio" class="form-check-input" bind:group={showResultType.value} value={3}>
         <span class="form-check-label">Both</span>
       </label>
     </div>
@@ -358,9 +358,9 @@ function formatDollarsDiff (dollars: number): string {
                     class="ra"
                     class:table-warning={selectedPeriod?.[1] == outcomeIndex && selectedPeriod[2] == i && selectedPeriod[3] == j}
                     role="button" onclick={() => selectedPeriod = [name, outcomeIndex, i, j]}>
-                    {#if $showResultType & 1}<span class="{colA && colB && colA.value != colB.value ? colA.value > colB.value ? 'text-success' : 'text-danger' : ''}">{resultDiff}</span>{/if}
-                    {#if $showResultType == 3}<br>{/if}
-                    {#if $showResultType & 2}{resultA}<br>{resultB}{/if}
+                    {#if showResultType.value & 1}<span class="{colA && colB && colA.value != colB.value ? colA.value > colB.value ? 'text-success' : 'text-danger' : ''}">{resultDiff}</span>{/if}
+                    {#if showResultType.value == 3}<br>{/if}
+                    {#if showResultType.value & 2}{resultA}<br>{resultB}{/if}
                   </td>
                 {/each}
               </tr>
@@ -401,9 +401,9 @@ function formatDollarsDiff (dollars: number): string {
                   <tr>
                     <td>{line.date}</td>
                     <td class="ra">{formatDollars(line.price)}</td>
-                    <td class="ra">{formatShares(line.shares * $initialInvestment)}</td>
-                    <td class="ra">{formatDollarsUnrounded(line.shares * line.price * $initialInvestment)}</td>
-                    <td class="ra">{formatDollarsUnrounded(line.bookValue * $initialInvestment)}</td>
+                    <td class="ra">{formatShares(line.shares * initialInvestment.value)}</td>
+                    <td class="ra">{formatDollarsUnrounded(line.shares * line.price * initialInvestment.value)}</td>
+                    <td class="ra">{formatDollarsUnrounded(line.bookValue * initialInvestment.value)}</td>
                     <td class="ra">{formatDollarsUnrounded(line.bookValue / line.shares)}</td>
                     <td>{line.description}</td>
                   </tr>

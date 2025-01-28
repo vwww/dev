@@ -3,7 +3,7 @@ import boards from './boards.json'
 
 import FillTable, { type CellInfo } from './FillTable.svelte'
 import { DELTA, MoveType } from './Move'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 const BOARDS = boards
 
@@ -36,9 +36,9 @@ function generateCells (index: number): CellInfo[][] {
   })))
 }
 
-const gridLevel = pStore('game/sp/fill/browse/gridLevel', 1)
-const gridStage = pStore('game/sp/fill/browse/gridStage', 1)
-const cells = $derived(generateCells(($gridLevel - 1) * 100 + $gridStage - 1))
+const gridLevel = pState('game/sp/fill/browse/gridLevel', 1)
+const gridStage = pState('game/sp/fill/browse/gridStage', 1)
+const cells = $derived(generateCells((gridLevel.value - 1) * 100 + gridStage.value - 1))
 </script>
 
 <div class="row">
@@ -48,11 +48,11 @@ const cells = $derived(generateCells(($gridLevel - 1) * 100 + $gridStage - 1))
       <input type="number"
         class="form-control"
         min="1" max={BOARDS.length / 100}
-        bind:value={$gridLevel}>
+        bind:value={gridLevel.value}>
       <input type="range"
         class="form-range"
         min="1" max={BOARDS.length / 100}
-        bind:value={$gridLevel}>
+        bind:value={gridLevel.value}>
     </label>
   </div>
   <div class="col-12 col-md-6">
@@ -61,11 +61,11 @@ const cells = $derived(generateCells(($gridLevel - 1) * 100 + $gridStage - 1))
       <input type="number"
         class="form-control"
         min="1" max="100"
-        bind:value={$gridStage}>
+        bind:value={gridStage.value}>
       <input type="range"
         class="form-range"
         min="1" max="100"
-        bind:value={$gridStage}>
+        bind:value={gridStage.value}>
     </label>
   </div>
 </div>

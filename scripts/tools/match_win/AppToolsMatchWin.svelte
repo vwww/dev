@@ -1,17 +1,17 @@
 <script lang="ts">
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
-const nRaw = pStore('tool/match_win/n', 10)
-const pRaw = pStore('tool/match_win/p', 0.5)
-const leadRequiredRaw = pStore('tool/match_win/l', 1)
-const otRaw = pStore('tool/match_win/ot', 1)
-const drawValueRaw = pStore('tool/match_win/drawValue', 0.5)
+const nRaw = pState('tool/match_win/n', 10)
+const pRaw = pState('tool/match_win/p', 0.5)
+const leadRequiredRaw = pState('tool/match_win/l', 1)
+const otRaw = pState('tool/match_win/ot', 1)
+const drawValueRaw = pState('tool/match_win/drawValue', 0.5)
 
-const n = $derived(Math.max($nRaw | 0, 1))
-const p = $derived(Math.min(Math.max($pRaw, 0), 1))
-const draw = $derived(Math.min(Math.max($drawValueRaw, 0), 1))
-const leadRequired = $derived(Math.min(Math.max($leadRequiredRaw | 0, 1), n))
-const ot = $derived(leadRequired > 1 ? Math.max($otRaw | 0, 0) : 0)
+const n = $derived(Math.max(nRaw.value | 0, 1))
+const p = $derived(Math.min(Math.max(pRaw.value, 0), 1))
+const draw = $derived(Math.min(Math.max(drawValueRaw.value, 0), 1))
+const leadRequired = $derived(Math.min(Math.max(leadRequiredRaw.value | 0, 1), n))
+const ot = $derived(leadRequired > 1 ? Math.max(otRaw.value | 0, 0) : 0)
 const maxRound = $derived(n + ot)
 const tableSize = $derived(maxRound + 1)
 
@@ -39,33 +39,33 @@ const memo = $derived((() => {
 </script>
 
 <p>Minimum score to win</p>
-<input type="number" class="form-control" min=1 bind:value={$nRaw}>
-<input type="range" class="form-range" min=1 max=32 bind:value={$nRaw}>
+<input type="number" class="form-control" min=1 bind:value={nRaw.value}>
+<input type="range" class="form-range" min=1 max=32 bind:value={nRaw.value}>
 
 <p>Lead required to win</p>
-<input type="number" class="form-control" min=1 max={$nRaw} bind:value={$leadRequiredRaw}>
-<input type="range" class="form-range" min=1 max={$nRaw} bind:value={$leadRequiredRaw}>
+<input type="number" class="form-control" min=1 max={nRaw.value} bind:value={leadRequiredRaw.value}>
+<input type="range" class="form-range" min=1 max={nRaw.value} bind:value={leadRequiredRaw.value}>
 
 {#if leadRequired > 1}
     <p>Overtime threshold</p>
-    <input type="number" class="form-control" min=0 bind:value={$otRaw}>
-    <input type="range" class="form-range" min=0 max=16 bind:value={$otRaw}>
+    <input type="number" class="form-control" min=0 bind:value={otRaw.value}>
+    <input type="range" class="form-range" min=0 max=16 bind:value={otRaw.value}>
 
     <p>Draw value
-        <button class="btn btn-outline-danger" onclick={() => $drawValueRaw = 0}>0</button>
-        <button class="btn btn-outline-primary" onclick={() => $drawValueRaw = 0.5}>0.5</button>
-        <button class="btn btn-outline-info" onclick={() => $drawValueRaw = 1}>1</button>
+        <button class="btn btn-outline-danger" onclick={() => drawValueRaw.value = 0}>0</button>
+        <button class="btn btn-outline-primary" onclick={() => drawValueRaw.value = 0.5}>0.5</button>
+        <button class="btn btn-outline-info" onclick={() => drawValueRaw.value = 1}>1</button>
     </p>
-    <input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={$drawValueRaw}>
-    <input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={$drawValueRaw}>
+    <input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={drawValueRaw.value}>
+    <input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={drawValueRaw.value}>
 {/if}
 
 <p>Probability of winning a round
-    <button class="btn btn-outline-primary" onclick={() => $pRaw = 0.5}>0.5</button>
-    <button class="btn btn-outline-success" onclick={() => $pRaw = 1 - p}>Invert</button>
+    <button class="btn btn-outline-primary" onclick={() => pRaw.value = 0.5}>0.5</button>
+    <button class="btn btn-outline-success" onclick={() => pRaw.value = 1 - p}>Invert</button>
 </p>
-<input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={$pRaw}>
-<input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={$pRaw}>
+<input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={pRaw.value}>
+<input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={pRaw.value}>
 
 <table class="table table-bordered table-hover caption-top w-auto">
     <caption>{
@@ -74,7 +74,7 @@ const memo = $derived((() => {
             : draw == 1
                 ? 'Probability of winning or drawing'
                 : 'Expected value of'}
-        first-to-{n}/best-of-{2*n-1}{#if leadRequired > 1}, {leadRequired} point lead, max {n + $otRaw} score{/if}
+        first-to-{n}/best-of-{2*n-1}{#if leadRequired > 1}, {leadRequired} point lead, max {n + otRaw.value} score{/if}
     </caption>
     <thead>
         <tr>

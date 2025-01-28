@@ -1,5 +1,5 @@
 <script lang="ts">
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 const WIDTH = 10
 const HALF_WIDTH = WIDTH / 2
@@ -38,9 +38,9 @@ import { type TetrominoShape, tetrominoShapes } from './shapes'
 import { shuffle } from '@/util'
 
 // game settings
-const showGhost = pStore('game/sp/tetris/showGhost', true)
-const speedup = pStore('game/sp/tetris/speedup', true)
-const highscore = pStore('game/sp/tetris/highscore', 0)
+const showGhost = pState('game/sp/tetris/showGhost', true)
+const speedup = pState('game/sp/tetris/speedup', true)
+const highscore = pState('game/sp/tetris/highscore', 0)
 
 // next block system
 const gameBlocks = [...tetrominoShapes]
@@ -314,15 +314,15 @@ function gameUpdate (): void {
   }
 
   // Update high score
-  if ($highscore < score) {
-    $highscore = score
+  if (highscore.value < score) {
+    highscore.value = score
   }
 }
 
 function gameTick (): void {
   if (gamePaused) return
 
-  if ($speedup) {
+  if (speedup.value) {
     intervalTarget -= INTERVAL_FACTOR * (intervalTarget * intervalTarget)
     if (intervalTarget < INTERVAL_MIN) {
       intervalTarget = INTERVAL_MIN
@@ -369,13 +369,13 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
 <div class="btn-group d-flex" role="group">
   <button onclick={newGame} class="btn btn-outline-primary w-100">New Game</button>
   <button onclick={togglePause} class="btn w-100 btn-{gamePaused ? '' : 'outline-'}warning">Pause</button>
-  <button onclick={() => $showGhost = !$showGhost} class="btn w-50 btn-{$showGhost ? '' : 'outline-'}success">Ghost Piece</button>
-  <button onclick={() => $speedup = !$speedup} class="btn w-50 btn-{$speedup ? 'primary' : 'outline-secondary'}">Speedup</button>
+  <button onclick={() => showGhost.value = !showGhost.value} class="btn w-50 btn-{showGhost.value ? '' : 'outline-'}success">Ghost Piece</button>
+  <button onclick={() => speedup.value = !speedup.value} class="btn w-50 btn-{speedup.value ? 'primary' : 'outline-secondary'}">Speedup</button>
 </div>
 
 <p>
   ({gameRunning ? gamePaused ? 'Paused' : (INTERVAL_START / (intervalTarget | 0)).toPrecision(3) + 'x' : 'Game over'}) |
-  Score: {score} | High Score: {$highscore} | Lines cleared: {linesCleared} | Moment: {!moment ? '0' : moment > 0 ? moment + ' CCW' : -moment + ' CW'} ({MOMENT_MAX} max)
+  Score: {score} | High Score: {highscore.value} | Lines cleared: {linesCleared} | Moment: {!moment ? '0' : moment > 0 ? moment + ' CCW' : -moment + ' CW'} ({MOMENT_MAX} max)
 </p>
 
 <table style="backface-visibility: hidden; transform: rotate({-moment / MOMENT_MAX * 45}deg)">
@@ -383,10 +383,10 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
     {#each grid as row, r}
       <tr>
         {#each row as cell, c}
-          {@const cellIsGhost = $showGhost && !cell && isGhost(curBlock, curBlockIndex, maxR, curC, r, c)}
+          {@const cellIsGhost = showGhost.value && !cell && isGhost(curBlock, curBlockIndex, maxR, curC, r, c)}
           <td
             class:ghost={cellIsGhost}
-            class:ghostLine={$showGhost && r >= ghostLines}
+            class:ghostLine={showGhost.value && r >= ghostLines}
             style="background-color:{COLORS[cell || (cellIsGhost ? curColor : 0)]}"
   ></td>
         {/each}

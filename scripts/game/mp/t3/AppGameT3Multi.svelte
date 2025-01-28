@@ -1,5 +1,5 @@
 <script lang="ts">
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import Chat from '@gmc/Chat.svelte'
 import GameHistoryCard from '@gmc/GameHistoryCard.svelte'
@@ -29,8 +29,8 @@ const {
   roundState,
 } = gameState
 
-let t3Isomorphism = pStore('game/mp/t3/isomorphism', 0)
-let name = pStore('game/mp/_shared/name', '')
+let t3Isomorphism = pState('game/mp/t3/isomorphism', 0)
+let name = pState('game/mp/_shared/name', '')
 
 function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any) {
   return getGameModeString(optInverted === 'true', optChecked === 'true', optQuick === 'true', +optTurnTime)
@@ -40,23 +40,23 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
 <div class="btn-group d-flex mb-3" role="group">
   <span class="input-group-text">Isomorphism</span>
   <button class="w-100 btn btn-outline-secondary"
-    class:active={!$t3Isomorphism}
-    onclick={() => { $t3Isomorphism = 0 }}>Tic-Tac-Toe</button>
+    class:active={!t3Isomorphism.value}
+    onclick={() => { t3Isomorphism.value = 0 }}>Tic-Tac-Toe</button>
   <button class="w-50 btn btn-outline-secondary"
-    class:active={$t3Isomorphism === 1}
-    onclick={() => { $t3Isomorphism = 1 }}>Pick15</button>
+    class:active={t3Isomorphism.value === 1}
+    onclick={() => { t3Isomorphism.value = 1 }}>Pick15</button>
   <button class="w-50 btn btn-outline-secondary"
-    class:active={$t3Isomorphism === 2}
-    onclick={() => { $t3Isomorphism = 2 }}>Words</button>
+    class:active={t3Isomorphism.value === 2}
+    onclick={() => { t3Isomorphism.value = 2 }}>Words</button>
 </div>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <PIORoomList
   gameId="t3-k9s5th8thueeuso1rkilqw"
   roomType="T3Room"
-  joinData={{ name: $name }}
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  joinData={{ name: name.value }}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 
@@ -69,7 +69,7 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
   onDisconnect={() => gameState.leaveGame()}>
-  <T3Play {gameState} t3Isomorphism={$t3Isomorphism} />
+  <T3Play {gameState} t3Isomorphism={t3Isomorphism.value} />
 </PlayCard>
 
 <div class="row">

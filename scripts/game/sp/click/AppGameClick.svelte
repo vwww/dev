@@ -1,8 +1,8 @@
 <script lang="ts">
 import { randomHexColor } from '@/util'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
-const highscore = pStore('game/sp/click/highscore', 0)
+const highscore = pState('game/sp/click/highscore', 0)
 
 let x = $state(0.5)
 let y = $state(0.5)
@@ -32,8 +32,8 @@ function tick (): void {
 
 function clicked (): void {
   ++score
-  if ($highscore < score) {
-    $highscore = score
+  if (highscore.value < score) {
+    highscore.value = score
   }
   if (score === 250) {
     alert('You passed the challenge!')
@@ -52,7 +52,7 @@ function checkCheat (): void {
 tick()
 </script>
 
-<p>Score: {score} (high score: {$highscore})</p>
+<p>Score: {score} (high score: {highscore.value})</p>
 
 <div oncontextmenu={() => cheat++} class="play" style="background-color:{colorBack}" role="presentation">
   <button onclick={clicked} onmousemove={checkCheat} style="background-color:{colorBtn}; left:{x * 100}%;top:{y * 100}%">Click</button>

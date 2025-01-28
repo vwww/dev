@@ -1,45 +1,45 @@
 <script lang="ts">
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
-const intervalCount = pStore('tool/freq/intervalCount', -1)
-const startTime = pStore('tool/freq/startTime', 0)
-const prevTime = pStore('tool/freq/prevTime', 0)
-const lastDelay = pStore('tool/freq/lastDelay', 0)
-const sumTime = pStore('tool/freq/sumTime', 0)
-const sumFreq = pStore('tool/freq/sumFreq', 0)
+const intervalCount = pState('tool/freq/intervalCount', -1)
+const startTime = pState('tool/freq/startTime', 0)
+const prevTime = pState('tool/freq/prevTime', 0)
+const lastDelay = pState('tool/freq/lastDelay', 0)
+const sumTime = pState('tool/freq/sumTime', 0)
+const sumFreq = pState('tool/freq/sumFreq', 0)
 
 function addEvent () {
-  if (++$intervalCount) {
+  if (++intervalCount.value) {
     const now = Date.now()
-    $lastDelay = now - $prevTime
-    $prevTime = now
-    $sumTime = now - $startTime
-    $sumFreq += 1 / $lastDelay
+    lastDelay.value = now - prevTime.value
+    prevTime.value = now
+    sumTime.value = now - startTime.value
+    sumFreq.value += 1 / lastDelay.value
   } else {
-    $startTime = $prevTime = Date.now()
-    $sumFreq = 0
+    startTime.value = prevTime.value = Date.now()
+    sumFreq.value = 0
   }
 }
 
 function resetEvents () {
-  $intervalCount = -1
+  intervalCount.value = -1
 }
 </script>
 
 <div class="btn-group d-flex mb-3" role="group">
   <button onclick={addEvent} class="btn btn-outline-primary">Add Event</button>
-  <button onclick={resetEvents} class="btn btn-outline-secondary" class:disabled={$intervalCount < 0}>Reset</button>
+  <button onclick={resetEvents} class="btn btn-outline-secondary" class:disabled={intervalCount.value < 0}>Reset</button>
 </div>
 
-{#if $intervalCount < 0}
+{#if intervalCount.value < 0}
   <h2>Add two events!</h2>
-{:else if !$intervalCount}
+{:else if !intervalCount.value}
   <h2>Add another event!</h2>
 {:else}
-{@const avgTime = $sumTime / $intervalCount}
-{@const avgFreq = $sumFreq / $intervalCount}
+{@const avgTime = sumTime.value / intervalCount.value}
+{@const avgFreq = sumFreq.value / intervalCount.value}
 <table class="table table-striped table-bordered table-hover caption-top w-auto">
-  <caption>Count of intervals = {$intervalCount}</caption>
+  <caption>Count of intervals = {intervalCount.value}</caption>
   <thead>
     <tr>
       <th scope="col">Quantity</th>
@@ -51,9 +51,9 @@ function resetEvents () {
   <tbody>
     <tr>
       <th scope="row">Last</th>
-      <td class="text-end">{(0.001 * $lastDelay).toFixed(3)}</td>
-      <td class="text-end">{(1000 / $lastDelay).toFixed(3)}</td>
-      <td class="text-end">{(60000 / $lastDelay).toFixed(3)}</td>
+      <td class="text-end">{(0.001 * lastDelay.value).toFixed(3)}</td>
+      <td class="text-end">{(1000 / lastDelay.value).toFixed(3)}</td>
+      <td class="text-end">{(60000 / lastDelay.value).toFixed(3)}</td>
     </tr>
     <tr>
       <th scope="row">Avg Time</th>
@@ -69,15 +69,15 @@ function resetEvents () {
     </tr>
     <tr>
       <th scope="row">Sum Time</th>
-      <td class="text-end">{(0.001 * $sumTime).toFixed(3)}</td>
-      <td class="text-end">{(1000 / $sumTime).toFixed(3)}</td>
-      <td class="text-end">{(60000 / $sumTime).toFixed(3)}</td>
+      <td class="text-end">{(0.001 * sumTime.value).toFixed(3)}</td>
+      <td class="text-end">{(1000 / sumTime.value).toFixed(3)}</td>
+      <td class="text-end">{(60000 / sumTime.value).toFixed(3)}</td>
     </tr>
     <tr>
       <th scope="row">Sum Freq</th>
-      <td class="text-end">{(0.001 / $sumFreq).toFixed(3)}</td>
-      <td class="text-end">{(1000 * $sumFreq).toFixed(3)}</td>
-      <td class="text-end">{(60000 * $sumFreq).toFixed(3)}</td>
+      <td class="text-end">{(0.001 / sumFreq.value).toFixed(3)}</td>
+      <td class="text-end">{(1000 * sumFreq.value).toFixed(3)}</td>
+      <td class="text-end">{(60000 * sumFreq.value).toFixed(3)}</td>
     </tr>
   </tbody>
 </table>

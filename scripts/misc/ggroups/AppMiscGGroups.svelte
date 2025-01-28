@@ -4,12 +4,14 @@ import ChatMessageFromText from './ChatMessageFromText.svelte'
 import ChatMessageHidden from './ChatMessageHidden.svelte'
 
 import { shuffle } from '@/util'
-import { pStore, type ValueStore, valueStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { flip } from 'svelte/animate'
 
-const allowSecretSystemMessages = pStore('misc/ggroups/allowSecretSystemMessages', true)
-const searchQuery = pStore('misc/ggroups/autoHistory', '')
+const allowSecrets = pState('misc/ggroups/allowSecretSystemMessages', true)
+const searchQuery = pState('misc/ggroups/autoHistory', '')
+
+const allowSecretSystemMessages = $derived(allowSecrets.value)
 
 const forumStringsOrig = ((window as any).textAsset as string)
   .split(/[\r\n]+-+[\r\n]+/)
@@ -39,7 +41,7 @@ const forumStringsOrig = ((window as any).textAsset as string)
 let forumStrings = $state(forumStringsOrig)
 
 function* filterMessages (query: string, strings: string[]) {
-  type HiddenMessages = [string[], ValueStore<boolean>]
+  type HiddenMessages = [rawTexts: string[], show: boolean]
 
   if (!query) return yield* strings
 
@@ -54,7 +56,7 @@ function* filterMessages (query: string, strings: string[]) {
     }
 
     if (nextEmit < i) {
-      yield [strings.slice(nextEmit, i), valueStore(false)] as HiddenMessages
+      yield [strings.slice(nextEmit, i), false] as HiddenMessages
     }
 
     yield s
@@ -62,7 +64,7 @@ function* filterMessages (query: string, strings: string[]) {
   }
 
   if (nextEmit < strings.length) {
-    yield [strings.slice(nextEmit), valueStore(false)] as HiddenMessages
+    yield [strings.slice(nextEmit), false] as HiddenMessages
   }
 }
 
@@ -77,11 +79,11 @@ function randomize (on = false): void {
 randomize(true)
 </script>
 
-<input class="form-control my-2" placeholder="Search" bind:value={$searchQuery}>
+<input class="form-control my-2" placeholder="Search" bind:value={searchQuery.value}>
 
 <div class="btn-group d-flex my-2" role="group">
-  <button class={$allowSecretSystemMessages ? 'btn btn-success active' : 'btn btn-warning'}
-      onclick={() => { $allowSecretSystemMessages = !$allowSecretSystemMessages }}>
+  <button class={allowSecretSystemMessages ? 'btn btn-success active' : 'btn btn-warning'}
+      onclick={() => allowSecrets.value = !allowSecrets.value}>
     Privileged Access
   </button>
   <button class="btn btn-secondary" onclick={() => randomize()}>Order</button>
@@ -93,7 +95,7 @@ randomize(true)
 <h2>guruGROUPS</h2>
 
 <div class="container">
-  {#if $allowSecretSystemMessages}
+  {#if allowSecretSystemMessages}
     <!-- "^Fr^Cr^m7^OLISTENING TO #HACKING. PRIVILEGED ACCESS." -->
     <ChatMessage text='LISTENING TO #HACKING. PRIVILEGED ACCESS.' msgClassNum={2} />
   {:else}
@@ -104,11 +106,12 @@ randomize(true)
   {#each forumStrings as conversation (conversation.id) }
     <div animate:flip="{{ duration: 500 }}">
       <hr>
-      {#each Array.from(filterMessages($searchQuery, conversation.messages)) as rawText}
+      {#each Array.from(filterMessages(searchQuery.value, conversation.messages)) as rawText}
         {#if typeof rawText == 'string'}
-          <ChatMessageFromText {rawText} allowSecretSystemMessages={$allowSecretSystemMessages} />
+          <ChatMessageFromText {rawText} {allowSecretSystemMessages} />
         {:else}
-          <ChatMessageHidden rawTexts={rawText[0]} showStore={rawText[1]} allowSecretSystemMessages={$allowSecretSystemMessages} />
+          {@const [rawTexts, show] = rawText}
+          <ChatMessageHidden {rawTexts} {show} {allowSecretSystemMessages} />
         {/if}
       {/each}
     </div>

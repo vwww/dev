@@ -1,14 +1,14 @@
 <script lang="ts">
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 let logicPresets: Preset[][] = $state([])
 
-const title = pStore('game/sp/logic/title', '')
-const description = pStore('game/sp/logic/desc', '')
-const clues = pStore('game/sp/logic/clues', ['', '', ''])
-const puzzleTypes = pStore('game/sp/logic/puzzleTypes', [] as PuzzleType[])
-const puzzleRules = pStore('game/sp/logic/puzzleRules', [] as PuzzleRule[])
-const solution = pStore('game/sp/logic/solution', undefined as string[][] | undefined)
+const title = pState('game/sp/logic/title', '')
+const description = pState('game/sp/logic/desc', '')
+const clues = pState('game/sp/logic/clues', ['', '', ''])
+const puzzleTypes = pState('game/sp/logic/puzzleTypes', [] as PuzzleType[])
+const puzzleRules = pState('game/sp/logic/puzzleRules', [] as PuzzleRule[])
+const solution = pState('game/sp/logic/solution', undefined as string[][] | undefined)
 
 type PresetCommon = {
   name: string
@@ -41,20 +41,20 @@ interface Preset extends PresetCommon {
 }
 
 function loadPreset (preset: Preset): void {
-  $title = preset.name
-  $description = preset.desc
-  $clues = preset.clues.slice(0)
-  $puzzleTypes = preset.types.map((x) => ({ ...x }))
-  $puzzleRules = preset.rules.map((x) => ({ ...x }))
-  $solution = preset.solution
+  title.value = preset.name
+  description.value = preset.desc
+  clues.value = preset.clues.slice(0)
+  puzzleTypes.value = preset.types.map((x) => ({ ...x }))
+  puzzleRules.value = preset.rules.map((x) => ({ ...x }))
+  solution.value = preset.solution
 }
 
 function reset (): void {
-  $title = $description = ''
-  $clues = []
-  $puzzleTypes = []
-  $puzzleRules = []
-  $solution = undefined
+  title.value = description.value = ''
+  clues.value = []
+  puzzleTypes.value = []
+  puzzleRules.value = []
+  solution.value = undefined
 }
 
 async function loadLogic () {
@@ -84,24 +84,21 @@ loadLogic()
   <div class="col-lg-6 mb-3">
     <h2>Puzzle Info <button class="btn btn-outline-danger mb-2" onclick={reset}>Reset</button></h2>
 
-    <input type="text" class="form-control mb-2" placeholder="Title" bind:value={$title}>
+    <input type="text" class="form-control mb-2" placeholder="Title" bind:value={title.value}>
 
-    <textarea class="form-control" placeholder="Description" bind:value={$description} rows="10"></textarea>
+    <textarea class="form-control" placeholder="Description" bind:value={description.value} rows="10"></textarea>
   </div>
 
   <div class="col-lg-6 mb-2">
-    <h3>Clues <button class="btn btn-outline-success mb-2" onclick={() => { $clues = [...$clues, ''] }}>+</button></h3>
+    <h3>Clues <button class="btn btn-outline-success mb-2" onclick={() => { clues.value.push('') }}>+</button></h3>
 
     <ol>
-      {#each $clues, i}
+      {#each clues.value, i}
         <li>
         <div class="input-group mb-3">
           <div class="input-group">
-            <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={$clues[i]} rows="2"></textarea>
-            <button class="btn btn-outline-danger" onclick={() => {
-              $clues.splice(i, 1)
-              $clues = $clues
-            }}>-</button>
+            <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={clues.value[i]} rows="2"></textarea>
+            <button class="btn btn-outline-danger" onclick={() => clues.value.splice(i, 1)}>-</button>
           </div>
         </li>
       {/each}
@@ -109,7 +106,7 @@ loadLogic()
   </div>
 </div>
 
-{#if $solution}
+{#if solution.value}
   <div class="mb-2">
     <h2>Puzzle Solution</h2>
     <div class="row justify-content-center">
@@ -117,13 +114,13 @@ loadLogic()
         <table class="table table-striped table-bordered table-hover table-sm table-responsive">
           <thead>
             <tr>
-              {#each $puzzleTypes as puzzleType}
+              {#each puzzleTypes.value as puzzleType}
                 <th scope="col">{puzzleType.type}</th>
               {/each}
             </tr>
           </thead>
           <tbody>
-            {#each $solution as solutionRow}
+            {#each solution.value as solutionRow}
               <tr>
                 {#each solutionRow as solutionCol}
                   <td>{solutionCol}</td>

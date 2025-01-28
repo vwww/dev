@@ -7,7 +7,7 @@ import type { PokeSource } from './PokeSource'
 import PokeSourceFirebase from './PokeSourceFirebase'
 
 import { onMount } from 'svelte'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import Highcharts from 'highcharts'
 import 'highcharts/modules/exporting'
@@ -15,9 +15,9 @@ import 'highcharts/modules/offline-exporting'
 import 'highcharts/modules/accessibility'
 
 // Persistent variables
-const leaderboardLimit = pStore('bot/poke/leaderboardLimit', 10)
-const leaderboardTie = pStore('bot/poke/leaderboardTie', 2)
-const leaderboardMinPokes = pStore('bot/poke/leaderboardMinPokes', 1)
+const leaderboardLimit = pState('bot/poke/leaderboardLimit', 10)
+const leaderboardTie = pState('bot/poke/leaderboardTie', 2)
+const leaderboardMinPokes = pState('bot/poke/leaderboardMinPokes', 1)
 
 // Poke entries sorted by pokes then time
 let data1: EntryInfo[] = $state([])
@@ -277,7 +277,7 @@ function highcharts (node: HTMLElement, config: Highcharts.Options) {
     <div class="input-group-text">
       Filter by minimum pokes
     </div>
-    <input class="form-control" type="number" min="1" bind:value={$leaderboardMinPokes}>
+    <input class="form-control" type="number" min="1" bind:value={leaderboardMinPokes.value}>
   </div>
   <div class="input-group mb-3">
     <div class="input-group-text">
@@ -286,12 +286,12 @@ function highcharts (node: HTMLElement, config: Highcharts.Options) {
     {#each [10, 25, 50, 100, 250, 500, 1000, 0] as limit}
       <div class="input-group-text">
         <label class="form-check">
-          <input type="radio" class="form-check-input" bind:group={$leaderboardLimit} value={limit}>
+          <input type="radio" class="form-check-input" bind:group={leaderboardLimit.value} value={limit}>
           {limit || 'all'}
         </label>
       </div>
     {/each}
-    <input class="form-control" type="number" min="0" bind:value={$leaderboardLimit}>
+    <input class="form-control" type="number" min="0" bind:value={leaderboardLimit.value}>
   </div>
   <div class="input-group mb-3">
     <div class="input-group-text">
@@ -300,7 +300,7 @@ function highcharts (node: HTMLElement, config: Highcharts.Options) {
     {#each ['dense', 'competition', 'fractional', 'modified', 'ordinal'] as limit, i}
       <div class="input-group-text">
         <label class="form-check">
-          <input type="radio" class="form-check-input" bind:group={$leaderboardTie} value={i}>
+          <input type="radio" class="form-check-input" bind:group={leaderboardTie.value} value={i}>
           {limit}
         </label>
       </div>
@@ -312,9 +312,9 @@ function highcharts (node: HTMLElement, config: Highcharts.Options) {
   <div class="col-6">
     <h3>Top Opponents</h3>
     <ol class="leaderboard">
-      {#each data1.slice(0, $leaderboardLimit || data1.length) as entry}
-        {#if entry.num >= $leaderboardMinPokes}
-          <Entry {entry} tie={entry.tie} rankIndex={$leaderboardTie + 1} rankIndexOther={0} />
+      {#each data1.slice(0, leaderboardLimit.value || data1.length) as entry}
+        {#if entry.num >= leaderboardMinPokes.value}
+          <Entry {entry} tie={entry.tie} rankIndex={leaderboardTie.value + 1} rankIndexOther={0} />
         {/if}
       {/each}
     </ol>
@@ -322,8 +322,8 @@ function highcharts (node: HTMLElement, config: Highcharts.Options) {
   <div class="col-6">
     <h3>Recent Pokes</h3>
     <ol class="leaderboard">
-      {#each data2.filter((e) => e.num >= $leaderboardMinPokes).slice(0, $leaderboardLimit || data2.length) as entry}
-        <Entry {entry} tie={0} rankIndex={0} rankIndexOther={$leaderboardTie + 1} />
+      {#each data2.filter((e) => e.num >= leaderboardMinPokes.value).slice(0, leaderboardLimit.value || data2.length) as entry}
+        <Entry {entry} tie={0} rankIndex={0} rankIndexOther={leaderboardTie.value + 1} />
       {/each}
     </ol>
   </div>

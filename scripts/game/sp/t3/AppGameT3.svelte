@@ -6,21 +6,21 @@ import MoveTable from './MoveTable.svelte'
 import { initMemo, getMemo as getMemoOrig, playerTypes, type MemoEntry } from '@gc/t3/ai'
 import { checkWin, occupied, remapWin, Winner, type WinnerMap } from '@gc/t3/game'
 import { randomArrayItem } from '@/util'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 // Options state
-const showHints = pStore('game/sp/t3/showHints', true)
-const playerTypeIndex = pStore('game/sp/t3/playerType', [0, 4])
-const winnerX = pStore('game/sp/t3/winnerX', 1)
-const winnerO = pStore('game/sp/t3/winnerO', 2)
-const winnerTie = pStore('game/sp/t3/winnerTie', 3)
+const showHints = pState('game/sp/t3/showHints', true)
+const playerTypeIndex = pState('game/sp/t3/playerType', [0, 4])
+const winnerX = pState('game/sp/t3/winnerX', 1)
+const winnerO = pState('game/sp/t3/winnerO', 2)
+const winnerTie = pState('game/sp/t3/winnerTie', 3)
 
-const winnerMap = $derived([$winnerX, $winnerO, $winnerTie] as WinnerMap)
+const winnerMap = $derived([winnerX.value, winnerO.value, winnerTie.value] as WinnerMap)
 // checkWinner when needed
 $effect(() => {
-  $winnerX
-  $winnerO
-  $winnerTie
+  winnerX.value
+  winnerO.value
+  winnerTie.value
 
   checkWinner()
 })
@@ -57,7 +57,7 @@ function startGame (): void {
 }
 
 function setPlayerType (p: 0 | 1, pType: number): void {
-  $playerTypeIndex[p] = pType
+  playerTypeIndex.value[p] = pType
   startGame()
 }
 
@@ -89,7 +89,7 @@ function checkWinner (): void {
 function moveBots (): void {
   // Move bots as needed
   while (!winner) {
-    const botType = playerTypes[$playerTypeIndex[moveLength & 1]][1]
+    const botType = playerTypes[playerTypeIndex.value[moveLength & 1]][1]
     if (!botType) break
 
     let moves
@@ -111,7 +111,7 @@ function moveHuman (loc: number): void {
 }
 
 function swapTypes (): void {
-  $playerTypeIndex = [$playerTypeIndex[1], $playerTypeIndex[0]]
+  playerTypeIndex.value = [playerTypeIndex.value[1], playerTypeIndex.value[0]]
   startGame()
 }
 
@@ -124,7 +124,7 @@ function undoMove (): void {
     mark ^= 3
     board ^= mark << (move << 1)
     // repeat until we have undone a human move
-  } while (playerTypes[$playerTypeIndex[moveLength & 1]][1])
+  } while (playerTypes[playerTypeIndex.value[moveLength & 1]][1])
 
   winner = 0
   undoLength--
@@ -167,7 +167,7 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
         <button
           onclick={() => setPlayerType(index, i)}
           class="w-100 btn btn-outline-secondary"
-          class:active={i === $playerTypeIndex[index]}>{name}</button>
+          class:active={i === playerTypeIndex.value[index]}>{name}</button>
       {/each}
     </div>
   {/snippet}
@@ -182,7 +182,7 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
   <div class="col-12">
     <strong>Options</strong>
     <div class="btn-group d-flex mb-2" role="group">
-      <button onclick={() => { $showHints = !$showHints }} class="w-100 btn btn-{$showHints ? 'success active' : 'outline-primary'}">Hints</button>
+      <button onclick={() => { showHints.value = !showHints.value }} class="w-100 btn btn-{showHints.value ? 'success active' : 'outline-primary'}">Hints</button>
       <button onclick={swapTypes} class="w-100 btn btn-outline-secondary">Swap Types</button>
       <button onclick={undoMove} class="w-100 btn btn-outline-secondary" disabled={!undoLength}>Undo</button>
     </div>
@@ -194,7 +194,7 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
 <div class="row">
   <div class="col-sm-6">
     <p>{@html currentMessage}</p>
-    <Board {board} {winner} {winnerMap} {mark} showHints={$showHints} {getMemo} onMove={moveHuman} />
+    <Board {board} {winner} {winnerMap} {mark} showHints={showHints.value} {getMemo} onMove={moveHuman} />
   </div>
 
   <div class="col-sm-6">
@@ -206,32 +206,32 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
 <div class="btn-group d-flex mb-1" role="group">
   <span class="input-group-text">X Wins</span>
   {#each SETTINGS_X as s, i}
-    <button onclick={() => { $winnerX = i + 1 }} class:active={$winnerX === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button onclick={() => { winnerX.value = i + 1 }} class:active={winnerX.value === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-1" role="group">
   <span class="input-group-text">O Wins</span>
   {#each SETTINGS_O as s, i}
-    <button onclick={() => { $winnerO = i + 1 }} class:active={$winnerO === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button onclick={() => { winnerO.value = i + 1 }} class:active={winnerO.value === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="btn-group d-flex mb-2" role="group">
   <span class="input-group-text">Board Full</span>
   {#each SETTINGS_T as s, i}
-    <button onclick={() => { $winnerTie = i + 1 }} class:active={$winnerTie === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
+    <button onclick={() => { winnerTie.value = i + 1 }} class:active={winnerTie.value === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
 </div>
 <div class="input-group d-flex mb-2" role="group">
   <button onclick={() => {
-    $winnerX = $winnerX === 3 ? 3 : $winnerX ^ 3
-    $winnerO = $winnerO === 3 ? 3 : $winnerO ^ 3
-    $winnerTie = $winnerTie === 3 ? 3 : $winnerTie ^ 3
+    winnerX.value = winnerX.value === 3 ? 3 : winnerX.value ^ 3
+    winnerO.value = winnerO.value === 3 ? 3 : winnerO.value ^ 3
+    winnerTie.value = winnerTie.value === 3 ? 3 : winnerTie.value ^ 3
   }} class="flex-grow-1 btn btn-outline-secondary">Invert</button>
   <span class="input-group-text">Presets: X wants</span>
   {#each PRESETS as p}
     <button
-      onclick={() => { $winnerX = p[0]; $winnerO = p[1]; $winnerTie = p[2] }}
-      class:active={$winnerX === p[0] && $winnerO === p[1] && $winnerTie === p[2]}
+      onclick={() => { winnerX.value = p[0]; winnerO.value = p[1]; winnerTie.value = p[2] }}
+      class:active={winnerX.value === p[0] && winnerO.value === p[1] && winnerTie.value === p[2]}
       class="flex-grow-1 btn btn-outline-{p[3]}">{p[4]}</button>
   {/each}
 </div>

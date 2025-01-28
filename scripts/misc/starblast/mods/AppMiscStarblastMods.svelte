@@ -2,7 +2,7 @@
 import * as d3 from 'd3'
 
 import { onMount } from 'svelte'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import type { ModData, ModInfo } from './modinfo'
 import { formatDelay, generateHistory, type ModEvent } from './history'
@@ -10,12 +10,12 @@ import { formatTime, generateData } from './data'
 
 import modsinfo from './modsinfo.json'
 
-const autoHistory = pStore('misc/starblast/autoHistory', true)
-const showHistoryTimes = pStore('misc/starblast/showHistoryTimes', true)
-const showDaily = pStore('misc/starblast/showDaily', true)
-const showDailyTime = pStore('misc/starblast/showDailyTime', '20:00')
-const hideMinor = pStore('misc/starblast/hideMinor', false)
-const showDelay = pStore('misc/starblast/showDelay', false)
+const autoHistory = pState('misc/starblast/autoHistory', true)
+const showHistoryTimes = pState('misc/starblast/showHistoryTimes', true)
+const showDaily = pState('misc/starblast/showDaily', true)
+const showDailyTime = pState('misc/starblast/showDailyTime', '20:00')
+const hideMinor = pState('misc/starblast/hideMinor', false)
+const showDelay = pState('misc/starblast/showDelay', false)
 
 const modDataCached: ModInfo = modsinfo[0]
 
@@ -63,7 +63,7 @@ let pan = d3.zoom<SVGSVGElement, unknown>()
 function render (): void {
   const data = generateData(
     xScale,
-    $autoHistory ? activeModHistory : [modEvent!],
+    autoHistory.value ? activeModHistory : [modEvent!],
   )
 
   barGroup.selectAll('rect')
@@ -97,15 +97,15 @@ function render (): void {
     .attr('x1', xNow)
     .attr('x2', xNow)
 
-  const extraTimes: [time: number, color: string][] = $showHistoryTimes
+  const extraTimes: [time: number, color: string][] = showHistoryTimes.value
     ? activeModHistory.map((event) => [xScale(event.time), event === modEvent ? 'blue' : 'gray'])
     : []
 
-  if ($showDaily && $showDailyTime) {
+  if (showDaily.value && showDailyTime.value) {
     const [dStart, dEnd] = xScale.domain().map(Number)
     if (dEnd - dStart <= 6912e7) { // 800 days
       const t = new Date(dStart - (24 + 2) * 60 * 60 * 1000) // assuming DST shifts up to a maximum of 2 hours
-      const [h, m] = $showDailyTime.split(':').map(Number)
+      const [h, m] = showDailyTime.value.split(':').map(Number)
       t.setHours(h)
       t.setMinutes(m)
 
@@ -349,13 +349,13 @@ onMount(async function () {
 <div class="row row-cols-md-auto g-3 align-items-center my-2">
   <div class="col-12">
     <label class="form-check">
-      <input type="checkbox" class="form-check-input" bind:checked={$autoHistory} onchange={render}>
+      <input type="checkbox" class="form-check-input" bind:checked={autoHistory.value} onchange={render}>
       <span class="form-check-label">Render effective history</span>
     </label>
   </div>
   <div class="col-12">
     <label class="form-check">
-      <input type="checkbox" class="form-check-input" bind:checked={$showHistoryTimes} onchange={render}>
+      <input type="checkbox" class="form-check-input" bind:checked={showHistoryTimes.value} onchange={render}>
       <span class="form-check-label">Render history times</span>
     </label>
   </div>
@@ -363,26 +363,26 @@ onMount(async function () {
     <div class="row row-cols-auto align-items-center">
       <div class="col">
         <label class="form-check">
-          <input type="checkbox" class="form-check-input" bind:checked={$showDaily} onchange={render}>
+          <input type="checkbox" class="form-check-input" bind:checked={showDaily.value} onchange={render}>
           <span class="form-check-label">Render daily time</span>
         </label>
       </div>
-      {#if $showDaily}
+      {#if showDaily.value}
         <div class="col">
-          <input type="time" class="form-control" bind:value={$showDailyTime} onchange={render}>
+          <input type="time" class="form-control" bind:value={showDailyTime.value} onchange={render}>
         </div>
       {/if}
     </div>
   </div>
   <div class="col-12">
     <label class="form-check">
-      <input type="checkbox" class="form-check-input" bind:checked={$hideMinor}>
+      <input type="checkbox" class="form-check-input" bind:checked={hideMinor.value}>
       <span class="form-check-label">Hide minor revisions</span>
     </label>
   </div>
     <div class="col-12">
     <label class="form-check">
-      <input type="checkbox" class="form-check-input" bind:checked={$showDelay}>
+      <input type="checkbox" class="form-check-input" bind:checked={showDelay.value}>
       <span class="form-check-label">Show delays between revisions</span>
     </label>
   </div>
@@ -396,12 +396,12 @@ onMount(async function () {
 {:else}
   <div class="list-group">
     {#each activeModHistory as h, i}
-      {#if i && $showDelay && activeModHistory[i - 1].time > h.time}
+      {#if i && showDelay.value && activeModHistory[i - 1].time > h.time}
         <div class="list-group-item text-center">
           {formatDelay(activeModHistory[i - 1].time - h.time)}
         </div>
       {/if}
-      {#if !$hideMinor || !h.minor || modEvent === h}
+      {#if !hideMinor.value || !h.minor || modEvent === h}
         <button class="list-group-item list-group-item-action"
           class:active={modEvent === h}
           onclick={() => modEvent === h ? panTo(h.time) : (setModEvent(h), render())}>

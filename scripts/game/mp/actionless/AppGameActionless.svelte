@@ -13,7 +13,7 @@ import ActionlessGame from './ActionlessGame'
 import ActionlessHistory from './ActionlessHistory.svelte'
 import ActionlessPlay from './ActionlessPlay.svelte'
 
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
@@ -29,19 +29,19 @@ const {
   roundState,
 } = gameState
 
-let name = pStore('game/mp/_shared/name', '')
+let name = pState('game/mp/_shared/name', '')
 
 function formatGameMode ({optIndependent, optTeams}: any) {
   return getGameModeString(optIndependent === 'true', +optTeams)
 }
 </script>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <PIORoomList
   gameId="actionless-rv9luoetuchidspmvghiq"
   roomType="ActionlessRoom"
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 

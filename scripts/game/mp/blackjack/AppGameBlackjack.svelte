@@ -13,7 +13,7 @@ import BlackjackGame from './BlackjackGame'
 import BlackjackHistory from './BlackjackHistory.svelte'
 import BlackjackPlay from './BlackjackPlay.svelte'
 
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
@@ -29,19 +29,19 @@ const {
   roundState,
 } = gameState
 
-let name = pStore('game/mp/_shared/name', '')
+let name = pState('game/mp/_shared/name', '')
 
 function formatGameMode ({optInverted}: any) {
   return getGameModeString()
 }
 </script>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <PIORoomList
   gameId="blackjack-6zesndxegeqvedc1obxixa"
   roomType="BlackjackRoom"
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 

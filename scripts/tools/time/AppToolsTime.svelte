@@ -1,10 +1,10 @@
 <script lang="ts">
 import * as d3 from 'd3'
 import { onMount } from 'svelte'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
-const curAge = pStore('tool/time/ageCur', 30)
-const maxAge = pStore('tool/time/ageMax', 120)
+const curAge = pState('tool/time/ageCur', 30)
+const maxAge = pState('tool/time/ageMax', 120)
 
 let updateCurHandler: (() => void) | undefined = $state()
 let updateMaxHandler: (() => void) | undefined = $state()
@@ -101,8 +101,8 @@ function init () {
 
   updateCurHandler = function () {
     for (const { scale, ageLineTop, ageLine } of charts) {
-      const xR = scaleR($curAge)
-      const x = scaleChecked(scale, $curAge)
+      const xR = scaleR(curAge.value)
+      const x = scaleChecked(scale, curAge.value)
       ageLineTop
         .attr('x1', xR)
         .attr('x2', xR)
@@ -113,16 +113,16 @@ function init () {
   }
 
   updateMaxHandler = function () {
-    const years = [...Array($maxAge).keys()]
+    const years = [...Array(maxAge.value).keys()]
 
     for (const { scale, lowerBound, groupBars, lineChart0, lineChart1, xAxisTop, xAxisGenerator1, xAxis } of charts) {
-      scale.domain([lowerBound, $maxAge])
+      scale.domain([lowerBound, maxAge.value])
 
       const width = scale.range()[1]
       const skip = scaleR(lowerBound)
 
       const lineChartDatum0 = Array(Math.floor(width + 1 - skip)).fill(undefined).map((_, i) => [skip + i, 40 - 20 * scale(scaleR.invert(skip + i)) / width])
-      const lineChartDatum1 = Array(Math.floor(width + 1)).fill(undefined).map((_, i) => [i, 60 - 20 * scale.invert(i) / $maxAge])
+      const lineChartDatum1 = Array(Math.floor(width + 1)).fill(undefined).map((_, i) => [i, 60 - 20 * scale.invert(i) / maxAge.value])
 
       lineChart0
         .datum(lineChartDatum0)
@@ -197,13 +197,13 @@ onMount(init)
   <div class="col-sm-6 mb-1">
     <div class="input-group">
       <span class="input-group-text">Current Age: </span>
-      <input type="number" class="form-control" bind:value={$curAge} min="0" onchange={() => updateCurHandler?.()}>
+      <input type="number" class="form-control" bind:value={curAge.value} min="0" onchange={() => updateCurHandler?.()}>
     </div>
   </div>
   <div class="col-sm-6 mb-3">
     <div class="input-group">
       <span class="input-group-text">Max Age: </span>
-      <input type="number" class="form-control" bind:value={$maxAge} min="1" onchange={() => updateMaxHandler?.()}>
+      <input type="number" class="form-control" bind:value={maxAge.value} min="1" onchange={() => updateMaxHandler?.()}>
     </div>
   </div>
 </div>

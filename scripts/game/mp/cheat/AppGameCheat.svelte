@@ -13,7 +13,7 @@ import CheatGame from './CheatGame'
 import CheatHistory from './CheatHistory.svelte'
 import CheatPlay from './CheatPlay.svelte'
 
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
 
@@ -29,19 +29,19 @@ const {
   roundState,
 } = gameState
 
-let name = pStore('game/mp/_shared/name', '')
+let name = pState('game/mp/_shared/name', '')
 
 function formatGameMode ({optCount, optRank, optRounds, optPenalty}: any) {
   return getGameModeString()
 }
 </script>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <PIORoomList
   gameId="cheat-zoded3ozqeqvek0bpz3fow"
   roomType="CheatRoom"
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 

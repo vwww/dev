@@ -4,24 +4,22 @@ import Parse1 from './Parse1.svelte'
 import Parse2 from './Parse2.svelte'
 
 import { tick } from 'svelte'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
-const value = pStore('bot/googuns/v', '')
+const v = pState('bot/googuns/v', '')
 
 async function validate (textbox: HTMLTextAreaElement) {
   const { selectionStart, selectionEnd } = textbox
 
   // Filter message characters and limit to length 280
-  $value = $value.toLowerCase().replace(/[^0-9a-f]+/g, '')
-  if ($value.length >= 280) $value = $value.slice(0, 280)
+  v.value = v.value.toLowerCase().replace(/[^0-9a-f]+/g, '')
+  if (v.value.length >= 280) v.value = v.value.slice(0, 280)
 
   await tick()
 
   textbox.selectionStart = selectionStart
   textbox.selectionEnd = selectionEnd
 }
-
-function onMsg (val: string) { $value = val }
 
 function validateInput (this: HTMLTextAreaElement) {
   validate(this)
@@ -50,13 +48,13 @@ function validateInput (this: HTMLTextAreaElement) {
 
     <p>Copy and paste a tweet:</p>
 
-    <textarea class="form-control" bind:value={$value} oninput={validateInput} maxlength="280" placeholder={'0'.repeat(280)}></textarea>
+    <textarea class="form-control" bind:value={v.value} oninput={validateInput} maxlength="280" placeholder={'0'.repeat(280)}></textarea>
   </div>
 </div>
 
-<Parse2 value={$value} />
-<Parse1 value={$value} />
-<Gen {onMsg} />
+<Parse2 value={v.value} />
+<Parse1 value={v.value} />
+<Gen onMsg={(val) => v.value = val} />
 
 <h2>Notation</h2>
 <pre class="card card-body text-bg-light">All fields are big endian.

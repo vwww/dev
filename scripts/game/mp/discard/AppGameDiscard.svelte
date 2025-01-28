@@ -13,7 +13,7 @@ import DiscardGame from './DiscardGame'
 import DiscardPlay from './DiscardPlay.svelte'
 import DiscardGameHistory from './DiscardGameHistory.svelte'
 
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 import { getGameModeString, roomCreateOptions } from './common'
 
@@ -29,27 +29,27 @@ const {
   roundState,
 } = gameState
 
-let name = pStore('game/mp/_shared/name', '')
-let showLLNames = pStore('game/mp/discard/LL', true)
-let showCardCount = pStore('game/mp/discard/cardCount', true)
+let name = pState('game/mp/_shared/name', '')
+let showLLNames = pState('game/mp/discard/LL', true)
+let showCardCount = pState('game/mp/discard/cardCount', true)
 
 function formatGameMode ({optDecks, optTurnTime}: any) {
   return getGameModeString(+optDecks, +optTurnTime)
 }
 </script>
 
-<NameBox bind:value={$name} />
+<NameBox bind:value={name.value} />
 
 <div class="input-group mb-3">
   <span class="input-group-text flex-grow-1">
     <label class="form-check mx-auto">
-      <input type="checkbox" class="form-check-input" bind:checked={$showLLNames}>
+      <input type="checkbox" class="form-check-input" bind:checked={showLLNames.value}>
       Show Love Letter Names
     </label>
   </span>
   <span class="input-group-text flex-grow-1">
     <label class="form-check mx-auto">
-      <input type="checkbox" class="form-check-input" bind:checked={$showCardCount}>
+      <input type="checkbox" class="form-check-input" bind:checked={showCardCount.value}>
       Show Card Count
     </label>
   </span>
@@ -58,8 +58,8 @@ function formatGameMode ({optDecks, optTurnTime}: any) {
 <PIORoomList
   gameId="discard-l3z5n5wptuoeqtkytj64a"
   roomType="DiscardRoom"
-  joinData={{name: $name}}
-  onJoinedRoom={(room) => gameState.enterGame(room, $name)}
+  joinData={{name: name.value}}
+  onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   {formatGameMode}
   {roomCreateOptions} />
 
@@ -72,7 +72,7 @@ function formatGameMode ({optDecks, optTurnTime}: any) {
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
   onDisconnect={() => gameState.leaveGame()}>
-  <DiscardPlay {gameState} ll={$showLLNames} showCardCount={$showCardCount} />
+  <DiscardPlay {gameState} ll={showLLNames.value} showCardCount={showCardCount.value} />
 </PlayCard>
 
 <div class="row">
@@ -80,7 +80,7 @@ function formatGameMode ({optDecks, optTurnTime}: any) {
     <GameHistoryCard
       canClear={!$pastGames.length}
       onClear={() => gameState.clearHistory()}>
-      <DiscardGameHistory results={$pastGames} ll={$showLLNames} />
+      <DiscardGameHistory results={$pastGames} ll={showLLNames.value} />
     </GameHistoryCard>
 
     <Leaderboard players={$clientsSorted} columns={[

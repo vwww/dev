@@ -1,18 +1,18 @@
 <script lang="ts">
 import { randomHexColor } from '@/util'
-import { pStore } from '@/util/svelte'
+import { pState } from '@/util/svelte.svelte'
 
 const MIN_WIN_AREA = 250000
 const DEFAULT_IMAGE_URL = '../../../assets/victorz/logo.png'
 
-const colorMode = pStore('misc/seizure/mode', 0)
-const imageMode = pStore('misc/seizure/imageMode', 0)
-const imageURL = pStore('misc/seizure/imageURL', DEFAULT_IMAGE_URL)
-const interval = pStore('misc/seizure/int', -1)
-const imageMultiplier = pStore('misc/seizure/imageMult', 1)
-const userColor = pStore('misc/seizure/color', '#fff')
-const userColor2 = pStore('misc/seizure/color2', 'rgba(0, 0, 0, 0.5)')
-const useTimeMax = pStore('misc/seizure/useTimeMax', 0)
+const colorMode = pState('misc/seizure/mode', 0)
+const imageMode = pState('misc/seizure/imageMode', 0)
+const imageURL = pState('misc/seizure/imageURL', DEFAULT_IMAGE_URL)
+const interval = pState('misc/seizure/int', -1)
+const imageMultiplier = pState('misc/seizure/imageMult', 1)
+const userColor = pState('misc/seizure/color', '#fff')
+const userColor2 = pState('misc/seizure/color2', 'rgba(0, 0, 0, 0.5)')
+const useTimeMax = pState('misc/seizure/useTimeMax', 0)
 
 let running = $state(false)
 let runBackgroundColorInt = 0
@@ -26,7 +26,7 @@ let winH = $state(0)
 const winA = $derived(winW * winH)
 let windowIsBlurred = $state(false)
 
-const countUseTime = $derived($colorMode < 4 || $imageMode)
+const countUseTime = $derived(colorMode.value < 4 || imageMode.value)
 
 let strobe = false
 let curColor: string = $state('#000')
@@ -34,19 +34,19 @@ let curOpacity = $state(1)
 let imageStrobe = $state(false)
 
 function nextColor (): void {
-  if ($colorMode < 4) {
-    if (!($colorMode & 1)) {
+  if (colorMode.value < 4) {
+    if (!(colorMode.value & 1)) {
       // Black and white (toggle colors)
       curColor = (strobe = !strobe) ? '#fff' : '#000'
     } else {
       // Rainbow (random color)
       curColor = randomHexColor()
     }
-    if ($colorMode >= 2) {
+    if (colorMode.value >= 2) {
       curOpacity = Math.sqrt(Math.random())
     }
   } else {
-    curColor = $colorMode < 5 ? $userColor : $userColor2
+    curColor = colorMode.value < 5 ? userColor.value : userColor2.value
   }
 }
 
@@ -69,15 +69,15 @@ function start (): void {
 
   curOpacity = 1
 
-  if ($interval < 0) {
+  if (interval.value < 0) {
     (function animCallback () {
       runBackgroundColorInt = requestAnimationFrame(animCallback)
       nextColor()
       nextImageInvert()
     })()
   } else {
-    runBackgroundColorInt = window.setInterval(nextColor, $interval)
-    runImageInt = window.setInterval(nextImageInvert, $interval * $imageMultiplier)
+    runBackgroundColorInt = window.setInterval(nextColor, interval.value)
+    runImageInt = window.setInterval(nextImageInvert, interval.value * imageMultiplier.value)
   }
 }
 
@@ -88,7 +88,7 @@ function stop (): void {
   }
 
   if (runBackgroundColorInt) {
-    ($interval < 0 ? cancelAnimationFrame : clearInterval)(runBackgroundColorInt)
+    (interval.value < 0 ? cancelAnimationFrame : clearInterval)(runBackgroundColorInt)
     runBackgroundColorInt = 0
   }
 
@@ -97,8 +97,8 @@ function stop (): void {
     runImageInt = 0
   }
 
-  if ($useTimeMax < useTime) {
-    $useTimeMax = useTime
+  if (useTimeMax.value < useTime) {
+    useTimeMax.value = useTime
   }
 }
 
@@ -121,8 +121,8 @@ function handleImageFile (this: HTMLInputElement): void {
   const reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = () => {
-    $imageURL = reader.result as string
-    $imageMode = 1
+    imageURL.value = reader.result as string
+    imageMode.value = 1
     clearFile()
   }
   reader.onerror = clearFile
@@ -152,8 +152,8 @@ updateWindowSize()
         (W * H = {winW} * {winH} = {winA}) {winA >= MIN_WIN_AREA ? 'is large enough' : 'needs another ' + (MIN_WIN_AREA - winA) + ' pixels of area!'}
       </p>
     </div>
-    {#if $imageMode}
-      <img src={$imageURL} style="{imageStrobe ? 'filter:invert(1)' : ''}" alt="">
+    {#if imageMode.value}
+      <img src={imageURL.value} style="{imageStrobe ? 'filter:invert(1)' : ''}" alt="">
     {/if}
   </div>
 </div>
@@ -161,35 +161,35 @@ updateWindowSize()
 <div class="input-group mb-3">
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$colorMode} value={0}>
+      <input type="radio" class="form-check-input" bind:group={colorMode.value} value={0}>
       Black and White
     </label>
   </div>
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$colorMode} value={1}>
+      <input type="radio" class="form-check-input" bind:group={colorMode.value} value={1}>
       Rainbow
     </label>
   </div>
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$colorMode} value={2}>
+      <input type="radio" class="form-check-input" bind:group={colorMode.value} value={2}>
       Translucent BW
     </label>
   </div>
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$colorMode} value={3}>
+      <input type="radio" class="form-check-input" bind:group={colorMode.value} value={3}>
       Translucent Rainbow
     </label>
   </div>
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$colorMode} value={4}>
+      <input type="radio" class="form-check-input" bind:group={colorMode.value} value={4}>
       Fixed-color
     </label>
   </div>
-  <select bind:value={$userColor} class="form-select">
+  <select bind:value={userColor.value} class="form-select">
     <optgroup label="Extreme">
       <option value="#fff" style="background-color: #fff;">White</option>
       <option value="#000" style="background-color: #000;color: #fff;">Black</option>
@@ -215,34 +215,34 @@ updateWindowSize()
   </select>
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$colorMode} value={5}>
+      <input type="radio" class="form-check-input" bind:group={colorMode.value} value={5}>
       Custom
     </label>
   </div>
-  <input type="url" class="form-control" bind:value={$userColor2}>
+  <input type="url" class="form-control" bind:value={userColor2.value}>
 </div>
 
 <div class="input-group mb-3">
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$imageMode} value={0}>
+      <input type="radio" class="form-check-input" bind:group={imageMode.value} value={0}>
       No Image
     </label>
   </div>
   <div class="input-group-text">
     <label class="form-check">
-      <input type="radio" class="form-check-input" bind:group={$imageMode} value={1}>
+      <input type="radio" class="form-check-input" bind:group={imageMode.value} value={1}>
       URL
     </label>
   </div>
-  <input type="url" class="form-control" bind:value={$imageURL}>
+  <input type="url" class="form-control" bind:value={imageURL.value}>
   <input type="file" class="form-control" accept="image/*" onchange={handleImageFile}>
-  <button class="btn btn-outline-secondary" onclick={() => $imageURL = DEFAULT_IMAGE_URL}>Reset</button>
+  <button class="btn btn-outline-secondary" onclick={() => imageURL.value = DEFAULT_IMAGE_URL}>Reset</button>
 </div>
 
 <div class="input-group mb-3">
   <label class="input-group-text" for="inputGroupSelectInterval">Interval</label>
-  <select bind:value={$interval} class="form-select" id="inputGroupSelectInterval">
+  <select bind:value={interval.value} class="form-select" id="inputGroupSelectInterval">
     <option value={-1} class="def">ASAP (requestAnimationFrame)</option>
     <optgroup label="Possible Lag">
       <option value={0} class="maxlag">ASAP (0 ms)</option>
@@ -272,9 +272,9 @@ updateWindowSize()
       <option value={2000} class="ssslow">2 (2000 ms)</option>
     </optgroup>
   </select>
-  {#if $interval > 0}
+  {#if interval.value > 0}
     <label class="input-group-text" for="inputGroupSelectInterval">Image Multiplier</label>
-    <select bind:value={$imageMultiplier} class="form-select" id="inputGroupSelectInterval">
+    <select bind:value={imageMultiplier.value} class="form-select" id="inputGroupSelectInterval">
       <optgroup label="Faster">
         <option value={0.25} class="sslow">1/5 [0.25]</option>
         <option value={0.5} class="sslow">1/2 [0.5]</option>
@@ -298,7 +298,7 @@ updateWindowSize()
   {/if}
 </div>
 
-<p>Last usage time: {useTime < 0 ? '(click Start)' : formatSeconds(useTime) + ' s'} (longest {formatSeconds($useTimeMax) + ' s'})</p>
+<p>Last usage time: {useTime < 0 ? '(click Start)' : formatSeconds(useTime) + ' s'} (longest {formatSeconds(useTimeMax.value) + ' s'})</p>
 
 <button onclick={start} class="btn d-block w-100 btn-primary">Start</button>
 
