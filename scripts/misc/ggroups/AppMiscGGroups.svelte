@@ -1,7 +1,6 @@
 <script lang="ts">
 import ChatMessage from './ChatMessage.svelte'
-import ChatMessageFromText from './ChatMessageFromText.svelte'
-import ChatMessageHidden from './ChatMessageHidden.svelte'
+import ChatMessageHidden from './ChatMessages.svelte'
 
 import { shuffle } from '@/util'
 import { pState } from '@/util/svelte.svelte'
@@ -40,31 +39,20 @@ const forumStringsOrig = ((window as any).textAsset as string)
 
 let forumStrings = $state(forumStringsOrig)
 
-function* filterMessages (query: string, strings: string[]) {
-  type HiddenMessages = [rawTexts: string[], show: boolean]
-
-  if (!query) return yield* strings
+type FilteredMessages = [rawTexts: string[], hide: boolean]
+function* filterMessages (query: string, strings: string[]): Generator<FilteredMessages, void, void> {
+  if (!query) return yield [strings, false]
 
   query = query.toLowerCase()
 
-  let nextEmit = 0
-  for (let i = 0; i < strings.length; i++) {
-    const s = strings[i]
+  let i = 0
+  while (i < strings.length) {
+    const start = i
+    const hide = !strings[i].toLowerCase().includes(query)
 
-    if (!s.toLowerCase().includes(query)) {
-      continue
-    }
+    while (++i < strings.length && strings[i].toLowerCase().includes(query) !== hide);
 
-    if (nextEmit < i) {
-      yield [strings.slice(nextEmit, i), false] as HiddenMessages
-    }
-
-    yield s
-    nextEmit = i + 1
-  }
-
-  if (nextEmit < strings.length) {
-    yield [strings.slice(nextEmit), false] as HiddenMessages
+    yield [strings.slice(start, i), hide]
   }
 }
 
@@ -106,13 +94,9 @@ randomize(true)
   {#each forumStrings as conversation (conversation.id) }
     <div animate:flip="{{ duration: 500 }}">
       <hr>
-      {#each Array.from(filterMessages(searchQuery.value, conversation.messages)) as rawText}
-        {#if typeof rawText == 'string'}
-          <ChatMessageFromText {rawText} {allowSecretSystemMessages} />
-        {:else}
-          {@const [rawTexts, show] = rawText}
-          <ChatMessageHidden {rawTexts} {show} {allowSecretSystemMessages} />
-        {/if}
+      {#each filterMessages(searchQuery.value, conversation.messages) as rawText}
+        {@const [rawTexts, hide] = rawText}
+        <ChatMessageHidden {rawTexts} {hide} {allowSecretSystemMessages} />
       {/each}
     </div>
   {/each}

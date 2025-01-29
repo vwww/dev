@@ -3,10 +3,11 @@ import ChatMessage from './ChatMessage.svelte'
 
 interface Props {
   allowSecretSystemMessages: boolean
-  rawText: string
+  rawTexts: string[]
+  hide?: boolean
 }
 
-const { allowSecretSystemMessages, rawText }: Props = $props()
+let { allowSecretSystemMessages, rawTexts, hide = $bindable(false) }: Props = $props()
 
 function parseRawText (rawText: string, allowSecretSystemMessages: boolean): [msgClassNum: number, sender: string, text: string] {
   let msgClassNum = 0
@@ -41,11 +42,18 @@ function parseRawText (rawText: string, allowSecretSystemMessages: boolean): [ms
 
   return [msgClassNum, sender, text]
 }
-
-const [msgClassNum, sender, text] = $derived(parseRawText(rawText, allowSecretSystemMessages))
-const title = $derived(msgClassNum == 3 ? undefined : rawText)
 </script>
 
-{#if text}
-  <ChatMessage {sender} {text} {msgClassNum} {title} />
+{#if !hide}
+  {#each rawTexts as rawText}
+    {@const [msgClassNum, sender, text] = parseRawText(rawText, allowSecretSystemMessages)}
+    {@const title = msgClassNum == 3 ? undefined : rawText}
+    <ChatMessage {sender} {text} {msgClassNum} {title} />
+  {/each}
+{:else}
+  <div class="my-1 text-center">
+    <button class="btn btn-dark px-5 py-4" onclick={() => hide = false}>
+      [click to show {rawTexts.length} hidden]
+    </button>
+  </div>
 {/if}
