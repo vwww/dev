@@ -84,6 +84,11 @@ function formatDollarsDiff (dollars: number): string {
 }
 </script>
 
+<div class="alert alert-warning alert-dismissible" role="alert">
+  This page does not automatically save changes yet! You must export your data with the second tab.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
 <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" data-bs-toggle="tab" href="#funds" role="tab" aria-controls="funds" aria-selected="true">Fund Info</a>
