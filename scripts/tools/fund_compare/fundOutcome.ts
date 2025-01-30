@@ -21,7 +21,7 @@ export type Line = {
   description: string
   price: number
   shares: number
-  bookValue: number
+  acb: number
 }
 
 export type TaxConfig = {
@@ -73,14 +73,14 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
 
   const [startDay, startPrice] = baseYear.startPrice
   let shares = 1 / startPrice
-  let bookValue = 1
+  let acb = 1
 
   const initialLine: Line = {
     date: `${padYear(baseYearStr)}-01-${padMonthDay(startDay)}`,
     description: 'Initial investment',
     price: startPrice,
     shares,
-    bookValue,
+    acb,
   }
   const lines = [initialLine]
   const cols: (MatrixCell | undefined)[] = []
@@ -110,7 +110,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
       const dividendCash = shares * dividendPerShareCash
       const dividendAmount = shares * dividendPerShareAll
       dividendTotal += dividendAmount
-      bookValue += dividendAmount
+      acb += dividendAmount
       shares += dividendCash / price
 
       lines.push({
@@ -118,7 +118,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
         description,
         price,
         shares,
-        bookValue,
+        acb,
       })
     }
 
@@ -142,31 +142,31 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
           foreignTax,
         } = year.dividendSplit
 
-        bookValue -= dividendTotal * (returnOfCapital ?? 0) / total
+        acb -= dividendTotal * (returnOfCapital ?? 0) / total
         const taxAmount = dividendTotal * (((otherIncome ?? 0) + (capitalGains ?? 0) * tax.capitalGainsRate + (foreignIncome ?? 0)) * tax.taxRate + (foreignTax ?? 0)) / total
 
         if (taxAmount) {
           const sharesToSell = taxAmount / price
-          let acb = bookValue / shares
+          let acbPerShare = acb / shares
           shares -= sharesToSell
-          bookValue -= sharesToSell * acb
+          acb -= sharesToSell * acbPerShare
 
           lines.push({
             date,
             description: `Tax ${taxAmount < 0 ? 'refunded' : 'paid'} ${yearStr}`,
             price,
             shares,
-            bookValue,
+            acb,
           })
         }
       }
 
       const marketValue = price * shares
-      if (marketValue !== bookValue) {
-        const taxEffect = (marketValue - bookValue) * tax.capitalGainsRate * tax.taxRate
+      if (marketValue !== acb) {
+        const taxEffect = (marketValue - acb) * tax.capitalGainsRate * tax.taxRate
 
         shares -= taxEffect / price
-        bookValue = marketValue - taxEffect
+        acb = marketValue - taxEffect
 
         lineAdditional = [
           {
@@ -174,7 +174,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
             description: `Disposal tax effect (capital ${taxEffect < 0 ? 'loss refund' : 'gains tax'})`,
             price,
             shares,
-            bookValue,
+            acb,
           }
         ]
       }

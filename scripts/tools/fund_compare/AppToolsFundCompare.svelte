@@ -403,8 +403,8 @@ function formatDollarsDiff (dollars: number): string {
                     <td class="ra">{formatDollars(line.price)}</td>
                     <td class="ra">{formatShares(line.shares * initialInvestment.value)}</td>
                     <td class="ra">{formatDollarsUnrounded(line.shares * line.price * initialInvestment.value)}</td>
-                    <td class="ra">{formatDollarsUnrounded(line.bookValue * initialInvestment.value)}</td>
-                    <td class="ra">{formatDollarsUnrounded(line.bookValue / line.shares)}</td>
+                    <td class="ra">{formatDollarsUnrounded(line.acb * initialInvestment.value)}</td>
+                    <td class="ra">{formatDollarsUnrounded(line.acb / line.shares)}</td>
                     <td>{line.description}</td>
                   </tr>
                 {/each}
