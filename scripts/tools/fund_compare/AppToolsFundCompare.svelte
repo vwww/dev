@@ -391,8 +391,8 @@ function formatDollarsDiff (dollars: number): string {
                   <th>Price</th>
                   <th>Shares</th>
                   <th>Market Value</th>
-                  <th>Book Value</th>
                   <th>ACB</th>
+                  <th>ACB/share</th>
                   <th>Description</th>
                 </tr>
               </thead>
