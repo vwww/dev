@@ -22,6 +22,7 @@ export type Line = {
   price: number
   shares: number
   acb: number
+  bookValue: number
 }
 
 export type TaxConfig = {
@@ -74,6 +75,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
   const [startDay, startPrice] = baseYear.startPrice
   let shares = 1 / startPrice
   let acb = 1
+  let bookValue = 1
 
   const initialLine: Line = {
     date: `${padYear(baseYearStr)}-01-${padMonthDay(startDay)}`,
@@ -81,6 +83,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
     price: startPrice,
     shares,
     acb,
+    bookValue,
   }
   const lines = [initialLine]
   const cols: (MatrixCell | undefined)[] = []
@@ -111,6 +114,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
       const dividendAmount = shares * dividendPerShareAll
       dividendTotal += dividendAmount
       acb += dividendAmount
+      bookValue += dividendAmount
       shares += dividendCash / price
 
       lines.push({
@@ -119,6 +123,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
         price,
         shares,
         acb,
+        bookValue,
       })
     }
 
@@ -148,8 +153,10 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
         if (taxAmount) {
           const sharesToSell = taxAmount / price
           let acbPerShare = acb / shares
+          let bookValuePerShare = bookValue / shares
           shares -= sharesToSell
           acb -= sharesToSell * acbPerShare
+          bookValue -= sharesToSell * bookValuePerShare
 
           lines.push({
             date,
@@ -157,6 +164,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
             price,
             shares,
             acb,
+            bookValue,
           })
         }
       }
@@ -166,7 +174,11 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
         const taxEffect = (marketValue - acb) * tax.capitalGainsRate * tax.taxRate
 
         shares -= taxEffect / price
-        acb = marketValue - taxEffect
+        acb = bookValue = marketValue - taxEffect
+        // shares * price
+        // == (sharesOld - taxEffect / price) * price
+        // == sharesOld * price - taxEffect
+        // == marketValue - taxEffect
 
         lineAdditional = [
           {
@@ -175,6 +187,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
             price,
             shares,
             acb,
+            bookValue,
           }
         ]
       }
