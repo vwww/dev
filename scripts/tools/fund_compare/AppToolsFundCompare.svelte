@@ -403,7 +403,16 @@ function formatDollarsDiff (dollars: number): string {
               </thead>
               <tbody>
                 {#each row.lines.slice(0, cell.lineCount).concat(...cell.lineAdditional ?? []) as line}
-                  <tr>
+                  {@const title = line.breakdown
+                    ?.map((b) => {
+                      if (b) {
+                        const [amount, title] = b
+                        return `${formatDollarsUnrounded(amount * initialInvestment.value)} ${title}`
+                      }
+                      return ''
+                    })
+                    ?.join('\n')}
+                  <tr {title}>
                     <td>{line.date}</td>
                     <td class="ra">{formatDollars(line.price)}</td>
                     <td class="ra">{formatShares(line.shares * initialInvestment.value)}</td>

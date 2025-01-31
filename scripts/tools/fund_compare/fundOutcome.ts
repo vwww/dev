@@ -23,6 +23,7 @@ export type Line = {
   shares: number
   acb: number
   bookValue: number
+  breakdown?: ([amount: number, title: string] | null)[]
 }
 
 export type TaxConfig = {
@@ -140,18 +141,43 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
       if (dividendTotal && year.dividendSplit?.total) {
         const {
           total,
-          returnOfCapital,
-          capitalGains,
-          otherIncome,
-          foreignIncome,
-          foreignTax,
+          returnOfCapital = 0,
+          capitalGains = 0,
+          otherIncome = 0,
+          foreignIncome = 0,
+          foreignTax = 0,
         } = year.dividendSplit
 
-        acb -= dividendTotal * (returnOfCapital ?? 0) / total
-        const taxAmount = dividendTotal * (((otherIncome ?? 0) + (capitalGains ?? 0) * tax.capitalGainsRate + (foreignIncome ?? 0)) * tax.taxRate + (foreignTax ?? 0)) / total
+        const dividendMult = dividendTotal / total
+        const actualROC = dividendMult * returnOfCapital
+        acb -= actualROC
+        const taxAmount = dividendMult * ((otherIncome + capitalGains * tax.capitalGainsRate + foreignIncome) * tax.taxRate + foreignTax)
 
         if (taxAmount) {
+          const actualCapitalGains = dividendMult * capitalGains
+          const actualCapitalGainsTaxable = actualCapitalGains * tax.capitalGainsRate
+          const actualOtherIncome = dividendMult * otherIncome
+          const actualForeignIncome = dividendMult * foreignIncome
+          const actualTaxableIncome = actualCapitalGainsTaxable + actualOtherIncome + actualForeignIncome
+          const actualTax = actualTaxableIncome * tax.taxRate
+          const actualForeignTax = dividendMult * foreignTax
+
           const sharesToSell = taxAmount / price
+
+          const breakdown: Line['breakdown'] = [
+            [actualROC, 'return of capital'],
+            [actualCapitalGains, 'capital gains'],
+            null,
+            [actualCapitalGainsTaxable, 'taxable capital gains'],
+            [actualOtherIncome, 'other income'],
+            [actualForeignIncome, 'foreign income'],
+            [actualTaxableIncome, 'taxable income'],
+            null,
+            [actualTax, 'tax owed'],
+            [actualForeignTax, 'foreign tax paid'],
+            [taxAmount, `tax payable (${sharesToSell.toPrecision(6)} shares sold)`],
+          ]
+
           let acbPerShare = acb / shares
           let bookValuePerShare = bookValue / shares
           shares -= sharesToSell
@@ -165,13 +191,20 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
             shares,
             acb,
             bookValue,
+            breakdown,
           })
         }
       }
 
       const marketValue = price * shares
       if (marketValue !== acb) {
-        const taxEffect = (marketValue - acb) * tax.capitalGainsRate * tax.taxRate
+        const capitalGains = marketValue - acb
+        const taxEffect = capitalGains * tax.capitalGainsRate * tax.taxRate
+
+        const breakdown: Line['breakdown'] = [
+          [capitalGains, 'capital gains'],
+          [taxEffect, 'disposal tax effect'],
+        ]
 
         shares -= taxEffect / price
         acb = bookValue = marketValue - taxEffect
@@ -188,6 +221,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
             shares,
             acb,
             bookValue,
+            breakdown,
           }
         ]
       }
