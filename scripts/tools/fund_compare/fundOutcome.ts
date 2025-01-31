@@ -164,20 +164,6 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
 
           const sharesToSell = taxAmount / price
 
-          const breakdown: Line['breakdown'] = [
-            [actualROC, 'return of capital'],
-            [actualCapitalGains, 'capital gains'],
-            null,
-            [actualCapitalGainsTaxable, 'taxable capital gains'],
-            [actualOtherIncome, 'other income'],
-            [actualForeignIncome, 'foreign income'],
-            [actualTaxableIncome, 'taxable income'],
-            null,
-            [actualTax, 'tax owed'],
-            [actualForeignTax, 'foreign tax paid'],
-            [taxAmount, `tax payable (${sharesToSell.toPrecision(6)} shares sold)`],
-          ]
-
           let acbPerShare = acb / shares
           let bookValuePerShare = bookValue / shares
           shares -= sharesToSell
@@ -191,7 +177,21 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
             shares,
             acb,
             bookValue,
-            breakdown,
+            breakdown: [
+              [dividendTotal, 'total dividend'],
+              null,
+              [actualROC, 'return of capital'],
+              [actualCapitalGains, 'capital gains'],
+              null,
+              [actualCapitalGainsTaxable, 'taxable capital gains'],
+              [actualOtherIncome, 'other income'],
+              [actualForeignIncome, 'foreign income'],
+              [actualTaxableIncome, 'taxable income'],
+              null,
+              [actualTax, 'tax owed'],
+              [actualForeignTax, 'foreign tax paid'],
+              [taxAmount, `tax payable (${sharesToSell.toPrecision(6)} shares sold)`],
+            ],
           })
         }
       }
@@ -200,11 +200,6 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
       if (marketValue !== acb) {
         const capitalGains = marketValue - acb
         const taxEffect = capitalGains * tax.capitalGainsRate * tax.taxRate
-
-        const breakdown: Line['breakdown'] = [
-          [capitalGains, 'capital gains'],
-          [taxEffect, 'disposal tax effect'],
-        ]
 
         shares -= taxEffect / price
         acb = bookValue = marketValue - taxEffect
@@ -221,7 +216,10 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
             shares,
             acb,
             bookValue,
-            breakdown,
+            breakdown:[
+              [capitalGains, 'capital gains'],
+              [taxEffect, 'disposal tax effect'],
+            ],
           }
         ]
       }
