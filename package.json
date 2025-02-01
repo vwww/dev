@@ -68,6 +68,7 @@
     "bootstrap": "^5.3.3",
     "bootswatch": "^5.3.3",
     "d3": "^7.9.0",
+    "decoders": "^2.5.0",
     "firebase": "^11.2.0",
     "highcharts": "^12.1.2",
     "jquery": "^3.7.1",
@@ -79,7 +80,6 @@
     "packery": "^2.1.2",
     "svelte": "^5.19.3",
     "svg-pan-zoom": "^3.6.2",
-    "timeago": "^1.6.7",
-    "zod": "^3.24.1"
+    "timeago": "^1.6.7"
   }
 }

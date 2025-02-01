@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as d from 'decoders'
 
 export type DividendPrice = [
   // YYYY-MM-DD
@@ -14,44 +14,44 @@ export type DividendPrice = [
   // for UI
   expanded?: boolean
 ]
-const DividendPrice = z.union([
-  z.tuple([z.string(), z.string(), z.string(), z.number()]),
-  z.tuple([z.string(), z.string(), z.string(), z.number(), z.number()]),
-  z.tuple([z.string(), z.string(), z.string(), z.number(), z.number(), z.number()]),
-  z.tuple([z.string(), z.string(), z.string(), z.number(), z.number(), z.number(), z.boolean()]),
-])
+const DividendPrice = d.either(
+  d.tuple(d.string, d.string, d.string, d.number),
+  d.tuple(d.string, d.string, d.string, d.number, d.number),
+  d.tuple(d.string, d.string, d.string, d.number, d.number, d.number),
+  d.tuple(d.string, d.string, d.string, d.number, d.number, d.number, d.boolean),
+)
 
-const TaxYear = z.object({
-  year: z.number(),
-  startPrice: z.tuple([
-    z.number(), // day
-    z.number(), // price
-  ]),
-  dividends: DividendPrice.array(),
-  dividendSplit: z.object({
-    total: z.number(),
-    returnOfCapital: z.number().optional(),
-    capitalGains: z.number().optional(),
-    otherIncome: z.number().optional(),
-    foreignIncome: z.number().optional(),
-    foreignTax: z.number().optional(),
-    // eligibleDividend: z.number().optional() // not supported
-  }).optional(),
+const TaxYear = d.object({
+  year: d.number,
+  startPrice: d.tuple(
+    d.number, // day
+    d.number, // price
+  ),
+  dividends: d.array(DividendPrice),
+  dividendSplit: d.optional(d.object({
+    total: d.number,
+    returnOfCapital: d.optional(d.number),
+    capitalGains: d.optional(d.number),
+    otherIncome: d.optional(d.number),
+    foreignIncome: d.optional(d.number),
+    foreignTax: d.optional(d.number),
+    // eligibleDividend: d.optional(d.number) // not supported
+  })),
 
   // for UI
-  expanded: z.boolean().optional(),
+  expanded: d.optional(d.boolean),
 })
-export type TaxYear = z.infer<typeof TaxYear>
+export type TaxYear = d.DecoderType<typeof TaxYear>
 
-const Fund = z.object({
-  name: z.string(),
-  taxYears: TaxYear.array(), // ordered by year ascending
+const Fund = d.object({
+  name: d.string,
+  taxYears: d.array(TaxYear), // ordered by year ascending
 })
-export type Fund = z.infer<typeof Fund>
+export type Fund = d.DecoderType<typeof Fund>
 
-const Comparison = z.tuple([Fund, Fund])
-export type Comparison = z.infer<typeof Comparison>
+const Comparison = d.tuple(Fund, Fund)
+export type Comparison = d.DecoderType<typeof Comparison>
 
-export function loadComparison (s: string): Comparison {
-  return Comparison.parse(JSON.parse(s))
+export function loadComparison (str: string): Comparison {
+  return Comparison.verify(JSON.parse(str), d.formatShort)
 }
