@@ -11,6 +11,9 @@ export function pState<T> (key: string, startValue: T, syncTabs = false) {
       val = parse(json)
     }
 
+    // needed to save nested properties
+    $effect(() => localStorage.setItem(key, val === undefined ? 'undefined' : JSON.stringify(val)))
+
     if (syncTabs) {
       window.addEventListener('storage', (e) =>
         e.storageArea === localStorage && e.key === key
@@ -25,7 +28,6 @@ export function pState<T> (key: string, startValue: T, syncTabs = false) {
     },
     set value (newVal) {
       val = newVal
-      window.localStorage?.setItem(key, val === undefined ? 'undefined' : JSON.stringify(val))
     },
   }
 }
