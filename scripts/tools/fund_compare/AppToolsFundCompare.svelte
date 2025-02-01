@@ -118,15 +118,15 @@ function formatDollarsDiff (dollars: number): string {
               <div class="input-group">
                 <input type="number" class="form-control" bind:value={year.year}>
                 <button class="btn btn-outline-danger" onclick={() => fund.taxYears.splice(yearIndex, 1)}>-</button>
-                <button class="btn btn-outline-secondary"
+                <button class="btn btn-outline-primary"
                   class:disabled={!yearIndex}
                   onclick={() => [fund.taxYears[yearIndex - 1], fund.taxYears[yearIndex]] = [fund.taxYears[yearIndex], fund.taxYears[yearIndex - 1]]}
                   >⬆️</button>
-                <button class="btn btn-outline-secondary"
+                <button class="btn btn-outline-primary"
                   class:disabled={yearIndex + 1 >= fund.taxYears.length}
                   onclick={() => [fund.taxYears[yearIndex], fund.taxYears[yearIndex + 1]] = [fund.taxYears[yearIndex + 1], fund.taxYears[yearIndex]]}
                   >⬇️</button>
-                <button class="btn btn-outline-warning"
+                <button class="btn btn-outline-secondary"
                   onclick={() => year.expanded = !year.expanded}
                   >{year.expanded ? '🔼' : '🔽'}</button>
               </div>
@@ -151,15 +151,15 @@ function formatDollarsDiff (dollars: number): string {
                       <span class="input-group-text">$</span>
                       <input type="number" class="form-control text-end" step={STEP_DIST} placeholder="&mdash;" bind:value={dividend[4]}>
                       <button class="btn btn-outline-danger" onclick={() => dividends.splice(dividendIndex, 1)}>-</button>
-                      <button class="btn btn-outline-secondary"
+                      <button class="btn btn-outline-primary"
                         class:disabled={!dividendIndex}
                         onclick={() => [dividends[dividendIndex - 1], dividends[dividendIndex]] = [dividends[dividendIndex], dividends[dividendIndex - 1]]}
                         >⬆️</button>
-                      <button class="btn btn-outline-secondary"
+                      <button class="btn btn-outline-primary"
                         class:disabled={dividendIndex + 1 >= dividends.length}
                         onclick={() => [dividends[dividendIndex], dividends[dividendIndex + 1]] = [dividends[dividendIndex + 1], dividends[dividendIndex]]}
                         >⬇️</button>
-                      <button class="btn btn-outline-warning"
+                      <button class="btn btn-outline-secondary"
                         onclick={() => dividend[6] = !dividend[6]}
                         >{dividend[6] ? '🔼' : '🔽'}</button>
                     </div>
@@ -198,10 +198,10 @@ function formatDollarsDiff (dollars: number): string {
                   dividends.push([date, date, date, price])
                 }}>Add Dividend</button>
 
-                <button class="btn btn-outline-warning"
+                <button class="btn btn-outline-secondary"
                   onclick={() => dividends.forEach((dividend) => dividend[6] = false)}
                   >🔼All</button>
-                <button class="btn btn-outline-warning"
+                <button class="btn btn-outline-secondary"
                   onclick={() => dividends.forEach((dividend) => dividend[6] = true)}
                   >🔽All</button>
               </div>
@@ -271,11 +271,11 @@ function formatDollarsDiff (dollars: number): string {
             })
           }}>Add Tax Year</button>
 
-          <button class="btn btn-outline-secondary" onclick={() => fund.taxYears.sort((a, b) => a.year - b.year)}>Sort</button>
-          <button class="btn btn-outline-warning"
+          <button class="btn btn-outline-primary" onclick={() => fund.taxYears.sort((a, b) => a.year - b.year)}>Sort</button>
+          <button class="btn btn-outline-secondary"
             onclick={() => fund.taxYears.forEach((year) => year.expanded = false)}
             >🔼All</button>
-          <button class="btn btn-outline-warning"
+          <button class="btn btn-outline-secondary"
             onclick={() => fund.taxYears.forEach((year) => year.expanded = true)}
             >🔽All</button>
         </div>
