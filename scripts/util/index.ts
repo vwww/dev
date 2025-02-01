@@ -2,6 +2,10 @@ export * from './array'
 export * from './dom'
 export * from './math'
 
+export function deepCopy<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 export function randomAlphaNumeric (length: number): string {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   let s = ''

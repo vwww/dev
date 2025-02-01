@@ -1,30 +1,4 @@
-export type Comparison = [Fund, Fund]
-
-export type Fund = {
-  name: string
-  taxYears: TaxYear[] // ordered by year ascending
-}
-
-export type TaxYear = {
-  year: number
-  startPrice: [
-    day: number,
-    price: number,
-  ]
-  dividends: DividendPrice[]
-  dividendSplit?: {
-    total: number
-    returnOfCapital?: number
-    capitalGains?: number
-    otherIncome?: number
-    foreignIncome?: number
-    foreignTax?: number
-    // eligibleDividend?: number // not supported
-  }
-
-  // for UI
-  expanded?: boolean
-}
+import { z } from 'zod'
 
 export type DividendPrice = [
   // YYYY-MM-DD
@@ -40,13 +14,44 @@ export type DividendPrice = [
   // for UI
   expanded?: boolean
 ]
+const DividendPrice = z.union([
+  z.tuple([z.string(), z.string(), z.string(), z.number()]),
+  z.tuple([z.string(), z.string(), z.string(), z.number(), z.number()]),
+  z.tuple([z.string(), z.string(), z.string(), z.number(), z.number(), z.number()]),
+  z.tuple([z.string(), z.string(), z.string(), z.number(), z.number(), z.number(), z.boolean()]),
+])
+
+const TaxYear = z.object({
+  year: z.number(),
+  startPrice: z.tuple([
+    z.number(), // day
+    z.number(), // price
+  ]),
+  dividends: DividendPrice.array(),
+  dividendSplit: z.object({
+    total: z.number(),
+    returnOfCapital: z.number().optional(),
+    capitalGains: z.number().optional(),
+    otherIncome: z.number().optional(),
+    foreignIncome: z.number().optional(),
+    foreignTax: z.number().optional(),
+    // eligibleDividend: z.number().optional() // not supported
+  }).optional(),
+
+  // for UI
+  expanded: z.boolean().optional(),
+})
+export type TaxYear = z.infer<typeof TaxYear>
+
+const Fund = z.object({
+  name: z.string(),
+  taxYears: TaxYear.array(), // ordered by year ascending
+})
+export type Fund = z.infer<typeof Fund>
+
+const Comparison = z.tuple([Fund, Fund])
+export type Comparison = z.infer<typeof Comparison>
 
 export function loadComparison (s: string): Comparison {
-  // TODO validate import against schema
-  return JSON.parse(s)
-}
-
-export function copyFundInfo (fund: Fund): Fund {
-  // TODO use deepCopy
-  return JSON.parse(JSON.stringify(fund))
+  return Comparison.parse(JSON.parse(s))
 }

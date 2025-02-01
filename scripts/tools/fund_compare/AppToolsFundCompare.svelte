@@ -1,5 +1,5 @@
 <script lang="ts">
-import { padYear, sum } from '@/util'
+import { deepCopy, padYear, sum } from '@/util'
 import { pState } from '@/util/svelte.svelte'
 
 import exampleHXS from './HXS'
@@ -7,7 +7,7 @@ import exampleHXQ from './HXQ'
 import exampleQQC from './QQC'
 import exampleVFV from './VFV'
 
-import { copyFundInfo, loadComparison, type Comparison } from './fundInfo'
+import { loadComparison, type Comparison } from './fundInfo'
 import { generateComparisonMatrix, type MatrixRowFund, type OutcomeMatrix } from './fundOutcome'
 
 const STEP_CENT = 0.01
@@ -21,7 +21,7 @@ const EXAMPLES: readonly Example[] = [
 type Example = [name: string, ...Comparison]
 
 function loadExample (example: Example): Comparison {
-  return [copyFundInfo(example[1]), copyFundInfo(example[2])]
+  return [deepCopy(example[1]), deepCopy(example[2])]
 }
 
 const initialInvestment = pState('tool/fund/initialInvestment', 10000)
@@ -45,8 +45,12 @@ const outcomes = $derived([
 ])
 
 function fundImport (): void {
-  comparison = loadComparison(importExportText)
-  selectedPeriod = undefined
+  try {
+    comparison = loadComparison(importExportText)
+    selectedPeriod = undefined
+  } catch (e) {
+    alert(e)
+  }
 }
 
 function fundExport (): void {
@@ -288,8 +292,8 @@ function formatDollarsDiff (dollars: number): string {
   </div>
   <div class="tab-pane" id="import-export" role="tabpanel" aria-labelledby="import-export-tab">
     <div class="input-group mb-3">
-      <button class="btn btn-outline-primary" onclick={fundImport}>Import from Text</button>
-      <button class="btn btn-outline-danger" onclick={fundExport}>Export to Text</button>
+      <button class="btn btn-outline-primary" onclick={fundImport}>Import JSON</button>
+      <button class="btn btn-outline-danger" onclick={fundExport}>Export JSON</button>
       <span class="input-group-text">Examples</span>
       <select class="form-select" bind:value={selectedExample}>
         {#each EXAMPLES as e}
