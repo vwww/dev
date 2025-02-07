@@ -28,6 +28,8 @@ const initialInvestment = pState('tool/fund/initialInvestment', 10000)
 const capitalGainsRatePercent = pState('tool/fund/capitalGainsRateP', 50)
 const taxRatePercent = pState('tool/fund/taxRateP', 30)
 const showResultType = pState('tool/fund/showResultType', 3)
+const showDiffAsMultiplier = pState('tool/fund/showDiffAsMultiplier', false)
+const showGainAsMultiplier = pState('tool/fund/showGainAsMultiplier', false)
 
 const capitalGainsRate = $derived(capitalGainsRatePercent.value / 100)
 const taxRate = $derived(taxRatePercent.value / 100)
@@ -62,6 +64,12 @@ function formatPercentChange (multiplier: number): string {
     style: 'percent',
     minimumFractionDigits: 3,
     signDisplay: 'always',
+  })
+}
+
+function formatMultiplier (multiplier: number): string {
+  return multiplier.toLocaleString(undefined, {
+    minimumFractionDigits: 5,
   })
 }
 
@@ -326,7 +334,7 @@ function formatDollarsDiff (dollars: number): string {
     </p>
     <input type="number" class="form-control" bind:value={initialInvestment.value}>
     <div class="my-2">
-      <b class="me-3">Show as</b>
+      <b class="me-3">Show in cell</b>
       <label class="form-check form-check-inline">
         <input type="radio" class="form-check-input" bind:group={showResultType.value} value={1}>
         <span class="form-check-label">Difference</span>
@@ -338,6 +346,28 @@ function formatDollarsDiff (dollars: number): string {
       <label class="form-check form-check-inline">
         <input type="radio" class="form-check-input" bind:group={showResultType.value} value={3}>
         <span class="form-check-label">Both</span>
+      </label>
+    </div>
+    <div class="my-2">
+      <b class="me-3">Show difference as</b>
+      <label class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" bind:group={showDiffAsMultiplier.value} value={false}>
+        <span class="form-check-label">% Difference</span>
+      </label>
+      <label class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" bind:group={showDiffAsMultiplier.value} value={true}>
+        <span class="form-check-label">Multiplier</span>
+      </label>
+    </div>
+    <div class="my-2">
+      <b class="me-3">Show returns as</b>
+      <label class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" bind:group={showGainAsMultiplier.value} value={false}>
+        <span class="form-check-label">% Difference</span>
+      </label>
+      <label class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" bind:group={showGainAsMultiplier.value} value={true}>
+        <span class="form-check-label">Multiplier</span>
       </label>
     </div>
     <h2>Comparison</h2>
@@ -371,9 +401,11 @@ function formatDollarsDiff (dollars: number): string {
                 {#each rowA?.cols ?? rowB?.cols ?? [], j}
                   {@const colA = rowA?.cols[j]}
                   {@const colB = rowB?.cols[j]}
-                  {@const resultA = colA ? formatPercentChange(colA.value) : 'N/A'}
-                  {@const resultB = colB ? formatPercentChange(colB.value) : 'N/A'}
-                  {@const resultDiff = colA && colB ? formatPercentChange(colA.value / colB.value) : '?'}
+                  {@const formatDiff = showDiffAsMultiplier.value ? formatMultiplier : formatPercentChange}
+                  {@const formatGain = showGainAsMultiplier.value ? formatMultiplier : formatPercentChange}
+                  {@const resultA = colA ? formatGain(colA.value) : 'N/A'}
+                  {@const resultB = colB ? formatGain(colB.value) : 'N/A'}
+                  {@const resultDiff = colA && colB ? formatDiff(colA.value / colB.value) : '?'}
                   <td
                     class="ra"
                     class:table-warning={selectedPeriod?.[1] == outcomeIndex && selectedPeriod[2] == i && selectedPeriod[3] == j}
