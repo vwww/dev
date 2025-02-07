@@ -40,6 +40,7 @@ let selectedExample = $state(EXAMPLES[0])
 let importExportText = $state('')
 
 let selectedPeriod: [name: string, outcomeIndex: number, r: number, c: number] | undefined = $state()
+let modalDetails = $state('')
 
 const outcomes = $derived([
   generateComparisonMatrix(comparison, { capitalGainsRate, taxRate }),
@@ -466,7 +467,13 @@ function formatDollarsDiff (dollars: number): string {
                     <td class="ra">{formatDollarsUnrounded(line.shares * line.price * initialInvestment.value)}</td>
                     <td class="ra" title="Book value: {formatDollarsUnrounded(line.bookValue * initialInvestment.value)}">{formatDollarsUnrounded(line.acb * initialInvestment.value)}</td>
                     <td class="ra" title="Book value per share: {formatDollarsUnrounded(line.bookValue / line.shares)}">{formatDollarsUnrounded(line.acb / line.shares)}</td>
-                    <td>{line.description}</td>
+                    <td>{line.description}
+                      {#if line.breakdown}
+                        <button class="btn btn-sm btn-outline-secondary"
+                          data-bs-toggle="modal" data-bs-target="#detailsModal"
+                          onclick={() => modalDetails = title}>Details</button>
+                      {/if}
+                    </td>
                   </tr>
                 {/each}
               </tbody>
@@ -484,6 +491,25 @@ function formatDollarsDiff (dollars: number): string {
       <h2>Details</h2>
       <p>Click a table cell for details.</p>
     {/if}
+  </div>
+</div>
+
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsModalTitle">Details</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex">
+          <pre>{modalDetails}</pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 
