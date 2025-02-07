@@ -307,21 +307,22 @@ function formatDollarsDiff (dollars: number): string {
   <div class="tab-pane" id="results" role="tabpanel" aria-labelledby="results-tab">
     <h2>Settings</h2>
     <p>Tax Rate / %
-      <button class="btn btn-outline-secondary" onclick={() => taxRatePercent.value = 0}>0</button>
-      <button class="btn btn-outline-success" onclick={() => taxRatePercent.value = 0}>25</button>
-      <button class="btn btn-outline-primary" onclick={() => taxRatePercent.value = 30}>30</button>
-      <button class="btn btn-outline-danger" onclick={() => taxRatePercent.value = 50}>50</button>
-      <button class="btn btn-outline-warning" onclick={() => taxRatePercent.value = 100}>100</button>
+      <button class="btn btn-sm btn-outline-secondary" onclick={() => taxRatePercent.value = 0}>0</button>
+      <button class="btn btn-sm btn-outline-success" onclick={() => taxRatePercent.value = 25}>25</button>
+      <button class="btn btn-sm btn-outline-primary" onclick={() => taxRatePercent.value = 30}>30</button>
+      <button class="btn btn-sm btn-outline-danger" onclick={() => taxRatePercent.value = 50}>50</button>
+      <button class="btn btn-sm btn-outline-warning" onclick={() => taxRatePercent.value = 100}>100</button>
     </p>
     <input type="number" class="form-control" min=0 bind:value={taxRatePercent.value}>
     <input type="range" class="form-range" min=0 max=100 bind:value={taxRatePercent.value}>
     <p>Capital Gains Inclusion Rate / %
-      <button class="btn btn-outline-primary" onclick={() => capitalGainsRatePercent.value = 50}>50</button>
+      <button class="btn btn-sm btn-outline-primary" onclick={() => capitalGainsRatePercent.value = 50}>50</button>
+      <button class="btn btn-sm btn-outline-danger" onclick={() => capitalGainsRatePercent.value = 100}>100</button>
     </p>
     <input type="number" class="form-control" min=0 bind:value={capitalGainsRatePercent.value}>
     <input type="range" class="form-range" min=0 max=100 bind:value={capitalGainsRatePercent.value}>
     <p>Initial Investment / $
-      <button class="btn btn-outline-primary" onclick={() => initialInvestment.value = 1e4}>10K</button>
+      <button class="btn btn-sm btn-outline-primary" onclick={() => initialInvestment.value = 1e4}>10K</button>
     </p>
     <input type="number" class="form-control" bind:value={initialInvestment.value}>
     <div class="my-2">

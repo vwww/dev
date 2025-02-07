@@ -52,17 +52,17 @@ const memo = $derived((() => {
     <input type="range" class="form-range" min=0 max=16 bind:value={otRaw.value}>
 
     <p>Draw value
-        <button class="btn btn-outline-danger" onclick={() => drawValueRaw.value = 0}>0</button>
-        <button class="btn btn-outline-primary" onclick={() => drawValueRaw.value = 0.5}>0.5</button>
-        <button class="btn btn-outline-info" onclick={() => drawValueRaw.value = 1}>1</button>
+        <button class="btn btn-sm btn-outline-danger" onclick={() => drawValueRaw.value = 0}>0</button>
+        <button class="btn btn-sm btn-outline-primary" onclick={() => drawValueRaw.value = 0.5}>0.5</button>
+        <button class="btn btn-sm btn-outline-info" onclick={() => drawValueRaw.value = 1}>1</button>
     </p>
     <input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={drawValueRaw.value}>
     <input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={drawValueRaw.value}>
 {/if}
 
 <p>Probability of winning a round
-    <button class="btn btn-outline-primary" onclick={() => pRaw.value = 0.5}>0.5</button>
-    <button class="btn btn-outline-success" onclick={() => pRaw.value = 1 - p}>Invert</button>
+    <button class="btn btn-sm btn-outline-primary" onclick={() => pRaw.value = 0.5}>0.5</button>
+    <button class="btn btn-sm btn-outline-success" onclick={() => pRaw.value = 1 - p}>Invert</button>
 </p>
 <input type="number" class="form-control" min=0 max=1 step=0.01 bind:value={pRaw.value}>
 <input type="range" class="form-range" min=0 max=1 step=0.001 bind:value={pRaw.value}>
