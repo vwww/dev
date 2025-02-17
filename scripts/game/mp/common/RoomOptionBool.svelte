@@ -7,14 +7,15 @@ interface Props {
 }
 
 const { option, store }: Props = $props()
+const [_id, _type, defaultValue, name, description] = $derived(option)
 </script>
 
 <div>
   <label>
-    <span>{option[3]}{#if store.value !== option[2]}<small>*</small>{/if}</span>
+    <span>{name}{#if store.value !== defaultValue}<small>*</small>{/if}</span>
     <span class="form-check form-switch">
       <input type="checkbox" class="form-check-input" bind:checked={store.value}>
-      <small class="form-check-label text-muted">{option[4]}</small>
+      <small class="form-check-label text-muted">{description}</small>
     </span>
   </label>
 </div>

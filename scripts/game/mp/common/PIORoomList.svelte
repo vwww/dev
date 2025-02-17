@@ -45,7 +45,7 @@ function formatPlayerCount (r: PIO.roomInfo): string {
 
 const cm = new PIOConnectionManager(gameId)
 
-const roomCreateData: readonly OptionStoreAny[] = (roomCreateOptions ?? []).map(o => [o, pState(`game/mp/_roomCreate/${roomType}/${o[0]}`, o[2])])
+const roomCreateData: readonly OptionStoreAny[] = roomCreateOptions.map(o => [o, pState(`game/mp/_roomCreate/${roomType}/${o[0]}`, o[2])] as OptionStoreAny)
 
 function getRoomData (): object | null {
   return roomCreateData.length ? Object.fromEntries(roomCreateData.map(([o, s]) => [o[0], s.value])) : null

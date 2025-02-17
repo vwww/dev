@@ -29,15 +29,14 @@ interface Props {
 const { optionStore }: Props = $props()
 
 const [option, store] = $derived(optionStore)
-const oType: OptionsAny[1] = $derived(option[1])
 </script>
 
-{#if oType === 'b'}
-  <RoomOptionBool {option} {store} />
-{:else if oType === 'i'}
-  <RoomOptionInt {option} {store} />
-{:else if oType === 'e'}
-  <RoomOptionEnum {option} {store} />
+{#if option[1] === 'b'}
+  <RoomOptionBool {option} store={store as OptionStoreBool[1]} />
+{:else if option[1] === 'i'}
+  <RoomOptionInt {option} store={store as OptionStoreInt[1]} />
+{:else if option[1] === 'e'}
+  <RoomOptionEnum {option} store={store as OptionStoreEnum[1]} />
 {:else}
-  unknown option {oType} {option}
+  unknown option type {option[1]} ({option})
 {/if}

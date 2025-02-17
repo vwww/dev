@@ -7,15 +7,16 @@ interface Props {
 }
 
 const { option, store }: Props = $props()
+const [_id, _type, defaultValue, name, description, options] = $derived(option)
 </script>
 
 <div>
-  <span>{option[3]}{#if store.value !== option[2]}<small>*</small>{/if}</span>
-  <div><small class="text-muted">{option[4]}</small></div>
-  {#each option[5] as v, i}
+  <span>{name}{#if store.value !== defaultValue}<small>*</small>{/if}</span>
+  <div><small class="text-muted">{description}</small></div>
+  {#each options as optionLabel, value}
     <label class="form-check form-check-inline">
-      <input type="radio" class="form-check-input" bind:group={store.value} value={i}>
-      <span class="form-check-label">{v}</span>
+      <input type="radio" class="form-check-input" bind:group={store.value} {value}>
+      <span class="form-check-label">{optionLabel}</span>
     </label>
   {/each}
 </div>
