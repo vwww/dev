@@ -27,8 +27,8 @@
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
-    "@rspack/cli": "^1.2.6",
-    "@rspack/core": "^1.2.6",
+    "@rspack/cli": "^1.2.7",
+    "@rspack/core": "^1.2.7",
     "@types/bootstrap": "^5.2.10",
     "@types/d3": "^7.4.3",
     "@types/jquery": "^3.5.32",
@@ -61,7 +61,7 @@
     "svelte-loader": "^3.2.4",
     "svelte-preprocess": "^6.0.3",
     "ts-loader": "^9.5.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
@@ -78,7 +78,7 @@
     "leaflet-hash": "^0.2.1",
     "leaflet-minimap": "^3.6.1",
     "packery": "^2.1.2",
-    "svelte": "^5.20.5",
+    "svelte": "^5.21.0",
     "svg-pan-zoom": "^3.6.2",
     "timeago": "^1.6.7"
   }
