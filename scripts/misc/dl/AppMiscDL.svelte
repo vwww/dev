@@ -2,7 +2,7 @@
 import { parseManifest, type NodeBrowse, type NodeDirectory } from './node'
 
 const DOWNLOAD_PREFIX = 'https://v-dl.pages.dev/'
-const MANIFEST_URL = `${DOWNLOAD_PREFIX}manifest.json`
+const MANIFEST_URL = DOWNLOAD_PREFIX + 'manifest.json'
 
 // File browser
 let fileRoot: NodeDirectory | undefined = $state()
