@@ -1,4 +1,5 @@
 <script lang="ts">
+import { tick } from 'svelte'
 import ChatState, { HoldMode } from './ChatState.svelte'
 
 interface Props {
@@ -16,8 +17,6 @@ const {
   chatState,
   onInput = console.log
 }: Props = props
-
-const { messages, queueLength } = chatState
 
 let autoscrollParent: HTMLElement | undefined = $state()
 let autoscrollResume: HTMLElement | undefined = $state()
@@ -44,10 +43,10 @@ function doAutoScroll (): void {
   }
 }
 
-$effect(() => {
-  props
+$effect.pre(() => {
+  chatState.messages
 
-  doAutoScroll()
+  tick().then(doAutoScroll)
 })
 
 function sendInput (): void {
@@ -67,10 +66,10 @@ function handleKeydown (event: KeyboardEvent): void {
     <h4 class="float-start">{title}</h4>
     <div class="float-end">
       <button class="btn btn-sm btn-info"
-        class:d-none={!queueLength && !holdMode}
-        onclick={() => chatState.setHoldMode(holdMode = 0)}>{queueLength} new</button>
+        class:d-none={!chatState.queueLength && !holdMode}
+        onclick={() => chatState.setHoldMode(holdMode = 0)}>{chatState.queueLength} new</button>
       <button class="btn btn-sm btn-danger"
-        class:d-none={!messages.length}
+        class:d-none={!chatState.messages.length}
         onclick={() => chatState.clear()}>Clear</button>
     </div>
   </div>
@@ -79,7 +78,7 @@ function handleKeydown (event: KeyboardEvent): void {
     style="overflow-y: scroll; height: {height}"
     onscroll={checkAutoScroll}
     bind:this={autoscrollParent}>
-    {#each messages as message}
+    {#each chatState.messages as message}
       <li class="list-group-item">
         {#if message.type === 'join'}
           <span><strong>{message.name}</strong> joined the game.</span>
