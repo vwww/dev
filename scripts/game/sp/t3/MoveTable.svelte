@@ -65,11 +65,6 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
 
   return [text, className, title]
 }
-
-const emptyEntry: Entry = ['']
-const emptyInfo = [emptyEntry, emptyEntry, emptyEntry]
-
-const moves = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 </script>
 
 <table class="table table-striped table-bordered">
@@ -84,24 +79,18 @@ const moves = [0, 1, 2, 3, 4, 5, 6, 7, 8]
     </tr>
   </thead>
   <tbody>
-    {#each moves as i}
+    {#each { length: 9 }, i}
       {@const made = moveLength > i}
       {@const hasInfo = made || (moveLength === i && !winner)}
       {@const memo = hasInfo ? getMemo?.(boardHistory[i]) : undefined}
-
-      {@const info = !memo ? emptyInfo
-        : [
-          winInfo(i, memo, winnerMap, Winner.P1),
-          winInfo(i, memo, winnerMap, Winner.P2),
-          winInfo(i, memo, winnerMap, Winner.Tie)
-        ]}
 
       <tr>
         <td>#{i + 1}</td>
         <td title={memo && memoTitle(memo, winnerMap)}>{memo?.[1][0].toLocaleString() ?? ''}</td>
         <td class:table-warning={made}>{made ? moveStack[i] + 1 : ''}</td>
-        {#each info as c}
-          <td class={c[1]} title={c[2]}>{c[0]}</td>
+        {#each [Winner.P1, Winner.P2, Winner.Tie] as w}
+          {@const [text, className, title] = memo ? winInfo(i, memo, winnerMap, w) : []}
+          <td class={className} {title}>{text}</td>
         {/each}
       </tr>
     {/each}
