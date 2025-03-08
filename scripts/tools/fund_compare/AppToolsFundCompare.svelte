@@ -7,6 +7,7 @@ import exampleHXS from './HXS'
 import exampleHXQ from './HXQ'
 import exampleQQC from './QQC'
 import exampleVFV from './VFV'
+import exampleUSCC from './USCC'
 
 import { loadComparison, type Comparison, type Fund } from './fundInfo'
 import { generateComparisonMatrix, type MatrixRowFund, type OutcomeMatrix } from './fundOutcome'
@@ -17,7 +18,7 @@ const STEP_DIST = 0.000001
 const EXAMPLES: readonly Example[] = [
   ['Nasdaq-100', exampleHXQ, exampleQQC],
   ['Solactive US Large Cap', exampleHULC],
-  ['S&P 500', exampleHXS, exampleVFV],
+  ['S&P 500', exampleHXS, exampleVFV, exampleUSCC],
 ]
 
 type Example = [name: string, ...Fund[]]
