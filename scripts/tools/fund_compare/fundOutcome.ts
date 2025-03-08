@@ -153,7 +153,7 @@ function makeMatrixRow (zipYears: ZipYear[], i: number, a: number, tax?: TaxConf
         acb -= actualROC
         const taxAmount = dividendMult * ((otherIncome + capitalGains * tax.capitalGainsRate + foreignIncome) * tax.taxRate + foreignTax)
 
-        if (taxAmount) {
+        if (taxAmount || actualROC) {
           const actualCapitalGains = dividendMult * capitalGains
           const actualCapitalGainsTaxable = actualCapitalGains * tax.capitalGainsRate
           const actualOtherIncome = dividendMult * otherIncome
