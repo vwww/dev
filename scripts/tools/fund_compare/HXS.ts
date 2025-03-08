@@ -7,6 +7,7 @@ import type { Fund } from './fundInfo'
 export default {
   name: 'HXS',
   taxYears: [
+    // 2011-2012 skipped because VFV does not have data
     { year: 2013, startPrice: [2, 12.71], dividends: [['2014-01-06', '2014-01-06', '2014-01-06', 17.08]] },
     { year: 2014, startPrice: [2, 17.17], dividends: [['2015-01-05', '2015-01-05', '2015-01-05', 21.17]] },
     { year: 2015, startPrice: [2, 21.61], dividends: [['2016-01-05', '2016-01-05', '2016-01-05', 25.60]] },

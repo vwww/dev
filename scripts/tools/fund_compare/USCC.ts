@@ -3,6 +3,7 @@ import type { Fund } from './fundInfo'
 export default {
   name: 'USCC',
   taxYears: [
+    // 2012-2014 skipped, no data before 2014-01-21
     {
       year: 2015,
       startPrice: [2, 13.24],
