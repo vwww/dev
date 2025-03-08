@@ -40,7 +40,7 @@ let selectedExample = $state(EXAMPLES[0])
 let importExportText = $state('')
 
 let selectedPeriod: [name: string, outcomeIndex: number, r: number, c: number] | undefined = $state()
-let modalDetails = $state('')
+let modalDetails: string | undefined = $state()
 
 const outcomes = $derived([
   generateComparisonMatrix(comparison, { capitalGainsRate, taxRate }),

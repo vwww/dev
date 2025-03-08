@@ -16,7 +16,7 @@
     "allowSyntheticDefaultImports": true,
     "module": "ES6",
     "moduleResolution": "node",
-    "target": "ES2022",
+    "target": "ES2023",
     // "allowJs": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
