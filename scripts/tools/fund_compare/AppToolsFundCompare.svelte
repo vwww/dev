@@ -2,6 +2,7 @@
 import { deepCopy, padYear, sum } from '@/util'
 import { pState } from '@/util/svelte.svelte'
 
+import exampleHULC from './HULC'
 import exampleHXS from './HXS'
 import exampleHXQ from './HXQ'
 import exampleQQC from './QQC'
@@ -14,7 +15,8 @@ const STEP_CENT = 0.01
 const STEP_DIST = 0.000001
 
 const EXAMPLES: readonly Example[] = [
-  ['NASDAQ 100', exampleHXQ, exampleQQC],
+  ['Nasdaq-100', exampleHXQ, exampleQQC],
+  ['Solactive US Large Cap', exampleHULC],
   ['S&P 500', exampleHXS, exampleVFV],
 ]
 
