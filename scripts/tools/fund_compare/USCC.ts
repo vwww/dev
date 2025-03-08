@@ -195,9 +195,11 @@ export default {
         ['2022-12-29', '2022-12-30', '2023-01-12', 17.50, 0.16340],
       ],
       dividendSplit: {
-        // TODO verify split
-        total: 1.68157,
-        returnOfCapital: 1.68157,
+        total: 1.28556,
+        foreignTax: 0.02551,
+        foreignIncome: -0.00366,
+        capitalGains: 0.80142,
+        returnOfCapital: 0.46229,
       }
     },
     {
