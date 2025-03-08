@@ -7,21 +7,21 @@ import exampleHXQ from './HXQ'
 import exampleQQC from './QQC'
 import exampleVFV from './VFV'
 
-import { loadComparison, type Comparison } from './fundInfo'
+import { loadComparison, type Comparison, type Fund } from './fundInfo'
 import { generateComparisonMatrix, type MatrixRowFund, type OutcomeMatrix } from './fundOutcome'
 
 const STEP_CENT = 0.01
 const STEP_DIST = 0.000001
 
 const EXAMPLES: readonly Example[] = [
-  ['HXQ and QQC', exampleHXQ, exampleQQC],
-  ['HXS and VFV', exampleHXS, exampleVFV],
+  ['NASDAQ 100', exampleHXQ, exampleQQC],
+  ['S&P 500', exampleHXS, exampleVFV],
 ]
 
-type Example = [name: string, ...Comparison]
+type Example = [name: string, ...Fund[]]
 
-function loadExample (example: Example): Comparison {
-  return [deepCopy(example[1]), deepCopy(example[2])]
+function loadExample (a: Fund, b: Fund): Comparison {
+  return [deepCopy(a), deepCopy(b)]
 }
 
 const initialInvestment = pState('tool/fund/initialInvestment', 10000)
@@ -34,9 +34,10 @@ const showGainAsMultiplier = pState('tool/fund/showGainAsMultiplier', false)
 const capitalGainsRate = $derived(capitalGainsRatePercent.value / 100)
 const taxRate = $derived(taxRatePercent.value / 100)
 
-let comparison = $state(loadExample(EXAMPLES[0]))
+let comparison = $state(loadExample(EXAMPLES[0][1], EXAMPLES[0][2]))
 
-let selectedExample = $state(EXAMPLES[0])
+let selectedFund0 = $state(EXAMPLES[0][1])
+let selectedFund1 = $state(EXAMPLES[0][2])
 let importExportText = $state('')
 
 let selectedPeriod: [name: string, outcomeIndex: number, r: number, c: number] | undefined = $state()
@@ -304,12 +305,22 @@ function formatDollarsDiff (dollars: number): string {
       <button class="btn btn-outline-primary" onclick={fundImport}>Import JSON</button>
       <button class="btn btn-outline-danger" onclick={fundExport}>Export JSON</button>
       <span class="input-group-text">Examples</span>
-      <select class="form-select" bind:value={selectedExample}>
-        {#each EXAMPLES as e}
-          <option value={e}>{e[0]}</option>
+      {#snippet fundOptions()}
+        {#each EXAMPLES as [label, ...funds]}
+          <optgroup {label}>
+            {#each funds as value}
+              <option {value}>{value.name}</option>
+            {/each}
+          </optgroup>
         {/each}
+      {/snippet}
+      <select class="form-select" bind:value={selectedFund0}>
+        {@render fundOptions()}
       </select>
-      <button class="btn btn-outline-secondary" onclick={() => (comparison = loadExample(selectedExample), selectedPeriod = undefined, fundExport())}>Load and Import</button>
+      <select class="form-select" bind:value={selectedFund1}>
+        {@render fundOptions()}
+      </select>
+      <button class="btn btn-outline-secondary" onclick={() => (comparison = loadExample(selectedFund0, selectedFund1), selectedPeriod = undefined, fundExport())}>Load and Import</button>
     </div>
     <textarea class="form-control" bind:value={importExportText}></textarea>
   </div>
