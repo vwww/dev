@@ -18,6 +18,8 @@ const {
   onInput = console.log
 }: Props = props
 
+const { queueLength, messages } = $derived(chatState)
+
 let autoscrollParent: HTMLElement | undefined = $state()
 let autoscrollResume: HTMLElement | undefined = $state()
 let holdMode = $state(HoldMode.None)
@@ -44,7 +46,7 @@ function doAutoScroll (): void {
 }
 
 $effect.pre(() => {
-  chatState.messages
+  messages
 
   tick().then(doAutoScroll)
 })
@@ -66,10 +68,10 @@ function handleKeydown (event: KeyboardEvent): void {
     <h4 class="float-start">{title}</h4>
     <div class="float-end">
       <button class="btn btn-sm btn-info"
-        class:d-none={!chatState.queueLength && !holdMode}
-        onclick={() => chatState.setHoldMode(holdMode = 0)}>{chatState.queueLength} new</button>
+        class:d-none={!queueLength && !holdMode}
+        onclick={() => chatState.setHoldMode(holdMode = 0)}>{queueLength} new</button>
       <button class="btn btn-sm btn-danger"
-        class:d-none={!chatState.messages.length}
+        class:d-none={!messages.length}
         onclick={() => chatState.clear()}>Clear</button>
     </div>
   </div>
@@ -78,7 +80,7 @@ function handleKeydown (event: KeyboardEvent): void {
     style="overflow-y: scroll; height: {height}"
     onscroll={checkAutoScroll}
     bind:this={autoscrollParent}>
-    {#each chatState.messages as message}
+    {#each messages as message}
       <li class="list-group-item">
         {#if message.type === 'join'}
           <span><strong>{message.name}</strong> joined the game.</span>
