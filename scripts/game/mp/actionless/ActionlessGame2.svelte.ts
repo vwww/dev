@@ -3,7 +3,8 @@ import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRan
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
-import type { ActionlessMode } from './gamemode'
+
+import type { ActionlessMode } from './AppGameActionless.svelte'
 
 const enum S2C {
   WELCOME,

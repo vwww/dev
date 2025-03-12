@@ -1,21 +1,18 @@
 <script lang="ts">
 import Chat from '@gmc/Chat.svelte'
+import ChatState, { processChat } from '@gmc/ChatState.svelte'
 import GameHistoryCard from '@gmc/GameHistoryCard.svelte'
 import Leaderboard from '@gmc/Leaderboard.svelte'
 import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
-
+import { parseGameModeGeneric, type GamemodeFromOptions } from '@gmc/RoomOption.svelte'
 import PIORoomList from '@gmc/PIORoomList.svelte'
-
-import ChatState, { processChat } from '@gmc/ChatState.svelte'
 
 import { ActionlessGame, GameState } from './ActionlessGame2.svelte'
 import ActionlessHistory from './ActionlessHistory.svelte'
 import ActionlessPlay from './ActionlessPlay.svelte'
 
 import { pState } from '@/util/svelte.svelte'
-
-import { roomCreateOptions, getGameModeString, parseGameMode } from './gamemode'
 
 const chatState = new ChatState()
 const gameState = new ActionlessGame(chatState)
@@ -31,6 +28,19 @@ let name = pState('game/mp/_shared/name', '')
 let roomList: PIORoomList
 </script>
 
+<script lang="ts" module>
+const roomCreateOptions = [
+  ['optIndependent', 'b', false, 'Independent', 'players or teams win/lose independently of each other'],
+  ['optTeams', 'i', 0, 'Teams', 'number of teams players are randomly assigned to every game', 0, 45],
+] as const
+
+export type ActionlessMode = GamemodeFromOptions<typeof roomCreateOptions>
+
+export function getGameModeString ({ optIndependent, optTeams }: ActionlessMode): string {
+  return (optIndependent ? 'Independent ' : 'One-Winner ') + (optTeams ? optTeams + ' Teams' : 'FFA')
+}
+</script>
+
 <NameBox bind:value={name.value} />
 
 <PIORoomList
@@ -38,7 +48,7 @@ let roomList: PIORoomList
   gameId="actionless-rv9luoetuchidspmvghiq"
   roomType="ActionlessRoom"
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
-  formatGameMode={(roomData) => getGameModeString(parseGameMode(roomData))}
+  formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />
 
 <PlayCard
