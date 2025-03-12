@@ -59,7 +59,7 @@ let rooms: PIO.roomInfo[] = $state([])
 let isRefreshing = $state(false)
 let isConnected = $state(false)
 
-async function refreshRooms () {
+export async function refreshRooms () {
   isRefreshing = true
   try {
     const conn = await getConnection()

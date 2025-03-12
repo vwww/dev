@@ -27,11 +27,14 @@ const {
 } = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
+
+let roomList: PIORoomList
 </script>
 
 <NameBox bind:value={name.value} />
 
 <PIORoomList
+  bind:this={roomList}
   gameId="actionless-rv9luoetuchidspmvghiq"
   roomType="ActionlessRoom"
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
@@ -46,7 +49,7 @@ let name = pState('game/mp/_shared/name', '')
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
-  onDisconnect={() => gameState.leaveGame()}>
+  onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <ActionlessPlay {gameState} />
 </PlayCard>
 
