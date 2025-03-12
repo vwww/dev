@@ -166,3 +166,109 @@ export default class ChatState {
     this.messages = this.messageBuf
   }
 }
+
+interface ChatGameInterface {
+  sendChat(s: string, flags: number, target?: number): void
+  leaveGame(): void
+
+  chat: ChatState
+}
+
+export function processChat (g: ChatGameInterface, s: string): void {
+  const SAY_TARGET_ALL = 0
+  const SAY_TARGET_WHISPER = 1
+  const SAY_TARGET_TEAM = 2
+  // const SAY_TARGET_RESERVED = 3
+  // const SAY_TARGET = 3
+  const SAY_ACTION = 1 << 2
+  // const SAY_CLIENT = (1 << 3) - 1
+  // const SAY_SPAM = 1 << 3
+
+  if (s.length > 0 && s[0] === '/') {
+    const [cmd, text] = s.slice(1).split(' ', 2)
+    let me = false
+    switch (cmd) {
+      case 'me':
+        me = true
+        // fallthrough
+      case 'say':
+        if (text) g.sendChat(text, (me ? SAY_ACTION : 0) | SAY_TARGET_ALL)
+        break
+
+      case 'meteam':
+        me = true
+        // fallthrough
+      case 'sayteam':
+        if (text) g.sendChat(text, (me ? SAY_ACTION : 0) | SAY_TARGET_TEAM)
+        break
+
+      case 'mew':
+      case 'mewhisper':
+      case 'mepm':
+        me = false
+        // fallthrough
+      case 'w':
+      case 'whisper':
+      case 'pm': {
+        if (!text) break
+        let target = -1
+        let i = 0
+        const matches = /^(\d+)\s+/.exec(s)
+        if (matches) {
+          const match = matches[1]
+          target = +match
+          i = match.length
+        }
+        if (text.length > i) g.sendChat(text.slice(i), (me ? SAY_ACTION : 0) | SAY_TARGET_WHISPER, target)
+        break
+      }
+
+      case 'leave':
+      case 'disconnect':
+        g.leaveGame()
+        break
+
+      case '':
+      case 'help':
+        switch (text) {
+          case 'say':
+            g.chat.addSysMessage('without / prefix, use shorthand prefixes: *?(@\\d+|%|) say (*me) @pm|%team|all')
+            break
+          default:
+            g.chat.addSysMessage('supported commands: say, me, sayteam, meteam, w, whisper, pm, mew, mewhisper, mepm, leave, disconnect, help')
+        }
+        break
+
+      default:
+        g.chat.addSysMessage(`command not recognized: ${s}`)
+    }
+  } else {
+    let flags = 0
+    let target = -1
+    let i = 0
+    if (s.length > 1 && s[0] === '*') {
+      i++
+      flags |= SAY_ACTION
+    }
+    if (s.length > i) {
+      switch (s[i]) {
+        case '@':
+          if (s.length > i + 1) {
+            const matches = /^(\d+)\s+/.exec(s.slice(i + 1))
+            if (matches) {
+              const match = matches[1]
+              target = +match
+              i = i + 1 + match.length
+              flags |= SAY_TARGET_WHISPER
+            }
+          }
+          break
+
+        case '%':
+          flags |= SAY_TARGET_TEAM
+          i++
+      }
+    }
+    if (s.length > i) g.sendChat(s.slice(i), flags, target)
+  }
+}

@@ -7,33 +7,26 @@ import PlayCard from '@gmc/PlayCard.svelte'
 
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState.svelte'
+import ChatState, { processChat } from '@gmc/ChatState.svelte'
 
-import ActionlessGame from './ActionlessGame.svelte'
+import { ActionlessGame, GameState } from './ActionlessGame2.svelte'
 import ActionlessHistory from './ActionlessHistory.svelte'
 import ActionlessPlay from './ActionlessPlay.svelte'
 
 import { pState } from '@/util/svelte.svelte'
 
-import { roomCreateOptions, getGameModeString } from './gamemode'
+import { roomCreateOptions, getGameModeString, parseGameMode } from './gamemode'
 
 const chatState = new ChatState()
 const gameState = new ActionlessGame(chatState)
 
 const {
-  inGame,
-  isActive,
-  isReady,
   pastGames,
-  clientsSorted,
+  leaderboard,
   roundState,
 } = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
-
-function formatGameMode ({optIndependent, optTeams}: any) {
-  return getGameModeString(optIndependent === 'true', +optTeams)
-}
 </script>
 
 <NameBox bind:value={name.value} />
@@ -42,14 +35,14 @@ function formatGameMode ({optIndependent, optTeams}: any) {
   gameId="actionless-rv9luoetuchidspmvghiq"
   roomType="ActionlessRoom"
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
-  {formatGameMode}
+  formatGameMode={(roomData) => getGameModeString(parseGameMode(roomData))}
   {roomCreateOptions} />
 
 <PlayCard
-  {inGame}
-  {isActive}
-  canReady={roundState === 1}
-  {isReady}
+  inGame={gameState.room}
+  isActive={gameState.localClient.active}
+  canReady={roundState === GameState.INTERMISSION}
+  isReady={gameState.localClient.ready}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
@@ -65,7 +58,7 @@ function formatGameMode ({optIndependent, optTeams}: any) {
       <ActionlessHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={clientsSorted} columns={[
+    <Leaderboard players={leaderboard} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.wins - p.losses],
       ['Win', (p) => [p.wins, p.total]],
@@ -76,7 +69,7 @@ function formatGameMode ({optIndependent, optTeams}: any) {
   <div class="col-12 col-lg-4 mb-3">
     <Chat
       {chatState}
-      onInput={msg => gameState.processCommand(msg)}
+      onInput={(msg) => processChat(gameState, msg)}
     />
   </div>
 </div>

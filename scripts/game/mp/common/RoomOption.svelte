@@ -15,6 +15,24 @@ export type OptionsAny =
   | OptionsEnum
 
 export type OptionStoreAny = OptionStore<OptionsAny>
+
+type RoomCreateOptions = readonly OptionsAny[]
+type RoomCreateOptionType<T> = T extends 'b' ? boolean : T extends 'i' | 'e' ? number : never
+export type GamemodeFromOptions<T extends RoomCreateOptions> = { [roomOption in T[number] as roomOption[0]]: RoomCreateOptionType<roomOption[1]> }
+
+export function parseGameModeGeneric<T extends RoomCreateOptions> (roomCreateOptions: T, roomData: object): GamemodeFromOptions<T> {
+  const data = roomData as Record<string, string>
+  return Object.fromEntries(roomCreateOptions.map((roomOption) => {
+    const [name, type] = roomOption
+    switch (type) {
+      case 'b':
+        return [name, data[name] === 'true']
+      case 'e':
+      case 'i':
+        return [name, +data[name]]
+    }
+  }))
+}
 </script>
 
 <script lang="ts">

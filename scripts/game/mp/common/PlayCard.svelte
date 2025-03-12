@@ -2,10 +2,10 @@
 import type { Snippet } from 'svelte'
 
 interface Props {
-  inGame?: boolean
-  isActive?: boolean
-  canReady?: boolean
-  isReady?: boolean
+  inGame?: unknown
+  isActive?: unknown
+  canReady?: unknown
+  isReady?: unknown
   onReset: () => void
   onDisconnect: () => void
   onSetActive: (active: boolean) => void
