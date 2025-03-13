@@ -23,7 +23,6 @@ const enum S2C {
   MOVE_CONFIRM,
   END_ROUND,
   END_TURN,
-  NUM,
 }
 
 const enum C2S {
@@ -35,7 +34,6 @@ const enum C2S {
   READY,
   MOVE, // unused
   MOVE_END, // unused
-  NUM,
 }
 
 export const enum GameState {
