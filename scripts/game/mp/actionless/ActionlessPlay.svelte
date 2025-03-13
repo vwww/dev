@@ -4,7 +4,7 @@ import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 
 import { GameState, type ActionlessGame } from './ActionlessGame2.svelte'
 
-import { getGameModeString } from './AppGameActionless.svelte'
+import { getGameModeString } from './gamemode'
 
 interface Props {
   gameState: ActionlessGame

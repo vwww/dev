@@ -1,5 +1,6 @@
 <script lang="ts">
-import RoomOption, { type OptionsAny, type OptionStoreAny } from './RoomOption.svelte'
+import type { OptionsAny, OptionStoreAny } from './RoomOption'
+import RoomOption from './RoomOption.svelte'
 import RoomList from './RoomList.svelte'
 
 import type { BaseGameRoom } from './remote/BaseGameRoom'

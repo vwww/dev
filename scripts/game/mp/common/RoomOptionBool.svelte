@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { OptionStoreBool } from './RoomOption.svelte'
+import type { OptionStoreBool } from './RoomOption'
 
 interface Props {
   option: OptionStoreBool[0]

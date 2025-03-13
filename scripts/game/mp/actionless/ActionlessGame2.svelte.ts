@@ -4,7 +4,7 @@ import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
-import type { ActionlessMode } from './AppGameActionless.svelte'
+import type { ActionlessMode } from './gamemode'
 
 const enum S2C {
   WELCOME,

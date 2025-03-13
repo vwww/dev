@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { OptionStoreEnum } from './RoomOption.svelte'
+import type { OptionStoreEnum } from './RoomOption'
 
 interface Props {
   option: OptionStoreEnum[0]

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { OptionStoreInt } from './RoomOption.svelte'
+import type { OptionStoreInt } from './RoomOption'
 
 interface Props {
   option: OptionStoreInt[0]
