@@ -197,13 +197,6 @@ export class ActionlessGame {
     )
   }
 
-  // sendMoveEnd (): void {
-  //   this.room?.send(new ByteWriter()
-  //     .putInt(C2S.MOVE_END)
-  //     .toArray()
-  //   )
-  // }
-
   addHistory (history: AGameHistory) {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
       this.pastGames.pop()
