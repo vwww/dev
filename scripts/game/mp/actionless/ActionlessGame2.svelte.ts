@@ -111,7 +111,7 @@ export class ActionlessGame {
     setTimeout(logBugReportInstructions, 100)
   }
 
-  enterGame (room: BaseGameRoom, name: string) {
+  enterGame (room: BaseGameRoom, name: string): void {
     this.room?.disconnect()
     this.room = room
     room.registerRecv((msg) => {
@@ -148,7 +148,7 @@ export class ActionlessGame {
     this.chat.addSysMessage('You are joining the game.')
   }
 
-  leaveGame () {
+  leaveGame (): void {
     this.room?.disconnect()
   }
 
@@ -197,17 +197,17 @@ export class ActionlessGame {
     )
   }
 
-  addHistory (history: AGameHistory) {
+  addHistory (history: AGameHistory): void {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
       this.pastGames.pop()
     this.pastGames.unshift(history)
   }
 
-  clearHistory () {
+  clearHistory (): void {
     this.pastGames = []
   }
 
-  private processMessage (m: ByteReader) {
+  private processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {
       case S2C.WELCOME: {
@@ -431,7 +431,7 @@ export class ActionlessGame {
     }
   }
 
-  private processEndRound(m: ByteReader) {
+  private processEndRound(m: ByteReader): void {
     const winCount = m.getInt()
     const wins = Array(winCount).fill(false).map(() => m.getBool())
     const playerCount = Math.min(m.getInt(), this.clients.map(Boolean).length)
@@ -468,7 +468,7 @@ export class ActionlessGame {
     this.addHistory(gameHistoryEntry)
   }
 
-  private updatePlayers () {
+  private updatePlayers (): void {
     this.leaderboard = sortAndRankPlayers(this.clients, [
       (p) => p.streak,
       (p) => p.wins - p.losses,
