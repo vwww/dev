@@ -19,6 +19,13 @@ type RoomCreateOptions = readonly OptionsAny[]
 type RoomCreateOptionType<T> = T extends 'b' ? boolean : T extends 'i' | 'e' ? number : never
 export type GamemodeFromOptions<T extends RoomCreateOptions> = { [roomOption in T[number] as roomOption[0]]: RoomCreateOptionType<roomOption[1]> }
 
+export function getDefaultOptions<T extends RoomCreateOptions> (roomCreateOptions: T): GamemodeFromOptions<T> {
+  return Object.fromEntries(roomCreateOptions.map((roomOption) => {
+    const [name, _, defaultValue] = roomOption
+    return [name, defaultValue]
+  })) as GamemodeFromOptions<T>
+}
+
 export function parseGameModeGeneric<T extends RoomCreateOptions> (roomCreateOptions: T, roomData: object): GamemodeFromOptions<T> {
   const data = roomData as Record<string, string>
   return Object.fromEntries(roomCreateOptions.map((roomOption) => {

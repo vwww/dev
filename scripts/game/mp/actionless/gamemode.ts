@@ -1,4 +1,4 @@
-import type { GamemodeFromOptions } from '@gmc/RoomOption'
+import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
 
 export const roomCreateOptions = [
   ['optIndependent', 'b', false, 'Independent', 'players or teams win/lose independently of each other'],
@@ -6,6 +6,10 @@ export const roomCreateOptions = [
 ] as const
 
 export type ActionlessMode = GamemodeFromOptions<typeof roomCreateOptions>
+
+export function defaultMode (): ActionlessMode {
+  return getDefaultOptions(roomCreateOptions)
+}
 
 export function getGameModeString ({ optIndependent, optTeams }: ActionlessMode): string {
   return (optIndependent ? 'Independent ' : 'One-Winner ') + (optTeams ? optTeams + ' Teams' : 'FFA')

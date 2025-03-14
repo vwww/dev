@@ -4,7 +4,7 @@ import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
-import type { ActionlessMode } from './gamemode'
+import { type ActionlessMode, defaultMode } from './gamemode'
 
 const enum S2C {
   WELCOME,
@@ -91,10 +91,7 @@ const INTERMISSION_TIME = 30000
 const ROUND_TIME = 20000
 
 export class ActionlessGame {
-  mode: ActionlessMode = $state({
-    optIndependent: false,
-    optTeams: 0,
-  })
+  mode: ActionlessMode = $state(defaultMode())
 
   localClient = new AClient()
   clients: AClient[] = []
