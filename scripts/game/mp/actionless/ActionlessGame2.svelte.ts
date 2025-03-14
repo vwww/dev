@@ -87,8 +87,8 @@ const MAX_HISTORY_LEN = 100
 
 const PROTOCOL_VERSION = 0
 
-const INTERMISSION_TIME = 30000
-const ROUND_TIME = 20000
+const INTERMISSION_TIME = 5000
+const ROUND_TIME = 3000
 
 export class ActionlessGame {
   mode: ActionlessMode = $state(defaultMode())
