@@ -392,10 +392,8 @@ export class ActionlessGame {
         this.roundIntermission(INTERMISSION_TIME)
         break
       case S2C.ROUND_START: {
+        this.unsetInRound()
         const curRoundPlayers = []
-        for (const p of this.clients) {
-          p.inRound = false
-        }
         for (let i = 0; i <= MAX_PLAYERS; i++) {
           const cn = m.getInt()
           if (cn < 0) break
@@ -510,7 +508,13 @@ export class ActionlessGame {
 
   private unsetReady (): void {
     for (const c of this.clients) {
-      c.ready = false
+      if (c) c.ready = false
+    }
+  }
+
+  private unsetInRound (): void {
+    for (const c of this.clients) {
+      if (c) c.inRound = false
     }
   }
 }
