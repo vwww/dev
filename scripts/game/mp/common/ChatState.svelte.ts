@@ -185,7 +185,8 @@ export function processChat (g: ChatGameInterface, s: string): void {
   // const SAY_SPAM = 1 << 3
 
   if (s.length > 0 && s[0] === '/') {
-    const [cmd, text] = s.slice(1).split(' ', 2)
+    const firstSpace = s.indexOf(' ', 1)
+    const [cmd, text] = firstSpace < 0 ? [s.slice(1), ''] : [s.slice(1, firstSpace), s.slice(firstSpace + 1)]
     let me = false
     switch (cmd) {
       case 'me':
@@ -213,7 +214,7 @@ export function processChat (g: ChatGameInterface, s: string): void {
         if (!text) break
         let target = -1
         let i = 0
-        const matches = /^(\d+)\s+/.exec(s)
+        const matches = /^(\d+)\s+/.exec(text)
         if (matches) {
           const match = matches[1]
           target = +match
