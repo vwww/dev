@@ -5,9 +5,9 @@ import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 
 import DiscardMoveHistory from './DiscardMoveHistory.svelte'
 
-import DiscardGame from './DiscardGame.svelte'
+import { GameState, type DiscardGame } from './DiscardGame2.svelte'
 
-import { getGameModeString, playerColor } from './common'
+import { getGameModeString, playerColor } from './gamemode'
 
 interface Props {
   gameState: DiscardGame
@@ -18,8 +18,7 @@ interface Props {
 const { gameState, ll, showCardCount }: Props = $props()
 
 const {
-  isActive,
-  inRound,
+  localClient,
   roundState,
   roundTimerStart,
   roundTimerEnd,
@@ -37,11 +36,10 @@ const {
   pendingMoveUseHand,
   pendingMoveTarget,
   pendingMoveGuess,
-  modeTurnTime,
-  modeDeck,
+  mode,
 } = $derived(gameState)
 
-const playing = $derived(isActive && roundState === 2 && inRound)
+const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
 const canMove = $derived(playing && gameState.playerIsMe(playerInfo[0]))
 const pendingMove = $derived(pendingMoveUseHand ? myHand : myAltMove)
 
@@ -100,10 +98,10 @@ export function getCardName (card: number, ll: boolean): string | number {
 }
 </script>
 
-{#if roundState === 0}
+{#if roundState === GameState.WAITING}
   Waiting for players&hellip;
 {:else}
-  {#if roundState === 1}
+  {#if roundState === GameState.INTERMISSION}
     Intermission:
   {:else if canMove}
     Make a move:
@@ -156,13 +154,13 @@ export function getCardName (card: number, ll: boolean): string | number {
           Target<br>
           <button class="btn btn-outline-{pendingMove !== 4 && pendingMove < 7 ? 'primary' : 'secondary'} dropdown-toggle"
             id="dropdownMenuButtonTarget" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {pendingMoveTarget < 0 ? 'auto' : gameState.getNameFromPlayer(gameState.getPlayerInfo(pendingMoveTarget), pendingMoveTarget)}
+            {pendingMoveTarget < 0 ? 'auto' : gameState.formatPlayerName(gameState.playerInfo[pendingMoveTarget], pendingMoveTarget)}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonTarget">
             <button class="dropdown-item" class:active={pendingMoveTarget < 0} onclick={() => gameState.sendMoveTarget(-1)}>auto</button>
             {#each playerInfo as p, i}
               <button class="dropdown-item" class:text-bg-danger={!i && pendingMove !== 5 || p.immune} class:active={pendingMoveTarget === i}
-                onclick={() => gameState.sendMoveTarget(i)}>{gameState.getNameFromPlayer(p)}</button>
+                onclick={() => gameState.sendMoveTarget(i)}>{gameState.formatPlayerName(p)}</button>
             {/each}
           </div>
         </label>
@@ -195,7 +193,7 @@ export function getCardName (card: number, ll: boolean): string | number {
     <div class="mb-2">
       <b>Active Players</b>
       {#each playerInfo as p, i}
-        <br><span class="badge text-bg-{playerColor(gameState.playerIsMe(p))}">{gameState.getNameFromPlayer(p)}</span>
+        <br><span class="badge text-bg-{playerColor(gameState.playerIsMe(p))}">{gameState.formatPlayerName(p)}</span>
         <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
         {#if !i && roundState === 2}
           <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName(myAltMove, ll) : '?'}</span>
@@ -222,7 +220,7 @@ export function getCardName (card: number, ll: boolean): string | number {
     <DiscardMoveHistory moves={moveHistory} {ll} />
   </div>
   <div class="col mt-2">
-    There {deckSize === 1 ? 'is 1 card' : `are ${deckSize} cards`} in the draw pile.
+    Draw pile count: ${deckSize}
     {#if showCardCount}
       <CardCountTable
         ranks={['1', '2', '3', '4', '5', '6', '7', '8', 'Total']}
@@ -237,7 +235,7 @@ export function getCardName (card: number, ll: boolean): string | number {
 </div>
 
 <div>
-  Game Mode: {getGameModeString(modeDeck, modeTurnTime)}
+  Game Mode: {getGameModeString(mode)}
 </div>
 
 <b>Lobby</b>

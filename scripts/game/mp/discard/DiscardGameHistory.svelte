@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { DGameHistory } from './DiscardGame.svelte'
+import type { DGameHistory } from './DiscardGame2.svelte'
 
 import { getCardName } from './DiscardPlay.svelte'
 

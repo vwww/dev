@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { DiscardMoveInfo } from './DiscardGame.svelte'
+import type { DiscardMoveInfo } from './DiscardGame2.svelte'
 
 import { getCardName } from './DiscardPlay.svelte'
 
-import { playerColor } from './common'
+import { playerColor } from './gamemode'
 
 interface Props {
   moves: ArrayLike<DiscardMoveInfo>
