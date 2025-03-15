@@ -1,46 +1,42 @@
 <script lang="ts">
 import Chat from '@gmc/Chat.svelte'
+import ChatState, { processChat } from '@gmc/ChatState.svelte'
 import GameHistoryCard from '@gmc/GameHistoryCard.svelte'
 import Leaderboard from '@gmc/Leaderboard.svelte'
 import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
-
+import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState.svelte'
-
-import MorraGame from './MorraGame.svelte'
+import { getGameModeString, roomCreateOptions } from './gamemode'
+import { MorraGame, GameState } from './MorraGame2.svelte'
 import MorraHistory from './MorraHistory.svelte'
 import MorraPlay from './MorraPlay.svelte'
 
 import { pState } from '@/util/svelte.svelte'
 
-import { roomCreateOptions, getGameModeString } from './gamemode'
-
-let play: MorraPlay | undefined = $state()
-
 const chatState = new ChatState()
-const gameState: MorraGame = new MorraGame(chatState, () => gameState.sendMove(play!.randomizeNextNumber()))
+const gameState: MorraGame = new MorraGame(chatState)
 
 const {
-  inGame,
-  isActive,
-  isReady,
   pastGames,
-  clientsSorted,
+  leaderboard,
   roundState,
 } = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
 
-function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
-  return getGameModeString(optInverted === 'true', optAddRandom === 'true', +optTeams)
+let roomList: PIORoomList
+
+function formatGameMode (roomData: object): string {
+  return getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))
 }
 </script>
 
 <NameBox bind:value={name.value} />
 
 <PIORoomList
+  bind:this={roomList}
   gameId="morra-prb9sv8g70oyhq9eznhkyq"
   roomType="MorraRoom"
   joinData={{ name: name.value }}
@@ -49,15 +45,15 @@ function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
   {roomCreateOptions} />
 
 <PlayCard
-  {inGame}
-  {isActive}
-  canReady={roundState === 1}
-  {isReady}
+  inGame={gameState.room}
+  isActive={gameState.localClient.active}
+  canReady={roundState === GameState.INTERMISSION}
+  isReady={gameState.localClient.ready}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
-  onDisconnect={() => gameState.leaveGame()}>
-  <MorraPlay {gameState} bind:this={play} />
+  onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
+  <MorraPlay {gameState} />
 </PlayCard>
 
 <div class="row">
@@ -68,7 +64,7 @@ function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
       <MorraHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={clientsSorted} columns={[
+    <Leaderboard players={leaderboard} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.wins - p.losses],
       ['Win', (p) => [p.wins, p.total]],
@@ -79,7 +75,7 @@ function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
   <div class="col-12 col-lg-4 mb-3">
     <Chat
       {chatState}
-      onInput={(msg) => gameState.processCommand(msg)}
+      onInput={(msg) => processChat(gameState, msg)}
     />
   </div>
 </div>

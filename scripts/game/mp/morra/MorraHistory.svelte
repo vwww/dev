@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { MorraGameHistory } from './MorraGame.svelte'
+import type { MorraGameHistory } from './MorraGame2.svelte'
 
 interface Props {
   results: MorraGameHistory[]
