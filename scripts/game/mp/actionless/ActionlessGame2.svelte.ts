@@ -22,7 +22,7 @@ const enum S2C {
   READY,
   MOVE_CONFIRM,
   END_ROUND,
-  END_TURN,
+  END_TURN, // unused
 }
 
 const enum C2S {
@@ -429,7 +429,7 @@ export class ActionlessGame {
     }
   }
 
-  private processEndRound(m: ByteReader): void {
+  private processEndRound (m: ByteReader): void {
     const winCount = m.getInt()
     const wins = Array(winCount).fill(false).map(() => m.getBool())
     const playerCount = Math.min(m.getInt(), this.clients.map(Boolean).length)
