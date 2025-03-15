@@ -1,7 +1,7 @@
 import { clamp } from '@/util'
 import { isNearWin, isWin } from '@gc/t3/game'
 import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatPlayerName } from '@gmc/game/common'
+import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
@@ -423,12 +423,12 @@ export class T3Game {
         const msg = m.getString(MAX_CHAT_LEN)
 
         const player = this.clients[cn]
-        const playerName = formatPlayerName(player, cn)
+        const playerName = formatClientName(player, cn)
         const targetPlayer = this.clients[target]
         const targetName = targetPlayer
           ? player === this.localClient
             ? 'you'
-            : formatPlayerName(targetPlayer, target)
+            : formatClientName(targetPlayer, target)
           : undefined
         this.chat.addChatMessage(playerName, msg, flags, targetName)
         break
@@ -527,8 +527,8 @@ export class T3Game {
     if (p1) this.setResult(p1, 1 - winner)
 
     this.addHistory({
-      p0Name: formatPlayerName(p0, this.p0),
-      p1Name: formatPlayerName(p1, this.p1),
+      p0Name: formatClientName(p0, this.p0),
+      p1Name: formatClientName(p1, this.p1),
       winner,
       earlyEnd,
       ply: this.ply,

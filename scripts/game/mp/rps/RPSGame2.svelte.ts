@@ -1,5 +1,5 @@
 import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatPlayerName } from '@gmc/game/common'
+import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
@@ -409,12 +409,12 @@ export class RPSGame {
         const msg = m.getString(MAX_CHAT_LEN)
 
         const player = this.clients[cn]
-        const playerName = formatPlayerName(player, cn)
+        const playerName = formatClientName(player, cn)
         const targetPlayer = this.clients[target]
         const targetName = targetPlayer
           ? player === this.localClient
             ? 'you'
-            : formatPlayerName(targetPlayer, target)
+            : formatClientName(targetPlayer, target)
           : undefined
         this.chat.addChatMessage(playerName, msg, flags, targetName)
         break
