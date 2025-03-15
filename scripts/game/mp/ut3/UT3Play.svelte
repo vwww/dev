@@ -45,7 +45,7 @@ const showingCurrent = $derived(boardIndex >= ply)
 {#if !roundState}
   Waiting for players&hellip;
 {:else}
-  {#if roundState === 1}
+  {#if roundState === GameState.INTERMISSION}
     Intermission:
   {:else if canMove}
     Make a move:
@@ -61,7 +61,7 @@ const showingCurrent = $derived(boardIndex >= ply)
   You are
   {#if roundState === GameState.WAITING}
     <span class="badge text-bg-secondary">spectating</span>.
-  {:else if myPlayer === GameState.INTERMISSION}
+  {:else if myPlayer === 1}
     <span class="badge text-bg-success">player X</span>.
   {:else}
     <span class="badge text-bg-danger">player O</span>.
