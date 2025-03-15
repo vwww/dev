@@ -3,7 +3,9 @@ import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import TwoPlayerEarlyEnd from '@gmc/TwoPlayerEarlyEnd.svelte'
 
-import UT3Game from './UT3Game.svelte'
+import { Winner } from '@/game/common/t3/game'
+
+import { GameState, type UT3Game } from './UT3Game2.svelte'
 
 import Board from './Board.svelte'
 
@@ -16,8 +18,7 @@ interface Props {
 const { gameState }: Props = $props()
 
 const {
-  isActive,
-  inRound,
+  localClient,
   roundState,
   roundTimerStart,
   roundTimerEnd,
@@ -30,14 +31,10 @@ const {
   boardIndex,
   winner,
   moveHistory,
-  modeTurnTime,
-  modeInverted,
-  modeChecked,
-  modeQuick,
-  modeAnyBoard,
+  mode,
 } = $derived(gameState)
 
-const playing = $derived(isActive && roundState === 2 && inRound)
+const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
 const canMove = $derived(playing && myTurn)
 const boardState = $derived(boardStates[boardIndex])
 </script>
@@ -49,7 +46,7 @@ const boardState = $derived(boardStates[boardIndex])
     Intermission:
   {:else if canMove}
     Make a move:
-  {:else if inRound}
+  {:else if localClient.inRound}
     Waiting for opponent to move&hellip;
   {:else}
     Spectating:
@@ -59,18 +56,18 @@ const boardState = $derived(boardStates[boardIndex])
 
 <p>
   You are
-  {#if !myPlayer}
+  {#if roundState === GameState.WAITING}
     <span class="badge text-bg-secondary">spectating</span>.
-  {:else if myPlayer === 1}
+  {:else if myPlayer === GameState.INTERMISSION}
     <span class="badge text-bg-success">player X</span>.
   {:else}
     <span class="badge text-bg-danger">player O</span>.
   {/if}
-  {#if winner === 1}
+  {#if winner === Winner.P1}
     <span class="badge text-bg-success">X wins!</span>
-  {:else if winner === 2}
+  {:else if winner === Winner.P2}
     <span class="badge text-bg-danger">O wins!</span>
-  {:else if winner === 3}
+  {:else if winner === Winner.Tie}
     It's a <span class="badge text-bg-warning">draw</span>!
   {/if}
 </p>
@@ -135,7 +132,7 @@ const boardState = $derived(boardStates[boardIndex])
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(modeInverted, modeChecked, modeQuick, modeAnyBoard, modeTurnTime)}
+  Game Mode: {getGameModeString(mode)}
 </div>
 
 <b>Lobby</b>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { BoardState } from './UT3Game.svelte'
+import type { BoardState } from './UT3Game2.svelte'
 
 interface Props {
   boardState: BoardState
