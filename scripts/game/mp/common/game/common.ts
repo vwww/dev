@@ -33,7 +33,7 @@ export function sortAndRankPlayers<P extends { cn: number; active: boolean; rank
     return a.cn - b.cn
   }
 
-  const sortedPlayers = players.filter(Boolean).sort(cmpPlayers)
+  const sortedPlayers = players.filter((x) => x).sort(cmpPlayers)
 
   // Update ranks
   let rank = 1
