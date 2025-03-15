@@ -236,9 +236,6 @@ export class UT3Game {
   }
 
   sendMove (board: number, pos: number): void {
-    // if rewinded, don't send
-    // if (this.boardIndex !== this.ply) return
-
     this.room?.send(new ByteWriter()
       .putInt(C2S.MOVE)
       .putInt(board)

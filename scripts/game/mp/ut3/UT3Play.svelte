@@ -37,6 +37,9 @@ const {
 const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
 const canMove = $derived(playing && myTurn)
 const boardState = $derived(boardStates[boardIndex])
+
+const ply = $derived(moveHistory.length)
+const showingCurrent = $derived(boardIndex >= ply)
 </script>
 
 {#if !roundState}
@@ -74,16 +77,16 @@ const boardState = $derived(boardStates[boardIndex])
 
 <Board
   {boardState}
-  markHover={canMove && boardIndex === moveHistory.length ? myPlayer : 0}
-  onMove={(i, j) => gameState.sendMove(i, j)}
+  markHover={canMove && showingCurrent ? myPlayer : 0}
+  onMove={(i, j) => showingCurrent && gameState.sendMove(i, j)}
 />
 
 <div>
   <div class="progress mb-2">
     <div
-      class="progress-bar progress-bar-striped {canMove ? boardIndex < moveHistory.length ? 'text-bg-warning' : 'text-bg-success' : ''}"
-      style="width:{(boardIndex + 1) / (moveHistory.length + 1) * 100}%"
-    >Ply {boardIndex}{#if boardIndex < moveHistory.length}/{moveHistory.length}{/if}</div>
+      class="progress-bar progress-bar-striped {canMove ? !showingCurrent ? 'text-bg-warning' : 'text-bg-success' : ''}"
+      style="width:{(boardIndex + 1) / (ply + 1) * 100}%"
+    >Ply {boardIndex}{#if !showingCurrent}/{ply}{/if}</div>
   </div>
 
   <div class="btn-group d-flex mb-3" role="group">
@@ -95,11 +98,11 @@ const boardState = $derived(boardStates[boardIndex])
       class:disabled={!boardIndex}
       onclick={() => gameState.historyGo(boardIndex - 1)}>&lsaquo;</button>
     <button class="w-100 btn btn-secondary"
-      class:disabled={boardIndex >= moveHistory.length}
+      class:disabled={showingCurrent}
       onclick={() => gameState.historyGo(boardIndex + 1)}>&rsaquo;</button>
     <button class="w-100 btn btn-secondary"
-      class:disabled={boardIndex >= moveHistory.length}
-      onclick={() => gameState.historyGo(moveHistory.length)}>&raquo;</button>
+      class:disabled={showingCurrent}
+      onclick={() => gameState.historyGo(ply)}>&raquo;</button>
   </div>
 
   Moves:
