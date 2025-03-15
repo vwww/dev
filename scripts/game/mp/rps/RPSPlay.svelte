@@ -2,7 +2,7 @@
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 
-import RPSGame from './RPSGame.svelte'
+import { GameState, type RPSGame } from './RPSGame2.svelte'
 
 import { getGameModeString } from './gamemode'
 
@@ -13,28 +13,23 @@ interface Props {
 const { gameState }: Props = $props()
 
 const {
-  isActive,
-  inRound,
+  localClient,
   roundState,
   roundTimerStart,
   roundTimerEnd,
   roundPlayers,
   roundPlayerQueue,
   pendingMove,
-  modeClassic,
-  modeInverted,
-  modeCount,
-  modeRoundTime,
-  modeBotBalance
+  mode,
 } = $derived(gameState)
 
-const canMove = $derived(isActive && roundState === 2 && inRound)
+const canMove = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
 </script>
 
-{#if roundState === 0}
+{#if roundState === GameState.WAITING}
   Waiting for players&hellip;
 {:else}
-  {#if roundState === 1}
+  {#if roundState === GameState.INTERMISSION}
     Intermission:
   {:else if canMove}
     Make a move:
@@ -45,10 +40,10 @@ const canMove = $derived(isActive && roundState === 2 && inRound)
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(modeClassic, modeInverted, modeCount, modeRoundTime, modeBotBalance)}
+  Game Mode: {getGameModeString(mode)}
 </div>
 
-{#if roundState === 2 && canMove}
+{#if canMove}
   <div class="btn-group d-flex mb-3" role="group">
     <span class="input-group-text">Next Move</span>
     {#each ['Auto', '\u{1F94C} Rock', '\u{1F4C4} Paper', '\u2702 Scissors'] as move, i}

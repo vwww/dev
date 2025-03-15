@@ -1,50 +1,42 @@
 <script lang="ts">
 import Chat from '@gmc/Chat.svelte'
+import ChatState, { processChat } from '@gmc/ChatState.svelte'
 import GameHistoryCard from '@gmc/GameHistoryCard.svelte'
 import Leaderboard from '@gmc/Leaderboard.svelte'
 import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
-
+import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState.svelte'
-
-import RPSGame from './RPSGame.svelte'
+import { roomCreateOptions, getGameModeString } from './gamemode'
+import { GameState, RPSGame } from './RPSGame2.svelte'
 import RPSHistory from './RPSHistory.svelte'
 import RPSPlay from './RPSPlay.svelte'
 
 import { pState } from '@/util/svelte.svelte'
 
-import { roomCreateOptions, getGameModeString } from './gamemode'
-
 const chatState = new ChatState()
 const gameState = new RPSGame(chatState)
 
 const {
-  inGame,
-  isActive,
-  isReady,
   pastGames,
-  clientsSorted,
+  leaderboard,
   roundState,
 } = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
 
-function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBotBalance}: any) {
-  return getGameModeString(
-    optClassic === 'true',
-    optInverted === 'true',
-    optCount === 'true',
-    +optRoundTime,
-    +optBotBalance,
-  )
+let roomList: PIORoomList
+
+function formatGameMode (roomData: object): string {
+  return getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))
 }
 </script>
 
 <NameBox bind:value={name.value} />
 
 <PIORoomList
+  bind:this={roomList}
   gameId="rps-oj40aopjv0w7gnc1pj9zpq"
   roomType="RPSRoom"
   joinData={{ name: name.value }}
@@ -53,14 +45,14 @@ function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBo
   {roomCreateOptions} />
 
 <PlayCard
-  {inGame}
-  {isActive}
-  canReady={roundState === 1}
-  {isReady}
+  inGame={gameState.room}
+  isActive={gameState.localClient.active}
+  canReady={roundState === GameState.INTERMISSION}
+  isReady={gameState.localClient.ready}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
-  onDisconnect={() => gameState.leaveGame()}>
+  onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <RPSPlay {gameState} />
 </PlayCard>
 
@@ -72,7 +64,7 @@ function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBo
       <RPSHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={clientsSorted} columns={[
+    <Leaderboard players={leaderboard} columns={[
       ['Streak', (p) => p.roundStreak],
       ['Score', (p) => p.roundScore],
       ['Round Win', (p) => [p.roundWins, p.roundTotal]],
@@ -87,7 +79,7 @@ function formatGameMode ({optClassic, optInverted, optCount, optRoundTime, optBo
   <div class="col-12 col-xl-4 mb-3">
     <Chat
       {chatState}
-      onInput={msg => gameState.processCommand(msg)}
+      onInput={msg => processChat(gameState, msg)}
     />
   </div>
 </div>

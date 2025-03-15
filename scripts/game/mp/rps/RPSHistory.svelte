@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { RPSGameHistory } from './RPSGame.svelte'
+import type { RPSGameHistory } from './RPSGame2.svelte'
 
 interface Props {
   results: ArrayLike<RPSGameHistory>
@@ -102,7 +102,7 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
                   <td>{pastGame.count[i]}</td>
                   <td>
                     {#each move.players as player}
-                      <span class="badge text-bg-secondary">{player.name} ({player.cn})</span>
+                      <span class="badge text-bg-secondary">{player}</span>
                     {/each}
                     {#if pastGame.botCount[i]}
                       <span class="badge text-bg-secondary">+{pastGame.botCount[i]}</span>

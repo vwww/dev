@@ -1,3 +1,5 @@
+import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
+
 export const roomCreateOptions = [
   ['optClassic', 'b', false, 'Classic', 'no streak bonuses'],
   ['optInverted', 'b', false, 'Inverted', 'switch default winning and losing direction'],
@@ -6,14 +8,18 @@ export const roomCreateOptions = [
   ['optBotBalance', 'i', 0, 'Bot Balance', 'if negative, balance total players to absolute value; otherwise, add this number of bots', -1000, 1000],
 ] as const
 
-export function getGameModeString (
-  classic: boolean, inverted: boolean, count: boolean,
-  roundTime: number, botBalance: number
-  ): string {
+export type RPSMode = GamemodeFromOptions<typeof roomCreateOptions>
+
+export function defaultMode (): RPSMode {
+  return getDefaultOptions(roomCreateOptions)
+}
+
+export function getGameModeString (mode: RPSMode): string {
+  const { optBotBalance: botBalance } = mode
   return (
-    (inverted ? 'Inverted ' : '') +
-    (count ? 'Count ' : '') +
-    (classic ? 'Classic' : 'Regular') +
-    ' (' + (botBalance > 0 ? botBalance + ' bots' : botBalance < 0 ? 'bots balance to ' + -botBalance : 'no bots') + ', ' + roundTime + ' ms)'
+    (mode.optInverted ? 'Inverted ' : '') +
+    (mode.optCount ? 'Count ' : '') +
+    (mode.optClassic ? 'Classic' : 'Regular') +
+    ' (' + (botBalance > 0 ? botBalance + ' bots' : botBalance < 0 ? 'bots balance to ' + -botBalance : 'no bots') + ', ' + mode.optRoundTime + ' ms)'
   )
 }
