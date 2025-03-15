@@ -60,7 +60,7 @@ function formatGameMode (roomData: object): string {
 <div class="row">
   <div class="col-12 col-xl-8">
     <GameHistoryCard
-      canClear={!pastGames.length}
+      canClear={pastGames.length}
       onClear={() => gameState.clearHistory()}>
       <TwoPlayerWinner results={pastGames} />
     </GameHistoryCard>

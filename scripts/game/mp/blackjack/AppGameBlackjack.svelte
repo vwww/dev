@@ -60,7 +60,7 @@ function formatGameMode ({optInverted}: any) {
 <div class="row">
   <div class="col-12 col-lg-8">
     <GameHistoryCard
-      canClear={!pastGames.length}
+      canClear={pastGames.length}
       onClear={() => gameState.clearHistory()}>
       <BlackjackHistory results={pastGames} />
     </GameHistoryCard>

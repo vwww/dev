@@ -60,7 +60,7 @@ function formatGameMode ({optInverted, optAddRandom, optTeams}: any) {
 <div class="row">
   <div class="col-12 col-xl-8">
     <GameHistoryCard
-      canClear={!pastGames.length}
+      canClear={pastGames.length}
       onClear={() => gameState.clearHistory()}>
       <PresidentHistory results={pastGames} />
     </GameHistoryCard>

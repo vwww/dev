@@ -78,7 +78,7 @@ function formatGameMode ({optDecks, optTurnTime}: any) {
 <div class="row">
   <div class="col-12 col-xl-8">
     <GameHistoryCard
-      canClear={!pastGames.length}
+      canClear={pastGames.length}
       onClear={() => gameState.clearHistory()}>
       <DiscardGameHistory results={pastGames} ll={showLLNames.value} />
     </GameHistoryCard>

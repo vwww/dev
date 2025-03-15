@@ -60,7 +60,7 @@ function formatGameMode ({optCount, optRank, optRounds, optPenalty}: any) {
 <div class="row">
   <div class="col-12 col-xl-8">
     <GameHistoryCard
-      canClear={!pastGames.length}
+      canClear={pastGames.length}
       onClear={() => gameState.clearHistory()}>
       <CheatHistory results={pastGames} />
     </GameHistoryCard>

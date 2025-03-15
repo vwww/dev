@@ -54,7 +54,7 @@ let roomList: PIORoomList
 <div class="row">
   <div class="col-12 col-lg-8">
     <GameHistoryCard
-      canClear={!pastGames.length}
+      canClear={pastGames.length}
       onClear={() => gameState.clearHistory()}>
       <ActionlessHistory results={pastGames} />
     </GameHistoryCard>
