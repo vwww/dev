@@ -2,17 +2,16 @@
 import { pState } from '@/util/svelte.svelte'
 
 import Chat from '@gmc/Chat.svelte'
+import ChatState, { processChat } from '@gmc/ChatState.svelte'
 import GameHistoryCard from '@gmc/GameHistoryCard.svelte'
 import Leaderboard from '@gmc/Leaderboard.svelte'
 import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
 import TwoPlayerWinner from '@gmc/TwoPlayerWinner.svelte'
-
+import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState.svelte'
-
-import T3Game from './T3Game.svelte'
+import { GameState, T3Game } from './T3Game2.svelte'
 import T3Play from './T3Play.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
@@ -21,19 +20,18 @@ const chatState = new ChatState()
 const gameState = new T3Game(chatState)
 
 const {
-  inGame,
-  isActive,
-  isReady,
   pastGames,
-  clientsSorted,
+  leaderboard,
   roundState,
 } = $derived(gameState)
 
 let t3Isomorphism = pState('game/mp/t3/isomorphism', 0)
 let name = pState('game/mp/_shared/name', '')
 
-function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any) {
-  return getGameModeString(optInverted === 'true', optChecked === 'true', optQuick === 'true', +optTurnTime)
+let roomList: PIORoomList
+
+function formatGameMode (roomData: object): string {
+  return getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))
 }
 </script>
 
@@ -53,6 +51,7 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
 <NameBox bind:value={name.value} />
 
 <PIORoomList
+  bind:this={roomList}
   gameId="t3-k9s5th8thueeuso1rkilqw"
   roomType="T3Room"
   joinData={{ name: name.value }}
@@ -61,14 +60,14 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
   {roomCreateOptions} />
 
 <PlayCard
-  {inGame}
-  {isActive}
-  canReady={roundState === 1}
-  {isReady}
+  inGame={gameState.room}
+  isActive={gameState.localClient.active}
+  canReady={roundState === GameState.INTERMISSION}
+  isReady={gameState.localClient.ready}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
-  onDisconnect={() => gameState.leaveGame()}>
+  onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <T3Play {gameState} t3Isomorphism={t3Isomorphism.value} />
 </PlayCard>
 
@@ -80,7 +79,7 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
       <TwoPlayerWinner results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={clientsSorted} columns={[
+    <Leaderboard players={leaderboard} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.score],
       ['Win', (p) => [p.wins, p.total]],
@@ -92,7 +91,7 @@ function formatGameMode ({ optTurnTime, optInverted, optChecked, optQuick }: any
   <div class="col-12 col-xl-4 mb-3">
     <Chat
       {chatState}
-      onInput={(msg) => gameState.processCommand(msg)}
+      onInput={(msg) => processChat(gameState, msg)}
     />
   </div>
 </div>

@@ -1,3 +1,5 @@
+import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
+
 export const roomCreateOptions = [
   ['optTurnTime', 'i', 10000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 1500, 20000],
   ['optInverted', 'b', false, 'Inverted', 'switch winning and losing'],
@@ -5,6 +7,18 @@ export const roomCreateOptions = [
   ['optQuick', 'b', false, 'Quick', 'end early for guaranteed outcomes'],
 ] as const
 
-export function getGameModeString (inverted: boolean, checked: boolean, quick: boolean, turnTime: number): string {
-  return `${inverted ? 'inverted ' : ''}${checked ? 'checked ' : ''}${quick ? 'quick ' : ''}${!(inverted || checked || quick) ? 'standard ' : ''}${turnTime}ms`
+export type T3Mode = GamemodeFromOptions<typeof roomCreateOptions>
+
+export function defaultMode (): T3Mode {
+  return getDefaultOptions(roomCreateOptions)
+}
+
+export function getGameModeString (mode: T3Mode): string {
+  const adjectives = [
+    mode.optInverted && 'inverted',
+    mode.optChecked && 'checked',
+    mode.optQuick && 'quick',
+  ].filter((x) => x)
+
+  return `${adjectives.length ? adjectives.join(' ') : 'standard'} ${mode.optTurnTime}ms`
 }

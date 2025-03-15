@@ -2,7 +2,7 @@
 import Board from '@gc/t3/Board.svelte'
 import BoardCell from '@gc/t3/BoardCell.svelte'
 
-import T3Game from './T3Game.svelte'
+import { GameState, type T3Game } from './T3Game2.svelte'
 
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
@@ -18,8 +18,7 @@ interface Props {
 const { gameState, t3Isomorphism }: Props = $props()
 
 const {
-  isActive,
-  inRound,
+  localClient,
   roundState,
   roundTimerStart,
   roundTimerEnd,
@@ -32,13 +31,10 @@ const {
   boardBad,
   winner,
   moveHistory,
-  modeTurnTime,
-  modeInverted,
-  modeChecked,
-  modeQuick,
+  mode,
 } = $derived(gameState)
 
-const playing = $derived(isActive && roundState === 2 && inRound)
+const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
 const canMove = $derived(playing && myTurn)
 
 const isomorphism1 = [[1, 5], [2, 0], [3, 7], [4, 6], [5, 4], [6, 2], [7, 1], [8, 8], [9, 3]] as const
@@ -55,14 +51,14 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
 }
 </script>
 
-{#if !roundState}
+{#if roundState === GameState.WAITING}
   Waiting for players&hellip;
 {:else}
-  {#if roundState === 1}
+  {#if roundState === GameState.INTERMISSION}
     Intermission:
   {:else if canMove}
     Make a move:
-  {:else if inRound}
+  {:else if localClient.inRound}
     Waiting for opponent to move&hellip;
   {:else}
     Spectating:
@@ -141,7 +137,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(modeInverted, modeChecked, modeQuick, modeTurnTime)}
+  Game Mode: {getGameModeString(mode)}
 </div>
 
 <b>Lobby</b>
