@@ -57,5 +57,8 @@ interface GameClient {
 }
 
 export function formatClientName (client?: GameClient, cn?: number) {
-  return client ? `${client.name} (${client.cn})` : ('<unknown>' + (cn === undefined ? '' : ` (${cn})`))
+  if (!client) {
+    return `<unknown${(cn === undefined ? '' : ` (${cn})`)}>`
+  }
+  return `${client.name} (${client.cn})`
 }
