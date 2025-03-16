@@ -30,10 +30,6 @@ let showLLNames = pState('game/mp/discard/LL', true)
 let showCardCount = pState('game/mp/discard/cardCount', true)
 
 let roomList: PIORoomList
-
-function formatGameMode (roomData: object): string {
-  return getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))
-}
 </script>
 
 <NameBox bind:value={name.value} />
@@ -59,7 +55,7 @@ bind:this={roomList}
   roomType="DiscardRoom"
   joinData={{name: name.value}}
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
-  {formatGameMode}
+  formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />
 
 <PlayCard

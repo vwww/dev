@@ -29,10 +29,6 @@ let t3Isomorphism = pState('game/mp/t3/isomorphism', 0)
 let name = pState('game/mp/_shared/name', '')
 
 let roomList: PIORoomList
-
-function formatGameMode (roomData: object): string {
-  return getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))
-}
 </script>
 
 <div class="btn-group d-flex mb-3" role="group">
@@ -56,7 +52,7 @@ function formatGameMode (roomData: object): string {
   roomType="T3Room"
   joinData={{ name: name.value }}
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
-  {formatGameMode}
+  formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />
 
 <PlayCard
