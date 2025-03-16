@@ -1,4 +1,7 @@
+import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
+
 export const roomCreateOptions = [
+  ['optTurnTime', 'i', 20000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 5000, 60000],
   ['optInverted', 'b', false, 'Inverted', 'negate balance changes'],
   ['opt21', 'b', false, 'Simple', 'only hit and stand'],
   ['optDecks', 'i', 1, 'Decks', 'number of decks, 9 is treated as infinity (increases house edge)', 1, 9],
@@ -21,6 +24,12 @@ export const roomCreateOptions = [
   ['optHitSplitAce', 'b', true, 'Hit Split Ace', 'if hit with a 10, the blackjack is not a "natural" blackjack (decreases house edge)'],
 ] as const
 
-export function getGameModeString (): string {
+export type BlackjackMode = GamemodeFromOptions<typeof roomCreateOptions>
+
+export function defaultMode (): BlackjackMode {
+  return getDefaultOptions(roomCreateOptions)
+}
+
+export function getGameModeString (mode: BlackjackMode): string {
   return 'TODO'
 }

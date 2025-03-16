@@ -1,8 +1,8 @@
 <script lang="ts">
-import type { BGameHistory } from './BlackjackGame.svelte'
+import type { BlackjackGameHistory } from './BlackjackGame2.svelte'
 
 interface Props {
-  results: BGameHistory[]
+  results: BlackjackGameHistory[]
 }
 
 const { results }: Props = $props()
