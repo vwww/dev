@@ -1,15 +1,14 @@
 <script lang="ts">
 import Chat from '@gmc/Chat.svelte'
+import ChatState, { processChat } from '@gmc/ChatState.svelte'
 import GameHistoryCard from '@gmc/GameHistoryCard.svelte'
 import Leaderboard from '@gmc/Leaderboard.svelte'
 import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
-
+import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
 
-import ChatState from '@gmc/ChatState.svelte'
-
-import CheatGame from './CheatGame.svelte'
+import { CheatGame, GameState } from './CheatGame2.svelte'
 import CheatHistory from './CheatHistory.svelte'
 import CheatPlay from './CheatPlay.svelte'
 
@@ -21,39 +20,35 @@ const chatState = new ChatState()
 const gameState = new CheatGame(chatState)
 
 const {
-  inGame,
-  isActive,
-  isReady,
   pastGames,
-  clientsSorted,
+  leaderboard,
   roundState,
 } = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
 
-function formatGameMode ({optCount, optRank, optRounds, optPenalty}: any) {
-  return getGameModeString()
-}
+let roomList: PIORoomList
 </script>
 
 <NameBox bind:value={name.value} />
 
 <PIORoomList
+  bind:this={roomList}
   gameId="cheat-zoded3ozqeqvek0bpz3fow"
   roomType="CheatRoom"
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
-  {formatGameMode}
+  formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />
 
 <PlayCard
-  {inGame}
-  {isActive}
-  canReady={roundState === 1}
-  {isReady}
+  inGame={gameState.room}
+  isActive={gameState.localClient.active}
+  canReady={roundState === GameState.INTERMISSION}
+  isReady={gameState.localClient.ready}
   onSetActive={(a) => gameState.sendActive(a)}
   onSetReady={(r) => gameState.sendReady(r)}
   onReset={() => gameState.sendReset()}
-  onDisconnect={() => gameState.leaveGame()}>
+  onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <CheatPlay {gameState} />
 </PlayCard>
 
@@ -65,7 +60,7 @@ function formatGameMode ({optCount, optRank, optRounds, optPenalty}: any) {
       <CheatHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={clientsSorted} columns={[
+    <Leaderboard players={leaderboard} columns={[
       ['Score', (p) => p.score],
       ['Wins', (p) => p.wins],
       ['Streak', (p) => p.streak],
@@ -78,7 +73,7 @@ function formatGameMode ({optCount, optRank, optRounds, optPenalty}: any) {
   <div class="col-12 col-xl-4 mb-3">
     <Chat
       {chatState}
-      onInput={msg => gameState.processCommand(msg)}
+      onInput={(msg) => processChat(gameState, msg)}
     />
   </div>
 </div>
