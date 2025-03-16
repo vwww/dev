@@ -45,7 +45,7 @@ export const enum GameState {
   ACTIVE,
 }
 
-class DClient {
+class DiscardClient {
   cn = $state(-1)
   name = $state('unnamed')
   active = $state(false)
@@ -80,7 +80,7 @@ class DClient {
   }
 }
 
-export class DPlayerInfo {
+export class DiscardPlayerInfo {
   owner = $state(-1)
 
   discarded: number[] = $state([])
@@ -89,14 +89,14 @@ export class DPlayerInfo {
   hand?: number = $state()
 }
 
-export class DDiscInfo {
+export class DiscardDiscInfo {
   ownerName = ''
 
   discarded: number[] = []
   discardSum = 0
 }
 
-export interface DGameHistory {
+export interface DiscardGameHistory {
   survived: {
     name: string
     rank: number
@@ -177,20 +177,20 @@ export class DiscardGame {
   pendingMoveTarget = $state(0)
   pendingMoveGuess = $state(0)
 
-  localClient = new DClient()
-  clients: DClient[] = []
-  leaderboard: DClient[] = $state([])
+  localClient = new DiscardClient()
+  clients: DiscardClient[] = []
+  leaderboard: DiscardClient[] = $state([])
   roundState = $state(GameState.WAITING)
   roundTimerStart = $state(0)
   roundTimerEnd = $state(0)
 
-  roundPlayers: DClient[] = $state([])
-  roundPlayerQueue: DClient[] = $state([])
+  roundPlayers: DiscardClient[] = $state([])
+  roundPlayerQueue: DiscardClient[] = $state([])
 
-  playerInfo: DPlayerInfo[] = $state([])
-  playerDiscInfo: DDiscInfo[] = $state([])
+  playerInfo: DiscardPlayerInfo[] = $state([])
+  playerDiscInfo: DiscardDiscInfo[] = $state([])
 
-  pastGames: DGameHistory[] = $state([])
+  pastGames: DiscardGameHistory[] = $state([])
 
   room?: BaseGameRoom = $state()
 
@@ -313,7 +313,7 @@ export class DiscardGame {
     )
   }
 
-  addHistory (history: DGameHistory): void {
+  addHistory (history: DiscardGameHistory): void {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
       this.pastGames.pop()
     this.pastGames.unshift(history)
@@ -323,14 +323,14 @@ export class DiscardGame {
     this.pastGames = []
   }
 
-  formatPlayerName (player?: DPlayerInfo, pn?: number): string {
+  formatPlayerName (player?: DiscardPlayerInfo, pn?: number): string {
     if (!player) {
       return `<unknown${pn === undefined ? '' : (' pn#' + pn)}>`
     }
     return formatClientName(this.clients[player.owner], player.owner)
   }
 
-  playerIsMe (player?: DPlayerInfo): boolean {
+  playerIsMe (player?: DiscardPlayerInfo): boolean {
     return player?.owner === this.localClient.cn
   }
 
@@ -353,7 +353,7 @@ export class DiscardGame {
         for (let i = 0; i <= MAX_PLAYERS; i++) {
           const cn = m.getInt()
           if (cn < 0) break
-          const p = cn == myCn ? this.localClient : new DClient()
+          const p = cn == myCn ? this.localClient : new DiscardClient()
           p.cn = cn
           p.active = m.getBool()
           p.name = filterName(m.getString(MAX_NAME_LEN))
@@ -421,7 +421,7 @@ export class DiscardGame {
         const name = filterName(m.getString(MAX_NAME_LEN))
         if (this.clients[cn]) break
 
-        const newPlayer = new DClient()
+        const newPlayer = new DiscardClient()
         newPlayer.cn = cn
         newPlayer.name = name
 
@@ -541,12 +541,12 @@ export class DiscardGame {
         this.roundPlayerQueue = []
         this.roundStart(this.mode.optTurnTime)
 
-        const playerInfo: DPlayerInfo[] = []
+        const playerInfo: DiscardPlayerInfo[] = []
         for (let i = 0; i <= this.clients.length; i++) {
           const owner = m.getInt()
           if (owner < 0) break
 
-          const p = new DPlayerInfo()
+          const p = new DiscardPlayerInfo()
           p.owner = owner
           playerInfo.push(p)
         }
@@ -592,7 +592,7 @@ export class DiscardGame {
           break
         }
 
-        const newDiscInfo = new DDiscInfo()
+        const newDiscInfo = new DiscardDiscInfo()
         const c = this.clients[playerInfo.owner]
         newDiscInfo.ownerName = formatClientName(c, playerInfo.owner)
 
@@ -619,12 +619,12 @@ export class DiscardGame {
   }
 
   private processPlayerInfos (m: ByteReader): void {
-    const playerInfo: DPlayerInfo[] = []
+    const playerInfo: DiscardPlayerInfo[] = []
     for (let i = 0; i <= this.clients.length; i++) {
       const owner = m.getInt()
       if (owner < 0) break
 
-      const p = new DPlayerInfo()
+      const p = new DiscardPlayerInfo()
       p.owner = owner
 
       const discardSize = Math.min(m.getInt(), CARDS_PER_DECK * MAX_DECKS)
@@ -638,12 +638,12 @@ export class DiscardGame {
   }
 
   private processDiscInfos (m: ByteReader): void {
-    const discInfo: DDiscInfo[] = []
+    const discInfo: DiscardDiscInfo[] = []
     for (let i = 0; i <= this.clients.length; i++) {
       const ownerName = m.getString(32)
       if (!ownerName) break
 
-      const p = new DDiscInfo()
+      const p = new DiscardDiscInfo()
       p.ownerName = ownerName
 
       const discardSize = Math.min(m.getInt(), CARDS_PER_DECK * MAX_DECKS)
@@ -807,7 +807,7 @@ export class DiscardGame {
     const eliminated = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
     eliminated.reverse()
 
-    const gameHistoryEntry: DGameHistory = {
+    const gameHistoryEntry: DiscardGameHistory = {
       survived: [],
       eliminated,
     }
@@ -895,11 +895,11 @@ export class DiscardGame {
     ])
   }
 
-  private playerActivated (player: DClient): void {
+  private playerActivated (player: DiscardClient): void {
     this.roundPlayerQueue.push(player)
   }
 
-  private playerDeactivated (player: DClient): void {
+  private playerDeactivated (player: DiscardClient): void {
     this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
     this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
     player.inRound = false
@@ -950,13 +950,13 @@ export class DiscardGame {
   }
 }
 
-function comparePlayerInfo (a: DPlayerInfo, b: DPlayerInfo): number {
+function comparePlayerInfo (a: DiscardPlayerInfo, b: DiscardPlayerInfo): number {
   const aH = a.hand ?? 0
   const bH = b.hand ?? 0
   return (bH - aH) || (b.discardSum - a.discardSum)
 }
 
-function updateScore (c: DClient, rank: number, totalPlayers: number): void {
+function updateScore (c: DiscardClient, rank: number, totalPlayers: number): void {
   c.rankLast = rank
   c.rankLast = rank
   c.rankBest = Math.min(c.rankBest || rank, rank)

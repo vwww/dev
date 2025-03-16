@@ -1,10 +1,10 @@
 <script lang="ts">
-import type { DGameHistory } from './DiscardGame2.svelte'
+import type { DiscardGameHistory } from './DiscardGame2.svelte'
 
 import { getCardName } from './DiscardPlay.svelte'
 
 interface Props {
-  results: ArrayLike<DGameHistory>
+  results: ArrayLike<DiscardGameHistory>
   ll: boolean
 }
 

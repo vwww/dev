@@ -1,8 +1,8 @@
 <script lang="ts">
-import type { AGameHistory, AGameHistoryWin } from './ActionlessGame2.svelte'
+import type { ActionlessGameHistory, ActionlessGameHistoryWin } from './ActionlessGame2.svelte'
 
 interface Props {
-  results: AGameHistory[]
+  results: ActionlessGameHistory[]
 }
 
 const { results }: Props = $props()
@@ -11,7 +11,7 @@ const { results }: Props = $props()
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">
   {#each results as pastGame}
     <li class="list-group-item">
-      {#snippet winPlayers(win: AGameHistoryWin)}
+      {#snippet winPlayers(win: ActionlessGameHistoryWin)}
         {#each win.players as player}
           <span class="badge me-1 text-bg-{win.win ? 'success' : 'danger'}">{player}</span>
         {/each}

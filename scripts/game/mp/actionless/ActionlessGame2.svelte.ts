@@ -42,7 +42,7 @@ export const enum GameState {
   ACTIVE,
 }
 
-class AClient {
+class ActionlessClient {
   cn = $state(-1)
   name = $state('unnamed')
   active = $state(false)
@@ -69,12 +69,12 @@ class AClient {
   }
 }
 
-export interface AGameHistory {
+export interface ActionlessGameHistory {
   playerCount: number
-  wins: AGameHistoryWin[]
+  wins: ActionlessGameHistoryWin[]
 }
 
-export interface AGameHistoryWin {
+export interface ActionlessGameHistoryWin {
   id: number
   win: boolean
   players: string[]
@@ -93,17 +93,17 @@ const ROUND_TIME = 3000
 export class ActionlessGame {
   mode: ActionlessMode = $state(defaultMode())
 
-  localClient = new AClient()
-  clients: AClient[] = []
-  leaderboard: AClient[] = $state([])
+  localClient = new ActionlessClient()
+  clients: ActionlessClient[] = []
+  leaderboard: ActionlessClient[] = $state([])
   roundState = $state(GameState.WAITING)
   roundTimerStart = $state(0)
   roundTimerEnd = $state(0)
 
-  roundPlayers: AClient[] = $state([])
-  roundPlayerQueue: AClient[] = $state([])
+  roundPlayers: ActionlessClient[] = $state([])
+  roundPlayerQueue: ActionlessClient[] = $state([])
 
-  pastGames: AGameHistory[] = $state([])
+  pastGames: ActionlessGameHistory[] = $state([])
 
   room?: BaseGameRoom = $state()
 
@@ -197,7 +197,7 @@ export class ActionlessGame {
     )
   }
 
-  addHistory (history: AGameHistory): void {
+  addHistory (history: ActionlessGameHistory): void {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
       this.pastGames.pop()
     this.pastGames.unshift(history)
@@ -226,7 +226,7 @@ export class ActionlessGame {
         for (let i = 0; i <= MAX_PLAYERS; i++) {
           const cn = m.getInt()
           if (cn < 0) break
-          const player = cn == myCn ? this.localClient : new AClient()
+          const player = cn == myCn ? this.localClient : new ActionlessClient()
           player.cn = cn
           player.active = m.getBool()
           player.name = filterName(m.getString(MAX_NAME_LEN))
@@ -287,7 +287,7 @@ export class ActionlessGame {
         const name = filterName(m.getString(MAX_NAME_LEN))
         if (this.clients[cn]) break
 
-        const newPlayer = new AClient()
+        const newPlayer = new ActionlessClient()
         newPlayer.cn = cn
         newPlayer.name = name
 
@@ -434,7 +434,7 @@ export class ActionlessGame {
     const wins = Array(winCount).fill(false).map(() => m.getBool())
     const playerCount = Math.min(m.getInt(), this.clients.map(Boolean).length)
 
-    const gameHistoryEntry: AGameHistory = {
+    const gameHistoryEntry: ActionlessGameHistory = {
       playerCount,
       wins: wins.map((w, i) => ({
         id: i,
@@ -474,11 +474,11 @@ export class ActionlessGame {
     ])
   }
 
-  private playerActivated (player: AClient): void {
+  private playerActivated (player: ActionlessClient): void {
     this.roundPlayerQueue.push(player)
   }
 
-  private playerDeactivated (player: AClient): void {
+  private playerDeactivated (player: ActionlessClient): void {
     this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
     this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
     player.inRound = false
