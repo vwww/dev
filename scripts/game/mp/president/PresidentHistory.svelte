@@ -1,8 +1,8 @@
 <script lang="ts">
-import type { PGameHistory, PRankType } from './PresidentGame'
+import type { PresidentGameHistory, PresidentRankType } from './PresidentGame2.svelte'
 
 interface Props {
-  results: PGameHistory[]
+  results: PresidentGameHistory[]
 }
 
 const { results }: Props = $props()
@@ -15,15 +15,15 @@ const RANKS = [
   ['President', 'primary'],
 ]
 
-function rankName (r: PRankType): string {
+function rankName (r: PresidentRankType): string {
   return RANKS[r + 2][0]
 }
 
-function rankClass (r: PRankType): string {
+function rankClass (r: PresidentRankType): string {
   return RANKS[r + 2][1]
 }
 
-function rankBadgeClass (r: PRankType): string {
+function rankBadgeClass (r: PresidentRankType): string {
   return `badge text-bg-${rankClass(r)}`
 }
 </script>

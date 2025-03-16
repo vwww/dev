@@ -1,6 +1,6 @@
 <script lang="ts">
 import CardCountTable from '@gmc/CardCountTable.svelte'
-import type PresidentGame from './PresidentGame'
+import type { PresidentGame } from './PresidentGame2.svelte'
 
 interface Props {
   gameState: PresidentGame
@@ -38,9 +38,9 @@ const canPass = false // temporary
   {/if}
 
   <div class="btn-group d-flex my-2">
-    <button class="btn w-100 btn-primary" onclick={gameState.onConfirm}>Confirm</button>
-    <button class="btn w-50 btn-outline-secondary" onclick={gameState.onRandom}>Random</button>
-    <button class="btn w-50 btn-outline-danger" class:disabled={!canPass} onclick={gameState.onPass}>Pass</button>
+    <button class="btn w-100 btn-primary">Confirm</button>
+    <button class="btn w-50 btn-outline-secondary">Random</button>
+    <button class="btn w-50 btn-outline-danger" class:disabled={!canPass}>Pass</button>
   </div>
 {/if}
 

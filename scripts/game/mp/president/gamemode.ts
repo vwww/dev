@@ -1,4 +1,7 @@
+import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
+
 export const roomCreateOptions = [
+  ['optTurnTime', 'i', 20000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 5000, 60000],
   ['optDecks', 'i', 1, 'Decks', 'number of decks', 1, 166799986198907],
   ['optJokers', 'i', 2, 'Jokers', 'number of jokers per deck', 0, 2],
   ['optRevolution', 'e', 0, 'Revolutions',
@@ -22,10 +25,12 @@ export const roomCreateOptions = [
   ['optPenalizeFinalJoker', 'b', false, 'Penalize final joker', 'playing joker as last card demotes to scum'],
 ] as const
 
-export interface PresidentOptions {
-  decks: number
+export type PresidentMode = GamemodeFromOptions<typeof roomCreateOptions>
+
+export function defaultMode (): PresidentMode {
+  return getDefaultOptions(roomCreateOptions)
 }
 
-export function getGameModeString (options: PresidentOptions): string {
+export function getGameModeString (mode: PresidentMode): string {
   return 'TODO'
 }
