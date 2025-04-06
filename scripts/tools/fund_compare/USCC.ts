@@ -242,8 +242,10 @@ export default {
         ['2024-12-31', '2024-12-31', '2025-01-08', 20.14, 0.17271, 0.16810],
       ],
       dividendSplit: {
-        total: 1,
-        returnOfCapital: 1,
+        total: 1.55694,
+        foreignIncome: 0.04104,
+        foreignTax: -0.01356,
+        capitalGains: 1.52946,
       }
     },
   ]
