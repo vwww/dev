@@ -20,7 +20,7 @@ export function logBugReportInstructions() {
 }
 
 export function sortAndRankPlayers<P extends { cn: number; active: boolean; rank: number }>(players: P[], playerSortProps: ((p: P) => (number | string))[]): P[] {
-  const cmpPlayers = (a: P, b: P): number => {
+  const sortedPlayers = players.filter((x) => x).sort((a, b) => {
     for (const prop of [(p: P) => p.active, ...playerSortProps]) {
       const aV = prop(a)
       const bV = prop(b)
@@ -31,9 +31,7 @@ export function sortAndRankPlayers<P extends { cn: number; active: boolean; rank
       }
     }
     return a.cn - b.cn
-  }
-
-  const sortedPlayers = players.filter((x) => x).sort(cmpPlayers)
+  })
 
   // Update ranks
   let rank = 1
