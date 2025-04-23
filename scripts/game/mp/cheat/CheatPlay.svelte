@@ -2,8 +2,9 @@
 import CardCountTable from '@gmc/CardCountTable.svelte'
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { GameState, type CheatGame } from './CheatGame2.svelte'
+import type { CheatGame } from './CheatGame2.svelte'
 
 import { getGameModeString } from './gamemode'
 

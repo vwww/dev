@@ -2,10 +2,11 @@
 import CardCountTable from '@gmc/CardCountTable.svelte'
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import DiscardMoveHistory from './DiscardMoveHistory.svelte'
 
-import { GameState, type DiscardGame } from './DiscardGame2.svelte'
+import type { DiscardGame } from './DiscardGame2.svelte'
 
 import { getGameModeString, playerColor } from './gamemode'
 

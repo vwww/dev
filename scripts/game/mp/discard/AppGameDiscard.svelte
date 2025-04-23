@@ -7,8 +7,9 @@ import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
 import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { DiscardGame, GameState } from './DiscardGame2.svelte'
+import { DiscardGame } from './DiscardGame2.svelte'
 import DiscardPlay from './DiscardPlay.svelte'
 import DiscardGameHistory from './DiscardGameHistory.svelte'
 

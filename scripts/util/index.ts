@@ -34,3 +34,11 @@ export function padYear (year: number | string): string {
 export function padMonthDay (md: number | string): string {
   return (md + '').padStart(2, '0')
 }
+
+// type
+
+export type Repeat<
+  T,
+  L extends number,
+  A extends unknown[] = [],
+> = A['length'] extends L ? A : Repeat<T, L, [...A, T]>

@@ -1,8 +1,9 @@
 <script lang="ts">
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { GameState, type MorraGame } from './MorraGame2.svelte'
+import type { MorraGame } from './MorraGame2.svelte'
 
 import { getGameModeString } from './gamemode'
 

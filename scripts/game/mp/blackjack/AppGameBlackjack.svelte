@@ -7,9 +7,10 @@ import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
 import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
-import { BlackjackGame, GameState } from './BlackjackGame2.svelte'
+import { BlackjackGame } from './BlackjackGame2.svelte'
 import BlackjackHistory from './BlackjackHistory.svelte'
 import BlackjackPlay from './BlackjackPlay.svelte'
 

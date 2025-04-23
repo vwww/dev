@@ -1,8 +1,9 @@
 import { clamp, sum } from '@/util'
-import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
+import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type PresidentMode } from './gamemode'
@@ -39,22 +40,7 @@ const enum C2S {
   MOVE_END,
 }
 
-export const enum GameState {
-  WAITING,
-  INTERMISSION,
-  ACTIVE,
-}
-
-class PresidentClient {
-  cn = $state(-1)
-  name = $state('unnamed')
-  active = $state(false)
-  rank = $state(0)
-  ping = $state(-1)
-
-  ready = $state(false)
-  inRound = $state(false)
-
+class PresidentClient extends RoundRobinClient {
   score = $state(0)
   streak = $state(0)
 
@@ -73,10 +59,6 @@ class PresidentClient {
     this.rank0 = 0
     this.rank1s = 0
     this.rank2s = 0
-  }
-
-  formatName () {
-    return `${this.name} (${this.cn})`
   }
 }
 
@@ -152,7 +134,7 @@ const INTERMISSION_TIME = 30000
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
-export class PresidentGame {
+export class PresidentGame extends RoundRobinGame<PresidentClient> {
   mode: PresidentMode = $state(defaultMode())
 
   gamePhase = $state(0 as GamePhase)
@@ -181,139 +163,26 @@ export class PresidentGame {
   pendingMove = $state(0)
   pendingMoveCount = $state(0)
 
-  localClient = new PresidentClient()
-  clients: PresidentClient[] = []
-  leaderboard: PresidentClient[] = $state([])
-  roundState = $state(GameState.WAITING)
-  roundTimerStart = $state(0)
-  roundTimerEnd = $state(0)
-
-  roundPlayers: PresidentClient[] = $state([])
-  roundPlayerQueue: PresidentClient[] = $state([])
-
   playerInfo: PresidentPlayerInfo[] = $state([])
   playerDiscInfo: PresidentDiscInfo[] = $state([])
 
   pastGames: PresidentGameHistory[] = $state([])
 
-  room?: BaseGameRoom = $state()
-
-  constructor (public chat: ChatState) {
-    setTimeout(logBugReportInstructions, 100)
-  }
+  override newClient () { return new PresidentClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
-    this.room?.disconnect()
-    this.room = room
-    room.registerRecv((msg) => {
-      if (this.room === room) {
-        const m = new ByteReader(msg)
-        try {
-          while (m.remaining > 0) {
-            this.processMessage(m)
-          }
-          if (m.overread) {
-            throw new Error('overread')
-          }
-        } catch (error) {
-          console.error('neterr', error)
-          console.log(m.debugBuf, m)
-          this.room.disconnect()
-        }
-      }
-    })
-    room.registerDisc(() => {
-      if (this.room === room) {
-        this.chat.addSysMessage('You disconnected.')
-        this.room = undefined
-      } else {
-        this.chat.addSysMessage('You disconnected from the old room.')
-      }
-    })
-
-    const welcomeBuf = new ByteWriter()
-    welcomeBuf.putInt(PROTOCOL_VERSION)
-    welcomeBuf.putString(name)
-    room.send(welcomeBuf.toArray())
-
-    this.chat.addSysMessage('You are joining the game.')
+    this.setupGame(room)
+    this.sendf('is', PROTOCOL_VERSION, name)
   }
 
-  leaveGame (): void {
-    this.room?.disconnect()
-  }
-
-  sendReset (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RESET)
-      .toArray()
-    )
-  }
-
-  sendRename (newName: string): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RENAME)
-      .putString(newName)
-      .toArray()
-    )
-  }
-
-  sendActive (active: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.ACTIVE)
-      .putBool(active)
-      .toArray()
-    )
-  }
-
-  sendChat (s: string, flags: number, target = -1): void {
-    if (!this.room) {
-      this.chat.addSysMessage('cannot send chat message: not connected to game room')
-      return
-    }
-    this.room.send(new ByteWriter()
-      .putInt(C2S.CHAT)
-      .putInt(flags)
-      .putInt(target)
-      .putString(s.slice(0, MAX_CHAT_LEN))
-      .toArray()
-    )
-  }
-
-  sendReady (ready: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.READY)
-      .putBool(ready)
-      .toArray()
-    )
-  }
-
-  sendMove (n: number, c: number): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE)
-      .putInt(1)
-      .putInt(n)
-      .putInt(c)
-      .toArray()
-    )
-  }
-
-  sendMoveTransfer (a: number, b: number): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE)
-      .putInt(0)
-      .putInt(a)
-      .putInt(b)
-      .toArray()
-    )
-  }
-
-  sendMoveEnd (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE_END)
-      .toArray()
-    )
-  }
+  sendReset (): void { this.sendf('i', C2S.RESET) }
+  sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
+  sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
+  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
+  sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
+  sendMove (n: number, c: number): void { this.sendf('i4', C2S.MOVE, 1, n, c) }
+  sendMoveTransfer (a: number, b: number): void { this.sendf('i4', C2S.MOVE, 0, a, b) }
+  sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   addHistory (history: PresidentGameHistory): void {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
@@ -336,7 +205,7 @@ export class PresidentGame {
     return player?.owner === this.localClient.cn
   }
 
-  private processMessage (m: ByteReader): void {
+  processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {
       case S2C.WELCOME: {

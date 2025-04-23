@@ -2,10 +2,11 @@
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import TwoPlayerEarlyEnd from '@gmc/TwoPlayerEarlyEnd.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { Winner } from '@/game/common/t3/game'
 
-import { GameState, type UT3Game } from './UT3Game2.svelte'
+import type { UT3Game } from './UT3Game2.svelte'
 
 import Board from './Board.svelte'
 

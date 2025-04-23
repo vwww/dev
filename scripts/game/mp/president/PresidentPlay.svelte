@@ -1,5 +1,7 @@
 <script lang="ts">
 import CardCountTable from '@gmc/CardCountTable.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
+
 import type { PresidentGame } from './PresidentGame2.svelte'
 
 interface Props {

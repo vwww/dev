@@ -1,7 +1,8 @@
-import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
+import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type RPSMode } from './gamemode'
@@ -36,22 +37,7 @@ const enum C2S {
   MOVE_END,
 }
 
-export const enum GameState {
-  WAITING,
-  INTERMISSION,
-  ACTIVE,
-}
-
-class RPSClient {
-  cn = $state(-1)
-  name = $state('unnamed')
-  active = $state(false)
-  rank = $state(0)
-  ping = $state(-1)
-
-  ready = $state(false)
-  inRound = $state(false)
-
+class RPSClient extends OneTurnClient {
   roundScore = $state(0)
   roundStreak = $state(0)
 
@@ -78,10 +64,6 @@ class RPSClient {
     this.battleLosses = 0
     this.battleTies = 0
     this.battleTotal = 0
-  }
-
-  formatName () {
-    return `${this.name} (${this.cn})`
   }
 }
 
@@ -114,129 +96,27 @@ const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 5000
 
-export class RPSGame {
+export class RPSGame extends OneTurnGame<RPSClient> {
   mode: RPSMode = $state(defaultMode())
 
   pendingMove = $state(0)
 
-  localClient = new RPSClient()
-  clients: RPSClient[] = []
-  leaderboard: RPSClient[] = $state([])
-  roundState = $state(GameState.WAITING)
-  roundTimerStart = $state(0)
-  roundTimerEnd = $state(0)
-
-  roundPlayers: RPSClient[] = $state([])
-  roundPlayerQueue: RPSClient[] = $state([])
-
   pastGames: RPSGameHistory[] = $state([])
 
-  room?: BaseGameRoom = $state()
-
-  constructor (public chat: ChatState) {
-    setTimeout(logBugReportInstructions, 100)
-  }
+  override newClient () { return new RPSClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
-    this.room?.disconnect()
-    this.room = room
-    room.registerRecv((msg) => {
-      if (this.room === room) {
-        const m = new ByteReader(msg)
-        try {
-          while (m.remaining > 0) {
-            this.processMessage(m)
-          }
-          if (m.overread) {
-            throw new Error('overread')
-          }
-        } catch (error) {
-          console.error('neterr', error)
-          console.log(m.debugBuf, m)
-          this.room.disconnect()
-        }
-      }
-    })
-    room.registerDisc(() => {
-      if (this.room === room) {
-        this.chat.addSysMessage('You disconnected.')
-        this.room = undefined
-      } else {
-        this.chat.addSysMessage('You disconnected from the old room.')
-      }
-    })
-
-    const welcomeBuf = new ByteWriter()
-    welcomeBuf.putInt(PROTOCOL_VERSION)
-    welcomeBuf.putString(name)
-    room.send(welcomeBuf.toArray())
-
-    this.chat.addSysMessage('You are joining the game.')
+    this.setupGame(room)
+    this.sendf('is', PROTOCOL_VERSION, name)
   }
 
-  leaveGame (): void {
-    this.room?.disconnect()
-  }
-
-  sendReset (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RESET)
-      .toArray()
-    )
-  }
-
-  sendRename (newName: string): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RENAME)
-      .putString(newName)
-      .toArray()
-    )
-  }
-
-  sendActive (active: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.ACTIVE)
-      .putBool(active)
-      .toArray()
-    )
-  }
-
-  sendChat (s: string, flags: number, target = -1): void {
-    if (!this.room) {
-      this.chat.addSysMessage('cannot send chat message: not connected to game room')
-      return
-    }
-    this.room.send(new ByteWriter()
-      .putInt(C2S.CHAT)
-      .putInt(flags)
-      .putInt(target)
-      .putString(s.slice(0, MAX_CHAT_LEN))
-      .toArray()
-    )
-  }
-
-  sendReady (ready: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.READY)
-      .putBool(ready)
-      .toArray()
-    )
-  }
-
-  sendMove (n: number): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE)
-      .putInt(n)
-      .toArray()
-    )
-  }
-
-  sendMoveEnd (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE_END)
-      .toArray()
-    )
-  }
+  sendReset (): void { this.sendf('i', C2S.RESET) }
+  sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
+  sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
+  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
+  sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
+  sendMove (n: number): void { this.sendf('i2', C2S.MOVE, n) }
+  sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   addHistory (history: RPSGameHistory): void {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
@@ -248,7 +128,7 @@ export class RPSGame {
     this.pastGames = []
   }
 
-  private processMessage (m: ByteReader): void {
+  processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {
       case S2C.WELCOME: {

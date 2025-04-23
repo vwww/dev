@@ -1,8 +1,9 @@
 import { clamp } from '@/util'
-import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
+import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type CheatMode } from './gamemode'
@@ -39,22 +40,7 @@ const enum C2S {
   MOVE_END,
 }
 
-export const enum GameState {
-  WAITING,
-  INTERMISSION,
-  ACTIVE,
-}
-
-class CheatClient {
-  cn = $state(-1)
-  name = $state('unnamed')
-  active = $state(false)
-  rank = $state(0)
-  ping = $state(-1)
-
-  ready = $state(false)
-  inRound = $state(false)
-
+class CheatClient extends RoundRobinClient {
   score = $state(0)
 
   wins = $state(0)
@@ -73,10 +59,6 @@ class CheatClient {
     this.rankLast = 0
     this.rankBest = 0
     this.rankWorst = 0
-  }
-
-  formatName () {
-    return `${this.name} (${this.cn})`
   }
 }
 
@@ -127,7 +109,7 @@ const INTERMISSION_TIME = 30000
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
-export class CheatGame {
+export class CheatGame extends RoundRobinGame<CheatClient> {
   mode: CheatMode = $state(defaultMode())
 
   canCallCheat = $state(false)
@@ -146,113 +128,23 @@ export class CheatGame {
   pendingMove = $state(newZeroCardCount())
   pendingMoveClaim = $state(0)
 
-  localClient = new CheatClient()
-  clients: CheatClient[] = []
-  leaderboard: CheatClient[] = $state([])
-  roundState = $state(GameState.WAITING)
-  roundTimerStart = $state(0)
-  roundTimerEnd = $state(0)
-
-  roundPlayers: CheatClient[] = $state([])
-  roundPlayerQueue: CheatClient[] = $state([])
-
   playerInfo: CheatPlayerInfo[] = $state([])
   playerDiscInfo: CheatDiscInfo[] = $state([])
 
   pastGames: CheatGameHistory[] = $state([])
 
-  room?: BaseGameRoom = $state()
-
-  constructor (public chat: ChatState) {
-    setTimeout(logBugReportInstructions, 100)
-  }
+  override newClient () { return new CheatClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
-    this.room?.disconnect()
-    this.room = room
-    room.registerRecv((msg) => {
-      if (this.room === room) {
-        const m = new ByteReader(msg)
-        try {
-          while (m.remaining > 0) {
-            this.processMessage(m)
-          }
-          if (m.overread) {
-            throw new Error('overread')
-          }
-        } catch (error) {
-          console.error('neterr', error)
-          console.log(m.debugBuf, m)
-          this.room.disconnect()
-        }
-      }
-    })
-    room.registerDisc(() => {
-      if (this.room === room) {
-        this.chat.addSysMessage('You disconnected.')
-        this.room = undefined
-      } else {
-        this.chat.addSysMessage('You disconnected from the old room.')
-      }
-    })
-
-    const welcomeBuf = new ByteWriter()
-    welcomeBuf.putInt(PROTOCOL_VERSION)
-    welcomeBuf.putString(name)
-    room.send(welcomeBuf.toArray())
-
-    this.chat.addSysMessage('You are joining the game.')
+    this.setupGame(room)
+    this.sendf('is', PROTOCOL_VERSION, name)
   }
 
-  leaveGame (): void {
-    this.room?.disconnect()
-  }
-
-  sendReset (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RESET)
-      .toArray()
-    )
-  }
-
-  sendRename (newName: string): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RENAME)
-      .putString(newName)
-      .toArray()
-    )
-  }
-
-  sendActive (active: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.ACTIVE)
-      .putBool(active)
-      .toArray()
-    )
-  }
-
-  sendChat (s: string, flags: number, target = -1): void {
-    if (!this.room) {
-      this.chat.addSysMessage('cannot send chat message: not connected to game room')
-      return
-    }
-    this.room.send(new ByteWriter()
-      .putInt(C2S.CHAT)
-      .putInt(flags)
-      .putInt(target)
-      .putString(s.slice(0, MAX_CHAT_LEN))
-      .toArray()
-    )
-  }
-
-  sendReady (ready: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.READY)
-      .putBool(ready)
-      .toArray()
-    )
-  }
-
+  sendReset (): void { this.sendf('i', C2S.RESET) }
+  sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
+  sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
+  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
+  sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (n: number, c: number): void {
     // TODO send actual counts after claim
     this.room?.send(new ByteWriter()
@@ -264,21 +156,8 @@ export class CheatGame {
       .toArray()
     )
   }
-
-  sendMoveCallCheat (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE)
-      .putInt(1)
-      .toArray()
-    )
-  }
-
-  sendMoveEnd (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE_END)
-      .toArray()
-    )
-  }
+  sendMoveCallCheat (): void { this.sendf('i2', C2S.MOVE, 1) }
+  sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   addHistory (history: CheatGameHistory): void {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
@@ -301,7 +180,7 @@ export class CheatGame {
     return player?.owner === this.localClient.cn
   }
 
-  private processMessage (m: ByteReader): void {
+  processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {
       case S2C.WELCOME: {

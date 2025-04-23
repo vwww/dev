@@ -1,3 +1,5 @@
+import type { Repeat } from '@/util'
+
 export class ByteWriter {
   private readonly buf: number[] = []
 
@@ -69,7 +71,50 @@ export class ByteWriter {
     return this
   }
 
+  putFmt<Fmt extends string>(fmt: Fmt, ...args: FmtArgs<Fmt>): this {
+    for (let i = 0, j = 0; i < fmt.length; i++) {
+      const spec = fmt[i] as Spec
+      let n = fmt[i+1] >= '0' && fmt[i+1] <= '9' ? +fmt[++i] : 1
+      switch (spec) {
+        case 's':
+          while(n--) this.putString(args[j++])
+          break
+        case 'i':
+          while(n--) this.putInt(args[j++])
+          break
+        case 'b':
+          while(n--) this.putBool(args[j++])
+          break
+        case 'd':
+          while(n--) this.putFloat64(args[j++])
+          break
+      }
+    }
+    return this
+  }
+
   toArray (): Uint8Array {
     return new Uint8Array(this.buf)
   }
+
+  static fw<Fmt extends string>(fmt: Fmt, ...args: FmtArgs<Fmt>) {
+    return new ByteWriter().putFmt(fmt, ...args)
+  }
+
+  static f<Fmt extends string>(fmt: Fmt, ...args: FmtArgs<Fmt>) {
+    return ByteWriter.fw(fmt, ...args).toArray()
+  }
 }
+
+type Spec = 's' | 'i' | 'b' | 'd'
+type SpecType<S extends Spec> =
+  S extends 'd' | 'i' ? number :
+  S extends 'b' ? boolean :
+  S extends 's' ? string :
+  never
+
+export type FmtArgs<Fmt extends string> =
+  Fmt extends `${infer S extends Spec}${infer N extends number}${infer Rest}` ? [...Repeat<SpecType<S>, N>, ...FmtArgs<Rest>] :
+  Fmt extends `${infer S extends Spec}${infer Rest}` ? [SpecType<S>, ...FmtArgs<Rest>] :
+  Fmt extends '' ? [] :
+  never

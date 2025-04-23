@@ -8,8 +8,9 @@ import PlayCard from '@gmc/PlayCard.svelte'
 import TwoPlayerWinner from '@gmc/TwoPlayerWinner.svelte'
 import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { GameState, UT3Game } from './UT3Game2.svelte'
+import { UT3Game } from './UT3Game2.svelte'
 import UT3Play from './UT3Play.svelte'
 
 import { pState } from '@/util/svelte.svelte'

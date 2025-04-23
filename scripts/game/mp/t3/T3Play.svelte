@@ -2,11 +2,12 @@
 import Board from '@gc/t3/Board.svelte'
 import BoardCell from '@gc/t3/BoardCell.svelte'
 
-import { GameState, type T3Game } from './T3Game2.svelte'
-
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import TwoPlayerEarlyEnd from '@gmc/TwoPlayerEarlyEnd.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
+
+import type { T3Game } from './T3Game2.svelte'
 
 import { getGameModeString } from './gamemode'
 

@@ -1,57 +1,13 @@
-import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
-import { ByteWriter } from '@gmc/game/ByteWriter'
+import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { type ActionlessMode, defaultMode } from './gamemode'
+import { C2S, S2C } from './protocol'
 
-const enum S2C {
-  WELCOME,
-  JOIN,
-  LEAVE,
-  RESET,
-  RENAME,
-  PING,
-  PING_TIME,
-  CHAT,
-  ACTIVE,
-  ROUND_WAIT,
-  ROUND_INTERM,
-  ROUND_START,
-  READY,
-  MOVE_CONFIRM,
-  END_ROUND,
-  END_TURN, // unused
-}
-
-const enum C2S {
-  RESET,
-  RENAME,
-  PONG,
-  CHAT,
-  ACTIVE,
-  READY,
-  MOVE, // unused
-  MOVE_END, // unused
-}
-
-export const enum GameState {
-  WAITING,
-  INTERMISSION,
-  ACTIVE,
-}
-
-class ActionlessClient {
-  cn = $state(-1)
-  name = $state('unnamed')
-  active = $state(false)
-  rank = $state(0)
-  ping = $state(-1)
-
-  ready = $state(false)
-  inRound = $state(false)
-
+class ActionlessClient extends OneTurnClient {
   wins = $state(0)
   losses = $state(0)
   total = $state(0)
@@ -62,10 +18,6 @@ class ActionlessClient {
     this.losses = 0
     this.total = 0
     this.streak = 0
-  }
-
-  formatName () {
-    return `${this.name} (${this.cn})`
   }
 }
 
@@ -90,112 +42,23 @@ const PROTOCOL_VERSION = 0
 const INTERMISSION_TIME = 5000
 const ROUND_TIME = 3000
 
-export class ActionlessGame {
+export class ActionlessGame extends OneTurnGame<ActionlessClient> {
   mode: ActionlessMode = $state(defaultMode())
-
-  localClient = new ActionlessClient()
-  clients: ActionlessClient[] = []
-  leaderboard: ActionlessClient[] = $state([])
-  roundState = $state(GameState.WAITING)
-  roundTimerStart = $state(0)
-  roundTimerEnd = $state(0)
-
-  roundPlayers: ActionlessClient[] = $state([])
-  roundPlayerQueue: ActionlessClient[] = $state([])
 
   pastGames: ActionlessGameHistory[] = $state([])
 
-  room?: BaseGameRoom = $state()
-
-  constructor (public chat: ChatState) {
-    setTimeout(logBugReportInstructions, 100)
-  }
+  override newClient () { return new ActionlessClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
-    this.room?.disconnect()
-    this.room = room
-    room.registerRecv((msg) => {
-      if (this.room === room) {
-        const m = new ByteReader(msg)
-        try {
-          while (m.remaining > 0) {
-            this.processMessage(m)
-          }
-          if (m.overread) {
-            throw new Error('overread')
-          }
-        } catch (error) {
-          console.error('neterr', error)
-          console.log(m.debugBuf, m)
-          this.room.disconnect()
-        }
-      }
-    })
-    room.registerDisc(() => {
-      if (this.room === room) {
-        this.chat.addSysMessage('You disconnected.')
-        this.room = undefined
-      } else {
-        this.chat.addSysMessage('You disconnected from the old room.')
-      }
-    })
-
-    const welcomeBuf = new ByteWriter()
-    welcomeBuf.putInt(PROTOCOL_VERSION)
-    welcomeBuf.putString(name)
-    room.send(welcomeBuf.toArray())
-
-    this.chat.addSysMessage('You are joining the game.')
+    this.setupGame(room)
+    this.sendf('is', PROTOCOL_VERSION, name)
   }
 
-  leaveGame (): void {
-    this.room?.disconnect()
-  }
-
-  sendReset (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RESET)
-      .toArray()
-    )
-  }
-
-  sendRename (newName: string): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RENAME)
-      .putString(newName)
-      .toArray()
-    )
-  }
-
-  sendActive (active: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.ACTIVE)
-      .putBool(active)
-      .toArray()
-    )
-  }
-
-  sendChat (s: string, flags: number, target = -1): void {
-    if (!this.room) {
-      this.chat.addSysMessage('cannot send chat message: not connected to game room')
-      return
-    }
-    this.room.send(new ByteWriter()
-      .putInt(C2S.CHAT)
-      .putInt(flags)
-      .putInt(target)
-      .putString(s.slice(0, MAX_CHAT_LEN))
-      .toArray()
-    )
-  }
-
-  sendReady (ready: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.READY)
-      .putBool(ready)
-      .toArray()
-    )
-  }
+  sendReset (): void { this.sendf('i', C2S.RESET) }
+  sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
+  sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
+  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
+  sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
 
   addHistory (history: ActionlessGameHistory): void {
     if (this.pastGames.length >= MAX_HISTORY_LEN)
@@ -207,7 +70,7 @@ export class ActionlessGame {
     this.pastGames = []
   }
 
-  private processMessage (m: ByteReader): void {
+  override processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {
       case S2C.WELCOME: {
@@ -331,11 +194,7 @@ export class ActionlessGame {
       }
       case S2C.PING: {
         // send pong
-        this.room?.send(new ByteWriter()
-          .putInt(C2S.PONG)
-          .putInt(m.getInt())
-          .toArray()
-        )
+        this.sendf('i2', C2S.PONG, m.getInt())
         break
       }
       case S2C.PING_TIME: {
@@ -417,10 +276,6 @@ export class ActionlessGame {
         }
         break
       }
-      case S2C.MOVE_CONFIRM:
-        break
-      case S2C.END_TURN:
-        break
       case S2C.END_ROUND:
         this.processEndRound(m)
         break

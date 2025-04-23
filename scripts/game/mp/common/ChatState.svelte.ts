@@ -171,6 +171,7 @@ interface ChatGameInterface {
   sendChat(s: string, flags: number, target?: number): void
   leaveGame(): void
 
+  room?: object
   chat: ChatState
 }
 
@@ -184,6 +185,14 @@ export function processChat (g: ChatGameInterface, s: string): void {
   // const SAY_CLIENT = (1 << 3) - 1
   // const SAY_SPAM = 1 << 3
 
+  function sendChat (s: string, flags: number, target?: number): void {
+    if (!g.room) {
+      g.chat.addSysMessage('cannot send chat message: not connected to game room')
+      return
+    }
+    g.sendChat(s, flags, target)
+  }
+
   if (s.length > 0 && s[0] === '/') {
     const firstSpace = s.indexOf(' ', 1)
     const [cmd, text] = firstSpace < 0 ? [s.slice(1), ''] : [s.slice(1, firstSpace), s.slice(firstSpace + 1)]
@@ -193,14 +202,14 @@ export function processChat (g: ChatGameInterface, s: string): void {
         me = true
         // fallthrough
       case 'say':
-        if (text) g.sendChat(text, (me ? SAY_ACTION : 0) | SAY_TARGET_ALL)
+        if (text) sendChat(text, (me ? SAY_ACTION : 0) | SAY_TARGET_ALL)
         break
 
       case 'meteam':
         me = true
         // fallthrough
       case 'sayteam':
-        if (text) g.sendChat(text, (me ? SAY_ACTION : 0) | SAY_TARGET_TEAM)
+        if (text) sendChat(text, (me ? SAY_ACTION : 0) | SAY_TARGET_TEAM)
         break
 
       case 'mew':
@@ -220,7 +229,7 @@ export function processChat (g: ChatGameInterface, s: string): void {
           target = +match
           i = match.length
         }
-        if (text.length > i) g.sendChat(text.slice(i), (me ? SAY_ACTION : 0) | SAY_TARGET_WHISPER, target)
+        if (text.length > i) sendChat(text.slice(i), (me ? SAY_ACTION : 0) | SAY_TARGET_WHISPER, target)
         break
       }
 
@@ -270,6 +279,6 @@ export function processChat (g: ChatGameInterface, s: string): void {
           i++
       }
     }
-    if (s.length > i) g.sendChat(s.slice(i), flags, target)
+    if (s.length > i) sendChat(s.slice(i), flags, target)
   }
 }

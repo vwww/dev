@@ -7,8 +7,9 @@ import NameBox from '@gmc/NameBox.svelte'
 import PlayCard from '@gmc/PlayCard.svelte'
 import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { PresidentGame, GameState } from './PresidentGame2.svelte'
+import { PresidentGame } from './PresidentGame2.svelte'
 import PresidentHistory from './PresidentHistory.svelte'
 import PresidentPlay from './PresidentPlay.svelte'
 

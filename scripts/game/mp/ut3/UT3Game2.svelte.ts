@@ -1,9 +1,10 @@
 import { clamp } from '@/util'
 import { isFull, isNearWin, isWin } from '@gc/t3/game'
-import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions, filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
+import { TPTurnClient, TPTurnGame } from '@gmc/game/TwoPlayerTurnGame.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type UT3Mode } from './gamemode'
@@ -40,43 +41,6 @@ const enum C2S {
   FORFEIT,
   OFFER_DRAW,
   REJECT_DRAW,
-}
-
-export const enum GameState {
-  WAITING,
-  INTERMISSION,
-  ACTIVE,
-}
-
-class TPTurnClient {
-  cn = $state(-1)
-  name = $state('unnamed')
-  active = $state(false)
-  rank = $state(0)
-  ping = $state(-1)
-
-  ready = $state(false)
-  inRound = $state(false)
-
-  score = $state(0) // 4 * win + 2 * tie + loss
-  wins = $state(0)
-  loss = $state(0)
-  ties = $state(0)
-  total = $state(0)
-  streak = $state(0)
-
-  resetScore () {
-    this.score = 0
-    this.wins = 0
-    this.loss = 0
-    this.ties = 0
-    this.total = 0
-    this.streak = 0
-  }
-
-  formatName () {
-    return `${this.name} (${this.cn})`
-  }
 }
 
 export interface TPTurnHistory {
@@ -116,22 +80,12 @@ const INTERMISSION_TIME = 30000
 
 const MAX_TURNS = 81
 
-export class UT3Game {
+export class UT3Game extends TPTurnGame {
   mode: UT3Mode = $state(defaultMode())
 
   boardStates = $state([INITIAL_STATE])
   boardIndex = $state(0)
   moveHistory = $state([] as [number, number][])
-
-  localClient = new TPTurnClient()
-  clients: TPTurnClient[] = []
-  leaderboard: TPTurnClient[] = $state([])
-  roundState = $state(GameState.WAITING)
-  roundTimerStart = $state(0)
-  roundTimerEnd = $state(0)
-
-  roundPlayers: TPTurnClient[] = $state([])
-  roundPlayerQueue: TPTurnClient[] = $state([])
 
   p0 = -1
   p1 = -1
@@ -143,134 +97,21 @@ export class UT3Game {
 
   pastGames: TPTurnHistory[] = $state([])
 
-  room?: BaseGameRoom = $state()
-
-  constructor (public chat: ChatState) {
-    setTimeout(logBugReportInstructions, 100)
-  }
-
   enterGame (room: BaseGameRoom, name: string): void {
-    this.room?.disconnect()
-    this.room = room
-    room.registerRecv((msg) => {
-      if (this.room === room) {
-        const m = new ByteReader(msg)
-        try {
-          while (m.remaining > 0) {
-            this.processMessage(m)
-          }
-          if (m.overread) {
-            throw new Error('overread')
-          }
-        } catch (error) {
-          console.error('neterr', error)
-          console.log(m.debugBuf, m)
-          this.room.disconnect()
-        }
-      }
-    })
-    room.registerDisc(() => {
-      if (this.room === room) {
-        this.chat.addSysMessage('You disconnected.')
-        this.room = undefined
-      } else {
-        this.chat.addSysMessage('You disconnected from the old room.')
-      }
-    })
-
-    const welcomeBuf = new ByteWriter()
-    welcomeBuf.putInt(PROTOCOL_VERSION)
-    welcomeBuf.putString(name)
-    room.send(welcomeBuf.toArray())
-
-    this.chat.addSysMessage('You are joining the game.')
+    this.setupGame(room)
+    this.sendf('is', PROTOCOL_VERSION, name)
   }
 
-  leaveGame (): void {
-    this.room?.disconnect()
-  }
-
-  sendReset (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RESET)
-      .toArray()
-    )
-  }
-
-  sendRename (newName: string): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.RENAME)
-      .putString(newName)
-      .toArray()
-    )
-  }
-
-  sendActive (active: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.ACTIVE)
-      .putBool(active)
-      .toArray()
-    )
-  }
-
-  sendChat (s: string, flags: number, target = -1): void {
-    if (!this.room) {
-      this.chat.addSysMessage('cannot send chat message: not connected to game room')
-      return
-    }
-    this.room.send(new ByteWriter()
-      .putInt(C2S.CHAT)
-      .putInt(flags)
-      .putInt(target)
-      .putString(s.slice(0, MAX_CHAT_LEN))
-      .toArray()
-    )
-  }
-
-  sendReady (ready: boolean): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.READY)
-      .putBool(ready)
-      .toArray()
-    )
-  }
-
-  sendMove (board: number, pos: number): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE)
-      .putInt(board)
-      .putInt(pos)
-      .toArray()
-    )
-  }
-
-  sendMoveEnd (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE_END)
-      .toArray()
-    )
-  }
-
-  sendResign (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.FORFEIT)
-      .toArray()
-    )
-  }
-
-  sendDrawOffer (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.OFFER_DRAW)
-      .toArray()
-    )
-  }
-
-  sendDrawReject (): void {
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.REJECT_DRAW)
-      .toArray()
-    )
-  }
+  sendReset (): void { this.sendf('i', C2S.RESET) }
+  sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
+  sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
+  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
+  sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
+  sendMove (board: number, pos: number): void { this.sendf('i3', C2S.MOVE, board, pos) }
+  sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
+  sendResign (): void { this.sendf('i', C2S.FORFEIT) }
+  sendDrawOffer (): void { this.sendf('i', C2S.OFFER_DRAW) }
+  sendDrawReject (): void { this.sendf('i', C2S.REJECT_DRAW) }
 
   historyGo (index: number): void {
     this.boardIndex = clamp(index, 0, this.moveHistory.length)
@@ -286,7 +127,7 @@ export class UT3Game {
     this.pastGames = []
   }
 
-  private processMessage (m: ByteReader): void {
+  processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {
       case S2C.WELCOME: {
