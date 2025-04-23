@@ -843,7 +843,7 @@ function updateScore (c: DiscardClient, rank: number, totalPlayers: number): voi
   }
 }
 
-type CardCount = [number, number, number, number, number, number, number, number]
+type CardCount = Repeat<number, 8>
 type CardCountTotal = [...CardCount, number]
 
 const baseCardCount: CardCountTotal = [5, 2, 2, 2, 2, 1, 1, 1, 15]
