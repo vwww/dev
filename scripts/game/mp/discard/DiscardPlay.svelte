@@ -221,7 +221,7 @@ export function getCardName (card: number, ll: boolean): string | number {
     <DiscardMoveHistory moves={moveHistory} {ll} />
   </div>
   <div class="col mt-2">
-    Draw pile count: ${deckSize}
+    Draw pile count: {deckSize}
     {#if showCardCount}
       <CardCountTable
         ranks={['1', '2', '3', '4', '5', '6', '7', '8', 'Total']}
