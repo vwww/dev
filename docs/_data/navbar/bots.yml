@@ -14,7 +14,7 @@
         href: https://twitter.com/_grammar_
         ext: true
   - name: Random Words
-    desc: '[no account yet] spews a stream of random words.'
+    desc: 'This bot spews a stream of random words.'
     href: bots/random
     badges:
       - [warning, Local]
@@ -33,7 +33,7 @@
         href: https://twitter.com/prosegen
         ext: true
     badges:
-      - [secondary, Future]
+      - [secondary, TODO]
       - [warning, Local]
   - name: GooGuns Lulz
     desc: '@googuns_lulz is like other @googuns_ accounts, yet very different.'
