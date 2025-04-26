@@ -3,7 +3,6 @@ import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type PresidentMode } from './gamemode'
@@ -59,6 +58,18 @@ class PresidentClient extends RoundRobinClient {
     this.rank0 = 0
     this.rank1s = 0
     this.rank2s = 0
+  }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.score = m.getInt()
+    this.streak = m.getInt()
+    this.rank2p = m.getInt()
+    this.rank1p = m.getInt()
+    this.rank0 = m.getInt()
+    this.rank1s = m.getInt()
+    this.rank2s = m.getInt()
   }
 }
 
@@ -125,8 +136,6 @@ const enum PresidentModeFirstTrick {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 30000
@@ -134,7 +143,7 @@ const INTERMISSION_TIME = 30000
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
-export class PresidentGame extends RoundRobinGame<PresidentClient> {
+export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentGameHistory> {
   mode: PresidentMode = $state(defaultMode())
 
   gamePhase = $state(0 as GamePhase)
@@ -166,8 +175,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient> {
   playerInfo: PresidentPlayerInfo[] = $state([])
   playerDiscInfo: PresidentDiscInfo[] = $state([])
 
-  pastGames: PresidentGameHistory[] = $state([])
-
   override newClient () { return new PresidentClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
@@ -183,16 +190,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient> {
   sendMove (n: number, c: number): void { this.sendf('i4', C2S.MOVE, 1, n, c) }
   sendMoveTransfer (a: number, b: number): void { this.sendf('i4', C2S.MOVE, 0, a, b) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
-
-  addHistory (history: PresidentGameHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
-  }
 
   formatPlayerName (player?: PresidentPlayerInfo, pn?: number): string {
     if (!player) {
@@ -241,20 +238,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient> {
           if (cn < 0) break
           const p = cn == myCn ? this.localClient : new PresidentClient()
           p.cn = cn
-          p.active = m.getBool()
-          p.name = filterName(m.getString(MAX_NAME_LEN))
-          p.ping = m.getInt()
-
-          p.ready = false
-          p.inRound = false
-
-          p.score = m.getInt()
-          p.streak = m.getInt()
-          p.rank2p = m.getInt()
-          p.rank1p = m.getInt()
-          p.rank0 = m.getInt()
-          p.rank1s = m.getInt()
-          p.rank2s = m.getInt()
+          p.readWelcome(m)
           this.clients[cn] = p
         }
 
@@ -610,50 +594,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient> {
       (p) => p.rank1p,
       (p) => p.rank0,
     ])
-  }
-
-  private playerActivated (player: PresidentClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: PresidentClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
   }
 
   private processGiveCardInfo (m: ByteReader): void {

@@ -1,8 +1,10 @@
 import type ChatState from '@gmc/ChatState.svelte'
-import { logBugReportInstructions } from '@gmc/game/common'
+import { filterName, logBugReportInstructions } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter, type FmtArgs } from '@gmc/game/ByteWriter'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
+
+const MAX_NAME_LEN = 20
 
 export class CommonClient {
   cn = $state(-1)
@@ -14,6 +16,12 @@ export class CommonClient {
   formatName () {
     return `${this.name} (${this.cn})`
   }
+
+  readWelcome (m: ByteReader): void {
+    this.active = m.getBool()
+    this.name = filterName(m.getString(MAX_NAME_LEN))
+    this.ping = m.getInt()
+  }
 }
 
 export abstract class CommonGame<C> {
@@ -21,7 +29,6 @@ export abstract class CommonGame<C> {
 
   localClient: C
   clients: C[] = []
-  clientsNonNull: C[] = []
   leaderboard: C[] = $state([])
 
   abstract newClient (): C

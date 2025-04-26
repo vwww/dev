@@ -1,7 +1,6 @@
 import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { type ActionlessMode, defaultMode } from './gamemode'
@@ -19,6 +18,15 @@ class ActionlessClient extends OneTurnClient {
     this.total = 0
     this.streak = 0
   }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.wins = m.getInt()
+    this.losses = m.getInt()
+    this.total = this.wins + this.losses
+    this.streak = m.getInt()
+  }
 }
 
 export interface ActionlessGameHistory {
@@ -35,17 +43,13 @@ export interface ActionlessGameHistoryWin {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 5000
 const ROUND_TIME = 3000
 
-export class ActionlessGame extends OneTurnGame<ActionlessClient> {
+export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGameHistory> {
   mode: ActionlessMode = $state(defaultMode())
-
-  pastGames: ActionlessGameHistory[] = $state([])
 
   override newClient () { return new ActionlessClient }
 
@@ -59,16 +63,6 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient> {
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
   sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
-
-  addHistory (history: ActionlessGameHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
-  }
 
   override processMessage (m: ByteReader): void {
     const type = m.getInt()
@@ -91,17 +85,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient> {
           if (cn < 0) break
           const player = cn == myCn ? this.localClient : new ActionlessClient()
           player.cn = cn
-          player.active = m.getBool()
-          player.name = filterName(m.getString(MAX_NAME_LEN))
-          player.ping = m.getInt()
-
-          player.ready = false
-          player.inRound = false
-
-          player.wins = m.getInt()
-          player.losses = m.getInt()
-          player.total = player.wins + player.losses
-          player.streak = m.getInt()
+          player.readWelcome(m)
           this.clients[cn] = player
         }
 
@@ -111,7 +95,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient> {
         } else if (roundState === 1) {
           this.roundIntermission(m.getInt())
           for (let i = 0; i <= MAX_PLAYERS; i++) {
-            const cn = m.getInt()
+            const cn = filterCN(m.getInt())
             if (cn < 0) break
             const p = this.clients[cn]
             if (!p) continue
@@ -327,49 +311,5 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient> {
       (p) => p.wins - p.losses,
       (p) => p.wins,
     ])
-  }
-
-  private playerActivated (player: ActionlessClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: ActionlessClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
   }
 }

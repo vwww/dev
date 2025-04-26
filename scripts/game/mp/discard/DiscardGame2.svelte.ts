@@ -3,7 +3,6 @@ import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type DiscardMode } from './gamemode'
@@ -59,6 +58,18 @@ class DiscardClient extends RoundRobinClient {
     this.rankLast = 0
     this.rankBest = 0
     this.rankWorst = 0
+  }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.score = m.getInt()
+    this.streak = m.getInt()
+    this.wins = m.getInt()
+    this.losses = m.getInt()
+    this.rankLast = m.getInt()
+    this.rankBest = m.getInt()
+    this.rankWorst = m.getInt()
   }
 }
 
@@ -135,8 +146,6 @@ interface DiscardMoveInfoTrade {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 30000
@@ -144,7 +153,7 @@ const INTERMISSION_TIME = 30000
 const CARDS_PER_DECK = 15
 const MAX_DECKS = 3
 
-export class DiscardGame extends RoundRobinGame<DiscardClient> {
+export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardGameHistory> {
   mode: DiscardMode = $state(defaultMode())
 
   myHand = $state(0)
@@ -161,8 +170,6 @@ export class DiscardGame extends RoundRobinGame<DiscardClient> {
 
   playerInfo: DiscardPlayerInfo[] = $state([])
   playerDiscInfo: DiscardDiscInfo[] = $state([])
-
-  pastGames: DiscardGameHistory[] = $state([])
 
   override newClient () { return new DiscardClient }
 
@@ -181,16 +188,6 @@ export class DiscardGame extends RoundRobinGame<DiscardClient> {
   sendMoveTarget (target: number): void { this.sendMove(this.pendingMoveUseHand, target, this.pendingMoveGuess) }
   sendMoveGuess (guess: number): void { this.sendMove(this.pendingMoveUseHand, this.pendingMoveTarget, guess) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
-
-  addHistory (history: DiscardGameHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
-  }
 
   formatPlayerName (player?: DiscardPlayerInfo, pn?: number): string {
     if (!player) {
@@ -224,20 +221,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient> {
           if (cn < 0) break
           const p = cn == myCn ? this.localClient : new DiscardClient()
           p.cn = cn
-          p.active = m.getBool()
-          p.name = filterName(m.getString(MAX_NAME_LEN))
-          p.ping = m.getInt()
-
-          p.ready = false
-          p.inRound = false
-
-          p.score = m.getInt()
-          p.streak = m.getInt()
-          p.wins = m.getInt()
-          p.losses = m.getInt()
-          p.rankLast = m.getInt()
-          p.rankBest = m.getInt()
-          p.rankWorst = m.getInt()
+          p.readWelcome(m)
           this.clients[cn] = p
         }
 
@@ -762,50 +746,6 @@ export class DiscardGame extends RoundRobinGame<DiscardClient> {
       (p) => p.wins,
       (p) => p.streak,
     ])
-  }
-
-  private playerActivated (player: DiscardClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: DiscardClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
   }
 
   private updateDiscardCount (card: number): void {

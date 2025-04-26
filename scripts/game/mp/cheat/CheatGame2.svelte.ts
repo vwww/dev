@@ -3,7 +3,6 @@ import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type CheatMode } from './gamemode'
@@ -60,6 +59,17 @@ class CheatClient extends RoundRobinClient {
     this.rankBest = 0
     this.rankWorst = 0
   }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.score = m.getInt()
+    this.wins = m.getInt()
+    this.streak = m.getInt()
+    this.rankLast = m.getInt()
+    this.rankBest = m.getInt()
+    this.rankWorst = m.getInt()
+  }
 }
 
 export class CheatPlayerInfo {
@@ -100,8 +110,6 @@ const enum CheatModeTricks {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 30000
@@ -109,7 +117,7 @@ const INTERMISSION_TIME = 30000
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
-export class CheatGame extends RoundRobinGame<CheatClient> {
+export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
   mode: CheatMode = $state(defaultMode())
 
   canCallCheat = $state(false)
@@ -130,8 +138,6 @@ export class CheatGame extends RoundRobinGame<CheatClient> {
 
   playerInfo: CheatPlayerInfo[] = $state([])
   playerDiscInfo: CheatDiscInfo[] = $state([])
-
-  pastGames: CheatGameHistory[] = $state([])
 
   override newClient () { return new CheatClient }
 
@@ -158,16 +164,6 @@ export class CheatGame extends RoundRobinGame<CheatClient> {
   }
   sendMoveCallCheat (): void { this.sendf('i2', C2S.MOVE, 1) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
-
-  addHistory (history: CheatGameHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
-  }
 
   formatPlayerName (player?: CheatPlayerInfo, pn?: number): string {
     if (!player) {
@@ -216,19 +212,7 @@ export class CheatGame extends RoundRobinGame<CheatClient> {
           if (cn < 0) break
           const p = cn == myCn ? this.localClient : new CheatClient()
           p.cn = cn
-          p.active = m.getBool()
-          p.name = filterName(m.getString(MAX_NAME_LEN))
-          p.ping = m.getInt()
-
-          p.ready = false
-          p.inRound = false
-
-          p.score = m.getInt()
-          p.wins = m.getInt()
-          p.streak = m.getInt()
-          p.rankLast = m.getInt()
-          p.rankBest = m.getInt()
-          p.rankWorst = m.getInt()
+          p.readWelcome(m)
           this.clients[cn] = p
         }
 
@@ -541,50 +525,6 @@ export class CheatGame extends RoundRobinGame<CheatClient> {
       (p) => p.wins,
       (p) => p.streak,
     ])
-  }
-
-  private playerActivated (player: CheatClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: CheatClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
   }
 }
 

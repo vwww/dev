@@ -1,12 +1,32 @@
+import type { ByteReader } from './ByteReader'
+import { formatClientName } from './common'
 import { TurnBasedClient, TurnBasedGame } from './TurnBasedGame.svelte'
 
-export class TPTurnClient extends TurnBasedClient {
+export class TwoPlayerTurnClient extends TurnBasedClient {
   score = $state(0) // 4 * win + 2 * tie + loss
   wins = $state(0)
   loss = $state(0)
   ties = $state(0)
   total = $state(0)
   streak = $state(0)
+
+  setResult (this: TwoPlayerTurnClient, win: number): void {
+    if (!win) {
+      this.wins++
+      if (this.streak < 0) this.streak = 0
+      this.streak++
+      this.score += 4
+    } else if (win === 1) {
+      this.loss++
+      if (this.streak > 0) this.streak = 0
+      this.streak--
+      this.score++
+    } else {
+      this.ties++
+      this.score += 2
+    }
+    this.total++
+  }
 
   resetScore () {
     this.score = 0
@@ -16,8 +36,76 @@ export class TPTurnClient extends TurnBasedClient {
     this.total = 0
     this.streak = 0
   }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.wins = m.getInt()
+    this.loss = m.getInt()
+    this.ties = m.getInt()
+    this.total = this.wins + this.loss + this.ties
+    this.streak = m.getInt()
+    this.score = (this.wins * 2 + this.ties) * 2 + this.loss
+  }
 }
 
-export abstract class TPTurnGame extends TurnBasedGame<TPTurnClient> {
-  override newClient () { return new TPTurnClient }
+export interface TwoPlayerTurnHistory {
+  p0Name: string
+  p1Name: string
+  winner: number
+  earlyEnd: boolean // forfeit or tie by agreement
+  ply: number
+}
+
+export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClient, TwoPlayerTurnHistory> {
+  p0 = -1
+  p1 = -1
+  ply = $state(0)
+  winner = $state(0)
+  myTurn = $state(false)
+  myPlayer = $state(0)
+  drawOffer = $state(0)
+
+  override newClient () { return new TwoPlayerTurnClient }
+
+  protected resetRound (): void {
+    this.ply = 0
+    this.winner = 0
+    this.drawOffer = 0
+  }
+
+  protected processEndRound (m: ByteReader): void {
+    const winner = m.getInt()
+    const earlyEnd = m.getBool()
+    const p0 = this.clients[this.p0]
+    const p1 = this.clients[this.p1]
+
+    p0?.setResult(winner)
+    p1?.setResult(1 - winner)
+
+    this.addHistory({
+      p0Name: formatClientName(p0, this.p0),
+      p1Name: formatClientName(p1, this.p1),
+      winner,
+      earlyEnd,
+      ply: this.ply,
+    })
+
+    this.winner = winner + 1
+    this.drawOffer = 0
+  }
+
+  protected processPlayerInfo (m: ByteReader): void {
+    this.p0 = m.getInt()
+    this.p1 = m.getInt()
+
+    const { cn } = this.localClient
+    this.myPlayer =
+      this.p0 === cn
+        ? 1
+        : this.p1 === cn
+          ? 2
+          : 0
+    this.myTurn = (this.myPlayer === 1)
+  }
 }

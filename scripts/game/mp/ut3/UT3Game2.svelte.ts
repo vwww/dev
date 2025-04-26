@@ -3,8 +3,7 @@ import { isFull, isNearWin, isWin } from '@gc/t3/game'
 import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { TPTurnClient, TPTurnGame } from '@gmc/game/TwoPlayerTurnGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
+import { TwoPlayerTurnClient, TwoPlayerTurnGame } from '@gmc/game/TwoPlayerTurnGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type UT3Mode } from './gamemode'
@@ -43,14 +42,6 @@ const enum C2S {
   REJECT_DRAW,
 }
 
-export interface TPTurnHistory {
-  p0Name: string
-  p1Name: string
-  winner: number
-  earlyEnd: boolean // forfeit or tie by agreement
-  ply: number
-}
-
 export interface BoardState {
   board: number
   boards: BoardStates
@@ -72,30 +63,18 @@ const INITIAL_STATE: BoardState = {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 30000
 
 const MAX_TURNS = 81
 
-export class UT3Game extends TPTurnGame {
+export class UT3Game extends TwoPlayerTurnGame {
   mode: UT3Mode = $state(defaultMode())
 
   boardStates = $state([INITIAL_STATE])
   boardIndex = $state(0)
   moveHistory = $state([] as [number, number][])
-
-  p0 = -1
-  p1 = -1
-  ply = $state(0)
-  winner = $state(0)
-  myTurn = $state(false)
-  myPlayer = $state(0)
-  drawOffer = $state(0)
-
-  pastGames: TPTurnHistory[] = $state([])
 
   enterGame (room: BaseGameRoom, name: string): void {
     this.setupGame(room)
@@ -115,16 +94,6 @@ export class UT3Game extends TPTurnGame {
 
   historyGo (index: number): void {
     this.boardIndex = clamp(index, 0, this.moveHistory.length)
-  }
-
-  addHistory (history: TPTurnHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
   }
 
   processMessage (m: ByteReader): void {
@@ -149,21 +118,9 @@ export class UT3Game extends TPTurnGame {
         for (let i = 0; i <= MAX_PLAYERS; i++) {
           const cn = m.getInt()
           if (cn < 0) break
-          const p = cn == myCn ? this.localClient : new TPTurnClient()
+          const p = cn == myCn ? this.localClient : new TwoPlayerTurnClient()
           p.cn = cn
-          p.active = m.getBool()
-          p.name = filterName(m.getString(MAX_NAME_LEN))
-          p.ping = m.getInt()
-
-          p.ready = false
-          p.inRound = false
-
-          p.wins = m.getInt()
-          p.loss = m.getInt()
-          p.ties = m.getInt()
-          p.total = p.wins + p.loss + p.ties
-          p.streak = m.getInt()
-          p.score = (((p.wins << 1) + p.ties) << 1) + p.loss
+          p.readWelcome(m)
           this.clients[cn] = p
         }
 
@@ -216,7 +173,7 @@ export class UT3Game extends TPTurnGame {
         const name = filterName(m.getString(MAX_NAME_LEN))
         if (this.clients[cn]) break
 
-        const newPlayer = new TPTurnClient()
+        const newPlayer = new TwoPlayerTurnClient()
         newPlayer.cn = cn
         newPlayer.name = name
 
@@ -384,27 +341,6 @@ export class UT3Game extends TPTurnGame {
     this.setTimer(this.mode.optTurnTime)
   }
 
-  private processEndRound (m: ByteReader): void {
-    const winner = m.getInt()
-    const earlyEnd = m.getBool()
-    const p0 = this.clients[this.p0]
-    const p1 = this.clients[this.p1]
-
-    if (p0) this.setResult(p0, winner)
-    if (p1) this.setResult(p1, 1 - winner)
-
-    this.addHistory({
-      p0Name: formatClientName(p0, this.p0),
-      p1Name: formatClientName(p1, this.p1),
-      winner,
-      earlyEnd,
-      ply: this.ply,
-    })
-
-    this.winner = winner + 1
-    this.drawOffer = 0
-  }
-
   private processRoundInfo (m: ByteReader): void {
     this.reset()
     for (let i = 0; i <= MAX_TURNS; i++) {
@@ -424,88 +360,6 @@ export class UT3Game extends TPTurnGame {
       (p) => p.score,
       (p) => p.wins,
     ])
-  }
-
-  private playerActivated (player: TPTurnClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: TPTurnClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
-  }
-
-  private resetRound (): void {
-    this.ply = 0
-    this.winner = 0
-    this.drawOffer = 0
-  }
-
-  private processPlayerInfo (m: ByteReader): void {
-    this.p0 = m.getInt()
-    this.p1 = m.getInt()
-
-    const { cn } = this.localClient
-    this.myPlayer =
-      this.p0 === cn
-        ? 1
-        : this.p1 === cn
-          ? 2
-          : 0
-    this.myTurn = (this.myPlayer === 1)
-  }
-
-  private setResult (p: TPTurnClient, win: number): void {
-    if (!win) {
-      p.wins++
-      if (p.streak < 0) p.streak = 0
-      p.streak++
-      p.score += 4
-    } else if (win === 1) {
-      p.loss++
-      if (p.streak > 0) p.streak = 0
-      p.streak--
-      p.score++
-    } else {
-      p.ties++
-      p.score += 2
-    }
-    p.total++
   }
 
   private reset (): void {

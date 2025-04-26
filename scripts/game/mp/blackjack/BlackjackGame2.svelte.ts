@@ -3,7 +3,6 @@ import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type BlackjackMode } from './gamemode'
@@ -49,6 +48,14 @@ class BlackjackClient extends RoundRobinClient {
     this.score = 0
     this.wins = 0
     this.streak = 0
+  }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.score = m.getInt()
+    this.wins = m.getInt()
+    this.streak = m.getInt()
   }
 }
 
@@ -107,8 +114,6 @@ const enum BlackjackMove {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 30000
@@ -116,7 +121,7 @@ const INTERMISSION_TIME = 30000
 const CARDS_PER_DECK = 52
 const MAX_DECKS = 9
 
-export class BlackjackGame extends RoundRobinGame<BlackjackClient> {
+export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGameHistory> {
   mode: BlackjackMode = $state(defaultMode())
 
   // TODO
@@ -132,8 +137,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient> {
   playerInfo: BlackjackPlayerInfo[] = $state([])
   playerDiscInfo: BlackjackDiscInfo[] = $state([])
 
-  pastGames: BlackjackGameHistory[] = $state([])
-
   override newClient () { return new BlackjackClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
@@ -148,16 +151,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient> {
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (move: BlackjackMove): void { this.sendf('i2', C2S.MOVE, move) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
-
-  addHistory (history: BlackjackGameHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
-  }
 
   formatPlayerName (player?: BlackjackPlayerInfo, pn?: number): string {
     if (!player) {
@@ -202,16 +195,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient> {
           if (cn < 0) break
           const p = cn == myCn ? this.localClient : new BlackjackClient()
           p.cn = cn
-          p.active = m.getBool()
-          p.name = filterName(m.getString(MAX_NAME_LEN))
-          p.ping = m.getInt()
-
-          p.ready = false
-          p.inRound = false
-
-          p.score = m.getInt()
-          p.wins = m.getInt()
-          p.streak = m.getInt()
+          p.readWelcome(m)
           this.clients[cn] = p
         }
 
@@ -513,50 +497,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient> {
       (p) => p.wins,
       (p) => p.streak,
     ])
-  }
-
-  private playerActivated (player: BlackjackClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: BlackjackClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
   }
 }
 

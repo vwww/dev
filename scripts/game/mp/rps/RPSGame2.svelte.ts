@@ -2,7 +2,6 @@ import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type RPSMode } from './gamemode'
@@ -65,6 +64,21 @@ class RPSClient extends OneTurnClient {
     this.battleTies = 0
     this.battleTotal = 0
   }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.roundScore = m.getInt()
+    this.roundStreak = m.getInt()
+    this.roundWins = m.getInt()
+    this.roundLosses = m.getInt()
+    this.roundTies = m.getInt()
+    this.roundTotal = this.roundWins + this.roundLosses + this.roundTies
+    this.battleWins = m.getFloat64()
+    this.battleLosses = m.getFloat64()
+    this.battleTies = m.getFloat64()
+    this.battleTotal = this.battleWins + this.battleLosses + this.battleTies
+  }
 }
 
 export interface RPSGameHistory {
@@ -90,18 +104,14 @@ interface RPSGameHistoryMove {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 5000
 
-export class RPSGame extends OneTurnGame<RPSClient> {
+export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
   mode: RPSMode = $state(defaultMode())
 
   pendingMove = $state(0)
-
-  pastGames: RPSGameHistory[] = $state([])
 
   override newClient () { return new RPSClient }
 
@@ -117,16 +127,6 @@ export class RPSGame extends OneTurnGame<RPSClient> {
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (n: number): void { this.sendf('i2', C2S.MOVE, n) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
-
-  addHistory (history: RPSGameHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
-  }
 
   processMessage (m: ByteReader): void {
     const type = m.getInt()
@@ -152,23 +152,7 @@ export class RPSGame extends OneTurnGame<RPSClient> {
           if (cn < 0) break
           const p = cn == myCn ? this.localClient : new RPSClient()
           p.cn = cn
-          p.active = m.getBool()
-          p.name = filterName(m.getString(MAX_NAME_LEN))
-          p.ping = m.getInt()
-
-          p.ready = false
-          p.inRound = false
-
-          p.roundScore = m.getInt()
-          p.roundStreak = m.getInt()
-          p.roundWins = m.getInt()
-          p.roundLosses = m.getInt()
-          p.roundTies = m.getInt()
-          p.roundTotal = p.roundWins + p.roundLosses + p.roundTies
-          p.battleWins = m.getFloat64()
-          p.battleLosses = m.getFloat64()
-          p.battleTies = m.getFloat64()
-          p.battleTotal = p.battleWins + p.battleLosses + p.battleTies
+          p.readWelcome(m)
           this.clients[cn] = p
         }
 
@@ -435,50 +419,6 @@ export class RPSGame extends OneTurnGame<RPSClient> {
       (p) => p.battleWins - p.battleLosses,
       (p) => p.battleWins,
     ])
-  }
-
-  private playerActivated (player: RPSClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: RPSClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
   }
 }
 

@@ -2,7 +2,6 @@ import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type MorraMode } from './gamemode'
@@ -49,6 +48,15 @@ class MorraClient extends OneTurnClient {
     this.total = 0
     this.streak = 0
   }
+
+  override readWelcome (m: ByteReader): void {
+    super.readWelcome(m)
+
+    this.wins = m.getInt()
+    this.losses = m.getInt()
+    this.total = this.wins + this.losses
+    this.streak = m.getInt()
+  }
 }
 
 export interface MorraGameHistory {
@@ -75,20 +83,16 @@ export interface MorraGameHistoryPlayer {
 const MAX_NAME_LEN = 20
 const MAX_CHAT_LEN = 100
 
-const MAX_HISTORY_LEN = 100
-
 const PROTOCOL_VERSION = 0
 
 const INTERMISSION_TIME = 5000
 const ROUND_TIME = 3000
 
-export class MorraGame extends OneTurnGame<MorraClient> {
+export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
   mode: MorraMode = $state(defaultMode())
 
   pendingMove = $state(0)
   pendingMoveAck = $state(0)
-
-  pastGames: MorraGameHistory[] = $state([])
 
   override newClient () { return new MorraClient }
 
@@ -104,16 +108,6 @@ export class MorraGame extends OneTurnGame<MorraClient> {
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (): void { this.sendf('id', C2S.MOVE, this.pendingMove) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
-
-  addHistory (history: MorraGameHistory): void {
-    if (this.pastGames.length >= MAX_HISTORY_LEN)
-      this.pastGames.pop()
-    this.pastGames.unshift(history)
-  }
-
-  clearHistory (): void {
-    this.pastGames = []
-  }
 
   processMessage (m: ByteReader): void {
     const type = m.getInt()
@@ -137,17 +131,7 @@ export class MorraGame extends OneTurnGame<MorraClient> {
           if (cn < 0) break
           const player = cn == myCn ? this.localClient : new MorraClient()
           player.cn = cn
-          player.active = m.getBool()
-          player.name = filterName(m.getString(MAX_NAME_LEN))
-          player.ping = m.getInt()
-
-          player.ready = false
-          player.inRound = false
-
-          player.wins = m.getInt()
-          player.losses = m.getInt()
-          player.total = player.wins + player.losses
-          player.streak = m.getInt()
+          player.readWelcome(m)
           this.clients[cn] = player
         }
 
@@ -405,49 +389,5 @@ export class MorraGame extends OneTurnGame<MorraClient> {
       (p) => p.wins - p.losses,
       (p) => p.wins,
     ])
-  }
-
-  private playerActivated (player: MorraClient): void {
-    this.roundPlayerQueue.push(player)
-  }
-
-  private playerDeactivated (player: MorraClient): void {
-    this.roundPlayers = this.roundPlayers.filter((p) => p !== player)
-    this.roundPlayerQueue = this.roundPlayerQueue.filter((p) => p !== player)
-    player.inRound = false
-  }
-
-  private roundWait (): void {
-    this.roundState = GameState.WAITING
-    this.unsetReady()
-  }
-
-  private roundIntermission (remain: number): void {
-    this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private roundStart (remain: number): void {
-    this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
-    this.unsetReady()
-  }
-
-  private setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
-  }
-
-  private unsetReady (): void {
-    for (const c of this.clients) {
-      if (c) c.ready = false
-    }
-  }
-
-  private unsetInRound (): void {
-    for (const c of this.clients) {
-      if (c) c.inRound = false
-    }
   }
 }

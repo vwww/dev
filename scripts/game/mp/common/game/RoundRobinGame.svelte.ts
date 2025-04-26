@@ -1,5 +1,5 @@
 import { TurnBasedClient, TurnBasedGame } from './TurnBasedGame.svelte'
 
-export const RoundRobinClient = TurnBasedClient
+export class RoundRobinClient extends TurnBasedClient {}
 
-export abstract class RoundRobinGame<C> extends TurnBasedGame<C> { }
+export abstract class RoundRobinGame<C extends RoundRobinClient, H> extends TurnBasedGame<C, H> { }
