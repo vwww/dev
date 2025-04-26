@@ -81,8 +81,9 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         this.mode.optTeams = m.getInt()
 
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          let cn = m.getInt()
           if (cn < 0) break
+          cn = filterCN(cn)
           const player = cn == myCn ? this.localClient : new ActionlessClient()
           player.cn = cn
           player.readWelcome(m)
@@ -95,9 +96,9 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         } else if (roundState === 1) {
           this.roundIntermission(m.getInt())
           for (let i = 0; i <= MAX_PLAYERS; i++) {
-            const cn = filterCN(m.getInt())
+            const cn = m.getInt()
             if (cn < 0) break
-            const p = this.clients[cn]
+            const p = this.clients[filterCN(cn)]
             if (!p) continue
             p.ready = true
           }
@@ -109,7 +110,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         for (let i = 0; i <= MAX_PLAYERS; i++) {
           const cn = m.getInt()
           if (cn < 0) break
-          const p = this.clients[cn]
+          const p = this.clients[filterCN(cn)]
           if (!p) continue
           p.inRound = true
           curRoundPlayers.push(p)
@@ -120,7 +121,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         for (let i = 0; i <= MAX_PLAYERS; i++) {
           const cn = m.getInt()
           if (cn < 0) break
-          const p = this.clients[cn]
+          const p = this.clients[filterCN(cn)]
           if (!p) continue
           curRoundQueue.push(p)
         }
@@ -187,7 +188,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
           const cn = m.getInt()
           if (cn < 0) break
           const ping = m.getInt()
-          const player = this.clients[cn]
+          const player = this.clients[filterCN(cn)]
           if (player) {
             player.ping = ping
           }
@@ -240,7 +241,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         for (let i = 0; i <= MAX_PLAYERS; i++) {
           const cn = m.getInt()
           if (cn < 0) break
-          const p = this.clients[cn]
+          const p = this.clients[filterCN(cn)]
           if (!p) continue
           p.inRound = true
           curRoundPlayers.push(p)
