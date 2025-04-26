@@ -1,9 +1,7 @@
 import { ByteReader } from './ByteReader'
 
 export const MAX_PLAYERS = 64
-export function filterCN(cn: number): number {
-  return cn & 63
-}
+
 export function filterName(name: string): string {
   name = name.replace(/[^a-zA-Z_ ]/, '').replace(/ {2,}/, ' ').trim().slice(0, 20)
   return name || 'unnamed'

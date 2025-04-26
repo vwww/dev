@@ -1,5 +1,5 @@
 import { clamp } from '@/util'
-import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
@@ -174,7 +174,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
 
         this.clients.length = 0
 
-        const myCn = filterCN(m.getInt())
+        const myCn = m.getCN()
 
         this.mode.optTurnTime = m.getInt()
         this.mode.optDecks = clamp(m.getInt(), 1, MAX_DECKS)
@@ -191,7 +191,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         this.mode.optHitSplitAce = !!(modeFlags & (1 << 5))
 
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = cn == myCn ? this.localClient : new BlackjackClient()
           p.cn = cn
@@ -205,7 +205,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         } else if (roundState === 1) {
           this.roundIntermission(m.getInt())
           for (let i = 0; i <= MAX_PLAYERS; i++) {
-            const cn = m.getInt()
+            const cn = m.getCN()
             if (cn < 0) break
             const p = this.clients[cn]
             if (!p) continue
@@ -217,7 +217,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
 
         const curRoundPlayers = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = this.clients[cn]
           if (!p) continue
@@ -228,7 +228,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
 
         const curRoundQueue = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = this.clients[cn]
           if (!p) continue
@@ -244,7 +244,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         break
       }
       case S2C.JOIN: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const name = filterName(m.getString(MAX_NAME_LEN))
         if (this.clients[cn]) break
 
@@ -259,7 +259,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         break
       }
       case S2C.LEAVE: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const player = this.clients[cn]
         if (!player) break
         if (player.active) {
@@ -271,7 +271,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         break
       }
       case S2C.RESET: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const player = this.clients[cn]
         if (player) {
           player.resetScore()
@@ -281,7 +281,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         break
       }
       case S2C.RENAME: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const newName = filterName(m.getString(MAX_NAME_LEN))
         const player = this.clients[cn]
         if (player) {
@@ -302,7 +302,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
       case S2C.PING_TIME: {
         // ping times
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const ping = m.getInt()
           const player = this.clients[cn]
@@ -314,7 +314,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
       }
 
       case S2C.CHAT: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const flags = m.getInt()
         const target = m.getInt()
         const msg = m.getString(MAX_CHAT_LEN)
@@ -332,7 +332,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
       }
       case S2C.ACTIVE: {
         // active
-        const cn = m.getInt()
+        const cn = m.getCN()
         const active = m.getBool()
         const p = this.clients[cn]
         if (p) {
@@ -356,7 +356,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         this.unsetInRound()
         const curRoundPlayers = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = this.clients[cn]
           if (!p) continue
@@ -370,7 +370,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
 
         const playerInfo: BlackjackPlayerInfo[] = []
         for (let i = 0; i <= this.clients.length; i++) {
-          const owner = m.getInt()
+          const owner = m.getCN()
           if (owner < 0) break
 
           const p = new BlackjackPlayerInfo()
@@ -384,7 +384,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
         break
       }
       case S2C.READY: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const ready = m.getBool()
         const p = this.clients[cn]
         if (p) {
@@ -438,7 +438,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
   private processPlayerInfos (m: ByteReader): void {
     const playerInfo: BlackjackPlayerInfo[] = []
     for (let i = 0; i <= this.clients.length; i++) {
-      const owner = m.getInt()
+      const owner = m.getCN()
       if (owner < 0) break
 
       const p = new BlackjackPlayerInfo()

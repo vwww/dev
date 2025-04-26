@@ -1,5 +1,5 @@
 import { clamp } from '@/util'
-import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
@@ -187,7 +187,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
 
         this.clients.length = 0
 
-        const myCn = filterCN(m.getInt())
+        const myCn = m.getCN()
 
         this.mode.optTurnTime = m.getInt()
         this.mode.optDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
@@ -208,7 +208,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         this.mode.optRankother = !!(modeFlags & (1 << 12))
 
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = cn == myCn ? this.localClient : new CheatClient()
           p.cn = cn
@@ -222,7 +222,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         } else if (roundState === 1) {
           this.roundIntermission(m.getInt())
           for (let i = 0; i <= MAX_PLAYERS; i++) {
-            const cn = m.getInt()
+            const cn = m.getCN()
             if (cn < 0) break
             const p = this.clients[cn]
             if (!p) continue
@@ -234,7 +234,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
 
         const curRoundPlayers = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = this.clients[cn]
           if (!p) continue
@@ -245,7 +245,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
 
         const curRoundQueue = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = this.clients[cn]
           if (!p) continue
@@ -261,7 +261,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         break
       }
       case S2C.JOIN: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const name = filterName(m.getString(MAX_NAME_LEN))
         if (this.clients[cn]) break
 
@@ -276,7 +276,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         break
       }
       case S2C.LEAVE: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const player = this.clients[cn]
         if (!player) break
         if (player.active) {
@@ -288,7 +288,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         break
       }
       case S2C.RESET: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const player = this.clients[cn]
         if (player) {
           player.resetScore()
@@ -298,7 +298,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         break
       }
       case S2C.RENAME: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const newName = filterName(m.getString(MAX_NAME_LEN))
         const player = this.clients[cn]
         if (player) {
@@ -319,7 +319,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
       case S2C.PING_TIME: {
         // ping times
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const ping = m.getInt()
           const player = this.clients[cn]
@@ -331,7 +331,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
       }
 
       case S2C.CHAT: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const flags = m.getInt()
         const target = m.getInt()
         const msg = m.getString(MAX_CHAT_LEN)
@@ -349,7 +349,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
       }
       case S2C.ACTIVE: {
         // active
-        const cn = m.getInt()
+        const cn = m.getCN()
         const active = m.getBool()
         const p = this.clients[cn]
         if (p) {
@@ -373,7 +373,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         this.unsetInRound()
         const curRoundPlayers = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const p = this.clients[cn]
           if (!p) continue
@@ -387,7 +387,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
 
         const playerInfo: CheatPlayerInfo[] = []
         for (let i = 0; i <= this.clients.length; i++) {
-          const owner = m.getInt()
+          const owner = m.getCN()
           if (owner < 0) break
 
           const p = new CheatPlayerInfo()
@@ -401,7 +401,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
         break
       }
       case S2C.READY: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const ready = m.getBool()
         const p = this.clients[cn]
         if (p) {
@@ -456,7 +456,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
   private processPlayerInfos (m: ByteReader): void {
     const playerInfo: CheatPlayerInfo[] = []
     for (let i = 0; i <= this.clients.length; i++) {
-      const owner = m.getInt()
+      const owner = m.getCN()
       if (owner < 0) break
 
       const p = new CheatPlayerInfo()

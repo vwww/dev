@@ -16,6 +16,12 @@ export class ByteReader {
     return this.buf[this.pos++]
   }
 
+  getCN (): number {
+    const n = this.get()
+    if (n & 0x80) return -1
+    return n & 63
+  }
+
   // any 32-bit int, more efficient for smaller int
   getInt (): number {
     let n = this.get() << 24 >> 24 // sign extend

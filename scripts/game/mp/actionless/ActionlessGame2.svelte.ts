@@ -1,4 +1,4 @@
-import { filterCN, MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
+import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
@@ -75,15 +75,14 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
 
         this.clients.length = 0
 
-        const myCn = filterCN(m.getInt())
+        const myCn = m.getCN()
 
         this.mode.optIndependent = m.getBool()
         this.mode.optTeams = m.getInt()
 
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          let cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
-          cn = filterCN(cn)
           const player = cn == myCn ? this.localClient : new ActionlessClient()
           player.cn = cn
           player.readWelcome(m)
@@ -96,9 +95,9 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         } else if (roundState === 1) {
           this.roundIntermission(m.getInt())
           for (let i = 0; i <= MAX_PLAYERS; i++) {
-            const cn = m.getInt()
+            const cn = m.getCN()
             if (cn < 0) break
-            const p = this.clients[filterCN(cn)]
+            const p = this.clients[cn]
             if (!p) continue
             p.ready = true
           }
@@ -108,9 +107,9 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
 
         const curRoundPlayers = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
-          const p = this.clients[filterCN(cn)]
+          const p = this.clients[cn]
           if (!p) continue
           p.inRound = true
           curRoundPlayers.push(p)
@@ -119,9 +118,9 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
 
         const curRoundQueue = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
-          const p = this.clients[filterCN(cn)]
+          const p = this.clients[cn]
           if (!p) continue
           curRoundQueue.push(p)
         }
@@ -131,7 +130,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         break
       }
       case S2C.JOIN: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const name = filterName(m.getString(MAX_NAME_LEN))
         if (this.clients[cn]) break
 
@@ -146,7 +145,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         break
       }
       case S2C.LEAVE: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const player = this.clients[cn]
         if (!player) break
         if (player.active) {
@@ -158,7 +157,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         break
       }
       case S2C.RESET: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const player = this.clients[cn]
         if (player) {
           player.resetScore()
@@ -168,7 +167,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         break
       }
       case S2C.RENAME: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const newName = filterName(m.getString(MAX_NAME_LEN))
         const player = this.clients[cn]
         if (player) {
@@ -185,10 +184,10 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
       case S2C.PING_TIME: {
         // ping times
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
           const ping = m.getInt()
-          const player = this.clients[filterCN(cn)]
+          const player = this.clients[cn]
           if (player) {
             player.ping = ping
           }
@@ -197,7 +196,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
       }
 
       case S2C.CHAT: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const flags = m.getInt()
         const target = m.getInt()
         const msg = m.getString(MAX_CHAT_LEN)
@@ -215,7 +214,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
       }
       case S2C.ACTIVE: {
         // active
-        const cn = m.getInt()
+        const cn = m.getCN()
         const active = m.getBool()
         const p = this.clients[cn]
         if (p) {
@@ -239,9 +238,9 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         this.unsetInRound()
         const curRoundPlayers = []
         for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getInt()
+          const cn = m.getCN()
           if (cn < 0) break
-          const p = this.clients[filterCN(cn)]
+          const p = this.clients[cn]
           if (!p) continue
           p.inRound = true
           curRoundPlayers.push(p)
@@ -253,7 +252,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
         break
       }
       case S2C.READY: {
-        const cn = m.getInt()
+        const cn = m.getCN()
         const ready = m.getBool()
         const p = this.clients[cn]
         if (p) {
@@ -284,7 +283,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
     }
 
     for (let i = 0; i < playerCount; i++) {
-      const cn = m.getInt()
+      const cn = m.getCN()
       const p = this.clients[cn]
       if (!p) continue
 
