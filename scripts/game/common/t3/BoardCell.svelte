@@ -70,19 +70,19 @@ td {
   &.htie.noL { background-color: #20b2aa }
 
   /* current player can force a win */
-  &.hwin:after {
-    /* & { content: "+T-" } */
-    &.noL { content: "+T" }
-    &.noT { content: "+-" }
-    &.noL.noT { content: "+" }
+  &.hwin {
+    /* &:after { content: "+T-" } */
+    &.noL:after { content: "+T" }
+    &.noT:after { content: "+-" }
+    &.noL.noT:after { content: "+" }
   }
 
   /* opponent can force a win */
-  &.hlose:after {
-    /*  { content: "-T+" } */
-    &.noW { content: "-T" }
-    &.noT { content: "-+" }
-    &.noW.noT { content: "-" }
+  &.hlose {
+    /* &:after { content: "-T+" } */
+    &.noW:after { content: "-T" }
+    &.noT:after { content: "-+" }
+    &.noW.noT:after { content: "-" }
   }
 
   /* win by move number (hide if pending) */
