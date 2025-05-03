@@ -2,7 +2,7 @@ import { clamp, sum, type Repeat } from '@/util'
 import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
+import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type DiscardMode } from './gamemode'
@@ -73,18 +73,14 @@ class DiscardClient extends RoundRobinClient {
   }
 }
 
-export class DiscardPlayerInfo {
-  owner = $state(-1)
-
+export class DiscardPlayerInfo extends RRTurnPlayerInfo {
   discarded: number[] = $state([])
   discardSum = $state(0)
   immune = $state(false)
   hand?: number = $state()
 }
 
-export class DiscardDiscInfo {
-  ownerName = ''
-
+export class DiscardDiscInfo extends RRTurnDiscInfo {
   discarded: number[] = []
   discardSum = 0
 }
@@ -153,7 +149,7 @@ const INTERMISSION_TIME = 30000
 const CARDS_PER_DECK = 15
 const MAX_DECKS = 3
 
-export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardGameHistory> {
+export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo, DiscardDiscInfo, DiscardGameHistory> {
   mode: DiscardMode = $state(defaultMode())
 
   myHand = $state(0)
@@ -167,9 +163,6 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardGameHistor
   pendingMoveUseHand = $state(false)
   pendingMoveTarget = $state(0)
   pendingMoveGuess = $state(0)
-
-  playerInfo: DiscardPlayerInfo[] = $state([])
-  playerDiscInfo: DiscardDiscInfo[] = $state([])
 
   override newClient () { return new DiscardClient }
 

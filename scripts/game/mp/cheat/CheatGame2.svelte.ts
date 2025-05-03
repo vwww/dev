@@ -2,7 +2,7 @@ import { clamp } from '@/util'
 import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
+import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type CheatMode } from './gamemode'
@@ -72,17 +72,13 @@ class CheatClient extends RoundRobinClient {
   }
 }
 
-export class CheatPlayerInfo {
-  owner = $state(-1)
-
+export class CheatPlayerInfo extends RRTurnPlayerInfo {
   discardClaim: CardCountTotal = $state(newZeroCardCount())
   // hand?: CardCount // private
   handSize = $state(0)
 }
 
-export class CheatDiscInfo {
-  ownerName = ''
-
+export class CheatDiscInfo extends RRTurnDiscInfo {
   discardClaim: CardCountTotal = newZeroCardCount()
   // hand: CardCount // reveal? if not, how to handle claims?
   // handSize: number
@@ -117,7 +113,7 @@ const INTERMISSION_TIME = 30000
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
-export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
+export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, CheatDiscInfo, CheatGameHistory> {
   mode: CheatMode = $state(defaultMode())
 
   canCallCheat = $state(false)
@@ -135,9 +131,6 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatGameHistory> {
 
   pendingMove = $state(newZeroCardCount())
   pendingMoveClaim = $state(0)
-
-  playerInfo: CheatPlayerInfo[] = $state([])
-  playerDiscInfo: CheatDiscInfo[] = $state([])
 
   override newClient () { return new CheatClient }
 

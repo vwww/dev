@@ -2,7 +2,7 @@ import { clamp, sum } from '@/util'
 import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
+import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type PresidentMode } from './gamemode'
@@ -73,16 +73,12 @@ class PresidentClient extends RoundRobinClient {
   }
 }
 
-export class PresidentPlayerInfo {
-  owner = $state(-1)
-
+export class PresidentPlayerInfo extends RRTurnPlayerInfo {
   discarded: CardCountTotal = $state(newZeroCardCount())
   handSize = $state(0)
 }
 
-export class PresidentDiscInfo {
-  ownerName = ''
-
+export class PresidentDiscInfo extends RRTurnDiscInfo {
   discarded: CardCountTotal = newZeroCardCount()
   hand: CardCountTotal = newZeroCardCount()
 }
@@ -143,7 +139,7 @@ const INTERMISSION_TIME = 30000
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
-export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentGameHistory> {
+export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlayerInfo, PresidentDiscInfo, PresidentGameHistory> {
   mode: PresidentMode = $state(defaultMode())
 
   gamePhase = $state(0 as GamePhase)
@@ -171,9 +167,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentGame
 
   pendingMove = $state(0)
   pendingMoveCount = $state(0)
-
-  playerInfo: PresidentPlayerInfo[] = $state([])
-  playerDiscInfo: PresidentDiscInfo[] = $state([])
 
   override newClient () { return new PresidentClient }
 

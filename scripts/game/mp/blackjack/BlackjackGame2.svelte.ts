@@ -2,7 +2,7 @@ import { clamp } from '@/util'
 import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
-import { RoundRobinClient, RoundRobinGame } from '@gmc/game/RoundRobinGame.svelte'
+import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
 import { defaultMode, type BlackjackMode } from './gamemode'
@@ -59,16 +59,12 @@ class BlackjackClient extends RoundRobinClient {
   }
 }
 
-export class BlackjackPlayerInfo {
-  owner = $state(-1)
-
+export class BlackjackPlayerInfo extends RRTurnPlayerInfo {
   hand: number[] = $state([])
   handVal = $state(0)
 }
 
-export class BlackjackDiscInfo {
-  ownerName = ''
-
+export class BlackjackDiscInfo extends RRTurnDiscInfo {
   hand: number[] = []
   handVal = 0
 }
@@ -121,7 +117,7 @@ const INTERMISSION_TIME = 30000
 const CARDS_PER_DECK = 52
 const MAX_DECKS = 9
 
-export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGameHistory> {
+export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlayerInfo, BlackjackDiscInfo, BlackjackGameHistory> {
   mode: BlackjackMode = $state(defaultMode())
 
   // TODO
@@ -133,9 +129,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackGame
   // moveHistory = $state([] as BlackjackMoveInfo[])
 
   pendingMove = $state(0)
-
-  playerInfo: BlackjackPlayerInfo[] = $state([])
-  playerDiscInfo: BlackjackDiscInfo[] = $state([])
 
   override newClient () { return new BlackjackClient }
 
