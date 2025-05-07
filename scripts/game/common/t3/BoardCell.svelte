@@ -71,7 +71,6 @@ td {
 
   /* current player can force a win */
   &.hwin {
-    /* &:after { content: "+T-" } */
     &.noL:after { content: "+T" }
     &.noT:after { content: "+-" }
     &.noL.noT:after { content: "+" }
@@ -79,7 +78,6 @@ td {
 
   /* opponent can force a win */
   &.hlose {
-    /* &:after { content: "-T+" } */
     &.noW:after { content: "-T" }
     &.noT:after { content: "-+" }
     &.noW.noT:after { content: "-" }
@@ -94,8 +92,8 @@ td {
     &.noW { opacity: 0.5 }
     &.noL.noW { opacity: inherit }
 
-    &.noW:after { content: "-?" }
-    &.noL:after { content: "+?" }
+    &.noW:after { content: "T-" }
+    &.noL:after { content: "T+" }
     &.noL.noW { background-color: #ffa500 }
     &.noL.noW:after { content: "T" }
   }
