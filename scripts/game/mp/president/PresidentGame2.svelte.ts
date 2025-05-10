@@ -184,17 +184,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   sendMoveTransfer (a: number, b: number): void { this.sendf('i4', C2S.MOVE, 0, a, b) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
-  formatPlayerName (player?: PresidentPlayerInfo, pn?: number): string {
-    if (!player) {
-      return `<unknown${pn === undefined ? '' : (' pn#' + pn)}>`
-    }
-    return formatClientName(this.clients[player.owner], player.owner)
-  }
-
-  playerIsMe (player?: PresidentPlayerInfo): boolean {
-    return player?.owner === this.localClient.cn
-  }
-
   processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {

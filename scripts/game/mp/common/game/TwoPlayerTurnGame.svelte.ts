@@ -108,4 +108,17 @@ export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClien
           : 0
     this.myTurn = (this.myPlayer === 1)
   }
+
+  protected processOfferDraw (m: ByteReader): void {
+    const drawReq = m.getInt()
+    const cn = m.getCN()
+
+    this.drawOffer = drawReq && (cn === this.localClient.cn ? 1 : 2)
+  }
+
+  protected nextTurn() {
+    this.ply++
+    const myPlayer = this.myPlayer
+    this.myTurn = !!myPlayer && (this.ply & 1) === myPlayer - 1
+  }
 }

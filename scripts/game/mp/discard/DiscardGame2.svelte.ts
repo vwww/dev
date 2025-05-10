@@ -182,17 +182,6 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   sendMoveGuess (guess: number): void { this.sendMove(this.pendingMoveUseHand, this.pendingMoveTarget, guess) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
-  formatPlayerName (player?: DiscardPlayerInfo, pn?: number): string {
-    if (!player) {
-      return `<unknown${pn === undefined ? '' : (' pn#' + pn)}>`
-    }
-    return formatClientName(this.clients[player.owner], player.owner)
-  }
-
-  playerIsMe (player?: DiscardPlayerInfo): boolean {
-    return player?.owner === this.localClient.cn
-  }
-
   processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {

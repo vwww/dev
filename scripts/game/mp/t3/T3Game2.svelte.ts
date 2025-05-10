@@ -293,13 +293,9 @@ export class T3Game extends TwoPlayerTurnGame {
       case S2C.END_ROUND:
         this.processEndRound(m)
         break
-      case S2C.OFFER_DRAW: {
-        const drawReq = m.getInt()
-        const cn = m.getCN()
-
-        this.drawOffer = drawReq && (cn === this.localClient.cn ? 1 : 2)
+      case S2C.OFFER_DRAW:
+        this.processOfferDraw(m)
         break
-      }
       default:
         throw new Error('tag type')
     }
@@ -309,10 +305,7 @@ export class T3Game extends TwoPlayerTurnGame {
     const move = clamp(m.getInt(), 0, 9 - 1)
     this.applyMove(move)
 
-    this.ply++
-    const myPlayer = this.myPlayer
-    this.myTurn = !!myPlayer && (this.ply & 1) === myPlayer - 1
-
+    this.nextTurn()
     this.setTimer(this.mode.optTurnTime)
   }
 

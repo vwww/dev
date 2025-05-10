@@ -158,17 +158,6 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   sendMoveCallCheat (): void { this.sendf('i2', C2S.MOVE, 1) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
-  formatPlayerName (player?: CheatPlayerInfo, pn?: number): string {
-    if (!player) {
-      return `<unknown${pn === undefined ? '' : (' pn#' + pn)}>`
-    }
-    return formatClientName(this.clients[player.owner], player.owner)
-  }
-
-  playerIsMe (player?: CheatPlayerInfo): boolean {
-    return player?.owner === this.localClient.cn
-  }
-
   processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {

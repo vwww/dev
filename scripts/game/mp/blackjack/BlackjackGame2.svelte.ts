@@ -145,17 +145,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   sendMove (move: BlackjackMove): void { this.sendf('i2', C2S.MOVE, move) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
-  formatPlayerName (player?: BlackjackPlayerInfo, pn?: number): string {
-    if (!player) {
-      return `<unknown${pn === undefined ? '' : (' pn#' + pn)}>`
-    }
-    return formatClientName(this.clients[player.owner], player.owner)
-  }
-
-  playerIsMe (player?: BlackjackPlayerInfo): boolean {
-    return player?.owner === this.localClient.cn
-  }
-
   processMessage (m: ByteReader): void {
     const type = m.getInt()
     switch (type) {

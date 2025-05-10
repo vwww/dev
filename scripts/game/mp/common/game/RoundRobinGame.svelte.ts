@@ -1,3 +1,4 @@
+import { formatClientName } from './common'
 import { TurnBasedClient, TurnBasedGame } from './TurnBasedGame.svelte'
 
 export class RoundRobinClient extends TurnBasedClient {}
@@ -17,4 +18,15 @@ export abstract class RoundRobinGame<
   H> extends TurnBasedGame<C, H> {
   playerInfo: P[] = $state([])
   playerDiscInfo: D[] = $state([])
+
+  formatPlayerName (player?: RRTurnPlayerInfo, pn?: number): string {
+    if (!player) {
+      return `<unknown${pn === undefined ? '' : (' pn#' + pn)}>`
+    }
+    return formatClientName(this.clients[player.owner], player.owner)
+  }
+
+  playerIsMe (player?: RRTurnPlayerInfo): boolean {
+    return player?.owner === this.localClient.cn
+  }
 }
