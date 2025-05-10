@@ -1,7 +1,6 @@
 import { clamp } from '@/util'
-import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
-import { ByteWriter } from '@gmc/game/ByteWriter'
+import { filterChat } from '@gmc/game/CommonGame.svelte'
 import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
@@ -103,17 +102,13 @@ const enum CheatModeTricks {
   NUM,
 }
 
-const MAX_NAME_LEN = 20
-const MAX_CHAT_LEN = 100
-
-const PROTOCOL_VERSION = 0
-
-const INTERMISSION_TIME = 30000
-
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
 export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, CheatDiscInfo, CheatGameHistory> {
+  PlayerInfoType = CheatPlayerInfo
+  PlayerDiscType = CheatDiscInfo
+
   mode: CheatMode = $state(defaultMode())
 
   canCallCheat = $state(false)
@@ -132,347 +127,90 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   pendingMove = $state(newZeroCardCount())
   pendingMoveClaim = $state(0)
 
+  get ROUND_TIME () { return this.mode.optTurnTime }
+  INTERMISSION_TIME = 30000
+
   override newClient () { return new CheatClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
     this.setupGame(room)
-    this.sendf('is', PROTOCOL_VERSION, name)
+    this.sendf('is', this.PROTOCOL_VERSION, name)
   }
 
   sendReset (): void { this.sendf('i', C2S.RESET) }
   sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
+  sendPong (t: number): void { this.sendf('i2', C2S.PONG, t) }
+  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
-  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (n: number, c: number): void {
-    // TODO send actual counts after claim
-    this.room?.send(new ByteWriter()
-      .putInt(C2S.MOVE)
-      .putInt(0)
-      .putInt(n) // omit, use actual for count
-      .putInt(c)
+    this.sendf('i4',
+      // TODO send actual counts after claim
+      C2S.MOVE,
+      0,
+      n, // omit, use actual for count
+      c,
       // TODO add actuals
-      .toArray()
     )
   }
   sendMoveCallCheat (): void { this.sendf('i2', C2S.MOVE, 1) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
-  processMessage (m: ByteReader): void {
-    const type = m.getInt()
-    switch (type) {
-      case S2C.WELCOME: {
-        const protocol = m.getInt()
-        if (protocol !== PROTOCOL_VERSION) {
-          alert(`different protocol version (client: ${PROTOCOL_VERSION}, server: ${protocol})\nrefresh the page for updates?`)
-        }
-
-        this.clients.length = 0
-
-        const myCn = m.getCN()
-
-        this.mode.optTurnTime = m.getInt()
-        this.mode.optDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
-        this.mode.optTricks = clamp(m.getInt(), 0, CheatModeTricks.NUM - 1)
-        const modeFlags = m.getInt()
-        this.mode.optCountSame = !!(modeFlags & (1 << 0))
-        this.mode.optCountMore = !!(modeFlags & (1 << 1))
-        this.mode.optCountLess = !!(modeFlags & (1 << 2))
-        this.mode.optRank0 = !!(modeFlags & (1 << 3))
-        this.mode.optRank1u = !!(modeFlags & (1 << 4))
-        this.mode.optRank1uw = !!(modeFlags & (1 << 5))
-        this.mode.optRank1d = !!(modeFlags & (1 << 6))
-        this.mode.optRank1dw = !!(modeFlags & (1 << 7))
-        this.mode.optRank2u = !!(modeFlags & (1 << 8))
-        this.mode.optRank2uw = !!(modeFlags & (1 << 9))
-        this.mode.optRank2d = !!(modeFlags & (1 << 10))
-        this.mode.optRank2dw = !!(modeFlags & (1 << 11))
-        this.mode.optRankother = !!(modeFlags & (1 << 12))
-
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = cn == myCn ? this.localClient : new CheatClient()
-          p.cn = cn
-          p.readWelcome(m)
-          this.clients[cn] = p
-        }
-
-        const roundState = m.getInt()
-        if (roundState === 0) {
-          this.roundWait()
-        } else if (roundState === 1) {
-          this.roundIntermission(m.getInt())
-          for (let i = 0; i <= MAX_PLAYERS; i++) {
-            const cn = m.getCN()
-            if (cn < 0) break
-            const p = this.clients[cn]
-            if (!p) continue
-            p.ready = true
-          }
-        } else if (roundState === 2) {
-          this.roundStart(m.getInt())
-        }
-
-        const curRoundPlayers = []
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = this.clients[cn]
-          if (!p) continue
-          p.inRound = true
-          curRoundPlayers.push(p)
-        }
-        this.roundPlayers = curRoundPlayers
-
-        const curRoundQueue = []
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = this.clients[cn]
-          if (!p) continue
-          curRoundQueue.push(p)
-        }
-        this.roundPlayerQueue = curRoundQueue
-
-        this.processPlayerInfos(m)
-        this.processDiscInfos(m)
-        this.processRoundInfo(m)
-
-        this.updatePlayers()
-        break
-      }
-      case S2C.JOIN: {
-        const cn = m.getCN()
-        const name = filterName(m.getString(MAX_NAME_LEN))
-        if (this.clients[cn]) break
-
-        const newPlayer = new CheatClient()
-        newPlayer.cn = cn
-        newPlayer.name = name
-
-        this.clients[cn] = newPlayer
-
-        this.chat.playerJoined(newPlayer.formatName())
-        this.updatePlayers()
-        break
-      }
-      case S2C.LEAVE: {
-        const cn = m.getCN()
-        const player = this.clients[cn]
-        if (!player) break
-        if (player.active) {
-          this.playerDeactivated(player)
-        }
-        this.chat.playerLeft(player.formatName())
-        delete this.clients[cn]
-        this.updatePlayers()
-        break
-      }
-      case S2C.RESET: {
-        const cn = m.getCN()
-        const player = this.clients[cn]
-        if (player) {
-          player.resetScore()
-          this.updatePlayers()
-          this.chat.playerReset(player.formatName())
-        }
-        break
-      }
-      case S2C.RENAME: {
-        const cn = m.getCN()
-        const newName = filterName(m.getString(MAX_NAME_LEN))
-        const player = this.clients[cn]
-        if (player) {
-          this.chat.playerRename(player.formatName(), newName)
-          player.name = newName
-        }
-        break
-      }
-      case S2C.PING: {
-        // send pong
-        this.room?.send(new ByteWriter()
-          .putInt(C2S.PONG)
-          .putInt(m.getInt())
-          .toArray()
-        )
-        break
-      }
-      case S2C.PING_TIME: {
-        // ping times
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const ping = m.getInt()
-          const player = this.clients[cn]
-          if (player) {
-            player.ping = ping
-          }
-        }
-        break
-      }
-
-      case S2C.CHAT: {
-        const cn = m.getCN()
-        const flags = m.getInt()
-        const target = m.getInt()
-        const msg = m.getString(MAX_CHAT_LEN)
-
-        const player = this.clients[cn]
-        const playerName = formatClientName(player, cn)
-        const targetPlayer = this.clients[target]
-        const targetName = targetPlayer
-          ? player === this.localClient
-            ? 'you'
-            : formatClientName(targetPlayer, target)
-          : undefined
-        this.chat.addChatMessage(playerName, msg, flags, targetName)
-        break
-      }
-      case S2C.ACTIVE: {
-        // active
-        const cn = m.getCN()
-        const active = m.getBool()
-        const p = this.clients[cn]
-        if (p) {
-          p.active = active
-          if (active) {
-            this.playerActivated(p)
-          } else {
-            this.playerDeactivated(p)
-          }
-          this.updatePlayers()
-        }
-        break
-      }
-      case S2C.ROUND_WAIT:
-        this.roundWait()
-        break
-      case S2C.ROUND_INTERM:
-        this.roundIntermission(INTERMISSION_TIME)
-        break
-      case S2C.ROUND_START: {
-        this.unsetInRound()
-        const curRoundPlayers = []
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = this.clients[cn]
-          if (!p) continue
-          p.inRound = true
-          curRoundPlayers.push(p)
-        }
-
-        this.roundPlayers = curRoundPlayers
-        this.roundPlayerQueue = []
-        this.roundStart(this.mode.optTurnTime)
-
-        const playerInfo: CheatPlayerInfo[] = []
-        for (let i = 0; i <= this.clients.length; i++) {
-          const owner = m.getCN()
-          if (owner < 0) break
-
-          const p = new CheatPlayerInfo()
-          p.owner = owner
-          playerInfo.push(p)
-        }
-        this.playerInfo = playerInfo
-        this.playerDiscInfo = []
-
-        this.processRoundStartInfo(m)
-        break
-      }
-      case S2C.READY: {
-        const cn = m.getCN()
-        const ready = m.getBool()
-        const p = this.clients[cn]
-        if (p) {
-          p.ready = ready
-        }
-        break
-      }
-      case S2C.MOVE_CONFIRM:
-        this.pendingMove = readCardCount(m)
-        this.pendingMoveClaim = m.getInt()
-        break
-      case S2C.END_TURN:
-        this.processEndTurn(m)
-        this.setTimer(this.mode.optTurnTime)
-
-        if (this.playerInfo.length) {
-          this.playerInfo.push(this.playerInfo.shift()!)
-        }
-        break
-      case S2C.END_ROUND:
-        this.processEndRound(m)
-        break
-      case S2C.PLAYER_ELIMINATE: {
-        // can't imply hand from unspectate/leave/endTurn, as
-        // private info of leaving players might need to be revealed
-        const pNum = m.getInt()
-        const playerInfo = this.playerInfo[pNum]
-        if (!playerInfo) {
-          // should not happen
-          this.room?.disconnect()
-          break
-        }
-
-        const newDiscInfo = new CheatDiscInfo()
-        const c = this.clients[playerInfo.owner]
-        newDiscInfo.ownerName = formatClientName(c, playerInfo.owner)
-
-        // TODO
-
-        this.playerInfo.splice(pNum, 1)
-        this.playerDiscInfo.push(newDiscInfo)
-        break
-      }
-      case S2C.PLAYER_PRIVATE_INFO:
-        this.processPrivateInfo(m)
-        break
-      default:
-        throw new Error('tag type')
-    }
+  MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
+    [S2C.WELCOME]: this.processWelcome,
+    [S2C.JOIN]: this.processJoin,
+    [S2C.LEAVE]: this.processLeave,
+    [S2C.RESET]: this.processReset,
+    [S2C.RENAME]: this.processRename,
+    [S2C.PING]: this.processPing,
+    [S2C.PING_TIME]: this.processPingTime,
+    [S2C.CHAT]: this.processChat,
+    [S2C.ACTIVE]: this.processActive,
+    [S2C.ROUND_WAIT]: this.processRoundWait,
+    [S2C.ROUND_INTERM]: this.processRoundInterm,
+    [S2C.ROUND_START]: this.processRoundStart,
+    [S2C.READY]: this.processReady,
+    [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
+    [S2C.END_TURN]: this.processEndTurn,
+    [S2C.END_ROUND]: this.processEndRound,
+    [S2C.PLAYER_ELIMINATE]: this.processEliminate,
+    [S2C.PLAYER_PRIVATE_INFO]: this.processPrivateInfo,
   }
 
-  private processPlayerInfos (m: ByteReader): void {
-    const playerInfo: CheatPlayerInfo[] = []
-    for (let i = 0; i <= this.clients.length; i++) {
-      const owner = m.getCN()
-      if (owner < 0) break
-
-      const p = new CheatPlayerInfo()
-      p.owner = owner
-
-      p.discardClaim = readCardCount(m)
-      p.handSize = m.getInt()
-
-      playerInfo.push(p)
-    }
-    this.playerInfo = playerInfo
+  protected processWelcomeMode (m: ByteReader): void {
+    this.mode.optTurnTime = m.getInt()
+    this.mode.optDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
+    this.mode.optTricks = clamp(m.getInt(), 0, CheatModeTricks.NUM - 1)
+    const modeFlags = m.getInt()
+    this.mode.optCountSame = !!(modeFlags & (1 << 0))
+    this.mode.optCountMore = !!(modeFlags & (1 << 1))
+    this.mode.optCountLess = !!(modeFlags & (1 << 2))
+    this.mode.optRank0 = !!(modeFlags & (1 << 3))
+    this.mode.optRank1u = !!(modeFlags & (1 << 4))
+    this.mode.optRank1uw = !!(modeFlags & (1 << 5))
+    this.mode.optRank1d = !!(modeFlags & (1 << 6))
+    this.mode.optRank1dw = !!(modeFlags & (1 << 7))
+    this.mode.optRank2u = !!(modeFlags & (1 << 8))
+    this.mode.optRank2uw = !!(modeFlags & (1 << 9))
+    this.mode.optRank2d = !!(modeFlags & (1 << 10))
+    this.mode.optRank2dw = !!(modeFlags & (1 << 11))
+    this.mode.optRankother = !!(modeFlags & (1 << 12))
   }
 
-  private processDiscInfos (m: ByteReader): void {
-    const discInfo: CheatDiscInfo[] = []
-    for (let i = 0; i <= this.clients.length; i++) {
-      const ownerName = m.getString(32)
-      if (!ownerName) break
-
-      const p = new CheatDiscInfo()
-      p.ownerName = ownerName
-
-      p.discardClaim = readCardCount(m)
-
-      discInfo.push(p)
-    }
-    this.playerDiscInfo = discInfo
+  protected processPlayerInfo (m: ByteReader, p: CheatPlayerInfo): void {
+    p.discardClaim = readCardCount(m)
+    p.handSize = m.getInt()
   }
 
-  private processRoundStartInfo (m: ByteReader): void {
+  protected processDiscInfo (m: ByteReader, p: CheatDiscInfo): void {
+    p.discardClaim = readCardCount(m)
+  }
+
+  protected processRoundStartInfo (m: ByteReader): void {
     // TODO
   }
 
-  private processRoundInfo (m: ByteReader): void {
+  protected processRoundInfo (m: ByteReader): void {
     const cardsRemain = readCardCount(m)
     const cardsClaim = readCardCount(m)
     const cardsTotal = newTotalCardCount(1) // TODO use mode count
@@ -484,11 +222,23 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     // this.cardCountClaimRemain = cardsClaimRemain
   }
 
+  protected processMoveConfirm (m: ByteReader) {
+    this.pendingMove = readCardCount(m)
+    this.pendingMoveClaim = m.getInt()
+  }
+
   protected processEndTurn (m: ByteReader): void {
+    // TODO
+
+    this.setTimer(this.mode.optTurnTime)
+    this.nextTurn()
+  }
+
+  protected processEndRound (m: ByteReader): void {
     // TODO
   }
 
-  private processEndRound (m: ByteReader): void {
+  protected eliminatePlayer (m: ByteReader, d: CheatDiscInfo, p: CheatPlayerInfo): void {
     // TODO
   }
 
@@ -501,13 +251,11 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     }
   }
 
-  private updatePlayers (): void {
-    this.leaderboard = sortAndRankPlayers(this.clients, [
-      (p) => p.score,
-      (p) => p.wins,
-      (p) => p.streak,
-    ])
-  }
+  protected override readonly playersSortProps = [
+    (p: CheatClient) => p.score,
+    (p: CheatClient) => p.wins,
+    (p: CheatClient) => p.streak,
+  ]
 }
 
 type CardCount = [

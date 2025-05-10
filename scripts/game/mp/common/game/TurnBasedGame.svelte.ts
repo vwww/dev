@@ -1,4 +1,5 @@
 import type { ByteReader } from './ByteReader'
+import { MAX_PLAYERS } from './common'
 import { CommonClient, CommonGame } from './CommonGame.svelte'
 
 export const enum GameState {
@@ -7,7 +8,7 @@ export const enum GameState {
   ACTIVE,
 }
 
-export class TurnBasedClient extends CommonClient {
+export abstract class TurnBasedClient extends CommonClient {
   ready = $state(false)
   inRound = $state(false)
 
@@ -40,6 +41,81 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, H> extends Common
   clearHistory (): void {
     this.pastGames = []
   }
+
+  protected processWelcomeGame (m: ByteReader): void {
+    const roundState = m.getInt()
+    if (roundState === 0) {
+      this.roundWait()
+    } else if (roundState === 1) {
+      this.roundIntermission(m.getInt())
+      for (let i = 0; i <= MAX_PLAYERS; i++) {
+        const cn = m.getCN()
+        if (cn < 0) break
+        const p = this.clients[cn]
+        if (!p) throw new Error('invalid welcome round ready cn ' + cn)
+        p.ready = true
+      }
+    } else if (roundState === 2) {
+      this.roundStart(m.getInt())
+    }
+
+    const curRoundPlayers = []
+    for (let i = 0; i <= MAX_PLAYERS; i++) {
+      const cn = m.getCN()
+      if (cn < 0) break
+      const p = this.clients[cn]
+      if (!p) throw new Error('invalid welcome round player cn ' + cn)
+      p.inRound = true
+      curRoundPlayers.push(p)
+    }
+    this.roundPlayers = curRoundPlayers
+
+    const curRoundQueue = []
+    for (let i = 0; i <= MAX_PLAYERS; i++) {
+      const cn = m.getCN()
+      if (cn < 0) break
+      const p = this.clients[cn]
+      if (!p) throw new Error('invalid welcome round queue cn ' + cn)
+      curRoundQueue.push(p)
+    }
+    this.roundPlayerQueue = curRoundQueue
+  }
+
+  protected processRoundWait (m: ByteReader): void {
+    this.roundWait()
+  }
+
+  protected processRoundInterm (m: ByteReader): void {
+    this.roundIntermission(this.INTERMISSION_TIME)
+  }
+
+  protected processRoundStart (m: ByteReader): void {
+    this.unsetInRound()
+    const curRoundPlayers = []
+    for (let i = 0; i <= MAX_PLAYERS; i++) {
+      const cn = m.getCN()
+      if (cn < 0) break
+      const p = this.clients[cn]
+      if (!p) throw new Error('invalid round start player cn ' + cn)
+      p.inRound = true
+      curRoundPlayers.push(p)
+    }
+
+    this.roundPlayers = curRoundPlayers
+    this.roundPlayerQueue = []
+    this.roundStart(this.ROUND_TIME)
+  }
+
+  protected processReady (m: ByteReader): void {
+    const cn = m.getCN()
+    const ready = m.getBool()
+    const p = this.clients[cn]
+    if (p) {
+      p.ready = ready
+    }
+  }
+
+  protected abstract processEndRound (m: ByteReader): void
 
   protected roundWait (): void {
     this.roundState = GameState.WAITING

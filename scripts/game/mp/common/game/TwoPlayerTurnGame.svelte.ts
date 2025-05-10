@@ -74,6 +74,24 @@ export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClien
     this.drawOffer = 0
   }
 
+  protected abstract processRoundInfo (m: ByteReader): void
+  protected override processWelcomeGame (m: ByteReader): void {
+    super.processWelcomeGame(m)
+
+    this.resetRound()
+    this.processPlayerInfo(m)
+    this.processRoundInfo(m)
+  }
+
+  protected abstract processRoundStartInfo (m: ByteReader): void
+  protected override processRoundStart (m: ByteReader): void {
+    super.processRoundStart(m)
+
+    this.resetRound()
+    this.processPlayerInfo(m)
+    this.processRoundStartInfo(m)
+  }
+
   protected processEndRound (m: ByteReader): void {
     const winner = m.getInt()
     const earlyEnd = m.getBool()
@@ -116,9 +134,15 @@ export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClien
     this.drawOffer = drawReq && (cn === this.localClient.cn ? 1 : 2)
   }
 
-  protected nextTurn() {
+  protected nextTurn (): void {
     this.ply++
     const myPlayer = this.myPlayer
     this.myTurn = !!myPlayer && (this.ply & 1) === myPlayer - 1
   }
+
+  protected override readonly playersSortProps = [
+    (p: TwoPlayerTurnClient) => p.streak,
+    (p: TwoPlayerTurnClient) => p.score,
+    (p: TwoPlayerTurnClient) => p.wins,
+  ]
 }

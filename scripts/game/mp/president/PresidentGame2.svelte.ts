@@ -1,7 +1,6 @@
 import { clamp, sum } from '@/util'
-import { MAX_PLAYERS, filterName, sortAndRankPlayers, formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
-import { ByteWriter } from '@gmc/game/ByteWriter'
+import { filterChat } from '@gmc/game/CommonGame.svelte'
 import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
@@ -129,17 +128,13 @@ const enum PresidentModeFirstTrick {
   NUM,
 }
 
-const MAX_NAME_LEN = 20
-const MAX_CHAT_LEN = 100
-
-const PROTOCOL_VERSION = 0
-
-const INTERMISSION_TIME = 30000
-
 // const CARDS_PER_DECK = 52
 const MAX_DECKS = 166_799_986_198_907
 
 export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlayerInfo, PresidentDiscInfo, PresidentGameHistory> {
+  PlayerInfoType = PresidentPlayerInfo
+  PlayerDiscType = PresidentDiscInfo
+
   mode: PresidentMode = $state(defaultMode())
 
   gamePhase = $state(0 as GamePhase)
@@ -168,346 +163,78 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   pendingMove = $state(0)
   pendingMoveCount = $state(0)
 
+  get ROUND_TIME () { return this.mode.optTurnTime }
+  INTERMISSION_TIME = 30000
+
   override newClient () { return new PresidentClient }
 
   enterGame (room: BaseGameRoom, name: string): void {
     this.setupGame(room)
-    this.sendf('is', PROTOCOL_VERSION, name)
+    this.sendf('is', this.PROTOCOL_VERSION, name)
   }
 
   sendReset (): void { this.sendf('i', C2S.RESET) }
   sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
+  sendPong (t: number): void { this.sendf('i2', C2S.PONG, t) }
+  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
-  sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, s.slice(0, MAX_CHAT_LEN)) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (n: number, c: number): void { this.sendf('i4', C2S.MOVE, 1, n, c) }
   sendMoveTransfer (a: number, b: number): void { this.sendf('i4', C2S.MOVE, 0, a, b) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
-  processMessage (m: ByteReader): void {
-    const type = m.getInt()
-    switch (type) {
-      case S2C.WELCOME: {
-        const protocol = m.getInt()
-        if (protocol !== PROTOCOL_VERSION) {
-          alert(`different protocol version (client: ${PROTOCOL_VERSION}, server: ${protocol})\nrefresh the page for updates?`)
-        }
-
-        this.clients.length = 0
-
-        const myCn = m.getCN()
-
-        this.mode.optTurnTime = m.getInt()
-        this.mode.optDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
-        this.mode.optJokers = clamp(m.getInt(), 0, 2)
-        this.mode.optRevolution = clamp(m.getInt(), 0, PresidentModeRevolution.NUM - 1)
-        this.mode.optEqualize = clamp(m.getInt(), 0, PresidentModeEqualize.NUM - 1)
-        this.mode.optEqualizeEndTrick = clamp(m.getInt(), 0, PresidentModeEqualizeEndTrick.NUM - 1)
-        this.mode.optFirstTrick = clamp(m.getInt(), 0, PresidentModeFirstTrick.NUM - 1)
-        const modeFlags = m.getInt()
-        this.mode.optRevEndTrick = !!(modeFlags & (1 << 0))
-        this.mode.opt1Fewer2 = !!(modeFlags & (1 << 1))
-        this.mode.optPlayAfterPass = !!(modeFlags & (1 << 2))
-        this.mode.optEqualizeOnlyScum = !!(modeFlags & (1 << 3))
-        this.mode.opt4inARow = !!(modeFlags & (1 << 4))
-        this.mode.opt8 = !!(modeFlags & (1 << 5))
-        this.mode.optSingleTurn = !!(modeFlags & (1 << 6))
-        this.mode.optPenalizeFinal2 = !!(modeFlags & (1 << 7))
-        this.mode.optPenalizeFinalJoker = !!(modeFlags & (1 << 8))
-
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = cn == myCn ? this.localClient : new PresidentClient()
-          p.cn = cn
-          p.readWelcome(m)
-          this.clients[cn] = p
-        }
-
-        const roundState = m.getInt()
-        if (roundState === 0) {
-          this.roundWait()
-        } else if (roundState === 1) {
-          this.roundIntermission(m.getInt())
-          for (let i = 0; i <= MAX_PLAYERS; i++) {
-            const cn = m.getCN()
-            if (cn < 0) break
-            const p = this.clients[cn]
-            if (!p) continue
-            p.ready = true
-          }
-        } else if (roundState === 2) {
-          this.roundStart(m.getInt())
-        }
-
-        const curRoundPlayers = []
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = this.clients[cn]
-          if (!p) continue
-          p.inRound = true
-          curRoundPlayers.push(p)
-        }
-        this.roundPlayers = curRoundPlayers
-
-        const curRoundQueue = []
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = this.clients[cn]
-          if (!p) continue
-          curRoundQueue.push(p)
-        }
-        this.roundPlayerQueue = curRoundQueue
-
-        this.processPlayerInfos(m)
-        this.processDiscInfos(m)
-        this.processRoundInfo(m)
-
-        this.updatePlayers()
-        break
-      }
-      case S2C.JOIN: {
-        const cn = m.getCN()
-        const name = filterName(m.getString(MAX_NAME_LEN))
-        if (this.clients[cn]) break
-
-        const newPlayer = new PresidentClient()
-        newPlayer.cn = cn
-        newPlayer.name = name
-
-        this.clients[cn] = newPlayer
-
-        this.chat.playerJoined(newPlayer.formatName())
-        this.updatePlayers()
-        break
-      }
-      case S2C.LEAVE: {
-        const cn = m.getCN()
-        const player = this.clients[cn]
-        if (!player) break
-        if (player.active) {
-          this.playerDeactivated(player)
-        }
-        this.chat.playerLeft(player.formatName())
-        delete this.clients[cn]
-        this.updatePlayers()
-        break
-      }
-      case S2C.RESET: {
-        const cn = m.getCN()
-        const player = this.clients[cn]
-        if (player) {
-          player.resetScore()
-          this.updatePlayers()
-          this.chat.playerReset(player.formatName())
-        }
-        break
-      }
-      case S2C.RENAME: {
-        const cn = m.getCN()
-        const newName = filterName(m.getString(MAX_NAME_LEN))
-        const player = this.clients[cn]
-        if (player) {
-          this.chat.playerRename(player.formatName(), newName)
-          player.name = newName
-        }
-        break
-      }
-      case S2C.PING: {
-        // send pong
-        this.room?.send(new ByteWriter()
-          .putInt(C2S.PONG)
-          .putInt(m.getInt())
-          .toArray()
-        )
-        break
-      }
-      case S2C.PING_TIME: {
-        // ping times
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const ping = m.getInt()
-          const player = this.clients[cn]
-          if (player) {
-            player.ping = ping
-          }
-        }
-        break
-      }
-
-      case S2C.CHAT: {
-        const cn = m.getCN()
-        const flags = m.getInt()
-        const target = m.getInt()
-        const msg = m.getString(MAX_CHAT_LEN)
-
-        const player = this.clients[cn]
-        const playerName = formatClientName(player, cn)
-        const targetPlayer = this.clients[target]
-        const targetName = targetPlayer
-          ? player === this.localClient
-            ? 'you'
-            : formatClientName(targetPlayer, target)
-          : undefined
-        this.chat.addChatMessage(playerName, msg, flags, targetName)
-        break
-      }
-      case S2C.ACTIVE: {
-        // active
-        const cn = m.getCN()
-        const active = m.getBool()
-        const p = this.clients[cn]
-        if (p) {
-          p.active = active
-          if (active) {
-            this.playerActivated(p)
-          } else {
-            this.playerDeactivated(p)
-          }
-          this.updatePlayers()
-        }
-        break
-      }
-      case S2C.ROUND_WAIT:
-        this.roundWait()
-        break
-      case S2C.ROUND_INTERM:
-        this.roundIntermission(INTERMISSION_TIME)
-        break
-      case S2C.ROUND_START: {
-        this.unsetInRound()
-        const curRoundPlayers = []
-        for (let i = 0; i <= MAX_PLAYERS; i++) {
-          const cn = m.getCN()
-          if (cn < 0) break
-          const p = this.clients[cn]
-          if (!p) continue
-          p.inRound = true
-          curRoundPlayers.push(p)
-        }
-
-        this.roundPlayers = curRoundPlayers
-        this.roundPlayerQueue = []
-        this.roundStart(this.mode.optTurnTime)
-
-        const playerInfo: PresidentPlayerInfo[] = []
-        for (let i = 0; i <= this.clients.length; i++) {
-          const owner = m.getCN()
-          if (owner < 0) break
-
-          const p = new PresidentPlayerInfo()
-          p.owner = owner
-          playerInfo.push(p)
-        }
-        this.playerInfo = playerInfo
-        this.playerDiscInfo = []
-
-        this.processRoundStartInfo(m)
-        break
-      }
-      case S2C.READY: {
-        const cn = m.getCN()
-        const ready = m.getBool()
-        const p = this.clients[cn]
-        if (p) {
-          p.ready = ready
-        }
-        break
-      }
-      case S2C.MOVE_CONFIRM:
-        this.pendingMove = m.getInt()
-        this.pendingMoveCount = m.getInt()
-        break
-      case S2C.END_TURN:
-        this.processEndTurn(m)
-        this.setTimer(this.mode.optTurnTime)
-
-        if (this.playerInfo.length) {
-          this.playerInfo.push(this.playerInfo.shift()!)
-        }
-        break
-      case S2C.END_ROUND:
-        this.processEndRound(m)
-        break
-      case S2C.PLAYER_ELIMINATE: {
-        // can't imply hand from unspectate/leave/endTurn, as
-        // private info of leaving players might need to be revealed
-        const pNum = m.getInt()
-        const playerInfo = this.playerInfo[pNum]
-        if (!playerInfo) {
-          // should not happen
-          this.room?.disconnect()
-          break
-        }
-
-        const newDiscInfo = new PresidentDiscInfo()
-        const c = this.clients[playerInfo.owner]
-        newDiscInfo.ownerName = formatClientName(c, playerInfo.owner)
-
-        const isFirst = m.getBool()
-
-        newDiscInfo.discarded = playerInfo.discarded
-        newDiscInfo.hand = readCardCount(m)
-
-        if (c) {
-          // const rank = this.playerInfo.length
-          // updateScore(c, rank, rank + this.playerDiscInfo.length)
-        }
-
-        this.playerInfo.splice(pNum, 1)
-        if (isFirst) {
-          // TODO
-        } else {
-          this.playerDiscInfo.push(newDiscInfo)
-        }
-        break
-      }
-      case S2C.PLAYER_PRIVATE_INFO:
-        this.processPrivateInfo(m)
-        break
-      default:
-        throw new Error('tag type')
-    }
+  MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
+    [S2C.WELCOME]: this.processWelcome,
+    [S2C.JOIN]: this.processJoin,
+    [S2C.LEAVE]: this.processLeave,
+    [S2C.RESET]: this.processReset,
+    [S2C.RENAME]: this.processRename,
+    [S2C.PING]: this.processPing,
+    [S2C.PING_TIME]: this.processPingTime,
+    [S2C.CHAT]: this.processChat,
+    [S2C.ACTIVE]: this.processActive,
+    [S2C.ROUND_WAIT]: this.processRoundWait,
+    [S2C.ROUND_INTERM]: this.processRoundInterm,
+    [S2C.ROUND_START]: this.processRoundStart,
+    [S2C.READY]: this.processReady,
+    [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
+    [S2C.END_TURN]: this.processEndTurn,
+    [S2C.END_ROUND]: this.processEndRound,
+    [S2C.PLAYER_ELIMINATE]: this.processEliminate,
+    [S2C.PLAYER_PRIVATE_INFO]: this.processPrivateInfo,
   }
 
-  private processPlayerInfos (m: ByteReader): void {
-    const playerInfo: PresidentPlayerInfo[] = []
-    for (let i = 0; i <= this.clients.length; i++) {
-      const owner = m.getCN()
-      if (owner < 0) break
-
-      const p = new PresidentPlayerInfo()
-      p.owner = owner
-
-      p.handSize = m.getInt()
-      p.discarded = readCardCount(m)
-
-      playerInfo.push(p)
-    }
-    this.playerInfo = playerInfo
+  protected processWelcomeMode (m: ByteReader): void {
+    this.mode.optTurnTime = m.getInt()
+    this.mode.optDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
+    this.mode.optJokers = clamp(m.getInt(), 0, 2)
+    this.mode.optRevolution = clamp(m.getInt(), 0, PresidentModeRevolution.NUM - 1)
+    this.mode.optEqualize = clamp(m.getInt(), 0, PresidentModeEqualize.NUM - 1)
+    this.mode.optEqualizeEndTrick = clamp(m.getInt(), 0, PresidentModeEqualizeEndTrick.NUM - 1)
+    this.mode.optFirstTrick = clamp(m.getInt(), 0, PresidentModeFirstTrick.NUM - 1)
+    const modeFlags = m.getInt()
+    this.mode.optRevEndTrick = !!(modeFlags & (1 << 0))
+    this.mode.opt1Fewer2 = !!(modeFlags & (1 << 1))
+    this.mode.optPlayAfterPass = !!(modeFlags & (1 << 2))
+    this.mode.optEqualizeOnlyScum = !!(modeFlags & (1 << 3))
+    this.mode.opt4inARow = !!(modeFlags & (1 << 4))
+    this.mode.opt8 = !!(modeFlags & (1 << 5))
+    this.mode.optSingleTurn = !!(modeFlags & (1 << 6))
+    this.mode.optPenalizeFinal2 = !!(modeFlags & (1 << 7))
+    this.mode.optPenalizeFinalJoker = !!(modeFlags & (1 << 8))
   }
 
-  private processDiscInfos (m: ByteReader): void {
-    const discInfo: PresidentDiscInfo[] = []
-    for (let i = 0; i <= this.clients.length; i++) {
-      const ownerName = m.getString(32)
-      if (!ownerName) break
-
-      const p = new PresidentDiscInfo()
-      p.ownerName = ownerName
-
-      p.discarded = readCardCount(m)
-      p.hand = readCardCount(m)
-
-      discInfo.push(p)
-    }
-    this.playerDiscInfo = discInfo
+  protected processPlayerInfo (m: ByteReader, p: PresidentPlayerInfo) {
+    p.handSize = m.getInt()
+    p.discarded = readCardCount(m)
   }
 
-  private processRoundStartInfo (m: ByteReader): void {
+  protected processDiscInfo (m: ByteReader, p: PresidentDiscInfo) {
+    p.discarded = readCardCount(m)
+    p.hand = readCardCount(m)
+  }
+
+  protected processRoundStartInfo (m: ByteReader): void {
     const noPres = m.getBool()
     if (noPres) {
       this.gamePhase = GamePhase.NEW_TRICK
@@ -519,7 +246,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     // TODO init cards
   }
 
-  private processRoundInfo (m: ByteReader): void {
+  protected processRoundInfo (m: ByteReader): void {
     // TODO just discard count, calc others?
     const phase = m.getInt()
     this.gamePhase = phase
@@ -536,13 +263,21 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     }
   }
 
+  protected processMoveConfirm (m: ByteReader) {
+    this.pendingMove = m.getInt()
+    this.pendingMoveCount = m.getInt()
+  }
+
   protected processEndTurn (m: ByteReader): void {
     // TODO
     // const card = m.getInt()
     // const cardCount = m.getFloat64()
+
+    this.setTimer(this.mode.optTurnTime)
+    this.nextTurn()
   }
 
-  private processEndRound (m: ByteReader): void {
+  protected processEndRound (m: ByteReader): void {
     // TODO
     // const playerInfos = this.playerInfo
 
@@ -552,6 +287,19 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
     // calculate ranks
     // this.addHistory(gameHistoryEntry)
+  }
+
+  protected eliminatePlayer (m: ByteReader, d: PresidentDiscInfo, p: PresidentPlayerInfo, c?: PresidentClient): void {
+    const isFirst = m.getBool()
+
+    d.discarded = p.discarded
+    d.hand = readCardCount(m)
+
+    if (c) {
+      // const rank = this.playerInfo.length
+      // updateScore(c, rank, rank + this.playerDiscInfo.length)
+    }
+    return void isFirst
   }
 
   private processPrivateInfo (m: ByteReader): void {
@@ -568,15 +316,13 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     }
   }
 
-  private updatePlayers (): void {
-    this.leaderboard = sortAndRankPlayers(this.clients, [
-      (p) => p.score,
-      (p) => p.streak,
-      (p) => p.rank2p,
-      (p) => p.rank1p,
-      (p) => p.rank0,
-    ])
-  }
+  protected override readonly playersSortProps = [
+    (p: PresidentClient) => p.score,
+    (p: PresidentClient) => p.streak,
+    (p: PresidentClient) => p.rank2p,
+    (p: PresidentClient) => p.rank1p,
+    (p: PresidentClient) => p.rank0,
+  ]
 
   private processGiveCardInfo (m: ByteReader): void {
     const pres = m.getInt()
