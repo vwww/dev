@@ -354,7 +354,7 @@ function handleKey (event: KeyboardEvent, on: boolean): void {
       keyRight = on
       break
     default:
-      return  
+      return
   }
 
   event.preventDefault()
