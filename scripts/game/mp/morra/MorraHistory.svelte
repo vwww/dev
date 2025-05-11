@@ -13,8 +13,7 @@ const { results }: Props = $props()
     <li class="list-group-item">
       <div>
         Total:
-        {#if pastGame.moveRnd >= 0}{(pastGame.moveSum - pastGame.moveRnd).toLocaleString()} + {pastGame.moveRnd.toLocaleString()} ={/if}
-        {pastGame.moveSum.toLocaleString()} &equiv; <span class="badge text-bg-success">{pastGame.winner}</span> (mod {pastGame.teams.length})
+        {pastGame.moveSum} &equiv; <span class="badge text-bg-success">{pastGame.winner}</span> (mod {pastGame.teams.length})
       </div>
       {#each pastGame.teams as team, id}
         <div>
@@ -26,6 +25,9 @@ const { results }: Props = $props()
           {/each}
         </div>
       {/each}
+      {#if pastGame.moveRnd >= 0}
+        <div>Random: <span class="badge me-2 text-bg-primary">{pastGame.moveRnd}</span></div>
+      {/if}
     </li>
   {:else}
     <li class="list-group-item">No past games!</li>
