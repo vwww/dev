@@ -9,10 +9,7 @@
 
 declare namespace PIO {
   type MessageEntry = number | string | boolean | ByteArray
-  type ByteArray = {
-    length: number
-    [k: number]: number
-  }
+  type ByteArray = ArrayLike<number> // each element must be uint8
 
   /** Main class for authenticating a user and getting a client. */
   interface PlayerIO {

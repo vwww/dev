@@ -2,7 +2,7 @@ import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
 
 export const roomCreateOptions = [
   ['optTurnTime', 'i', 20000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 5000, 60000],
-  ['optDecks', 'i', 1, 'Decks', 'number of decks', 1, 166799986198907],
+  ['optDecks', 'I', 1n, 'Decks', 'number of decks', 1n, 166799986198907n],
   ['optJokers', 'i', 2, 'Jokers', 'number of jokers per deck', 0, 2],
   ['optRevolution', 'e', 0, 'Revolutions',
     'when 4 or more cards of the same value are played at once (and selected condition), rankings are reversed (except jokers) for the round', [

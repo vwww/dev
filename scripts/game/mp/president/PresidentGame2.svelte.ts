@@ -129,7 +129,7 @@ const enum PresidentModeFirstTrick {
 }
 
 // const CARDS_PER_DECK = 52
-const MAX_DECKS = 166_799_986_198_907
+const MAX_DECKS = 166_799_986_198_907n
 
 export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlayerInfo, PresidentDiscInfo, PresidentGameHistory> {
   PlayerInfoType = PresidentPlayerInfo
@@ -206,7 +206,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
   protected processWelcomeMode (m: ByteReader): void {
     this.mode.optTurnTime = m.getInt()
-    this.mode.optDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
+    this.mode.optDecks = clamp(m.getUint64Old(), 1n, MAX_DECKS)
     this.mode.optJokers = clamp(m.getInt(), 0, 2)
     this.mode.optRevolution = clamp(m.getInt(), 0, PresidentModeRevolution.NUM - 1)
     this.mode.optEqualize = clamp(m.getInt(), 0, PresidentModeEqualize.NUM - 1)
@@ -271,7 +271,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   protected processEndTurn (m: ByteReader): void {
     // TODO
     // const card = m.getInt()
-    // const cardCount = m.getFloat64()
+    // const cardCount = m.getUint64Old()
 
     this.setTimer(this.mode.optTurnTime)
     this.nextTurn()

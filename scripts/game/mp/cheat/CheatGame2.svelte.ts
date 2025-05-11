@@ -103,7 +103,7 @@ const enum CheatModeTricks {
 }
 
 // const CARDS_PER_DECK = 52
-const MAX_DECKS = 166_799_986_198_907
+const MAX_DECKS = 166_799_986_198_907n
 
 export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, CheatDiscInfo, CheatGameHistory> {
   PlayerInfoType = CheatPlayerInfo
@@ -179,7 +179,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   protected processWelcomeMode (m: ByteReader): void {
     this.mode.optTurnTime = m.getInt()
-    this.mode.optDecks = clamp(m.getFloat64(), 1, MAX_DECKS)
+    this.mode.optDecks = clamp(m.getUint64Old(), 1n, MAX_DECKS)
     this.mode.optTricks = clamp(m.getInt(), 0, CheatModeTricks.NUM - 1)
     const modeFlags = m.getInt()
     this.mode.optCountSame = !!(modeFlags & (1 << 0))

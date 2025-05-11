@@ -2,6 +2,7 @@ import { ByteReader } from '@gmc/game/ByteReader'
 import { filterChat } from '@gmc/game/CommonGame.svelte'
 import { OneTurnClient, OneTurnGame } from '@gmc/game/OneTurnGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
+import type { Repeat } from '@/util'
 
 import { defaultMode, type RPSMode } from './gamemode'
 
@@ -44,10 +45,10 @@ class RPSClient extends OneTurnClient {
   roundTies = $state(0)
   roundTotal = $state(0)
 
-  battleWins = $state(0)
-  battleLosses = $state(0)
-  battleTies = $state(0)
-  battleTotal = $state(0)
+  battleWins = $state(0n)
+  battleLosses = $state(0n)
+  battleTies = $state(0n)
+  battleTotal = $state(0n)
 
   resetScore () {
     this.roundScore = 0
@@ -58,10 +59,10 @@ class RPSClient extends OneTurnClient {
     this.roundTies = 0
     this.roundTotal = 0
 
-    this.battleWins = 0
-    this.battleLosses = 0
-    this.battleTies = 0
-    this.battleTotal = 0
+    this.battleWins = 0n
+    this.battleLosses = 0n
+    this.battleTies = 0n
+    this.battleTotal = 0n
   }
 
   override readWelcome (m: ByteReader): void {
@@ -73,9 +74,9 @@ class RPSClient extends OneTurnClient {
     this.roundLosses = m.getInt()
     this.roundTies = m.getInt()
     this.roundTotal = this.roundWins + this.roundLosses + this.roundTies
-    this.battleWins = m.getFloat64()
-    this.battleLosses = m.getFloat64()
-    this.battleTies = m.getFloat64()
+    this.battleWins = m.getUint64Old()
+    this.battleLosses = m.getUint64Old()
+    this.battleTies = m.getUint64Old()
     this.battleTotal = this.battleWins + this.battleLosses + this.battleTies
   }
 }
@@ -83,20 +84,20 @@ class RPSClient extends OneTurnClient {
 export interface RPSGameHistory {
   local?: RPSGameHistoryLocal
   outcomes: number3
-  count: number3
-  botCount: number3
+  count: Number3
+  botCount: Number3
   moves: RPSGameHistoryMove[]
   detRandBits: number
 }
 
 interface RPSGameHistoryLocal {
   move: number
-  battleLTW: number3
+  battleLTW: Number3
   newStreak: number
 }
 
 interface RPSGameHistoryMove {
-  ltw: number3
+  ltw: Number3
   players: string[]
 }
 
@@ -157,8 +158,8 @@ export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
   protected processEndRound (m: ByteReader): void {
     const detRandBits = m.getInt()
     const outcomes: number3 = [filterOutcome(m.getInt()), filterOutcome(m.getInt()), filterOutcome(m.getInt())]
-    const count: number3 = [m.getFloat64(), m.getFloat64(), m.getFloat64()]
-    const botCount = count.slice() as number3
+    const count: Number3 = [m.getUint64Old(), m.getUint64Old(), m.getUint64Old()]
+    const botCount = count.slice() as Number3
     const humanCount = Math.min(m.getInt(), this.clients.length)
 
     const ltw = calculateLTW(count, outcomes)
@@ -234,14 +235,15 @@ function filterOutcome (o: number): number {
   return o < 0 ? -1 : o > 0 ? 1 : 0
 }
 
-type number3 = [number, number, number]
-type number33 = [number3, number3, number3]
+type number3 = Repeat<number, 3>
+type Number3 = Repeat<bigint, 3>
+type Number33 = [Number3, Number3, Number3]
 
-function calculateLTW (count: number3, battleResults: number3): number33 {
-  const ltw: number33 = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+function calculateLTW (count: Number3, battleResults: number3): Number33 {
+  const ltw: Number33 = [[0n, 0n, 0n], [0n, 0n, 0n], [0n, 0n, 0n]]
   for (let i = 0; i < 3; i++) {
     if (count[i]) {
-      ltw[i][1] += count[i] - 1
+      ltw[i][1] += count[i] - 1n
       ltw[i][1 + battleResults[i]] += count[(i + 1) % 3]
       ltw[i][1 - battleResults[(i + 2) % 3]] += count[(i + 2) % 3]
     }

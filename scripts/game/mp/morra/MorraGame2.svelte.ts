@@ -60,7 +60,7 @@ class MorraClient extends OneTurnClient {
 
 export interface MorraGameHistory {
   playerCount: number
-  moveSum: number
+  moveSum: bigint
   moveRnd: number
   winner: number
   inverted: boolean
@@ -69,14 +69,14 @@ export interface MorraGameHistory {
 
 export interface MorraGameHistoryTeam {
   winner: boolean
-  moveSum: number
+  moveSum: bigint
   players: MorraGameHistoryPlayer[]
 }
 
 export interface MorraGameHistoryPlayer {
   name: string
   cn: number
-  move: number
+  move: bigint
 }
 
 export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
@@ -101,7 +101,7 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
   sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
-  sendMove (): void { this.sendf('id', C2S.MOVE, this.pendingMove) }
+  sendMove (): void { this.sendf('iU', C2S.MOVE, BigInt(this.pendingMove)) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
@@ -138,16 +138,16 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMove = m.getFloat64()
+    this.pendingMoveAck = Number(m.getUint64Old())
   }
 
   protected processEndRound (m: ByteReader): void {
     const teamCount = Math.min(m.getInt(), this.clients.length)
-    const moveSum = m.getFloat64()
+    const moveSum = m.getUint64Old()
     const moveRnd = m.getInt()
     const playerCount = Math.min(m.getInt(), this.clients.length)
     const inverted = this.mode.optInverted
-    const winner = moveSum % teamCount
+    const winner = Number(moveSum % BigInt(teamCount))
 
     const gameHistoryEntry: MorraGameHistory = {
       playerCount,
@@ -158,7 +158,7 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
       teams: Array(teamCount).fill(false).map((_, id) => ({
         id,
         winner: (id === winner) !== inverted,
-        moveSum: 0,
+        moveSum: 0n,
         players: [] as MorraGameHistoryPlayer[]
       })),
     }
@@ -166,7 +166,7 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
     for (let i = 0; i < playerCount; i++) {
       const cn = m.getCN()
       if (cn < 0) break
-      const move = m.getFloat64()
+      const move = m.getUint64Old()
 
       const p = this.clients[cn]
       if (!p) continue

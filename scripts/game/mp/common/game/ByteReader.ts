@@ -22,7 +22,7 @@ export class ByteReader {
     return n & 63
   }
 
-  // any 32-bit int, more efficient for smaller int
+  // any 32-bit int, more efficient for smaller values
   getInt (): number {
     let n = this.get() << 24 >> 24 // sign extend
     if (n === -128) {
@@ -41,24 +41,16 @@ export class ByteReader {
     return !!this.get() // expects putInt() with 0 or 1
   }
 
-  // better for unsigned int, up to 28 bits, also handles signed
-  getUint (): number {
-    let n = this.get()
-    if (n & 0x80) {
-      n ^= (this.get() << 7) ^ 0x80
-      if (n & (1 << 14)) n ^= (this.get() << 14) ^ (1 << 14)
-      if (n & (1 << 21)) n ^= (this.get() << 21) ^ (1 << 21)
-      if (n & (1 << 28)) n |= 0xE000_0000 // assumed negative signed int
-    }
-    return n
-  }
-
   getFloat64 (): number {
     const buf = new Uint8Array([
       this.get(), this.get(), this.get(), this.get(),
       this.get(), this.get(), this.get(), this.get()
     ])
     return new DataView(buf.buffer).getFloat64(0)
+  }
+
+  getUint64Old (): bigint {
+    return BigInt(this.getFloat64())
   }
 
   getString (maxLen: number): string {

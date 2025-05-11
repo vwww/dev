@@ -39,7 +39,7 @@ export abstract class CommonGame<C extends CommonClient> {
   clients: C[] = []
   leaderboard: C[] = $state([])
 
-  protected abstract playersSortProps: ((p: C) => (number | string))[]
+  protected abstract playersSortProps: ((p: C) => (number | bigint | string))[]
 
   abstract newClient (): C
 

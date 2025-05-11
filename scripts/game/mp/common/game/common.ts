@@ -17,7 +17,7 @@ export function logBugReportInstructions() {
   console.log('In the example above, you would have to submit at least [0, 1, 2, 3, 4, 5, 6, 7] (expand stuff as needed)')
 }
 
-export function sortAndRankPlayers<P extends { cn: number; active: boolean; rank: number }>(players: P[], playerSortProps: ((p: P) => (number | string))[]): P[] {
+export function sortAndRankPlayers<P extends { cn: number; active: boolean; rank: number }>(players: P[], playerSortProps: ((p: P) => (number | bigint | string))[]): P[] {
   const sortedPlayers = players.filter((x) => x).sort((a, b) => {
     for (const prop of [(p: P) => p.active, ...playerSortProps]) {
       const aV = prop(a)
