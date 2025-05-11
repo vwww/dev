@@ -18,7 +18,8 @@ const { results }: Props = $props()
       </div>
       {#each pastGame.teams as team, id}
         <div>
-          <span class="badge me-1 text-bg-{team.winner ? 'success' : 'danger'}">#{id}</span> <span class="badge text-bg-primary">{team.moveSum}</span>:
+          <span class="badge me-1 text-bg-{team.winner ? 'success' : 'danger'}">#{id}</span>
+          {#if pastGame.teams.length < pastGame.playerCount}<span class="badge text-bg-primary">{team.moveSum}</span>:{/if}
           {#each team.players as player}
             <span class="badge me-1 text-bg-secondary">{player.name} ({player.cn})</span>
             <span class="badge me-2 text-bg-primary">{player.move}</span>
