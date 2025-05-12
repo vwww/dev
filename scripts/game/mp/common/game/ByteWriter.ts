@@ -40,6 +40,68 @@ export class ByteWriter {
     return this
   }
 
+  putUint64 (n: bigint): this {
+    if (n < 0) throw new Error('bad Uint64')
+
+    let bytes
+    if (n >= 0x1010100f9) {
+      if (n >= 0x10101010100f9) {
+        if (n >= 0x1010101010100f9n) {
+          n -= 0x1010101010100f9n
+          bytes = 8
+        } else {
+          n -= 0x10101010100f9n
+          bytes = 7
+        }
+      } else {
+        if (n >= 0x101010100f9) {
+          n -= 0x101010100f9n
+          bytes = 6
+        } else {
+          n -= 0x1010100f9n
+          bytes = 5
+        }
+      }
+    } else {
+      if (n >= 0x100f9) {
+        if (n >= 0x10100f9) {
+          n -= 0x10100f9n
+          bytes = 4
+        } else {
+          n -= 0x100f9n
+          bytes = 3
+        }
+      } else {
+        if (n >= 0xf9) {
+          n -= 0xf9n
+          bytes = 2
+        } else {
+          bytes = 1
+        }
+      }
+    }
+
+    if (bytes > 1) this.put(0xf9 - 2 + bytes)
+
+    // little endian
+    do {
+      this.put(Number(n & 0xffn))
+      n >>= 8n
+    } while (--bytes)
+
+    // big endian
+    while (bytes--) {
+      this.put(Number((n >> BigInt(bytes * 8)) & 0xffn))
+    }
+
+    return this
+  }
+
+  putInt64 (n: bigint): this {
+    // zig-zag encode, assuming 64 bits max
+    return this.putUint64((n << 1n) ^ (n >> 63n))
+  }
+
   putUint64Old (n: bigint): this {
     this.putFloat64(Number(n))
     return this
