@@ -89,7 +89,7 @@ export abstract class CommonGame<C extends CommonClient> {
   }
 
   sendf <Fmt extends string> (fmt: Fmt, ...args: FmtArgs<Fmt>) {
-    this.room?.send(ByteWriter.f(fmt, ...args))
+    this.room?.send(new ByteWriter().putFmt(fmt, ...args).toArray())
   }
 
   protected updatePlayers (): void {

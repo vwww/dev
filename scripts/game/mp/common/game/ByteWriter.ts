@@ -146,14 +146,6 @@ export class ByteWriter {
   toArray (): Uint8Array {
     return new Uint8Array(this.buf)
   }
-
-  static fw<Fmt extends string>(fmt: Fmt, ...args: FmtArgs<Fmt>) {
-    return new ByteWriter().putFmt(fmt, ...args)
-  }
-
-  static f<Fmt extends string>(fmt: Fmt, ...args: FmtArgs<Fmt>) {
-    return ByteWriter.fw(fmt, ...args).toArray()
-  }
 }
 
 type Spec = 's' | 'b' | 'i' | 'U' | 'd'
