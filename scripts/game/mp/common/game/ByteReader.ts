@@ -86,7 +86,8 @@ export class ByteReader {
     const b: number[] = []
     while (b.length <= maxLen) {
       const c = this.get()
-      if (!c || b.length === maxLen) break
+      if (!c) break
+      if (b.length === maxLen) throw new Error('too long')
       b.push(c > 0x7F ? 63 : c) // '?' == 63
     }
     return String.fromCharCode(...b)
