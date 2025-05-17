@@ -1,14 +1,17 @@
 export class ByteReader {
+  private v: DataView
 
   private pos = 0
 
-  constructor (private readonly buf: Uint8Array, private readonly len = buf.length) { }
+  constructor (buf: Uint8Array) {
+    this.v = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
+  }
 
-  get debugBuf (): Uint8Array { return this.buf }
-  get remaining (): number { return this.len - this.pos }
+  get debugBuf (): DataView { return this.v }
+  get remaining (): number { return this.v.byteLength - this.pos }
 
   get (): number {
-    return this.buf[this.pos++]
+    return this.v.getUint8(this.pos++)
   }
 
   getCN (): number {
@@ -19,15 +22,11 @@ export class ByteReader {
 
   // any 32-bit int, more efficient for smaller values
   getInt (): number {
-    let n = this.get() << 24 >> 24 // sign extend
+    let n = this.v.getInt8(this.pos++)
     if (n === -128) {
-      n = this.get()
-      n |= this.get() << 24 >> 16
+      return this.v.getInt16((this.pos += 2) - 2, true)
     } else if (n === -127) {
-      n = this.get()
-      n |= this.get() << 8
-      n |= this.get() << 16
-      n |= this.get() << 24
+      return this.v.getInt32((this.pos += 4) - 4, true)
     }
     return n
   }
@@ -37,11 +36,7 @@ export class ByteReader {
   }
 
   getFloat64 (): number {
-    const buf = new Uint8Array([
-      this.get(), this.get(), this.get(), this.get(),
-      this.get(), this.get(), this.get(), this.get()
-    ])
-    return new DataView(buf.buffer).getFloat64(0)
+    return this.v.getFloat64((this.pos += 8) - 8)
   }
 
   getUint64Old (): bigint {
@@ -82,6 +77,7 @@ export class ByteReader {
   }
 
   getInt64 (): bigint {
+    // zig-zag decode
     const n = this.getUint64()
     return (n >> 1n) ^ -(n & 1n)
   }
