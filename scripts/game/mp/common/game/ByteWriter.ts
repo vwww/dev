@@ -43,58 +43,61 @@ export class ByteWriter {
   putUint64 (n: bigint): this {
     if (n < 0) throw new Error('bad Uint64')
 
+    // fast path for small values
+    if (n < 0x80n) {
+      return this.put(Number(n))
+    }
+
     let bytes
-    if (n >= 0x1010100f9) {
-      if (n >= 0x10101010100f9) {
-        if (n >= 0x1010101010100f9n) {
-          n -= 0x1010101010100f9n
-          bytes = 8
+    if (n < 0x810204080) {
+      if (n < 0x204080) {
+        if (n < 0x4080) {
+          bytes = 2
+          n -= 0x80n
         } else {
-          n -= 0x10101010100f9n
-          bytes = 7
+          bytes = 3
+          n -= 0x4080n
         }
       } else {
-        if (n >= 0x101010100f9) {
-          n -= 0x101010100f9n
-          bytes = 6
+        if (n < 0x10204080) {
+          bytes = 4
+          n -= 0x204080n
         } else {
-          n -= 0x1010100f9n
           bytes = 5
+          n -= 0x10204080n
         }
       }
     } else {
-      if (n >= 0x100f9) {
-        if (n >= 0x10100f9) {
-          n -= 0x10100f9n
-          bytes = 4
+      if (n < 0x2040810204080) {
+        if (n < 0x40810204080) {
+          bytes = 6
+          n -= 0x810204080n
         } else {
-          n -= 0x100f9n
-          bytes = 3
+          bytes = 7
+          n -= 0x40810204080n
         }
       } else {
-        if (n >= 0xf9) {
-          n -= 0xf9n
-          bytes = 2
+        if (n < 0x102040810204080n) {
+          bytes = 8
+          n -= 0x2040810204080n
         } else {
-          bytes = 1
+          bytes = 9
+          this.put(0xff)
+          // special case, 0 bias
         }
       }
     }
 
-    if (bytes > 1) this.put(0xf9 - 2 + bytes)
+    const buf = new Uint8Array(8)
+    new DataView(buf.buffer).setBigUint64(0, n)
 
-    // little endian
-    do {
-      this.put(Number(n & 0xffn))
-      n >>= 8n
-    } while (--bytes)
-
-    // big endian
-    while (bytes--) {
-      this.put(Number((n >> BigInt(bytes * 8)) & 0xffn))
+    if (bytes < 9) {
+      const msbIndex = 8 - bytes
+      buf[msbIndex] |= (0xff << (9 - bytes)) & 0xff
+      return this.put(...buf.subarray(msbIndex))
     }
 
-    return this
+    return this.put(...buf)
   }
 
   putInt64 (n: bigint): this {

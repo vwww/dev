@@ -43,37 +43,23 @@ export class ByteReader {
     return BigInt(this.getFloat64())
   }
 
-  static UINT64_BIAS = [0xf9n, 0x100f9n, 0x10100f9n, 0x1010100f9n, 0x101010100f9n, 0x10101010100f9n, 0x1010101010100f9n]
+  static UINT64_BIAS = [0x80n, 0x4080n, 0x204080n, 0x10204080n, 0x810204080n, 0x40810204080n, 0x2040810204080n]
 
   getUint64 (): bigint {
     const c = this.get()
-    if (c < 0xf9) return BigInt(c)
 
-    const bytesMinusTwo = c - 0xf9
+    // special cases
+    if (c < 0x80) return BigInt(c)
+    if (c == 0xff) return this.v.getBigUint64((this.pos += 8) - 8)
 
-    // little endian
-    let n = 0n
-    const b = bytesMinusTwo + 2
-    for (let i = 0; i < b; i++) {
-      n |= BigInt(this.get()) << BigInt(i * 8)
+    const bytes = Math.clz32(c ^ 0xff) - 23
+
+    const tmp = new Uint8Array(8)
+    tmp[8 - bytes] = c & (0xff >> (bytes - 1))
+    for (let i = 9 - bytes; i < 8; i++) {
+      tmp[i] = this.get()
     }
-
-    // big endian (1)
-    let n1 = 0n
-    let b1 = bytesMinusTwo + 1
-    while (b1--) {
-      n1 |= BigInt(this.get())
-      n1 <<= 8n
-    }
-    n1 |= BigInt(this.get())
-
-    // big endian (2)
-    let n2 = 0n
-    let b2 = bytesMinusTwo + 2
-    while (b2--) {
-      n2 |= BigInt(this.get()) << BigInt(b2 * 8)
-    }
-    return n + ByteReader.UINT64_BIAS[bytesMinusTwo]
+    return new DataView(tmp.buffer).getBigUint64(0) + ByteReader.UINT64_BIAS[bytes - 2]
   }
 
   getInt64 (): bigint {
