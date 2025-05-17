@@ -1,9 +1,8 @@
 export class ByteReader {
-  private v: DataView
-
+  private readonly v: DataView
   private pos = 0
 
-  constructor (buf: Uint8Array) {
+  constructor (private readonly buf: Uint8Array) {
     this.v = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
   }
 
@@ -43,7 +42,7 @@ export class ByteReader {
     return BigInt(this.getFloat64())
   }
 
-  static UINT64_BIAS = [0x80n, 0x4080n, 0x204080n, 0x10204080n, 0x810204080n, 0x40810204080n, 0x2040810204080n]
+  static UINT64_BIAS = [0x2040810204080n, 0x40810204080n, 0x810204080n, 0x10204080n, 0x204080n, 0x4080n, 0x80n]
 
   getUint64 (): bigint {
     const c = this.get()
@@ -52,14 +51,13 @@ export class ByteReader {
     if (c < 0x80) return BigInt(c)
     if (c == 0xff) return this.v.getBigUint64((this.pos += 8) - 8)
 
-    const bytes = Math.clz32(c ^ 0xff) - 23
+    const i = 31 - Math.clz32(c ^ 0xff)
+    const len = 8 - i
 
-    const tmp = new Uint8Array(8)
-    tmp[8 - bytes] = c & (0xff >> (bytes - 1))
-    for (let i = 9 - bytes; i < 8; i++) {
-      tmp[i] = this.get()
-    }
-    return new DataView(tmp.buffer).getBigUint64(0) + ByteReader.UINT64_BIAS[bytes - 2]
+    const t = new Uint8Array(8)
+    t[i] = c & (0xff >> len) // keep i or i+1 bits => (8-i) or (7-i) works as shift
+    t.set(this.buf.subarray(this.pos, (this.pos += len)), i + 1)
+    return new DataView(t.buffer).getBigUint64(0) + ByteReader.UINT64_BIAS[i]
   }
 
   getInt64 (): bigint {

@@ -87,14 +87,14 @@ export class ByteWriter {
       }
     }
 
-    const buf = new Uint8Array(8)
-    new DataView(buf.buffer).setBigUint64(0, n)
+    const t = new Uint8Array(8)
+    new DataView(t.buffer).setBigUint64(0, n)
 
     if (i) {
-      buf[i] |= (0xff << (i + 1)) & 0xff
+      t[i] |= 0xfe << i
     }
 
-    return this.put(...buf.subarray(i))
+    return this.put(...t.subarray(i))
   }
 
   putInt64 (n: bigint): this {
