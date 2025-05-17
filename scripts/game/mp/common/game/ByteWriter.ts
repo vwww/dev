@@ -48,40 +48,39 @@ export class ByteWriter {
       return this.put(Number(n))
     }
 
-    let bytes
+    let i
     if (n < 0x810204080) {
       if (n < 0x204080) {
         if (n < 0x4080) {
-          bytes = 2
-          n -= 0x80n
+          i = 6
+          n = (n - 0x80n) | 0x8000n
         } else {
-          bytes = 3
-          n -= 0x4080n
+          i = 5
+          n = (n - 0x4080n) | 0xc00000n
         }
       } else {
         if (n < 0x10204080) {
-          bytes = 4
-          n -= 0x204080n
+          i = 4
+          n = (n - 0x204080n) | 0xe0000000n
         } else {
-          bytes = 5
-          n -= 0x10204080n
+          i = 3
+          n = (n - 0x10204080n) | 0xf000000000n
         }
       }
     } else {
       if (n < 0x2040810204080) {
         if (n < 0x40810204080) {
-          bytes = 6
-          n -= 0x810204080n
+          i = 2
+          n = (n - 0x810204080n) | 0xf80000000000n
         } else {
-          bytes = 7
-          n -= 0x40810204080n
+          i = 1
+          n = (n - 0x40810204080n) | 0xfc000000000000n
         }
       } else {
+        i = 0
         if (n < 0x102040810204080n) {
-          bytes = 8
-          n -= 0x2040810204080n
+          n = (n - 0x2040810204080n) | 0xfe00000000000000n
         } else {
-          bytes = 9
           this.put(0xff)
           // special case, 0 bias
         }
@@ -91,13 +90,7 @@ export class ByteWriter {
     const buf = new Uint8Array(8)
     new DataView(buf.buffer).setBigUint64(0, n)
 
-    if (bytes < 9) {
-      const msbIndex = 8 - bytes
-      buf[msbIndex] |= (0xff << (9 - bytes)) & 0xff
-      return this.put(...buf.subarray(msbIndex))
-    }
-
-    return this.put(...buf)
+    return this.put(...buf.subarray(i))
   }
 
   putInt64 (n: bigint): this {
