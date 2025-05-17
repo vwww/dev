@@ -31,8 +31,7 @@ export class ByteWriter {
   }
 
   putBool (b: boolean): this {
-    this.put(b ? 1 : 0)
-    return this
+    return this.put(b ? 1 : 0)
   }
 
   putFloat64 (n: number): this {
@@ -104,8 +103,7 @@ export class ByteWriter {
   }
 
   putUint64Old (n: bigint): this {
-    this.putFloat64(Number(n))
-    return this
+    return this.putFloat64(Number(n))
   }
 
   putString (s: string): this {
@@ -115,8 +113,7 @@ export class ByteWriter {
       if (!v) break
       this.put(v)
     }
-    this.put(0)
-    return this
+    return this.put(0)
   }
 
   putFmt<Fmt extends string>(fmt: Fmt, ...args: FmtArgs<Fmt>): this {
