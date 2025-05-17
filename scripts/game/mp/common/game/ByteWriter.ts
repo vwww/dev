@@ -145,7 +145,7 @@ export class ByteWriter {
   }
 
   toArray (): Uint8Array {
-    return new Uint8Array(this.buf)
+    return Uint8Array.from(this.buf)
   }
 }
 
