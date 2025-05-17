@@ -1,5 +1,4 @@
 export class ByteReader {
-  public overread = false
 
   private pos = 0
 
@@ -9,10 +8,6 @@ export class ByteReader {
   get remaining (): number { return this.len - this.pos }
 
   get (): number {
-    if (this.pos === this.len) {
-      this.overread = true
-      return 0
-    }
     return this.buf[this.pos++]
   }
 

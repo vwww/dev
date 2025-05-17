@@ -62,9 +62,6 @@ export abstract class CommonGame<C extends CommonClient> {
             if (!handler) throw new Error('tag type ' + type)
             handler.call(this, m)
           }
-          if (m.overread) {
-            throw new Error('overread')
-          }
         } catch (error) {
           console.error('neterr', error)
           console.log(m.debugBuf, m)
