@@ -37,7 +37,7 @@ export class PIOAdapter implements BaseGameRoom {
 
       // console.log('recv', byteArray)
 
-      const byteArrayTyped = new Uint8Array(byteArray)
+      const byteArrayTyped = Uint8Array.from(byteArray)
       this.msgCallbacks.forEach((c) => c(byteArrayTyped))
     }
     const discCb = (): void => {
