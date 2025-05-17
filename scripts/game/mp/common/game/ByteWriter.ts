@@ -53,28 +53,28 @@ export class ByteWriter {
       if (n < 0x204080) {
         if (n < 0x4080) {
           i = 6
-          n = (n - 0x80n) | 0x8000n
+          n -= 0x80n
         } else {
           i = 5
-          n = (n - 0x4080n) | 0xc00000n
+          n -= 0x4080n
         }
       } else {
         if (n < 0x10204080) {
           i = 4
-          n = (n - 0x204080n) | 0xe0000000n
+          n -= 0x204080n
         } else {
           i = 3
-          n = (n - 0x10204080n) | 0xf000000000n
+          n -= 0x10204080n
         }
       }
     } else {
       if (n < 0x2040810204080) {
         if (n < 0x40810204080) {
           i = 2
-          n = (n - 0x810204080n) | 0xf80000000000n
+          n -= 0x810204080n
         } else {
           i = 1
-          n = (n - 0x40810204080n) | 0xfc000000000000n
+          n -= 0x40810204080n
         }
       } else {
         i = 0
@@ -89,6 +89,10 @@ export class ByteWriter {
 
     const buf = new Uint8Array(8)
     new DataView(buf.buffer).setBigUint64(0, n)
+
+    if (i) {
+      buf[i] |= (0xff << (i + 1)) & 0xff
+    }
 
     return this.put(...buf.subarray(i))
   }
