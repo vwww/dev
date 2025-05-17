@@ -3,8 +3,8 @@ import type { Repeat } from '@/util'
 export class ByteWriter {
   private readonly buf: number[] = []
 
-  put (n: number): this {
-    this.buf.push(n & 0xFF)
+  put (...bytes: number[]): this {
+    this.buf.push(...bytes)
     return this
   }
 
@@ -13,15 +13,19 @@ export class ByteWriter {
     if (n > -127 && n < 128) {
       this.put(n)
     } else if (n >= -0x8000 && n < 0x8000) {
-      this.put(0x80) // -128
-      this.put(n)
-      this.put(n >> 8)
+      this.put(
+        0x80, // -128
+        n,
+        n >> 8,
+      )
     } else {
-      this.put(0x81) // -127
-      this.put(n)
-      this.put(n >> 8)
-      this.put(n >> 16)
-      this.put(n >> 24)
+      this.put(
+        0x81, // -127
+        n,
+        n >> 8,
+        n >> 16,
+        n >> 24,
+      )
     }
     return this
   }
@@ -34,10 +38,7 @@ export class ByteWriter {
   putFloat64 (n: number): this {
     const buf = new Uint8Array(8)
     new DataView(buf.buffer).setFloat64(0, n)
-    for (let i = 0; i < 8; i++) {
-      this.put(buf[i])
-    }
-    return this
+    return this.put(...buf)
   }
 
   putUint64 (n: bigint): this {
