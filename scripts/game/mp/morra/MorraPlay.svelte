@@ -46,8 +46,8 @@ const canMove = $derived(localClient.active && roundState == GameState.ACTIVE &&
 </div>
 
 {#if canMove}
-  <input type="number" class="form-control is-{pendingMove === pendingMoveAck ? '' : 'in'}valid" bind:value={gameState.pendingMove} onchange={() => gameState.sendMove()} min="0" max="8000000000000">
-  <input type="range" class="form-range" bind:value={gameState.pendingMove} onchange={() => gameState.sendMove()} min="0" max="8000000000000">
+  <input type="number" class="form-control is-{pendingMove === pendingMoveAck ? '' : 'in'}valid" bind:value={gameState.pendingMove} onchange={() => gameState.sendMove()} min="0" max="9007199254740992">
+  <input type="range" class="form-range" bind:value={gameState.pendingMove} onchange={() => gameState.sendMove()} min="0" max="9007199254740992">
 {/if}
 
 <RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />

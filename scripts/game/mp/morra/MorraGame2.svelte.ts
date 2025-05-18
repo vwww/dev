@@ -138,12 +138,12 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
   }
 
   protected processMoveConfirm (m: ByteReader): void {
-    this.pendingMoveAck = Number(m.getUint64Old())
+    this.pendingMoveAck = Number(m.getUint64())
   }
 
   protected processEndRound (m: ByteReader): void {
     const teamCount = Math.min(m.getInt(), this.clients.length)
-    const moveSum = m.getUint64Old()
+    const moveSum = m.getUint64()
     const moveRnd = m.getInt()
     const playerCount = Math.min(m.getInt(), this.clients.length)
     const inverted = this.mode.optInverted
@@ -166,7 +166,7 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
     for (let i = 0; i < playerCount; i++) {
       const cn = m.getCN()
       if (cn < 0) break
-      const move = m.getUint64Old()
+      const move = m.getUint64()
 
       const p = this.clients[cn]
       if (!p) continue

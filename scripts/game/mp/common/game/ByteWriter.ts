@@ -102,10 +102,6 @@ export class ByteWriter {
     return this.putUint64((n << 1n) ^ (n >> 63n))
   }
 
-  putUint64Old (n: bigint): this {
-    return this.putFloat64(Number(n))
-  }
-
   putString (s: string): this {
     for (let i = 0; i < s.length; i++) {
       const c = s.charCodeAt(i)
@@ -131,7 +127,7 @@ export class ByteWriter {
           while(n--) this.putBool(args[j++])
           break
         case 'U':
-          while(n--) this.putUint64Old(args[j++]) // TODO switch to new format
+          while(n--) this.putUint64(args[j++])
           break
         case 'd':
           while(n--) this.putFloat64(args[j++])

@@ -179,7 +179,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   protected processWelcomeMode (m: ByteReader): void {
     this.mode.optTurnTime = m.getInt()
-    this.mode.optDecks = clamp(m.getUint64Old(), 1n, MAX_DECKS)
+    this.mode.optDecks = clamp(m.getUint64(), 1n, MAX_DECKS)
     this.mode.optTricks = clamp(m.getInt(), 0, CheatModeTricks.NUM - 1)
     const modeFlags = m.getInt()
     this.mode.optCountSame = !!(modeFlags & (1 << 0))

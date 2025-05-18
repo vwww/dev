@@ -206,7 +206,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
   protected processWelcomeMode (m: ByteReader): void {
     this.mode.optTurnTime = m.getInt()
-    this.mode.optDecks = clamp(m.getUint64Old(), 1n, MAX_DECKS)
+    this.mode.optDecks = clamp(m.getUint64(), 1n, MAX_DECKS)
     this.mode.optJokers = clamp(m.getInt(), 0, 2)
     this.mode.optRevolution = clamp(m.getInt(), 0, PresidentModeRevolution.NUM - 1)
     this.mode.optEqualize = clamp(m.getInt(), 0, PresidentModeEqualize.NUM - 1)

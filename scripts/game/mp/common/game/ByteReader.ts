@@ -38,10 +38,6 @@ export class ByteReader {
     return this.v.getFloat64((this.pos += 8) - 8)
   }
 
-  getUint64Old (): bigint {
-    return BigInt(this.getFloat64())
-  }
-
   static UINT64_BIAS = [0x2040810204080n, 0x40810204080n, 0x810204080n, 0x10204080n, 0x204080n, 0x4080n, 0x80n]
 
   getUint64 (): bigint {

@@ -74,9 +74,9 @@ class RPSClient extends OneTurnClient {
     this.roundLosses = m.getInt()
     this.roundTies = m.getInt()
     this.roundTotal = this.roundWins + this.roundLosses + this.roundTies
-    this.battleWins = m.getUint64Old()
-    this.battleLosses = m.getUint64Old()
-    this.battleTies = m.getUint64Old()
+    this.battleWins = m.getUint64()
+    this.battleLosses = m.getUint64()
+    this.battleTies = m.getUint64()
     this.battleTotal = this.battleWins + this.battleLosses + this.battleTies
   }
 }
@@ -158,7 +158,7 @@ export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
   protected processEndRound (m: ByteReader): void {
     const detRandBits = m.getInt()
     const outcomes: number3 = [filterOutcome(m.getInt()), filterOutcome(m.getInt()), filterOutcome(m.getInt())]
-    const count: Number3 = [m.getUint64Old(), m.getUint64Old(), m.getUint64Old()]
+    const count: Number3 = [m.getUint64(), m.getUint64(), m.getUint64()]
     const botCount = count.slice() as Number3
     const humanCount = Math.min(m.getInt(), this.clients.length)
 
