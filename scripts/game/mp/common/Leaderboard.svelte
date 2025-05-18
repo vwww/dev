@@ -1,7 +1,7 @@
-<script lang="ts" generics="P extends BaseClient">
-import type { BaseClient } from './game/CommonGame.svelte'
+<script lang="ts" generics="P extends CommonClient">
+import type { CommonClient } from './game/CommonGame.svelte'
 
-type Score = number | string | [number, number]
+type Score = bigint | number | string | [number, number] | [bigint, bigint]
 
 interface Props {
   players: ArrayLike<P>
@@ -13,7 +13,10 @@ const { players, columns = [] }: Props = $props()
 function formatScore(s: Score) {
   if (typeof s === 'object') {
     if (!s[1]) return s[0]
-    return `${s[0]} (${(s[0] * 100 / s[1]).toPrecision(3)}%)`
+    const pct = typeof s[0] == 'bigint'
+      ? Number(s[0] * 1000000n / (s[1] as bigint)) / 10000
+      : s[0] * 100 / (s[1] as number)
+    return `${s[0]} (${pct.toPrecision(3)}%)`
   }
   return s
 }
