@@ -52,7 +52,7 @@ export class ByteReader {
     if (c == 0xff) return this.v.getBigUint64((this.pos += 8) - 8)
 
     const i = 31 - Math.clz32(c ^ 0xff)
-    const len = 8 - i
+    const len = 7 - i
 
     const t = new Uint8Array(8)
     t[i] = c & (0xff >> len) // keep i or i+1 bits => (8-i) or (7-i) works as shift
