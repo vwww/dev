@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { OptionStoreAny, OptionStoreBool, OptionStoreEnum, OptionStoreInt } from './RoomOption'
+import type { OptionStoreAny, OptionStoreBool, OptionStoreEnum, OptionStoreInt, OptionStoreBigInt } from './RoomOption'
 
 import RoomOptionBool from './RoomOptionBool.svelte'
 import RoomOptionEnum from './RoomOptionEnum.svelte'
@@ -16,8 +16,8 @@ const [option, store] = $derived(optionStore)
 
 {#if option[1] === 'b'}
   <RoomOptionBool {option} store={store as OptionStoreBool[1]} />
-{:else if option[1] === 'i'}
-  <RoomOptionInt {option} store={store as OptionStoreInt[1]} />
+{:else if option[1] === 'i' || option[1] === 'I'}
+  <RoomOptionInt {option} store={store as OptionStoreInt[1] | OptionStoreBigInt[1]} />
 {:else if option[1] === 'e'}
   <RoomOptionEnum {option} store={store as OptionStoreEnum[1]} />
 {:else}

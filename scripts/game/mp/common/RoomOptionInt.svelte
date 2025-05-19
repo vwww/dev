@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { OptionStoreInt } from './RoomOption'
+import type { OptionStoreInt, OptionStoreBigInt } from './RoomOption'
 
 interface Props {
-  option: OptionStoreInt[0]
-  store: OptionStoreInt[1]
+  option: OptionStoreInt[0] | OptionStoreBigInt[0]
+  store: OptionStoreInt[1] | OptionStoreBigInt[1]
 }
 
 const { option, store }: Props = $props()
