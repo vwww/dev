@@ -23,6 +23,7 @@ const gameState = new CheatGame(chatState)
 const {
   pastGames,
   leaderboard,
+  localClient,
   roundState,
 } = $derived(gameState)
 
@@ -61,7 +62,7 @@ let roomList: PIORoomList
       <CheatHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={leaderboard} columns={[
+    <Leaderboard {leaderboard} {localClient} columns={[
       ['Score', (p) => p.score],
       ['Wins', (p) => p.wins],
       ['Streak', (p) => p.streak],

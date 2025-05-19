@@ -23,6 +23,7 @@ const gameState = new UT3Game(chatState)
 const {
   pastGames,
   leaderboard,
+  localClient,
   roundState,
 } = $derived(gameState)
 
@@ -62,7 +63,7 @@ let roomList: PIORoomList
       <TwoPlayerWinner results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={leaderboard} columns={[
+    <Leaderboard {leaderboard} {localClient} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.score],
       ['Win', (p) => [p.wins, p.total]],

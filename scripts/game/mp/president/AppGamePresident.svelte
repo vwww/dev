@@ -23,6 +23,7 @@ const gameState = new PresidentGame(chatState)
 const {
   pastGames,
   leaderboard,
+  localClient,
   roundState,
 } = $derived(gameState)
 
@@ -61,7 +62,7 @@ let roomList: PIORoomList
       <PresidentHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={leaderboard} columns={[
+    <Leaderboard {leaderboard} {localClient} columns={[
       ['Score', (p) => p.score],
       ['Streak', (p) => p.streak],
       ['President', (p) => p.rank2p],

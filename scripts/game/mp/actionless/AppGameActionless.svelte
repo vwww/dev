@@ -22,6 +22,7 @@ const gameState = new ActionlessGame(chatState)
 const {
   pastGames,
   leaderboard,
+  localClient,
   roundState,
 } = $derived(gameState)
 
@@ -60,7 +61,7 @@ let roomList: PIORoomList
       <ActionlessHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={leaderboard} columns={[
+    <Leaderboard {leaderboard} {localClient} columns={[
       ['Streak', (p) => p.streak],
       ['Score', (p) => p.wins - p.losses],
       ['Win', (p) => [p.wins, p.total]],

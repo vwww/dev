@@ -23,6 +23,7 @@ const gameState = new DiscardGame(chatState)
 const {
   pastGames,
   leaderboard,
+  localClient,
   roundState,
 } = $derived(gameState)
 
@@ -79,7 +80,7 @@ bind:this={roomList}
       <DiscardGameHistory results={pastGames} ll={showLLNames.value} />
     </GameHistoryCard>
 
-    <Leaderboard players={leaderboard} columns={[
+    <Leaderboard {leaderboard} {localClient} columns={[
       ['Score', (p) => p.score],
       ['Streak', (p) => p.streak],
       ['Win', (p) => p.wins],

@@ -1,14 +1,15 @@
-<script lang="ts" generics="P extends CommonClient">
+<script lang="ts" generics="C extends CommonClient">
 import type { CommonClient } from './game/CommonGame.svelte'
 
 type Score = bigint | number | string | [number, number] | [bigint, bigint]
 
 interface Props {
-  players: ArrayLike<P>
-  columns?: [string, (p: P) => Score][]
+  leaderboard: ArrayLike<C>
+  localClient: C
+  columns?: [string, (client: C) => Score][]
 }
 
-const { players, columns = [] }: Props = $props()
+const { leaderboard, localClient, columns = [] }: Props = $props()
 
 function formatScore(s: Score) {
   if (typeof s === 'object') {
@@ -43,20 +44,22 @@ let showSpect = $state(true)
           {/each}
           <th scope="col">Ping</th>
         </tr>
-        {#each players as player}
-          {#if showSpect || player.isMe || player.active}
+        {#each leaderboard as c}
+          {@const isMe = c === localClient}
+          {@const {active} = c}
+          {#if showSpect || isMe || active}
             <tr
-              class:table-info={player.isMe && player.active}
-              class:table-warning={player.isMe && !player.active}
-              class:table-secondary={!player.isMe && !player.active}>
-              <th scope="row" colspan={player.active ? 1 : 2}>{player.name} ({player.cn})</th>
-              {#if player.active}
-                <td>{player.rank}</td>
+              class:table-info={isMe && active}
+              class:table-warning={isMe && !active}
+              class:table-secondary={!isMe && !active}>
+              <th scope="row" colspan={active ? 1 : 2}>{c.name} ({c.cn})</th>
+              {#if active}
+                <td>{c.rank}</td>
               {/if}
               {#each columns as column}
-                <td>{formatScore(column[1](player))}</td>
+                <td>{formatScore(column[1](c))}</td>
               {/each}
-              <td>{player.ping < 0 ? '?' : player.ping}</td>
+              <td>{c.ping < 0 ? '?' : c.ping}</td>
             </tr>
           {/if}
         {:else}

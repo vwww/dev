@@ -22,6 +22,7 @@ const gameState = new BlackjackGame(chatState)
 const {
   pastGames,
   leaderboard,
+  localClient,
   roundState,
 } = $derived(gameState)
 
@@ -60,7 +61,7 @@ let roomList: PIORoomList
       <BlackjackHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={leaderboard} columns={[
+    <Leaderboard {leaderboard} {localClient} columns={[
       ['Score', (p) => p.score],
       ['Wins', (p) => p.wins],
       ['Streak', (p) => p.streak],

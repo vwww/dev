@@ -22,6 +22,7 @@ const gameState = new RPSGame(chatState)
 const {
   pastGames,
   leaderboard,
+  localClient,
   roundState,
 } = $derived(gameState)
 
@@ -61,7 +62,7 @@ let roomList: PIORoomList
       <RPSHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard players={leaderboard} columns={[
+    <Leaderboard {leaderboard} {localClient} columns={[
       ['Streak', (p) => p.roundStreak],
       ['Score', (p) => p.roundScore],
       ['Round Win', (p) => [p.roundWins, p.roundTotal]],
