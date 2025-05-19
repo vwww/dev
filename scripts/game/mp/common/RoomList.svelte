@@ -10,6 +10,7 @@ interface Props {
   onResetRoomOptions: () => void
   rooms: ArrayLike<unknown>
   disableNew?: boolean
+  showNewRoomFooter?: boolean
   refreshTimeoutBase?: number
   refreshTimeoutJitter?: number
   children: Snippet
@@ -23,6 +24,7 @@ const {
   onResetRoomOptions,
   rooms,
   disableNew = false,
+  showNewRoomFooter = false,
   refreshTimeoutBase = 15000,
   refreshTimeoutJitter = 15000,
   children,
@@ -80,16 +82,22 @@ onDestroy(() => clearTimeout(refreshTimeout))
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">New room</h5>
-        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="ms-auto">
+          <button class="btn btn-sm btn-danger" onclick={onResetRoomOptions}>Reset</button>
+          <button class="btn btn-sm btn-primary" data-bs-dismiss="modal" onclick={onNewRoom}>Create</button>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
       </div>
       <div class="modal-body">
         {@render newRoom()}
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-danger me-auto" onclick={onResetRoomOptions}>Reset</button>
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary" data-bs-dismiss="modal" onclick={onNewRoom}>Create</button>
-      </div>
+      {#if showNewRoomFooter}
+        <div class="modal-footer">
+          <button class="btn btn-danger me-auto" onclick={onResetRoomOptions}>Reset</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" data-bs-dismiss="modal" onclick={onNewRoom}>Create</button>
+        </div>
+      {/if}
     </div>
   </div>
 </div>

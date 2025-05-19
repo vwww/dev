@@ -98,7 +98,8 @@ function getConnection (): Promise<PIOClient> {
 refreshRooms()
 </script>
 
-<RoomList {isRefreshing} {rooms} disableNew={!isConnected} onRefresh={refreshRooms}
+<RoomList {isRefreshing} {rooms} disableNew={!isConnected} showNewRoomFooter={roomCreateData.length > 8}
+  onRefresh={refreshRooms}
   onResetRoomOptions={resetRoomOptions}
   onNewRoom={() => tryConnect(async (conn) => conn.createJoinRoom(randomAlphaNumeric(50), roomType, true, getRoomData(), joinData))}>
   {#snippet newRoom()}
