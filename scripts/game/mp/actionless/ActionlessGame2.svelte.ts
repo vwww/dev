@@ -40,7 +40,7 @@ export interface ActionlessGameHistoryWin {
   players: string[]
 }
 
-export abstract class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGameHistory> {
+export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGameHistory> {
   mode: ActionlessMode = $state(defaultMode())
 
   INTERMISSION_TIME = 5000
