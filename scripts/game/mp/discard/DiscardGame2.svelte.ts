@@ -335,14 +335,14 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
         const discarded = m.getInt()
         moveHistoryEntry.info = discarded
         if (discarded !== 8) {
+          // other players' known hands become unknown
+          // when they are forced to draw
+          p.hand = undefined
+
           p.discarded.push(discarded)
           p.discardSum += discarded
           this.updateDiscardCount(discarded)
           this.deckSize--
-        } else {
-          // other players' known hands can become unknown
-          // when they are forced to draw
-          p.hand = undefined
         }
         break
       }
