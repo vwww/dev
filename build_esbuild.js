@@ -13,6 +13,7 @@ const devMode = process.env.NODE_ENV !== 'production'
 
 const entryCSS = {}
 for (let e of fg.sync('*.scss', { cwd: path.resolve(__dirname, 'styles') })) {
+  if (e.startsWith('_')) continue
   entryCSS[e.slice(0, -5)] = './styles/' + e
 }
 
