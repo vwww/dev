@@ -133,7 +133,7 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
     super.processRoundStart(m)
 
     if (this.localClient.inRound) {
-      this.pendingMove = Math.floor(Math.random() * 8000000000001)
+      this.pendingMove = Math.floor(Math.random() * (this.mode.optTeams || this.roundPlayers.length))
       this.sendMove()
     }
   }
