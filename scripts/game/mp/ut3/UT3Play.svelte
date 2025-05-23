@@ -21,10 +21,6 @@ const { gameState }: Props = $props()
 const {
   localClient,
   roundState,
-  roundTimerStart,
-  roundTimerEnd,
-  roundPlayers,
-  roundPlayerQueue,
   myTurn,
   myPlayer,
   drawOffer,
@@ -32,7 +28,6 @@ const {
   boardIndex,
   winner,
   moveHistory,
-  mode,
 } = $derived(gameState)
 
 const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
@@ -43,10 +38,10 @@ const ply = $derived(moveHistory.length)
 const showingCurrent = $derived(boardIndex >= ply)
 </script>
 
-{#if !roundState}
+{#if roundState === GameState.WAITING}
   Waiting for players&hellip;
 {:else}
-  {#if roundState === GameState.INTERMISSION}
+  {#if gameState.roundState === GameState.INTERMISSION}
     Intermission:
   {:else if canMove}
     Make a move:
@@ -55,12 +50,14 @@ const showingCurrent = $derived(boardIndex >= ply)
   {:else}
     Spectating:
   {/if}
-  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
+  <ProgressBar
+    startTime={gameState.roundTimerStart}
+    endTime={gameState.roundTimerEnd} />
 {/if}
 
 <p>
   You are
-  {#if roundState === GameState.WAITING}
+  {#if gameState.roundState === GameState.WAITING}
     <span class="badge text-bg-secondary">spectating</span>.
   {:else if myPlayer === 1}
     <span class="badge text-bg-success">player X</span>.
@@ -110,7 +107,7 @@ const showingCurrent = $derived(boardIndex >= ply)
   {#each moveHistory as move, i}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <span
-      class="badge text-bg-{boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1"
+      class="badge text-bg{myPlayer == (i & 1) + 1 ? '' : '-outline'}-{boardIndex <= i ? 'warning' : (i & 1) ? 'danger' : 'success'} me-1"
       onclick={() => gameState.historyGo(i + 1)}
       role="button"
       tabindex="0"
@@ -136,8 +133,11 @@ const showingCurrent = $derived(boardIndex >= ply)
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(mode)}
+  Game Mode: {getGameModeString(gameState.mode)}
 </div>
 
 <b>Lobby</b>
-<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />
+<RoundPlayerList
+  localClient={gameState.localClient}
+  inGame={gameState.roundPlayers}
+  inQueue={gameState.roundPlayerQueue} />

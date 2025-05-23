@@ -12,31 +12,26 @@ interface Props {
 }
 
 const { gameState }: Props = $props()
-
-const {
-  roundState,
-  roundTimerStart,
-  roundTimerEnd,
-  roundPlayers,
-  roundPlayerQueue,
-  mode,
-} = $derived(gameState)
-
 </script>
 
-{#if roundState === GameState.WAITING}
+{#if gameState.roundState === GameState.WAITING}
   Waiting for players&hellip;
 {:else}
-  {#if roundState === GameState.INTERMISSION}
+  {#if gameState.roundState === GameState.INTERMISSION}
     Intermission:
   {:else}
     Results are coming soon:
   {/if}
-  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
+  <ProgressBar
+    startTime={gameState.roundTimerStart}
+    endTime={gameState.roundTimerEnd} />
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(mode)}
+  Game Mode: {getGameModeString(gameState.mode)}
 </div>
 
-<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />
+<RoundPlayerList
+  localClient={gameState.localClient}
+  inGame={gameState.roundPlayers}
+  inQueue={gameState.roundPlayerQueue} />

@@ -1,8 +1,8 @@
 <script lang="ts">
-import type { TPHistoryEntry } from './game/TwoPlayerGame.svelte'
+import type { TwoPlayerTurnHistory } from './game/TwoPlayerTurnGame.svelte'
 
 interface Props {
-  results: ArrayLike<TPHistoryEntry>
+  results: ArrayLike<TwoPlayerTurnHistory>
   p0Win?: string
   p1Win?: string
   draw?: string
@@ -27,8 +27,11 @@ function winClass (winner: number): string {
 <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">
 {#each results as result}
   <li class="list-group-item">
-    <span class="badge text-bg-{winClass(result.winner)}">{result.p0Name}</span> vs <span class="badge text-bg-{winClass(1 - result.winner)}">{result.p1Name}</span>
-    <p>Ply {result.ply}: {!result.winner ? p0Win : result.winner === 1 ? p1Win : draw} {result.earlyEnd ? result.winner < 2 ? winEarly : drawEarly : ''}</p>
+    <span class="badge text-bg{result.meIndex == 0 ? '' : '-outline'}-{winClass(result.winner)}">{result.p0Name}</span>
+    vs
+    <span class="badge text-bg{result.meIndex == 1 ? '' : '-outline'}-{winClass(1 - result.winner)}">{result.p1Name}</span>:
+    {!result.winner ? p0Win : result.winner === 1 ? p1Win : draw} {result.earlyEnd ? result.winner < 2 ? winEarly : drawEarly : ''}
+    on ply {result.ply}
   </li>
 {:else}
   <li class="list-group-item">

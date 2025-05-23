@@ -88,6 +88,7 @@ export class DiscardDiscInfo extends RRTurnDiscInfo {
 export interface DiscardGameHistory {
   survived: {
     name: string
+    isMe?: boolean
     rank: number
     hand: number
     discarded: number[]
@@ -96,6 +97,7 @@ export interface DiscardGameHistory {
 
   eliminated: {
     name: string
+    isMe?: boolean
     discarded: number[]
     discardSum: number
   }[]
@@ -382,7 +384,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
       p.hand = m.getInt()
     }
 
-    const eliminated = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
+    const eliminated = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName, isMe: d.isMe }))
     eliminated.reverse()
 
     const gameHistoryEntry: DiscardGameHistory = {
@@ -404,6 +406,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
 
       gameHistoryEntry.survived.push({
         name: formatClientName(c, p.owner),
+        isMe: c === this.localClient,
         hand: p.hand ?? 0,
         rank,
         discarded: p.discarded,

@@ -38,6 +38,7 @@ export interface ActionlessGameHistoryWin {
   id: number
   win: boolean
   players: string[]
+  meIndex?: number
 }
 
 export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGameHistory> {
@@ -113,7 +114,9 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
       }
       p.total++
 
-      gameHistoryEntry.wins[win].players.push(p.formatName())
+      const entry = gameHistoryEntry.wins[win]
+      if (p == this.localClient) entry.meIndex = entry.players.length
+      entry.players.push(p.formatName())
     }
     this.updatePlayers()
     this.addHistory(gameHistoryEntry)

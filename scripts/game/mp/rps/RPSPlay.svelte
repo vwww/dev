@@ -16,12 +16,6 @@ const { gameState }: Props = $props()
 const {
   localClient,
   roundState,
-  roundTimerStart,
-  roundTimerEnd,
-  roundPlayers,
-  roundPlayerQueue,
-  pendingMove,
-  mode,
 } = $derived(gameState)
 
 const canMove = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
@@ -37,11 +31,13 @@ const canMove = $derived(localClient.active && roundState == GameState.ACTIVE &&
   {:else}
     Results are coming soon:
   {/if}
-  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
+  <ProgressBar
+    startTime={gameState.roundTimerStart}
+    endTime={gameState.roundTimerEnd} />
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(mode)}
+  Game Mode: {getGameModeString(gameState.mode)}
 </div>
 
 {#if canMove}
@@ -50,10 +46,13 @@ const canMove = $derived(localClient.active && roundState == GameState.ACTIVE &&
     {#each ['Auto', '\u{1F94C} Rock', '\u{1F4C4} Paper', '\u2702 Scissors'] as move, i}
       <button
         onclick={() => gameState.sendMove(i)}
-        class:active={pendingMove === i}
+        class:active={gameState.pendingMove === i}
         class="w-100 btn btn-outline-secondary">{move}</button>
     {/each}
   </div>
 {/if}
 
-<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />
+<RoundPlayerList
+  localClient={gameState.localClient}
+  inGame={gameState.roundPlayers}
+  inQueue={gameState.roundPlayerQueue} />

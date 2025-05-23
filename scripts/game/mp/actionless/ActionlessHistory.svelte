@@ -12,8 +12,8 @@ const { results }: Props = $props()
   {#each results as pastGame}
     <li class="list-group-item">
       {#snippet winPlayers(win: ActionlessGameHistoryWin)}
-        {#each win.players as player}
-          <span class="badge me-1 text-bg-{win.win ? 'success' : 'danger'}">{player}</span>
+        {#each win.players as player, i}
+          <span class="badge me-1 text-bg{i == win.meIndex ? '' : '-outline'}-{win.win ? 'success' : 'danger'}">{player}</span>
         {/each}
       {/snippet}
       {#if pastGame.playerCount == pastGame.wins.length}

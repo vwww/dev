@@ -65,8 +65,10 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
                 <th>#</th>
               </tr>
               {#each outcomePairs as move, i}
+                {@const nextIndex = (i + 1) % 3}
+                {@const localMove = pastGame.local?.move}
                 <tr>
-                  <td class:table-danger={pastGame.local && pastGame.local.move === i}>{pastGame.count[(i + 1) % 3]}</td>
+                  <td class={localMove == i ? 'table-danger' : localMove == nextIndex ? 'table-primary' : ''}>{pastGame.count[(i + 1) % 3]}</td>
                   <td>
                     {move.b}
                     <span class="badge text-bg-{pastGame.outcomes[i] < 0 ? 'primary' : pastGame.outcomes[i] > 0 ? 'danger' : 'secondary'}">
@@ -76,7 +78,7 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
                     </span>
                     {move.a}
                   </td>
-                  <td class:table-success={pastGame.local && pastGame.local.move === (i + 1) % 3}>{pastGame.count[i]}</td>
+                  <td class={localMove == nextIndex ? 'table-success' : localMove == i ? 'table-primary' : ''}>{pastGame.count[i]}</td>
                 </tr>
               {/each}
             </tbody>
@@ -101,11 +103,11 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
                   <td>{move.ltw[0]}</td>
                   <td>{pastGame.count[i]}</td>
                   <td>
-                    {#each move.players as player}
-                      <span class="badge text-bg-secondary">{player}</span>
+                    {#each move.players as player, i}
+                      <span class="badge text-bg{i == move.meIndex ? '' : '-outline'}-secondary">{player}</span>
                     {/each}
                     {#if pastGame.botCount[i]}
-                      <span class="badge text-bg-secondary">+{pastGame.botCount[i]}</span>
+                      <span class="badge text-bg-outline-secondary">+{pastGame.botCount[i]}</span>
                     {/if}
                     {#if !(move.players.length || pastGame.botCount[i])}nobody{/if}
                   </td>

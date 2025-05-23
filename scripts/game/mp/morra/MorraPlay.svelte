@@ -16,13 +16,6 @@ const { gameState }: Props = $props()
 const {
   localClient,
   roundState,
-  roundTimerStart,
-  roundTimerEnd,
-  roundPlayers,
-  roundPlayerQueue,
-  pendingMove,
-  pendingMoveAck,
-  mode,
 } = $derived(gameState)
 
 const canMove = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
@@ -38,16 +31,21 @@ const canMove = $derived(localClient.active && roundState == GameState.ACTIVE &&
   {:else}
     Results are coming soon:
   {/if}
-  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
+  <ProgressBar
+    startTime={gameState.roundTimerStart}
+    endTime={gameState.roundTimerEnd} />
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(mode)}
+  Game Mode: {getGameModeString(gameState.mode)}
 </div>
 
 {#if canMove}
-  <input type="number" class="form-control is-{pendingMove === pendingMoveAck ? '' : 'in'}valid" bind:value={gameState.pendingMove} onchange={() => gameState.sendMove()} min="0" max="9007199254740992">
+  <input type="number" class="form-control is-{gameState.pendingMove === gameState.pendingMoveAck ? '' : 'in'}valid" bind:value={gameState.pendingMove} onchange={() => gameState.sendMove()} min="0" max="9007199254740992">
   <input type="range" class="form-range" bind:value={gameState.pendingMove} onchange={() => gameState.sendMove()} min="0" max="9007199254740992">
 {/if}
 
-<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />
+<RoundPlayerList
+  localClient={localClient}
+  inGame={gameState.roundPlayers}
+  inQueue={gameState.roundPlayerQueue} />

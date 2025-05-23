@@ -2,17 +2,22 @@
 import type { TurnBasedClient } from './game/TurnBasedGame.svelte'
 
 interface Props {
+  localClient: TurnBasedClient
   inGame: ArrayLike<TurnBasedClient>
   inQueue: ArrayLike<TurnBasedClient>
 }
 
-const { inGame, inQueue }: Props = $props()
+const { localClient, inGame, inQueue }: Props = $props()
 </script>
+
+{#snippet playerBadge(p: TurnBasedClient, badgeClass: string)}
+  <span class="badge text-bg{p == localClient ? '' : '-outline'}-{badgeClass} me-1">{p.name} ({p.cn})</span>
+{/snippet}
 
 <div>
   In game:
   {#each inGame as roundPlayer}
-    <span class="badge text-bg-{roundPlayer.ready ? 'info' : 'primary'} me-1">{roundPlayer.name} ({roundPlayer.cn})</span>
+    {@render playerBadge(roundPlayer, roundPlayer.ready ? 'info' : 'primary')}
   {:else}
     nobody
   {/each}
@@ -21,7 +26,7 @@ const { inGame, inQueue }: Props = $props()
 <div>
   Queue:
   {#each inQueue as queuedPlayer}
-    <span class="badge text-bg-{queuedPlayer.ready ? 'info' : 'secondary'} me-1">{queuedPlayer.name} ({queuedPlayer.cn})</span>
+    {@render playerBadge(queuedPlayer, queuedPlayer.ready ? 'info' : 'secondary')}
   {:else}
     nobody
   {/each}

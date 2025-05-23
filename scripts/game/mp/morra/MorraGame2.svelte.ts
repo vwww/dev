@@ -71,6 +71,7 @@ export interface MorraGameHistoryTeam {
   winner: boolean
   moveSum: bigint
   players: MorraGameHistoryPlayer[]
+  meIndex?: number
 }
 
 export interface MorraGameHistoryPlayer {
@@ -185,6 +186,7 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
       }
       p.total++
 
+      if (p == this.localClient) teamObj.meIndex = teamObj.players.length
       teamObj.moveSum += move
       teamObj.players.push({
         name: p.name,

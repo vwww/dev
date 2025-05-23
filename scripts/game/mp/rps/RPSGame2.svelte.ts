@@ -99,6 +99,7 @@ interface RPSGameHistoryLocal {
 interface RPSGameHistoryMove {
   ltw: Number3
   players: string[]
+  meIndex?: number
 }
 
 export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
@@ -164,7 +165,7 @@ export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
 
     const ltw = calculateLTW(count, outcomes)
 
-    const moves = ltw.map((x) => ({
+    const moves: RPSGameHistoryMove[] = ltw.map((x) => ({
       ltw: x,
       players: [] as string[],
     }))
@@ -202,6 +203,7 @@ export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
       p.roundTotal++
 
       if (p === this.localClient) {
+        moves[move].meIndex = moves[move].players.length - 1
         localEntry = {
           move,
           battleLTW,

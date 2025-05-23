@@ -21,10 +21,6 @@ const { gameState, t3Isomorphism }: Props = $props()
 const {
   localClient,
   roundState,
-  roundTimerStart,
-  roundTimerEnd,
-  roundPlayers,
-  roundPlayerQueue,
   myTurn,
   myPlayer,
   drawOffer,
@@ -32,7 +28,6 @@ const {
   boardBad,
   winner,
   moveHistory,
-  mode,
 } = $derived(gameState)
 
 const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
@@ -64,7 +59,9 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   {:else}
     Spectating:
   {/if}
-  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
+  <ProgressBar
+    startTime={gameState.roundTimerStart}
+    endTime={gameState.roundTimerEnd} />
 {/if}
 
 {#if !t3Isomorphism}
@@ -93,7 +90,7 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   <div>
     Moves:
     {#each moveHistory as move, i}
-      <span class="badge text-bg-{(i & 1) ? 'danger' : 'success'} me-1">{move}</span>
+      <span class="badge text-bg{myPlayer == (i & 1) + 1 ? '' : '-outline'}-{(i & 1) ? 'danger' : 'success'} me-1">{move}</span>
     {:else}
       (none)
     {/each}
@@ -138,8 +135,11 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
 {/if}
 
 <div>
-  Game Mode: {getGameModeString(mode)}
+  Game Mode: {getGameModeString(gameState.mode)}
 </div>
 
 <b>Lobby</b>
-<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />
+<RoundPlayerList
+  localClient={gameState.localClient}
+  inGame={gameState.roundPlayers}
+  inQueue={gameState.roundPlayerQueue} />

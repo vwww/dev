@@ -21,10 +21,6 @@ const { gameState, ll, showCardCount }: Props = $props()
 const {
   localClient,
   roundState,
-  roundTimerStart,
-  roundTimerEnd,
-  roundPlayers,
-  roundPlayerQueue,
   playerInfo,
   playerDiscInfo,
   myHand,
@@ -37,7 +33,6 @@ const {
   pendingMoveUseHand,
   pendingMoveTarget,
   pendingMoveGuess,
-  mode,
 } = $derived(gameState)
 
 const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
@@ -109,7 +104,9 @@ export function getCardName (card: number, ll: boolean): string | number {
   {:else}
     Waiting for others to move&hellip;
   {/if}
-  <ProgressBar startTime={roundTimerStart} endTime={roundTimerEnd} />
+  <ProgressBar
+    startTime={gameState.roundTimerStart}
+    endTime={gameState.roundTimerEnd} />
 {/if}
 
 <div class="row">
@@ -194,12 +191,14 @@ export function getCardName (card: number, ll: boolean): string | number {
     <div class="mb-2">
       <b>Active Players</b>
       {#each playerInfo as p, i}
-        <br><span class="badge text-bg-{playerColor(gameState.playerIsMe(p))}">{gameState.formatPlayerName(p)}</span>
-        <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
+        {@const isMe = gameState.playerIsMe(p)}
+        {@const outline = isMe ? '' : '-outline'}
+        <br><span class="badge text-bg{outline}-{playerColor(isMe)}">{gameState.formatPlayerName(p)}</span>
+        <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
         {#if !i && roundState === 2}
-          <span class="badge text-bg-dark">{gameState.playerIsMe(p) ? getCardName(myAltMove, ll) : '?'}</span>
+          <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myAltMove, ll) : '?'}</span>
         {/if}
-        {#if p.immune}<badge class="badge text-bg-info">IMMUNE</badge>{/if}
+        {#if p.immune}<badge class="badge text-bg{outline}-info">IMMUNE</badge>{/if}
         {p.discardSum}
         {#each p.discarded as d}
           <span class="badge text-bg-light">{d}</span>
@@ -209,7 +208,8 @@ export function getCardName (card: number, ll: boolean): string | number {
     <div>
       <b>Eliminated</b>
       {#each playerDiscInfo as p}
-        <br><span class="badge text-bg-secondary">{p.ownerName}</span>
+        {@const outline = p.isMe ? '' : '-outline'}
+        <br><span class="badge text-bg{outline}-danger">{p.ownerName}</span>
         {p.discardSum}
         {#each p.discarded as d}
           <span class="badge text-bg-light">{getCardName(d, ll)}</span>
@@ -236,8 +236,11 @@ export function getCardName (card: number, ll: boolean): string | number {
 </div>
 
 <div>
-  Game Mode: {getGameModeString(mode)}
+  Game Mode: {getGameModeString(gameState.mode)}
 </div>
 
 <b>Lobby</b>
-<RoundPlayerList inGame={roundPlayers} inQueue={roundPlayerQueue} />
+<RoundPlayerList
+  localClient={gameState.localClient}
+  inGame={gameState.roundPlayers}
+  inQueue={gameState.roundPlayerQueue} />

@@ -9,6 +9,7 @@ export class RRTurnPlayerInfo {
 }
 
 export class RRTurnDiscInfo {
+  isMe?: boolean
   ownerName = ''
 }
 
@@ -107,6 +108,7 @@ export abstract class RoundRobinGame<
     const newDiscInfo = new this.PlayerDiscType()
     const c = this.clients[playerInfo.owner]
     newDiscInfo.ownerName = formatClientName(c, playerInfo.owner)
+    newDiscInfo.isMe = c === this.localClient
 
     this.eliminatePlayer(m, newDiscInfo, playerInfo, c)
 

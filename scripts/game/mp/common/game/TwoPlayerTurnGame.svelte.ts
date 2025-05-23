@@ -52,6 +52,7 @@ export class TwoPlayerTurnClient extends TurnBasedClient {
 export interface TwoPlayerTurnHistory {
   p0Name: string
   p1Name: string
+  meIndex: number
   winner: number
   earlyEnd: boolean // forfeit or tie by agreement
   ply: number
@@ -104,6 +105,7 @@ export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClien
     this.addHistory({
       p0Name: formatClientName(p0, this.p0),
       p1Name: formatClientName(p1, this.p1),
+      meIndex: this.myPlayer - 1,
       winner,
       earlyEnd,
       ply: this.ply,

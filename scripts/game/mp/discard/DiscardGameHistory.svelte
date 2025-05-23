@@ -16,9 +16,10 @@ const { results, ll }: Props = $props()
     <li class="list-group-item">
       <b>Survived ({pastGame.survived.length}):</b>
       {#each pastGame.survived as p}
+        {@const outline = p.isMe ? '' : '-outline'}
         <br>
-        #{p.rank}: <span class="badge text-bg-{p.rank > 1 ? 'warning' : 'success'}">{p.name}</span>
-        <span class="badge text-bg-dark">{getCardName(p.hand, ll)}</span>
+        #{p.rank}: <span class="badge text-bg{outline}-{p.rank > 1 ? 'warning' : 'success'}">{p.name}</span>
+        <span class="badge text-bg{outline}-dark">{getCardName(p.hand, ll)}</span>
         {p.discardSum}
         {#each p.discarded as d}
           <span class="badge text-bg-light">{getCardName(d, ll)}</span>
@@ -27,9 +28,10 @@ const { results, ll }: Props = $props()
       <br>
       <b>Eliminated ({pastGame.eliminated.length}):</b>
       {#each pastGame.eliminated as p, i}
+        {@const outline = p.isMe ? '' : '-outline'}
         <br>
         #{pastGame.survived.length + i + 1}:
-        <span class="badge text-bg-danger">{p.name}</span>
+        <span class="badge text-bg{outline}-danger">{p.name}</span>
         {p.discardSum}
         {#each p.discarded as d}
           <span class="badge text-bg-light">{getCardName(d, ll)}</span>

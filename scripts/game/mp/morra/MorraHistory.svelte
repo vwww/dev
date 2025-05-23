@@ -16,17 +16,19 @@ const { results }: Props = $props()
         {pastGame.moveSum} &equiv; <span class="badge text-bg-success">{pastGame.winner}</span> (mod {pastGame.teams.length})
       </div>
       {#each pastGame.teams as team, id}
+        {@const outline = team.meIndex != null ? '' : '-outline'}
         <div>
-          <span class="badge me-1 text-bg-{team.winner ? 'success' : 'danger'}">#{id}</span>
-          {#if pastGame.teams.length < pastGame.playerCount}<span class="badge text-bg-primary">{team.moveSum}</span>:{/if}
-          {#each team.players as player}
-            <span class="badge me-1 text-bg-secondary">{player.name} ({player.cn})</span>
-            <span class="badge me-2 text-bg-primary">{player.move}</span>
+          <span class="badge me-1 text-bg{outline}-{team.winner ? 'success' : 'danger'}">#{id}</span>
+          {#if pastGame.teams.length < pastGame.playerCount}<span class="badge text-bg{outline}-primary">{team.moveSum}</span>:{/if}
+          {#each team.players as player, i}
+            {@const outline = team.meIndex == i ? '' : '-outline'}
+            <span class="badge me-1 text-bg{outline}-secondary">{player.name} ({player.cn})</span>
+            <span class="badge me-2 text-bg{outline}-primary">{player.move}</span>
           {/each}
         </div>
       {/each}
       {#if pastGame.moveRnd >= 0}
-        <div>Random: <span class="badge me-2 text-bg-primary">{pastGame.moveRnd}</span></div>
+        <div>Random: <span class="badge me-2 text-bg-outline-primary">{pastGame.moveRnd}</span></div>
       {/if}
     </li>
   {:else}
