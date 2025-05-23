@@ -95,10 +95,11 @@ loadLogic()
     <ol>
       {#each clues.value, i}
         <li>
-        <div class="input-group mb-3">
-          <div class="input-group">
-            <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={clues.value[i]} rows="2"></textarea>
-            <button class="btn btn-outline-danger" onclick={() => clues.value.splice(i, 1)}>-</button>
+          <div class="input-group mb-3">
+            <div class="input-group">
+              <textarea class="form-control" placeholder="Clue {i + 1}" bind:value={clues.value[i]} rows="2"></textarea>
+              <button class="btn btn-outline-danger" onclick={() => clues.value.splice(i, 1)}>-</button>
+            </div>
           </div>
         </li>
       {/each}

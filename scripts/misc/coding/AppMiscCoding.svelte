@@ -215,7 +215,7 @@ onMount(() => (window as any).jQuery ||= jQuery)
     </p>
 
     <h3>Output</h3>
-    <p>Exactly 0 bytes must be printed to standard output when the program terminates.<p>
+    <p>Exactly 0 bytes must be printed to standard output when the program terminates.</p>
 
     <div class="row">
       <div class="col-6">
