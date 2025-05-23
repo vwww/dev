@@ -13,18 +13,18 @@ mdate: 2025-01-22 22:33:00 -0700
   Winning on a small board is the same as in regular Tic-Tac-Toe.
   The first player to win a small board wins it.
   Each small board has either zero or one winner.
-  If a small board is won or full, it is complete, and no further moves may be made in it.
+  If a small board is won or full, it is final, and no further moves may be made in it.
 </p>
 
 <p>
   The first player may start in any small board.
   Making a move "sends" the opponent to the corresponding small board.
-  If that board is complete, the next move can be made in any other board.
+  If that board is final, the next move can be made in any other board.
 </p>
 
 <p>
   To win the match, a player must win on the big board by winning three small boards in a line, as if the small boards were the cells in regular Tic-Tac-Toe.
-  If all small boards are complete, and the big board is not won, the match ends in a draw.
+  If all small boards are final, and the big board is not won, the match ends in a draw.
 </p>
 
 <h1>Time Control</h1>
@@ -50,4 +50,4 @@ mdate: 2025-01-22 22:33:00 -0700
 <p>Capture one small board to win (enabling Checked is recommended, to avoid misclicks).</p>
 
 <h2>Open <small>(default: off)</small></h2>
-<p>Moves are allowed on any incomplete small board, in any unoccupied cell.</p>
+<p>Moves are allowed on any unfinal small board, in any unoccupied cell.</p>
