@@ -223,8 +223,8 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
 
   protected processRoundStartInfo (m: ByteReader): void {
     // infer deck size by dealing 1 card per player, then first player card
-    // special case: (15 * decks) players => 0 turns
-    this.deckSize = Math.max(0, this.mode.optDecks * CARDS_PER_DECK - this.playerInfo.length - 1)
+    // special case: (15 * decks) players => 0 turns => start at -1 and increment in END_ROUND
+    this.deckSize = this.mode.optDecks * CARDS_PER_DECK - this.playerInfo.length - 1
     this.cardCountDiscard = newZeroCardCount()
     this.cardCountRemain = newTotalCardCount(this.mode.optDecks)
     this.cardCountTotal = newTotalCardCount(this.mode.optDecks)
@@ -360,8 +360,8 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
         // do nothing
     }
 
-    // pre-deal out next card (not if less than 2 left)
-    if (this.deckSize > 1) this.deckSize--
+    // pre-deal out next card
+    this.deckSize--
     this.moveHistory.push(moveHistoryEntry)
 
     if (nextPlayer) {
@@ -373,6 +373,9 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   }
 
   protected processEndRound (m: ByteReader): void {
+    // cancel out pre-dealt card
+    this.deckSize++
+
     const playerInfos = this.playerInfo
 
     for (const p of playerInfos) {
