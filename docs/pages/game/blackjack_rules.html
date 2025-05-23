@@ -11,19 +11,19 @@ mdate: 2021-02-21 11:13:41 -0700
 <p>The decks of cards are shuffled and placed into the shoe, from where cards are drawn. If the shoe is empty, it is refilled completely.</p>
 
 <h2>Rounds</h2>
-Each round,
+
 <ol>
-  <li>Each player places a bet, up to max(the player's balance + 200, 100).
-  <li>The dealer draws 2 cards, 1 revealed and 1 hidden. Each player gets 2 cards.
-  <li>Each player makes a move until he busts or stands, and then the next player moves.
-  <li>After all players have moved, the dealer reveals the hole card, and then hits until the hand value is at least 17 (possibly hits on Ace and 6).
-  <li>Every player's hand is compared against the dealer's, and payouts are processed.
+  <li><b>Bet phase</b>: Each player simultaneously places a bet, up to max(the player's balance + 200, 100). Bet amounts are not revealed until the end of this phase.
+  <li><b>Deal phase</b>: The dealer draws 2 cards, 1 revealed and 1 hidden. Each player gets 2 cards.
+  <li><b>Play phase</b>: Each player makes a move until he busts or stands, and then the next player moves.
+  <li><b>Finalize phase</b>: After all players have moved, the dealer reveals the hole card. If not all players have busted, the dealer hits until the hand value is at least 17 (possibly hits on Ace and 6).
+  <li><b>End phase</b>: Every player's hand is compared against the dealer's, and payouts are processed.
 </ol>
 
 <h3>Payout</h3>
 <p>The better hand wins the bet amount.</p>
 <p>If the player has a natural blackjack while the dealer does not, a bonus is paid on top.</p>
-<p>If the player's hand busts (exceeds 21), the dealer wins.</p>
+<p>If the player's hand busts (exceeds 21), the dealer wins, even if the dealer also busts.</p>
 <p>If the hands are otherwise equal, it is a "push" and neither side wins.</p>
 
 <h2>Hand Values</h2>
