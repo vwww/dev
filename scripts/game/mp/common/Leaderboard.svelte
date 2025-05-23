@@ -63,7 +63,7 @@ let showSpect = $state(true)
             </tr>
           {/if}
         {:else}
-          <tr class="table-secondary"><td colspan={3 + columns.length}>nobody</td></tr>
+          <tr class="table-secondary"><td class="text-center" colspan={3 + columns.length}>nobody</td></tr>
         {/each}
       </tbody>
     </table>
