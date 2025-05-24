@@ -5,7 +5,7 @@ import type { Connection } from '../ConnectionManager'
  * Wrapper for PlayerIO.connection with promises.
  */
 export class PIORoom implements Connection {
-  constructor (public readonly c: PIO.connection) { }
+  constructor (public readonly c: PIO.connection, public readonly id: string) { }
 
   get connected (): boolean { return this.c.connected }
 
@@ -51,6 +51,7 @@ export class PIOAdapter implements BaseGameRoom {
     room.c.addDisconnectCallback(discCb)
   }
 
+  get id (): string { return this.room.id }
   get connected (): boolean { return this.room.connected }
 
   disconnect (): void {

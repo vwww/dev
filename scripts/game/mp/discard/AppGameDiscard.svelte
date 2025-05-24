@@ -56,6 +56,7 @@ bind:this={roomList}
   gameId="discard-l3z5n5wptuoeqtkytj64a"
   roomType="DiscardRoom"
   joinData={{name: name.value}}
+  gameRoom={gameState.room}
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />

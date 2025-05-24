@@ -38,6 +38,7 @@ let roomList: PIORoomList
   bind:this={roomList}
   gameId="cheat-zoded3ozqeqvek0bpz3fow"
   roomType="CheatRoom"
+  gameRoom={gameState.room}
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />

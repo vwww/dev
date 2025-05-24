@@ -38,6 +38,7 @@ let roomList: PIORoomList
   bind:this={roomList}
   gameId="president-ftmxqwcwukyisw4waewyua"
   roomType="PresidentRoom"
+  gameRoom={gameState.room}
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />

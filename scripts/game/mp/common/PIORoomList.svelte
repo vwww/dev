@@ -16,6 +16,7 @@ type RoomInfoFormatter = (r: PIO.roomInfo) => string
 interface Props {
   gameId: string
   roomType: string
+  gameRoom?: BaseGameRoom
   joinData?: object | null
   onJoinedRoom: (conn: BaseGameRoom) => void
   formatGameMode: (roomData: object) => string
@@ -26,6 +27,7 @@ interface Props {
 let {
   gameId,
   roomType,
+  gameRoom,
   joinData = null,
   onJoinedRoom,
   formatGameMode,
@@ -118,7 +120,7 @@ refreshRooms()
         {/each}
       </tr>
       {#each rooms as room}
-        <tr>
+        <tr class:table-info={room.id == (gameRoom as PIOAdapter)?.id}>
           <td><button class="btn btn-outline-primary btn-small" onclick={() => tryConnect(async (conn) => conn.joinRoom(room.id, joinData))}>Join</button></td>
           {#each columns as column}
             <td title={column[2] ? column[2](room) : ''}>{column[1](room)}</td>

@@ -25,13 +25,13 @@ export class PIOClient {
     return this.cm.connect(() => new Promise<PIORoom>(
       (resolve, reject) =>
         this.client.multiplayer.createJoinRoom(roomId, roomType, visible, roomData, joinData,
-          (c) => resolve(new PIORoom(c)), reject)))
+          (c) => resolve(new PIORoom(c, roomId)), reject)))
   }
 
   joinRoom (roomId: string, joinData: object | null = null): Promise<PIORoom> {
     return this.cm.connect(() => new Promise<PIORoom>(
       (resolve, reject) =>
-        this.client.multiplayer.joinRoom(roomId, joinData, (c) => resolve(new PIORoom(c)), reject)))
+        this.client.multiplayer.joinRoom(roomId, joinData, (c) => resolve(new PIORoom(c, roomId)), reject)))
   }
 
   listRooms (roomType: string, searchCriteria = {}, resultLimit = 0, resultOffset = 0): Promise<PIO.roomInfo[]> {

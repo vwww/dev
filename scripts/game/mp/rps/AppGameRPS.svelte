@@ -38,6 +38,7 @@ let roomList: PIORoomList
   gameId="rps-oj40aopjv0w7gnc1pj9zpq"
   roomType="RPSRoom"
   joinData={{ name: name.value }}
+  gameRoom={gameState.room}
   onJoinedRoom={(room) => gameState.enterGame(room, name.value)}
   formatGameMode={(roomData) => getGameModeString(parseGameModeGeneric(roomCreateOptions, roomData))}
   {roomCreateOptions} />
