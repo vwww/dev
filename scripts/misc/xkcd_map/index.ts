@@ -43,7 +43,7 @@ window._wau = window._wau ?? [['small', 'xvictorx', '_target']]
   document.getElementsByTagName('head')[0].appendChild(s)
 })()
 
-// Hide .autoclose on drag
+// Hide #autoclose on drag
 map.on('dragstart',
   function dragstartHook () {
     const target = $idA('autoclose')
