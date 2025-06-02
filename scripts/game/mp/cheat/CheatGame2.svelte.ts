@@ -1,5 +1,7 @@
 import { clamp } from '@/util'
+import { formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
+import { ByteWriter } from '@gmc/game/ByteWriter'
 import { filterChat } from '@gmc/game/CommonGame.svelte'
 import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
@@ -23,8 +25,10 @@ const enum S2C {
   MOVE_CONFIRM,
   END_ROUND,
   END_TURN,
+  EXTEND_TURN,
   PLAYER_ELIMINATE,
-  PLAYER_PRIVATE_INFO,
+  PLAYER_PRIVATE_HAND,
+  PLAYER_PRIVATE_REVEAL,
 }
 
 const enum C2S {
@@ -34,15 +38,17 @@ const enum C2S {
   CHAT,
   ACTIVE,
   READY,
-  MOVE,
+  MOVE_CLAIM,
+  MOVE_ACTUAL,
+  MOVE_CALL,
   MOVE_END,
 }
 
 class CheatClient extends RoundRobinClient {
   score = $state(0)
-
-  wins = $state(0)
   streak = $state(0)
+  wins = $state(0)
+  losses = $state(0)
 
   rankLast = $state(0)
   rankBest = $state(0)
@@ -50,9 +56,9 @@ class CheatClient extends RoundRobinClient {
 
   resetScore () {
     this.score = 0
-
-    this.wins = 0
     this.streak = 0
+    this.wins = 0
+    this.losses = 0
 
     this.rankLast = 0
     this.rankBest = 0
@@ -73,26 +79,44 @@ class CheatClient extends RoundRobinClient {
 
 export class CheatPlayerInfo extends RRTurnPlayerInfo {
   discardClaim: CardCountTotal = $state(newZeroCardCount())
-  // hand?: CardCount // private
-  handSize = $state(0)
+  handSize = $state(0n)
+  passed = $state(false)
 }
 
 export class CheatDiscInfo extends RRTurnDiscInfo {
   discardClaim: CardCountTotal = newZeroCardCount()
-  // hand: CardCount // reveal? if not, how to handle claims?
-  // handSize: number
+  handSize = 0n
+  duration = 0
 }
 
 export interface CheatGameHistory {
-  // duration: number
-  players: CheatGameHistoryPlayer[]
+  duration: number
+  players: {
+    name: string
+    isMe?: boolean
+    duration: number
+  }[]
 }
 
-export interface CheatGameHistoryPlayer {
-  name: string
-  cn: number
+export type CheatMoveInfo =
+  | {
+    type: 'move'
+    playerName: string
+    playerIsMe: boolean
+    n: number
+    c: bigint
+  }
+  | {
+    type: 'reveal'
+    actual: CardCountTotal
+  }
 
-  // TODO other info
+const enum CheatModeCheck {
+  ARBITER,
+  CALLER,
+  PUBLIC,
+  PUBLIC_ALL,
+  NUM,
 }
 
 const enum CheatModeTricks {
@@ -111,7 +135,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   mode: CheatMode = $state(defaultMode())
 
-  canCallCheat = $state(false)
+  trickTurns = $state(0)
   trickCount = $state(0)
   trickValue = $state(0)
 
@@ -122,7 +146,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   cardCountClaimOthers = $state(newZeroCardCount())
   cardCountClaimRemain = $state(newZeroCardCount())
   cardCountTotal = $state(newZeroCardCount())
-  moveHistory = $state([] as CheatGameHistory[])
+  moveHistory = $state([] as CheatMoveInfo[])
 
   pendingMove = $state(newZeroCardCount())
   pendingMoveClaim = $state(0)
@@ -143,17 +167,13 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
-  sendMove (n: number, c: number): void {
-    this.sendf('i4',
-      // TODO send actual counts after claim
-      C2S.MOVE,
-      0,
-      n, // omit, use actual for count
-      c,
-      // TODO add actuals
-    )
+  sendMoveClaim (n: number, c: bigint): void { this.sendf('i2U', C2S.MOVE_CLAIM, n, c) }
+  sendMoveActual (actuals: CardCount): void {
+    const w = new ByteWriter().putInt(C2S.MOVE_ACTUAL)
+    writeCardCount(w, actuals)
+    this.room?.send(w.toArray())
   }
-  sendMoveCallCheat (): void { this.sendf('i2', C2S.MOVE, 1) }
+  sendMoveCallCheat (): void { this.sendf('i', C2S.MOVE_CALL) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
@@ -173,8 +193,10 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
     [S2C.END_ROUND]: this.processEndRound,
     [S2C.END_TURN]: this.processEndTurn,
+    [S2C.EXTEND_TURN]: this.processExtendTurn,
     [S2C.PLAYER_ELIMINATE]: this.processEliminate,
-    [S2C.PLAYER_PRIVATE_INFO]: this.processPrivateInfo,
+    [S2C.PLAYER_PRIVATE_HAND]: this.processPrivateInfoHand,
+    [S2C.PLAYER_PRIVATE_REVEAL]: this.processPrivateInfoResult,
   }
 
   protected processWelcomeMode (m: ByteReader): void {
@@ -202,22 +224,36 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   protected processPlayerInfo (m: ByteReader, p: CheatPlayerInfo): void {
+    const flags = m.getUint64()
+
     p.discardClaim = readCardCount(m)
-    p.handSize = m.getInt()
+    p.handSize = flags >> 1n
+    p.passed = !!(flags & 1n)
   }
 
   protected processDiscInfo (m: ByteReader, p: CheatDiscInfo): void {
     p.discardClaim = readCardCount(m)
   }
 
-  protected processRoundStartInfo (m: ByteReader): void {
-    // TODO
+  protected processRoundStartInfo (): void {
+    const cards = 52n * this.mode.optDecks
+    const playersCount = BigInt(this.roundPlayers.length)
+    const cardsPerPlayer = cards / playersCount
+    const cardsExtra = cards % playersCount
+    this.playerInfo.forEach((p, i) => {
+      p.handSize = cardsPerPlayer
+      if (i < cardsExtra) {
+        p.handSize++
+      }
+    })
+
+    this.moveHistory = []
   }
 
   protected processRoundInfo (m: ByteReader): void {
     const cardsRemain = readCardCount(m)
     const cardsClaim = readCardCount(m)
-    const cardsTotal = newTotalCardCount(1) // TODO use mode count
+    const cardsTotal = newTotalCardCount(this.mode.optDecks)
     // const cardsClaimRemain = [] // calc from total
 
     this.cardCountAllOthers = cardsRemain
@@ -232,27 +268,74 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   protected processEndTurn (m: ByteReader): void {
-    // TODO
+    const [p] = this.playerInfo
+    const cl = this.clients[p.owner]
+
+    const n = m.getInt()
+    const count = m.getUint64()
+
+    this.moveHistory.push({
+      type: 'move',
+      playerName: formatClientName(cl, p.owner),
+      playerIsMe: cl === this.localClient,
+      n,
+      c: count,
+    })
 
     this.setTimer(this.mode.optTurnTime)
     this.nextTurn()
   }
 
+  protected processExtendTurn (): void {
+    this.setTimer(this.mode.optTurnTime)
+  }
+
+  protected processCheat1 (m: ByteReader): void {
+    this.processCheatCall(m, false)
+  }
+
+  protected processCheat2 (m: ByteReader): void {
+    this.processCheatCall(m, true)
+  }
+
+  protected processCheatCall (m: ByteReader, callerWrong: boolean): void {
+    // cheat called
+    const caller = m.getInt()
+    // TODO
+  }
+
   protected processEndRound (m: ByteReader): void {
-    // TODO
+    const duration = m.getInt()
+
+    const players = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName, isMe: d.isMe, duration: d.duration }))
+
+    const [p] = this.playerInfo
+    const c = this.clients[p.owner]
+    const totalPlayers = 1 + this.playerDiscInfo.length
+    updateScore(c, 1, totalPlayers)
+
+    this.addHistory({ duration, players }) // TODO push to players?
   }
 
-  protected eliminatePlayer (m: ByteReader, d: CheatDiscInfo, p: CheatPlayerInfo): void {
-    // TODO
-  }
+  protected eliminatePlayer (m: ByteReader, d: CheatDiscInfo, p: CheatPlayerInfo, c: CheatClient): void {
+    const rank = m.getInt()
+    const duration = m.getInt()
+    d.handSize = p.handSize
+    d.duration = duration
+    // TODO: how does dumping the cards affect other state?
 
-  private processPrivateInfo (m: ByteReader): void {
-    // TODO
-    switch (m.getInt()) {
-      case 0: // my cards
-        this.cardCountHandMine = readCardCount(m)
-        break
+    if (c) {
+      const totalPlayers = this.playerInfo.length + this.playerDiscInfo.length
+      updateScore(c, rank, totalPlayers)
     }
+  }
+
+  private processPrivateInfoHand (m: ByteReader): void {
+    this.cardCountHandMine = readCardCount(m)
+  }
+
+  private processPrivateInfoResult (m: ByteReader): void {
+    this.moveHistory.push({ type: 'reveal', actual: readCardCount(m) })
   }
 
   protected override readonly playersSortProps = [
@@ -262,43 +345,61 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   ]
 }
 
-type CardCount = [
-  number, number, number, number, number,
-  number, number, number, number, number,
-  number, number, number,
-  number,
-]
-type CardCountTotal = [...CardCount, number]
+function updateScore (c: CheatClient, rank: number, totalPlayers: number): void {
+  c.rankLast = rank
+  c.rankLast = rank
+  c.rankBest = Math.min(c.rankBest || rank, rank)
+  c.rankWorst = Math.max(c.rankWorst, rank)
+  c.score += (totalPlayers - rank) + 1
 
-function newZeroCardCount (): CardCountTotal {
-  return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  if (rank === 1) {
+    if (c.streak < 0) c.streak = 0
+    c.streak++
+    c.wins++
+  } else {
+    if (c.streak > 0) c.streak = 0
+    c.streak--
+    c.losses++
+  }
 }
 
-function newTotalCardCount (decks: number): CardCountTotal {
-  const jokers = decks + decks
-  const normal = jokers + jokers
+type CardCount = [
+  bigint, bigint, bigint, bigint, bigint,
+  bigint, bigint, bigint, bigint, bigint,
+  bigint, bigint, bigint,
+  bigint,
+]
+type CardCountTotal = [...CardCount, bigint]
+
+function newZeroCardCount (): CardCountTotal {
+  return [0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n]
+}
+
+function newTotalCardCount (decks: bigint): CardCountTotal {
+  const jokers = decks + decks // 2n * decks
+  const normal = jokers + jokers // 4n * decks
   return [
     normal, normal, normal, normal, normal,
     normal, normal, normal, normal, normal,
-    normal, normal, normal, jokers, 54 * decks
+    normal, normal, normal, jokers, 54n * decks
   ]
 }
 
 function readCardCount (m: ByteReader): CardCountTotal {
-  const c0 = m.getInt()
-  const c1 = m.getInt()
-  const c2 = m.getInt()
-  const c3 = m.getInt()
-  const c4 = m.getInt()
-  const c5 = m.getInt()
-  const c6 = m.getInt()
-  const c7 = m.getInt()
-  const c8 = m.getInt()
-  const c9 = m.getInt()
-  const c10 = m.getInt()
-  const c11 = m.getInt()
-  const c12 = m.getInt()
-  const c13 = m.getInt()
+  const c0 = m.getUint64()
+  const c1 = m.getUint64()
+  const c2 = m.getUint64()
+  const c3 = m.getUint64()
+  const c4 = m.getUint64()
+  const c5 = m.getUint64()
+  const c6 = m.getUint64()
+  const c7 = m.getUint64()
+  const c8 = m.getUint64()
+  const c9 = m.getUint64()
+  const c10 = m.getUint64()
+  const c11 = m.getUint64()
+  const c12 = m.getUint64()
+  const c13 = m.getUint64()
   return [
     c0, c1, c2, c3, c4,
     c5, c6, c7, c8, c9,
@@ -307,7 +408,10 @@ function readCardCount (m: ByteReader): CardCountTotal {
   ]
 }
 
-/*
+function writeCardCount (w: ByteWriter, c: CardCount) {
+  c.forEach((v) => w.putUint64(v))
+}
+
 const enum CardRank {
   Ace,
   N2,
@@ -323,6 +427,5 @@ const enum CardRank {
   FQueen,
   FKing,
   Joker,
-  _NUM,
+  NUM,
 }
-*/
