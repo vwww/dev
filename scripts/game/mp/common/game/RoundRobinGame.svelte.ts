@@ -97,7 +97,7 @@ export abstract class RoundRobinGame<
     this.processRoundStartInfo(m)
   }
 
-  protected abstract eliminatePlayer (m: ByteReader, d: D, p: P, C?: C): void
+  protected abstract eliminatePlayer (m: ByteReader, d: D, p: P, C: C): void
   protected processEliminate (m: ByteReader): void {
     // can't imply hand from unspectate/leave/endTurn, as
     // private info of leaving players might need to be revealed
@@ -107,6 +107,7 @@ export abstract class RoundRobinGame<
 
     const newDiscInfo = new this.PlayerDiscType()
     const c = this.clients[playerInfo.owner]
+    if (!c) throw new Error(`invalid owner ${playerInfo.owner} of pn ${pNum}`)
     newDiscInfo.ownerName = formatClientName(c, playerInfo.owner)
     newDiscInfo.isMe = c === this.localClient
 

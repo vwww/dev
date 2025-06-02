@@ -420,7 +420,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     this.addHistory(gameHistoryEntry)
   }
 
-  protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, p: DiscardPlayerInfo, c?: DiscardClient): void {
+  protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, p: DiscardPlayerInfo, c: DiscardClient): void {
     const hand = m.getInt()
     d.discarded = [...p.discarded, hand]
     d.discardSum = p.discardSum + hand
@@ -428,7 +428,8 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
 
     if (c) {
       const rank = this.playerInfo.length
-      updateScore(c, rank, rank + this.playerDiscInfo.length)
+      const totalPlayers = rank + this.playerDiscInfo.length
+      updateScore(c, rank, totalPlayers)
     }
   }
 
