@@ -24,6 +24,9 @@ const {
 
 const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
 const canMove = $derived(playing && gameState.playerIsMe(playerInfo[0]))
+
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', '*']
+const cCountPlaceholder = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 </script>
 
 {#if roundState == GameState.WAITING}
@@ -53,16 +56,39 @@ const canMove = $derived(playing && gameState.playerIsMe(playerInfo[0]))
   inGame={gameState.roundPlayers}
   inQueue={gameState.roundPlayerQueue} />
 
-<CardCountTable
-  ranks={['*', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2', 'A']}
-  counts={[
-    ['Yours Actual', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Others Actual', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Your Hand', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Your Played', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Your Claim', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Others Claim', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Remaining Claim', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Total', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-  ]}
-/>
+<div>
+  Your cards
+  <CardCountTable
+    {ranks}
+    counts={[
+      ['Hand', cCountPlaceholder],
+      ['Played', cCountPlaceholder],
+      ['Yours', cCountPlaceholder],
+    ]}
+  />
+</div>
+
+<div>
+  Actual cards
+  <CardCountTable
+    {ranks}
+    counts={[
+      ['Yours', cCountPlaceholder],
+      ['Others', cCountPlaceholder],
+      ['Total', cCountPlaceholder]
+    ]}
+  />
+</div>
+
+<div>
+  Claimed cards
+  <CardCountTable
+    {ranks}
+    counts={[
+      ['Your Claim', cCountPlaceholder],
+      ['Others Claim', cCountPlaceholder],
+      ['Remaining Claim', cCountPlaceholder],
+      ['Total', cCountPlaceholder]
+    ]}
+  />
+</div>
