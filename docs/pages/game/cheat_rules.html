@@ -7,7 +7,7 @@ mdate: 2020-10-03 14:15:00 -0600
 {{ game.tab(page_url, 'cheat') }}
 
 <h1>Gameplay</h1>
-<p>Cheat is a shedding card game, but players might be dishonest. The minimum player count is 2, but there must be at least 3 players to remove perfect information.</p>
+<p>Cheat is a shedding card game, but players can be dishonest. The minimum player count is 2, but there must be at least 3 players to remove perfect information.</p>
 <p>Each turn, the current player discards some cards and claims that they are cards of the same rank. Players win when they have discarded all of their cards.</p>
 <p>
   Other players have a chance to call "cheat" and challenge the cards that were just played, causing the entire discard pile to go to a player as a penalty.
@@ -43,11 +43,12 @@ mdate: 2020-10-03 14:15:00 -0600
 <h2>Count (off/on, default: all on)</h2>
 <p>How many cards may be played after the first turn? Any count may be played on the first turn, unless all options are off.</p>
 <p>If the current player has fewer cards than required, all of them may or must be played.</p>
-<p>If all options are off, the count is always 1. If decreasing is the one and only option enabled, after playing a single card, the trick ends.</p>
+<p>If only decreasing is enabled, after playing a single card, the trick ends.</p>
+<p>At least one option must be enabled, or else the server will enable all of them.</p>
 <ul>
   <li><strong>same</strong>: same count as the previous move
   <li><strong>more</strong>: more cards than the previous move
-  <li><strong>less</strong>: fewer cards than the previous (trick ends if single card is played)
+  <li><strong>less</strong>: fewer cards than the previous
 </ul>
 
 <h2>Trick Rank (off/on, default: first 5 on)</h2>
