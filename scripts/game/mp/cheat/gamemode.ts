@@ -3,8 +3,8 @@ import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
 export const roomCreateOptions = [
   ['optTurnTime', 'i', 20000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 5000, 60000],
   ['optCallTime', 'i', 5000, 'Call Time / ms', 'guaranteed time to call cheat, in milliseconds', 2000, 10000],
-  ['optDecks', 'I', 1, 'Decks', 'number of decks', 1, 166799986198907],
-  ['optCheck', 'e', 0, 'Check', 'how to resolve challenges', [
+  ['optDecks', 'I', 1, 'Decks', 'number of decks', 1, 2251799813685248],
+  ['optCheck', 'e', 2, 'Check', 'how to resolve challenges', [
     'arbiter',
     'caller',
     'public',
