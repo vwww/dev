@@ -111,6 +111,7 @@ export type CheatMoveInfo =
     actual: CardCountTotal
   }
 
+// @ts-ignore
 const enum CheatModeCheck {
   ARBITER,
   CALLER,
@@ -301,6 +302,9 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   protected processCheatCall (m: ByteReader, callerWrong: boolean): void {
     // cheat called
     const caller = m.getInt()
+    const callerInfo = this.playerInfo[caller]
+
+    console.log(callerInfo)
     // TODO
   }
 
@@ -412,6 +416,7 @@ function writeCardCount (w: ByteWriter, c: CardCount) {
   c.forEach((v) => w.putUint64(v))
 }
 
+//@ts-ignore
 const enum CardRank {
   Ace,
   N2,
