@@ -3,7 +3,7 @@
 - name: Games
   prefix: game
   dropdown: game
-- name: Browser Games
+- name: Multiplayer
   prefix: game
   dropdown: game_mp
 # - name: Code [TODO]
