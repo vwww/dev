@@ -13,7 +13,7 @@ mdate: 2020-10-03 14:15:00 -0600
   Other players have a chance to call "cheat" and challenge the cards that were just played, causing the entire discard pile to go to a player as a penalty.
   If the move was honest (the cards match the claim), penalty cards go to the player who made the claim. Otherwise, penalty cards go to the dishonest player.
   The winner starts the first trick of the next round.
-  To allow for a chance to call "cheat", the system will allow at least 5 seconds before the next move is finalized.
+  To allow for a chance to call "cheat", the system will allow time before the next move can be finalized.
 </p>
 
 <p>If a player leaves, all of his cards go into the bottom of the discard pile, but he gets the worst possible rank, and the turn timer (but not call timer) is reset. If he made the last move and loses the challenge, all cards remain in the discard pile.</p>
@@ -37,8 +37,20 @@ mdate: 2020-10-03 14:15:00 -0600
 <h2>Turn Time / ms <small>(default: 20000, min: 5000, max: 60000)</small></h2>
 <p>A random move will be made after the turn timer expires.</p>
 
+<h2>Call Time / ms <small>(default: 5000, min: 2000, max: 10000)</small></h2>
+<p>Turns that do not start a trick use this time as the minimum time, allowing players to call cheat on the previous move. This cannot exceed the Turn Time.</p>
+
 <h2>Decks <small>(default: 1, min: 1, max: 2<sup>51</sup>)</small></h2>
 <p>Number of decks to use.</p>
+
+<h2>Check</h2>
+<p>How are challenges resolved?</p>
+<ul>
+  <li><strong>arbiter</strong>: no information revealed
+  <li><strong>caller</strong>: the player who called the challenge checks the cards privately
+  <li><strong>public</strong> <em>(default)</em>: the challenged cards are revealed to all publicly
+  <li><strong>public+</strong>: the cards below the challenged cards are shuffled, and all cards are revealed publicly
+</ul>
 
 <h2>Count (off/on, default: all on)</h2>
 <p>How many cards may be played after the first turn? Any count may be played on the first turn, unless all options are off.</p>
