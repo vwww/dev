@@ -4,11 +4,11 @@ import { TurnBasedClient, TurnBasedGame } from './TurnBasedGame.svelte'
 
 export class TwoPlayerTurnClient extends TurnBasedClient {
   score = $state(0) // 4 * win + 2 * tie + loss
+  streak = $state(0)
   wins = $state(0)
   loss = $state(0)
   ties = $state(0)
   total = $state(0)
-  streak = $state(0)
 
   setResult (this: TwoPlayerTurnClient, win: number): void {
     if (!win) {
@@ -30,21 +30,21 @@ export class TwoPlayerTurnClient extends TurnBasedClient {
 
   resetScore () {
     this.score = 0
+    this.streak = 0
     this.wins = 0
     this.loss = 0
     this.ties = 0
     this.total = 0
-    this.streak = 0
   }
 
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 
+    this.streak = m.getInt()
     this.wins = m.getInt()
     this.loss = m.getInt()
     this.ties = m.getInt()
     this.total = this.wins + this.loss + this.ties
-    this.streak = m.getInt()
     this.score = (this.wins * 2 + this.ties) * 2 + this.loss
   }
 }
