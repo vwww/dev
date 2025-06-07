@@ -12,7 +12,6 @@ export const enum S2C {
   ROUND_INTERM,
   ROUND_START,
   READY,
-  MOVE_CONFIRM, // unused?
   END_ROUND
 }
 

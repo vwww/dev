@@ -19,9 +19,8 @@ const enum S2C {
   ROUND_INTERM,
   ROUND_START,
   READY,
-  MOVE_CONFIRM,
   END_ROUND,
-  // END_TURN, // unused
+  MOVE_CONFIRM,
 }
 
 const enum C2S {
@@ -32,7 +31,6 @@ const enum C2S {
   ACTIVE,
   READY,
   MOVE,
-  MOVE_END,
 }
 
 class MorraClient extends OneTurnClient {
@@ -103,7 +101,6 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (): void { this.sendf('iU', C2S.MOVE, BigInt(this.pendingMove)) }
-  sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
     [S2C.WELCOME]: this.processWelcome,
@@ -124,8 +121,9 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.mode.optInverted = m.getBool()
-    this.mode.optAddRandom = m.getBool()
+    const modeFlags = m.get()
+    this.mode.optInverted = !!(modeFlags & (1 << 0))
+    this.mode.optAddRandom = !!(modeFlags & (1 << 1))
     this.mode.optTeams = m.getInt()
   }
 

@@ -21,8 +21,8 @@ const enum S2C {
   ROUND_INTERM,
   ROUND_START,
   READY,
-  MOVE_CONFIRM,
   END_ROUND,
+  MOVE_CONFIRM,
   END_TURN,
   OFFER_DRAW,
 }
@@ -114,10 +114,11 @@ export class UT3Game extends TwoPlayerTurnGame {
 
   protected processWelcomeMode (m: ByteReader): void {
     this.mode.optTurnTime = m.getInt()
-    this.mode.optInverted = m.getBool()
-    this.mode.optChecked = m.getBool()
-    this.mode.optQuick = m.getBool()
-    this.mode.optAnyBoard = m.getBool()
+    const modeFlags = m.get()
+    this.mode.optInverted = !!(modeFlags & (1 << 0))
+    this.mode.optChecked = !!(modeFlags & (1 << 1))
+    this.mode.optQuick = !!(modeFlags & (1 << 2))
+    this.mode.optAnyBoard = !!(modeFlags & (1 << 3))
   }
 
   protected processMoveConfirm (m: ByteReader): void {

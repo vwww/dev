@@ -20,9 +20,8 @@ const enum S2C {
   ROUND_INTERM,
   ROUND_START,
   READY,
-  MOVE_CONFIRM,
   END_ROUND,
-  // END_TURN, // unused
+  MOVE_CONFIRM,
 }
 
 const enum C2S {
@@ -33,7 +32,6 @@ const enum C2S {
   ACTIVE,
   READY,
   MOVE,
-  MOVE_END,
 }
 
 class RPSClient extends OneTurnClient {
@@ -124,7 +122,6 @@ export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (n: number): void { this.sendf('i2', C2S.MOVE, n) }
-  sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
     [S2C.WELCOME]: this.processWelcome,
@@ -145,9 +142,10 @@ export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.mode.optClassic = m.getBool()
-    this.mode.optInverted = m.getBool()
-    this.mode.optCount = m.getBool()
+    const modeFlags = m.get()
+    this.mode.optClassic = !!(modeFlags & (1 << 0))
+    this.mode.optInverted = !!(modeFlags & (1 << 1))
+    this.mode.optCount = !!(modeFlags & (1 << 2))
     this.mode.optRoundTime = m.getInt()
     this.mode.optBotBalance = m.getInt()
   }
