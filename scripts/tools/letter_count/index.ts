@@ -11,6 +11,8 @@ import { ChartDonutSemi } from './ChartDonutSemi'
 import { ChartPie } from './ChartPie'
 import { ChartStacked } from './ChartStacked'
 
+const STORAGE_KEY = 'tools/letter_count/text'
+
 const CHARS_MAP = Object.fromEntries([...CHARS].map((v, i) => [v, i]))
 
 const chartInfos = [
@@ -22,6 +24,11 @@ const chartInfos = [
 ]
 
 const $txt = $idA<HTMLTextAreaElement>('txt')
+
+if (window.localStorage) {
+  const v = localStorage.getItem(STORAGE_KEY)
+  if (v != null) $txt.value = v
+}
 
 $txt.addEventListener('change', update)
 
@@ -116,6 +123,8 @@ const charts = chartInfos.map((chartOptions, i) => {
 })
 
 function update (): void {
+  window.localStorage?.setItem(STORAGE_KEY, $txt.value)
+
   // Count letters
   const txt = $txt.value.trim()
   const chrCount: number[] = new Array(CHARS.length).fill(0)
