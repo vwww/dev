@@ -148,7 +148,7 @@ updateWindowSize()
         <p>Time is not counted in static color mode.</p>
       {/if}
       <p>
-        This <u>window <i>must be</i> <b>focused</b> and <i>have a viewport area of at least a </i><b>quarter megapixel</b>.</u><br>
+        This <u>window <i>must be</i> <b>focused</b> and <i>have a viewport area of at least a</i> <b>quarter megapixel</b>.</u><br>
         (W * H = {winW} * {winH} = {winA}) {winA >= MIN_WIN_AREA ? 'is large enough' : 'needs another ' + (MIN_WIN_AREA - winA) + ' pixels of area!'}
       </p>
     </div>
