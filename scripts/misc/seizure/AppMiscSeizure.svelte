@@ -248,7 +248,7 @@ updateWindowSize()
       <option value="0" class="maxlag">ASAP (0 ms)</option>
       <option value="1" class="lag">1/1000 (1 ms)</option>
       <option value="2" class="lag">1/500 (2 ms)</option>
-      <option value="2" class="lag">1/333 (3 ms)</option>
+      <option value="3" class="lag">1/333 (3 ms)</option>
     </optgroup>
     <optgroup label="Decent">
       <option value="4" class="def">1/250 (4 ms)</option>
