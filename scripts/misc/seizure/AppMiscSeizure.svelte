@@ -245,56 +245,56 @@ updateWindowSize()
 <div class="input-group mb-3">
   <label class="input-group-text" for="inputGroupSelectInterval">Interval</label>
   <select bind:value={interval.value} class="form-select" id="inputGroupSelectInterval">
-    <option value="-1" class="def">ASAP (requestAnimationFrame)</option>
+    <option value={-1} class="def">ASAP (requestAnimationFrame)</option>
     <optgroup label="Possible Lag">
-      <option value="0" class="maxlag">ASAP (0 ms)</option>
-      <option value="1" class="lag">1/1000 (1 ms)</option>
-      <option value="2" class="lag">1/500 (2 ms)</option>
-      <option value="3" class="lag">1/333 (3 ms)</option>
+      <option value={0} class="maxlag">ASAP (0 ms)</option>
+      <option value={1} class="lag">1/1000 (1 ms)</option>
+      <option value={2} class="lag">1/500 (2 ms)</option>
+      <option value={3} class="lag">1/333 (3 ms)</option>
     </optgroup>
     <optgroup label="Decent">
-      <option value="4" class="def">1/250 (4 ms)</option>
-      <option value="5" class="def">1/200 (5 ms)</option>
-      <option value="10" class="def">1/100 (10 ms)</option>
+      <option value={4} class="def">1/250 (4 ms)</option>
+      <option value={5} class="def">1/200 (5 ms)</option>
+      <option value={10} class="def">1/100 (10 ms)</option>
     </optgroup>
     <optgroup label="Balanced-Slow">
-      <option value="20" class="slow">1/50 (20 ms)</option>
-      <option value="40" class="slow">1/25 (40 ms)</option>
-      <option value="50" class="slow">1/20 (50 ms)</option>
+      <option value={20} class="slow">1/50 (20 ms)</option>
+      <option value={40} class="slow">1/25 (40 ms)</option>
+      <option value={50} class="slow">1/20 (50 ms)</option>
     </optgroup>
     <optgroup label="Slow">
-      <option value="67" class="sslow">1/15 (67 ms)</option>
-      <option value="100" class="sslow">1/10 (100 ms)</option>
-      <option value="125" class="sslow">1/8 (125 ms)</option>
+      <option value={67} class="sslow">1/15 (67 ms)</option>
+      <option value={100} class="sslow">1/10 (100 ms)</option>
+      <option value={125} class="sslow">1/8 (125 ms)</option>
     </optgroup>
     <optgroup label="Extremely Slow">
-      <option value="250" class="ssslow">1/4 (250 ms)</option>
-      <option value="500" class="ssslow">1/2 (1000 ms)</option>
-      <option value="1000" class="ssslow">1 (1000 ms)</option>
-      <option value="2000" class="ssslow">2 (2000 ms)</option>
+      <option value={250} class="ssslow">1/4 (250 ms)</option>
+      <option value={500} class="ssslow">1/2 (1000 ms)</option>
+      <option value={1000} class="ssslow">1 (1000 ms)</option>
+      <option value={2000} class="ssslow">2 (2000 ms)</option>
     </optgroup>
   </select>
   {#if interval.value > 0}
     <label class="input-group-text" for="inputGroupSelectInterval">Image Multiplier</label>
     <select bind:value={imageMultiplier.value} class="form-select" id="inputGroupSelectInterval">
       <optgroup label="Faster">
-        <option value="0.25" class="sslow">1/5 [0.25]</option>
-        <option value="0.5" class="sslow">1/2 [0.5]</option>
-        <option value="0.75" class="sslow">3/4 [0.75]</option>
+        <option value={0.25} class="sslow">1/5 [0.25]</option>
+        <option value={0.5} class="sslow">1/2 [0.5]</option>
+        <option value={0.75} class="sslow">3/4 [0.75]</option>
       </optgroup>
       <optgroup label="Same">
-        <option value="1" class="def">Same [1]</option>
+        <option value={1} class="def">Same [1]</option>
       </optgroup>
       <optgroup label="Slower">
-        <option value="1.25" class="slow">1 + 1/4 [1.25]</option>
-        <option value="1.5" class="slow">1 + 1/2 [1.5]</option>
-        <option value="1.75" class="slow">1 + 3/4 [1.75]</option>
-        <option value="2" class="slow">Double [2]</option>
+        <option value={1.25} class="slow">1 + 1/4 [1.25]</option>
+        <option value={1.5} class="slow">1 + 1/2 [1.5]</option>
+        <option value={1.75} class="slow">1 + 3/4 [1.75]</option>
+        <option value={2} class="slow">Double [2]</option>
       </optgroup>
       <optgroup label="Big Difference">
-        <option value="3" class="lag">Triple [3]</option>
-        <option value="4" class="lag">Quadruple [4]</option>
-        <option value="5" class="lag">Quintuple [5]</option>
+        <option value={3} class="lag">Triple [3]</option>
+        <option value={4} class="lag">Quadruple [4]</option>
+        <option value={5} class="lag">Quintuple [5]</option>
       </optgroup>
     </select>
   {/if}
