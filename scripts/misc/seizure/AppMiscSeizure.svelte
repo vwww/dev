@@ -69,6 +69,7 @@ function start (): void {
 
   curOpacity = 1
 
+  strobe = imageStrobe = false
   if (interval.value < 0) {
     (function animCallback () {
       runBackgroundColorInt = requestAnimationFrame(animCallback)
@@ -78,6 +79,7 @@ function start (): void {
   } else {
     runBackgroundColorInt = window.setInterval(nextColor, interval.value)
     runImageInt = window.setInterval(nextImageInvert, interval.value * imageMultiplier.value)
+    nextColor()
   }
 }
 
