@@ -269,7 +269,7 @@ updateWindowSize()
     </optgroup>
     <optgroup label="Extremely Slow">
       <option value={250} class="ssslow">1/4 (250 ms)</option>
-      <option value={500} class="ssslow">1/2 (1000 ms)</option>
+      <option value={500} class="ssslow">1/2 (500 ms)</option>
       <option value={1000} class="ssslow">1 (1000 ms)</option>
       <option value={2000} class="ssslow">2 (2000 ms)</option>
     </optgroup>
