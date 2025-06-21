@@ -67,6 +67,8 @@ export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClien
   myPlayer = $state(0)
   drawOffer = $state(0)
 
+  canMove = $derived(this.playing && this.myTurn)
+
   override newClient () { return new TwoPlayerTurnClient }
 
   protected resetRound (): void {

@@ -27,6 +27,8 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, H> extends Common
   roundTimerStart = $state(0)
   roundTimerEnd = $state(0)
 
+  playing = $derived(this.localClient.active && this.roundState == GameState.ACTIVE && this.localClient.inRound)
+
   roundPlayers: C[] = $state([])
   roundPlayerQueue: C[] = $state([])
 

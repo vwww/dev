@@ -17,13 +17,12 @@ const { gameState }: Props = $props()
 const {
   localClient,
   roundState,
-  playerInfo,
+  // playing,
+  canMove,
+  // playerInfo,
   // playerDiscInfo,
   // myHand,
 } = $derived(gameState)
-
-const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
-const canMove = $derived(playing && gameState.playerIsMe(playerInfo[0]))
 </script>
 
 {#if roundState === GameState.WAITING}

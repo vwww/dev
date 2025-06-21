@@ -19,9 +19,11 @@ interface Props {
 const { gameState, ll, showCardCount }: Props = $props()
 
 const {
-  localClient,
   roundState,
   playerInfo,
+  turnIndex,
+  playing,
+  canMove,
   playerDiscInfo,
   myHand,
   myAltMove,
@@ -35,8 +37,6 @@ const {
   pendingMoveGuess,
 } = $derived(gameState)
 
-const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
-const canMove = $derived(playing && gameState.playerIsMe(playerInfo[0]))
 const pendingMove = $derived(pendingMoveUseHand ? myHand : myAltMove)
 
 function getCardDesc (card: number, ll: boolean): string {
@@ -157,7 +157,7 @@ export function getCardName (card: number, ll: boolean): string | number {
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonTarget">
             <button class="dropdown-item" class:active={pendingMoveTarget < 0} onclick={() => gameState.sendMoveTarget(-1)}>auto</button>
             {#each playerInfo as p, i}
-              <button class="dropdown-item" class:text-bg-danger={!i && pendingMove !== 5 || p.immune} class:active={pendingMoveTarget === i}
+              <button class="dropdown-item" class:text-bg-danger={i === turnIndex && pendingMove !== 5 || p.immune} class:active={pendingMoveTarget === i}
                 onclick={() => gameState.sendMoveTarget(i)}>{gameState.formatPlayerName(p)}</button>
             {/each}
           </div>
@@ -195,7 +195,7 @@ export function getCardName (card: number, ll: boolean): string | number {
         {@const outline = isMe ? '' : '-outline'}
         <br><span class="badge text-bg{outline}-{playerColor(isMe)}">{gameState.formatPlayerName(p)}</span>
         <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
-        {#if !i && roundState === 2}
+        {#if roundState === 2 && i === turnIndex}
           <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myAltMove, ll) : '?'}</span>
         {/if}
         {#if p.immune}<badge class="badge text-bg{outline}-info">IMMUNE</badge>{/if}
@@ -212,8 +212,10 @@ export function getCardName (card: number, ll: boolean): string | number {
         <br><span class="badge text-bg{outline}-danger">{p.ownerName}</span>
         {p.discardSum}
         {#each p.discarded as d}
-          <span class="badge text-bg-light">{getCardName(d, ll)}</span>
+          <span class="badge text-bg-light">{d}</span>
         {/each}
+      {:else}
+        No eliminations yet!
       {/each}
     </div>
   </div>

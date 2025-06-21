@@ -24,9 +24,11 @@ const enum S2C {
   END_ROUND,
   MOVE_CONFIRM,
   END_TURN,
-  // EXTEND_TURN, // TODO
   PLAYER_ELIMINATE,
-  PLAYER_PRIVATE_INFO,
+  PLAYER_ELIMINATE_EARLY,
+  PLAYER_PRIVATE_INFO_MY_HAND,
+  PLAYER_PRIVATE_INFO_ALT_MOVE,
+  PLAYER_PRIVATE_INFO_MOVE,
 }
 
 const enum C2S {
@@ -109,6 +111,7 @@ export type DiscardMoveInfo =
   | DiscardMoveInfoReveal
   | DiscardMoveInfoCompare
   | DiscardMoveInfoTrade
+  | DiscardMoveInfoLeave
 
 interface DiscardMoveInfoMove {
   type: 'move'
@@ -140,6 +143,12 @@ interface DiscardMoveInfoTrade {
   playerName: string
   oldHand: number
   newHand: number
+}
+
+interface DiscardMoveInfoLeave {
+  type: 'leave'
+  playerName: string
+  playerIsMe: boolean
 }
 
 const CARDS_PER_DECK = 15
@@ -203,7 +212,10 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     [S2C.END_ROUND]: this.processEndRound,
     [S2C.END_TURN]: this.processEndTurn,
     [S2C.PLAYER_ELIMINATE]: this.processEliminate,
-    [S2C.PLAYER_PRIVATE_INFO]: this.processPrivateInfo,
+    [S2C.PLAYER_ELIMINATE_EARLY]: this.processEliminateEarly,
+    [S2C.PLAYER_PRIVATE_INFO_MY_HAND]: this.processPrivateInfoMyHand,
+    [S2C.PLAYER_PRIVATE_INFO_ALT_MOVE]: this.processPrivateInfoAltMove,
+    [S2C.PLAYER_PRIVATE_INFO_MOVE]: this.processPrivateInfoMove,
   }
 
   protected processWelcomeMode (m: ByteReader): void {
@@ -259,8 +271,8 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   }
 
   protected processEndTurn (m: ByteReader): void {
-    const [p, nextPlayer] = this.playerInfo
-    if (!p) return
+    const p = this.playerInfo[this.turnIndex]!
+
     const move = m.getInt()
     const target = m.getInt()
 
@@ -297,16 +309,14 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
 
     switch (move) {
       case 1: {
-        // guess
-        const guess = m.getInt()
-        const elim = m.getBool()
-        moveHistoryEntry.info = elim ? -guess : guess
+        // guess (negative sign bit if guess is correct, can't be 0)
+        moveHistoryEntry.info = m.getInt()
         break
       }
       case 2: // reveal separately
         break
       case 3: { // also compare separately
-        if (target > 0) {
+        if (target >= 0) {
           const result = m.getInt()
           moveHistoryEntry.info = result
           if (result) {
@@ -367,12 +377,11 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     this.deckSize--
     this.moveHistory.push(moveHistoryEntry)
 
-    if (nextPlayer) {
-      nextPlayer.immune = false
-    }
-
     this.setTimer(this.mode.optTurnTime)
     this.nextTurn()
+
+    // clear immune on next player
+    this.playerInfo[this.turnIndex].immune = false
   }
 
   protected processEndRound (m: ByteReader): void {
@@ -385,7 +394,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
       p.hand = m.getInt()
     }
 
-    const eliminated = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName, isMe: d.isMe }))
+    const eliminated = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
     eliminated.reverse()
 
     const gameHistoryEntry: DiscardGameHistory = {
@@ -417,11 +426,29 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
       if (!c) continue
       updateScore(c, rank, totalPlayers)
     }
+    this.updatePlayers()
 
     this.addHistory(gameHistoryEntry)
   }
 
-  protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, p: DiscardPlayerInfo, c: DiscardClient): void {
+  protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, p: DiscardPlayerInfo, c: DiscardClient, early: boolean): void {
+    if (early) {
+      const isMove = this.playerInfo[this.turnIndex] == p
+
+      this.moveHistory.push({
+        type: 'leave',
+        playerName: c.formatName(),
+        playerIsMe: c === this.localClient,
+      })
+
+      if (isMove) {
+        const move = m.getInt()
+        p.discarded.push(move)
+        p.discardSum += move
+        this.updateDiscardCount(move)
+      }
+    }
+
     const hand = m.getInt()
     d.discarded = [...p.discarded, hand]
     d.discardSum = p.discardSum + hand
@@ -431,52 +458,52 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
       const rank = this.playerInfo.length
       const totalPlayers = rank + this.playerDiscInfo.length
       updateScore(c, rank, totalPlayers)
+      this.updatePlayers()
+    }
+
+    if (early) {
+      this.setTimer(this.mode.optTurnTime)
     }
   }
 
-  private processPrivateInfo (m: ByteReader): void {
-    const x = m.getInt()
-    switch (x) {
-      case -1:
-        this.myHand = m.getInt()
-        break
-      case 0:
-        this.myAltMove = m.getInt()
-        break
+  private processPrivateInfoMyHand (m: ByteReader): void {
+    this.myHand = m.getInt()
+  }
+
+  private processPrivateInfoAltMove (m: ByteReader): void {
+    this.myAltMove = m.getInt()
+  }
+
+  private processPrivateInfoMove (m: ByteReader): void {
+    const move = m.getInt()
+    const pn = m.getInt()
+    const hand = m.getInt()
+
+    const player = this.playerInfo[pn]
+    const playerName = this.formatPlayerName(player, pn)
+
+    switch (move) {
       case 2:
-      case 3:
-      case 6: {
-        const pn = m.getInt()
-        const hand = m.getInt()
-
-        const player = this.playerInfo[pn]
-        const playerName = this.formatPlayerName(player, pn)
-
-        switch (x) {
-          case 2:
-            if (player) {
-              player.hand = hand
-            }
-            this.moveHistory.push({ type: 'reveal', playerName, hand })
-            break
-          case 3: {
-            const ours = this.myHand
-            if (player) {
-              player.hand = hand
-            }
-            this.moveHistory.push({ type: 'cmp', ours, theirs: hand, playerName })
-            break
-          }
-          case 6: {
-            const oldHand = this.myHand
-            this.moveHistory.push({ type: 'trade', oldHand, newHand: hand, playerName })
-            if (player) {
-              player.hand = oldHand
-            }
-            this.myHand = hand
-            break
-          }
+        if (player) {
+          player.hand = hand
         }
+        this.moveHistory.push({ type: 'reveal', playerName, hand })
+        break
+      case 3: {
+        const ours = this.myHand
+        if (player) {
+          player.hand = hand
+        }
+        this.moveHistory.push({ type: 'cmp', ours, theirs: hand, playerName })
+        break
+      }
+      case 6: {
+        const oldHand = this.myHand
+        this.moveHistory.push({ type: 'trade', oldHand, newHand: hand, playerName })
+        if (player) {
+          player.hand = oldHand
+        }
+        this.myHand = hand
         break
       }
     }

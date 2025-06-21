@@ -58,6 +58,9 @@ const { moves, ll }: Props = $props()
     <span class="badge text-bg-outline-secondary">{m.playerName}</span>
     gives you <span class="badge text-bg-dark">{m.newHand}</span>
     for your <span class="badge text-bg-light">{m.oldHand}</span>.
+  {:else if m.type == 'leave'}
+    {@const outline = m.playerIsMe ? '' : '-outline'}
+    <span class="badge text-bg{outline}-{playerColor(m.playerIsMe)}">{m.playerName}</span> left.
   {:else}
     [unknown move {m}]
   {/if}

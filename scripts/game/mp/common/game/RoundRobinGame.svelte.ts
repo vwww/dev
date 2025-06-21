@@ -19,7 +19,10 @@ export abstract class RoundRobinGame<
   D extends RRTurnDiscInfo,
   H> extends TurnBasedGame<C, H> {
   playerInfo: P[] = $state([])
+  turnIndex = $state(0)
   playerDiscInfo: D[] = $state([])
+
+  canMove = $derived(this.playing && this.playerIsMe(this.playerInfo[this.turnIndex]))
 
   abstract PlayerInfoType: { new(): P }
   abstract PlayerDiscType: { new(): D }
@@ -58,18 +61,28 @@ export abstract class RoundRobinGame<
 
       playerInfo.push(p)
     }
-    this.playerInfo = playerInfo
+
+    if ((this.playerInfo = playerInfo).length) {
+      this.turnIndex = m.getInt()
+
+      if (this.turnIndex < 0 || this.turnIndex >= playerInfo.length) {
+        throw new Error('bad turnIndex')
+      }
+    } else {
+      this.turnIndex = 0
+    }
   }
 
   protected abstract processDiscInfo (m: ByteReader, d: D): void
   private processDiscInfos (m: ByteReader): void {
     const discInfo: D[] = []
     for (let i = 0; i <= this.clients.length; i++) {
-      const ownerName = m.getString(32)
+      const ownerName = m.getString(20)
       if (!ownerName) break
+      const ownerNum = m.getCN()
 
       const p = new this.PlayerDiscType()
-      p.ownerName = ownerName
+      p.ownerName = `${ownerName} (${ownerNum})`
 
       this.processDiscInfo(m, p)
 
@@ -93,12 +106,13 @@ export abstract class RoundRobinGame<
     }
     this.playerInfo = playerInfo
     this.playerDiscInfo = []
+    this.turnIndex = 0
 
     this.processRoundStartInfo(m)
   }
 
-  protected abstract eliminatePlayer (m: ByteReader, d: D, p: P, C: C): void
-  protected processEliminate (m: ByteReader): void {
+  protected abstract eliminatePlayer (m: ByteReader, d: D, p: P, C: C, early: boolean): void
+  protected processEliminateBase (m: ByteReader, early: boolean): void {
     // can't imply hand from unspectate/leave/endTurn, as
     // private info of leaving players might need to be revealed
     const pNum = m.getInt()
@@ -111,15 +125,24 @@ export abstract class RoundRobinGame<
     newDiscInfo.ownerName = formatClientName(c, playerInfo.owner)
     newDiscInfo.isMe = c === this.localClient
 
-    this.eliminatePlayer(m, newDiscInfo, playerInfo, c)
+    this.eliminatePlayer(m, newDiscInfo, playerInfo, c, early)
 
     this.playerInfo.splice(pNum, 1)
     this.playerDiscInfo.push(newDiscInfo) // TODO playerDiscInfo index
+
+    if (this.turnIndex > pNum) this.turnIndex--
+    else if (this.turnIndex == this.playerInfo.length) this.turnIndex = 0
+  }
+  protected processEliminate (m: ByteReader): void {
+    this.processEliminateBase(m, false)
+  }
+  protected processEliminateEarly (m: ByteReader): void {
+    this.processEliminateBase(m, true)
   }
 
   protected nextTurn (): void {
-    if (this.playerInfo.length) {
-      this.playerInfo.push(this.playerInfo.shift()!)
+    if (++this.turnIndex == this.playerInfo.length) {
+      this.turnIndex = 0
     }
   }
 }

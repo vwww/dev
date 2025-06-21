@@ -25,8 +25,8 @@ const enum S2C {
   END_ROUND,
   MOVE_CONFIRM,
   END_TURN,
-  EXTEND_TURN,
   PLAYER_ELIMINATE,
+  PLAYER_ELIMINATE_EARLY,
   PLAYER_PRIVATE_HAND,
   PLAYER_PRIVATE_REVEAL,
 }
@@ -194,8 +194,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
     [S2C.END_ROUND]: this.processEndRound,
     [S2C.END_TURN]: this.processEndTurn,
-    [S2C.EXTEND_TURN]: this.processExtendTurn,
     [S2C.PLAYER_ELIMINATE]: this.processEliminate,
+    [S2C.PLAYER_ELIMINATE_EARLY]: this.processEliminateEarly,
     [S2C.PLAYER_PRIVATE_HAND]: this.processPrivateInfoHand,
     [S2C.PLAYER_PRIVATE_REVEAL]: this.processPrivateInfoResult,
   }

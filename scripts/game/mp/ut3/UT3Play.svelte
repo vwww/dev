@@ -21,7 +21,8 @@ const { gameState }: Props = $props()
 const {
   localClient,
   roundState,
-  myTurn,
+  playing,
+  canMove,
   myPlayer,
   drawOffer,
   boardStates,
@@ -30,8 +31,6 @@ const {
   moveHistory,
 } = $derived(gameState)
 
-const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
-const canMove = $derived(playing && myTurn)
 const boardState = $derived(boardStates[boardIndex])
 
 const ply = $derived(moveHistory.length)

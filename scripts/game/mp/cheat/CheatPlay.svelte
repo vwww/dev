@@ -17,13 +17,11 @@ const { gameState }: Props = $props()
 const {
   localClient,
   roundState,
-  playerInfo,
+  // playing,
+  canMove,
   // playerDiscInfo,
   // myHand,
 } = $derived(gameState)
-
-const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
-const canMove = $derived(playing && gameState.playerIsMe(playerInfo[0]))
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', '*']
 const cCountPlaceholder = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

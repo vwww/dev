@@ -24,6 +24,7 @@ const enum S2C {
   MOVE_CONFIRM,
   END_TURN,
   PLAYER_ELIMINATE,
+  PLAYER_ELIMINATE_EARLY,
   PLAYER_PRIVATE_INFO,
 }
 
@@ -162,6 +163,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     [S2C.END_ROUND]: this.processEndRound,
     [S2C.END_TURN]: this.processEndTurn,
     [S2C.PLAYER_ELIMINATE]: this.processEliminate,
+    [S2C.PLAYER_ELIMINATE_EARLY]: this.processEliminateEarly,
     [S2C.PLAYER_PRIVATE_INFO]: this.processPrivateInfo,
   }
 

@@ -21,7 +21,8 @@ const { gameState, t3Isomorphism }: Props = $props()
 const {
   localClient,
   roundState,
-  myTurn,
+  playing,
+  canMove,
   myPlayer,
   drawOffer,
   boardState,
@@ -29,9 +30,6 @@ const {
   winner,
   moveHistory,
 } = $derived(gameState)
-
-const playing = $derived(localClient.active && roundState == GameState.ACTIVE && localClient.inRound)
-const canMove = $derived(playing && myTurn)
 
 const isomorphism1 = [[1, 5], [2, 0], [3, 7], [4, 6], [5, 4], [6, 2], [7, 1], [8, 8], [9, 3]] as const
 const isomorphism2 = [
