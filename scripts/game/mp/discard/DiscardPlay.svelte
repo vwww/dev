@@ -215,7 +215,7 @@ export function getCardName (card: number, ll: boolean): string | number {
           <span class="badge text-bg-light">{d}</span>
         {/each}
       {:else}
-        No eliminations yet!
+        <br>No eliminations yet!
       {/each}
     </div>
   </div>
