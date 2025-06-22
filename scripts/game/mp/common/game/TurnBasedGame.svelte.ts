@@ -49,7 +49,7 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, H> extends Common
     if (roundState === 0) {
       this.roundWait()
     } else if (roundState === 1) {
-      this.roundIntermission(m.getInt())
+      this.roundIntermission(m.getInt(), this.INTERMISSION_TIME)
       for (let i = 0; i <= MAX_PLAYERS; i++) {
         const cn = m.getCN()
         if (cn < 0) break
@@ -58,7 +58,7 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, H> extends Common
         p.ready = true
       }
     } else if (roundState === 2) {
-      this.roundStart(m.getInt())
+      this.roundStart(m.getInt(), this.ROUND_TIME)
     }
 
     const curRoundPlayers = []
@@ -124,21 +124,22 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, H> extends Common
     this.unsetReady()
   }
 
-  protected roundIntermission (remain: number): void {
+  protected roundIntermission (remain: number, base?: number): void {
     this.roundState = GameState.INTERMISSION
-    this.setTimer(remain)
+    this.setTimer(remain, base)
     this.unsetReady()
   }
 
-  protected roundStart (remain: number): void {
+  protected roundStart (remain: number, base?: number): void {
     this.roundState = GameState.ACTIVE
-    this.setTimer(remain)
+    this.setTimer(remain, base)
     this.unsetReady()
   }
 
-  protected setTimer (remain: number): void {
-    this.roundTimerStart = Date.now()
-    this.roundTimerEnd = Date.now() + remain
+  protected setTimer (remain: number, base = remain): void {
+    const end = Date.now() + remain
+    this.roundTimerStart = end - Math.max(base, remain)
+    this.roundTimerEnd = end
   }
 
   protected unsetReady (): void {
