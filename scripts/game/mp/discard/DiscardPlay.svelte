@@ -203,6 +203,8 @@ export function getCardName (card: number, ll: boolean): string | number {
         {#each p.discarded as d}
           <span class="badge text-bg-light">{d}</span>
         {/each}
+      {:else}
+        <br>No players!
       {/each}
     </div>
     <div>
