@@ -60,7 +60,9 @@ const { moves, ll }: Props = $props()
     for your <span class="badge text-bg-light">{m.oldHand}</span>.
   {:else if m.type == 'leave'}
     {@const outline = m.playerIsMe ? '' : '-outline'}
-    <span class="badge text-bg{outline}-{playerColor(m.playerIsMe)}">{m.playerName}</span> left.
+    <span class="badge text-bg{outline}-{playerColor(m.playerIsMe)}">{m.playerName}</span> left, discarding
+    <span class="badge text-bg-light">{getCardName(m.hand, ll)}</span>
+    {#if m.alt != undefined}and <span class="badge text-bg-light">{getCardName(m.alt, ll)}</span>{/if}.
   {:else}
     [unknown move {m}]
   {/if}

@@ -149,6 +149,8 @@ interface DiscardMoveInfoLeave {
   type: 'leave'
   playerName: string
   playerIsMe: boolean
+  hand: number
+  alt?: number
 }
 
 const CARDS_PER_DECK = 15
@@ -432,20 +434,15 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   }
 
   protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, p: DiscardPlayerInfo, c: DiscardClient, early: boolean): void {
+    let alt
     if (early) {
       const isMove = this.playerInfo[this.turnIndex] == p
 
-      this.moveHistory.push({
-        type: 'leave',
-        playerName: c.formatName(),
-        playerIsMe: c === this.localClient,
-      })
-
       if (isMove) {
-        const move = m.getInt()
-        p.discarded.push(move)
-        p.discardSum += move
-        this.updateDiscardCount(move)
+        alt = m.getInt()
+        p.discarded.push(alt)
+        p.discardSum += alt
+        this.updateDiscardCount(alt)
       }
     }
 
@@ -462,6 +459,14 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     }
 
     if (early) {
+      this.moveHistory.push({
+        type: 'leave',
+        playerName: c.formatName(),
+        playerIsMe: c === this.localClient,
+        hand,
+        alt,
+      })
+
       this.setTimer(this.mode.optTurnTime)
     }
   }
