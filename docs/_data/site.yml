@@ -2,6 +2,7 @@ mirrors:
   - [victorz.ca, https://victorz.ca]
   - [vwww.github.io, https://vwww.github.io]
   - [vwww.pages.dev, https://vwww.pages.dev]
+  - [v-z.pages.dev, https://v-z.pages.dev]
 edit_prefix: https://github.com/vwww/dev/blob/main/docs/pages/
 
 format_date: EEEE, yyyy LLLL dd
