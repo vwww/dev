@@ -38,7 +38,7 @@
     "@types/timeago": "^1.6.3",
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",
-    "concurrently": "^9.1.2",
+    "concurrently": "^9.2.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.25.5",
     "esbuild-sass-plugin": "^3.3.1",
