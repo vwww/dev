@@ -39,7 +39,8 @@ const {
   {/if}
   <ProgressBar
     startTime={gameState.roundTimerStart}
-    endTime={gameState.roundTimerEnd} />
+    endTime={gameState.roundTimerEnd}
+    active={gameState.room} />
 {/if}
 
 <div>

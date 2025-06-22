@@ -51,7 +51,8 @@ const showingCurrent = $derived(boardIndex >= ply)
   {/if}
   <ProgressBar
     startTime={gameState.roundTimerStart}
-    endTime={gameState.roundTimerEnd} />
+    endTime={gameState.roundTimerEnd}
+    active={gameState.room} />
 {/if}
 
 <p>

@@ -2,17 +2,19 @@
 import { onMount } from 'svelte'
 
 interface Props {
+  startTime: number
+  endTime: number
   start?: number
   end?: number
-  startTime?: any
-  endTime?: any
+  active?: any
 }
 
 const {
+  startTime,
+  endTime,
   start = 0,
   end = 1,
-  startTime = Date.now(),
-  endTime = Date.now() + 20000,
+  active,
 }: Props = $props()
 
 let progress = $state(0)
@@ -23,14 +25,16 @@ onMount(() => {
   (function renderLoop () {
     animHandle = requestAnimationFrame(renderLoop)
 
-    const now = Date.now()
-    progress = start + (end - start) * Math.min(1, (now - startTime) / (endTime - startTime))
-    remain = Math.max((endTime - now) / 1000, 0).toFixed(1) + ' s'
+    if (active) {
+      const now = Date.now()
+      progress = start + (end - start) * Math.min(1, (now - startTime) / (endTime - startTime))
+      remain = Math.max((endTime - now) / 1000, 0).toFixed(1) + ' s'
+    }
   })()
   return () => cancelAnimationFrame(animHandle)
 })
 </script>
 
 <div class="progress mb-2">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" style="transition: none; width:{progress * 100}%">{remain}</div>
+  <div class="progress-bar{active ? ' progress-bar-striped progress-bar-animated' : ''}" style="transition: none; width:{progress * 100}%">{remain}</div>
 </div>

@@ -33,7 +33,8 @@ const canMove = $derived(localClient.active && roundState == GameState.ACTIVE &&
   {/if}
   <ProgressBar
     startTime={gameState.roundTimerStart}
-    endTime={gameState.roundTimerEnd} />
+    endTime={gameState.roundTimerEnd}
+    active={gameState.room} />
 {/if}
 
 <div>

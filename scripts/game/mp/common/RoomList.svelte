@@ -71,7 +71,7 @@ onDestroy(() => clearTimeout(refreshTimeout))
     </div>
   </div>
   <div class="card-body" class:d-none={collapsed} style="overflow-y: scroll; height: 50vh">
-    <ProgressBar startTime={refreshLast} endTime={refreshNext} />
+    <ProgressBar startTime={refreshLast} endTime={refreshNext} active />
     {@render children()}
   </div>
 </div>

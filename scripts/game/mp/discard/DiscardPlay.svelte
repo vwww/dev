@@ -106,7 +106,8 @@ export function getCardName (card: number, ll: boolean): string | number {
   {/if}
   <ProgressBar
     startTime={gameState.roundTimerStart}
-    endTime={gameState.roundTimerEnd} />
+    endTime={gameState.roundTimerEnd}
+    active={gameState.room} />
 {/if}
 
 <div class="row">

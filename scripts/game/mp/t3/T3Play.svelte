@@ -59,7 +59,8 @@ function formatButtonClass (i: number, boardState: number, boardBad: number, can
   {/if}
   <ProgressBar
     startTime={gameState.roundTimerStart}
-    endTime={gameState.roundTimerEnd} />
+    endTime={gameState.roundTimerEnd}
+    active={gameState.room} />
 {/if}
 
 {#if !t3Isomorphism}
