@@ -1,15 +1,13 @@
 import $ from 'jquery'
 
-import { supportsLocalStorage } from './storage'
-
 export function init (): void {
-  $('.theme-switcher').click(function (event) {
+  $('.theme-switcher').on('click', function (event) {
     event.preventDefault()
     const theme = $(this).data('theme') as string
     set(theme)
-    if (supportsLocalStorage()) localStorage.theme = theme
+    if (window.localStorage) localStorage.theme = theme
   })
-  if (supportsLocalStorage()) {
+  if (window.localStorage) {
     // Restore theme
     if (localStorage.theme !== undefined) set(localStorage.theme as string)
     // Remove save warning
