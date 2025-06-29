@@ -6,9 +6,9 @@ export class Solver {
   private readonly grid: Cell[][]
 
   constructor (private readonly rows: number, private readonly cols: number) {
-    this.grid = new Array(rows)
+    this.grid = Array(rows)
     for (let r = 0; r < rows; r++) {
-      const row: Cell[] = new Array(cols)
+      const row: Cell[] = Array(cols)
       for (let c = 0; c < cols; c++) {
         row[c] = new Cell(r, c)
       }

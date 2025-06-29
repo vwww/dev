@@ -31,8 +31,8 @@ let mark: number = $state()!
 let winner: Winner = $state()!
 let moveLength: number = $state()!
 let undoLength: number = $state()!
-let moveStack: number[] = $state(new Array(9))
-let boardHistory: number[] = $state(new Array(10))
+let moveStack: number[] = $state(Array(9))
+let boardHistory: number[] = $state(Array(10))
 let currentMessage = $state('')
 
 // async loading

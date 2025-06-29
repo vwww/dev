@@ -127,7 +127,7 @@ function update (): void {
 
   // Count letters
   const txt = $txt.value.trim()
-  const chrCount: number[] = new Array(CHARS.length).fill(0)
+  const chrCount: number[] = Array(CHARS.length).fill(0)
   let sumCount = 0
   let maxCount = 0
   for (const c of txt) {
