@@ -147,7 +147,7 @@ export class RPSGame extends OneTurnGame<RPSClient, RPSGameHistory> {
     this.mode.optInverted = !!(modeFlags & (1 << 1))
     this.mode.optCount = !!(modeFlags & (1 << 2))
     this.mode.optRoundTime = m.getInt()
-    this.mode.optBotBalance = m.getInt()
+    this.mode.optBotBalance = m.getInt64()
   }
 
   protected processMoveConfirm (m: ByteReader): void {

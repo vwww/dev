@@ -5,7 +5,7 @@ export const roomCreateOptions = [
   ['optInverted', 'b', false, 'Inverted', 'switch default winning and losing direction'],
   ['optCount', 'b', false, 'Count', 'larger group never loses to smaller group, 2x size can reverse winning direction'],
   ['optRoundTime', 'i', 5000, 'Round Time / ms', 'duration of each round, in milliseconds', 3000, 30000],
-  ['optBotBalance', 'i', 0, 'Bot Balance', 'if negative, balance total players to absolute value; otherwise, add this number of bots', -1000, 1000],
+  ['optBotBalance', 'I', 0, 'Bot Balance', 'if negative, balance total players to absolute value; otherwise, add this number of bots', -9007199254740992, 9007199254740992],
 ] as const
 
 export type RPSMode = GamemodeFromOptions<typeof roomCreateOptions>
