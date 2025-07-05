@@ -72,6 +72,7 @@ let roomList: PIORoomList
       ['Battle Win', (p) => [p.battleWins, p.battleTotal]],
       ['Tie', (p) => [p.battleTies, p.battleTotal]],
       ['Loss', (p) => [p.battleLosses, p.battleTotal]],
+      ['B Score', (p) => p.battleWins - p.battleLosses],
     ]} />
   </div>
 
