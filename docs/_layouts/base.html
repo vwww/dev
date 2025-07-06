@@ -52,7 +52,7 @@
     <footer class="footer mt-auto py-3 text-bg-light">
       <div class="container">
         <div class="mb-2">
-          &copy; 2005-<span id="copyyear">{{ 'now' | date('y') }}</span> Victor Zheng. All rights reserved. The source code is licensed under the <a href="https://github.com/vwww/dev/blob/main/LICENSE.md">GPL v3</a>.
+          &copy; 2005-<span id="copyyear">{{ 'now' | date('y') }}</span> Victor Zheng. All rights reserved.
           {%- if not post %}
           {%- if date %}
             <div class="badge-group me-2" title="This page was created on {{ date | date(site.format_date) }} at {{ date | date(site.format_time) }}">
@@ -67,6 +67,7 @@
             </div>
           {%- endif %}
           {%- endif %}
+          The source code is licensed under the <a href="https://github.com/vwww/dev/blob/main/LICENSE.md">GPL v3</a>.
         </div>
         <div>
           <script src="//d.victorz.ca/online.js?o=s"></script>
