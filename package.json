@@ -27,8 +27,8 @@
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.1",
-    "@rspack/cli": "^1.4.3",
-    "@rspack/core": "^1.4.3",
+    "@rspack/cli": "^1.4.4",
+    "@rspack/core": "^1.4.4",
     "@types/bootstrap": "^5.2.10",
     "@types/d3": "^7.4.3",
     "@types/jquery": "^3.5.32",
