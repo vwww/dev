@@ -1,3 +1,4 @@
+/*
 import $ from 'jquery'
 
 $('#highlights .btn').on('mouseover', function () {
@@ -8,3 +9,4 @@ $('#highlights .btn').on('mouseover', function () {
   }
   $('#highlight_text').html(html)
 })
+*/
