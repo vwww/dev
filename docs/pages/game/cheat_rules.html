@@ -1,7 +1,7 @@
 ---
 title: Rules for Cheat
 date: "2020-01-12 11:48:28 -0700"
-mdate: 2020-10-03 14:15:00 -0600
+mdate: 2025-07-06 10:44:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'cheat') }}
@@ -14,9 +14,10 @@ mdate: 2020-10-03 14:15:00 -0600
   If the move was honest (the cards match the claim), penalty cards go to the player who made the claim. Otherwise, penalty cards go to the dishonest player.
   The winner starts the first trick of the next round.
   To allow for a chance to call "cheat", the system will allow time before the next move can be finalized.
+  To prevent misclicks, calling cheat is not possible in the first 750 ms after a move has finished or player has left.
 </p>
 
-<p>If a player leaves, all of his cards go into the bottom of the discard pile, but he gets the worst possible rank, and the turn timer (but not call timer) is reset. If he made the last move and loses the challenge, all cards remain in the discard pile.</p>
+<p>If a player leaves, all his cards go into the bottom of the discard pile, but he gets the worst possible rank, and the turn timer and 750ms minimum call timer (but not maximum call timer) is reset. If he made the last move, it can no longer be challenged.</p>
 
 <h2>Ranks</h2>
 <p>The cards ranks (4 each per deck) are in this order from lowest to highest:</p>
@@ -38,7 +39,7 @@ mdate: 2020-10-03 14:15:00 -0600
 <p>A random move will be made after the turn timer expires.</p>
 
 <h2>Call Time / ms <small>(default: 5000, min: 2000, max: 10000)</small></h2>
-<p>Turns that do not start a trick use this time as the minimum time, allowing players to call cheat on the previous move. This cannot exceed the Turn Time.</p>
+<p>Turns use this time as the minimum time whenever there is a previous move, allowing players to call cheat. This cannot exceed the Turn Time.</p>
 
 <h2>Decks <small>(default: 1, min: 1, max: 2<sup>51</sup>)</small></h2>
 <p>Number of decks to use.</p>
@@ -53,7 +54,7 @@ mdate: 2020-10-03 14:15:00 -0600
 </ul>
 
 <h2>Count (off/on, default: all on)</h2>
-<p>How many cards may be played after the first turn? Any count may be played on the first turn, unless all options are off.</p>
+<p>How many cards may be played after the first turn? Any count may be played on the first turn.</p>
 <p>If the current player has fewer cards than required, all of them may or must be played.</p>
 <p>If only decreasing is enabled, after playing a single card, the trick ends.</p>
 <p>At least one option must be enabled, or else the server will enable all of them.</p>
