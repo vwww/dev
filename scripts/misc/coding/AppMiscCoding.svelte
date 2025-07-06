@@ -332,7 +332,7 @@ onMount(() => (window as any).jQuery ||= jQuery)
             <p>Points: {userIdToPoints(userModalUID).toLocaleString()}</p>
             <p>Rank: {userModalUID.toLocaleString()}</p>
             <p>Rank History</p>
-            <img src="https://chart.googleapis.com/chart?cht=lc&chs=320x165&chxt=y&chxr=0,0,{userModalUID * 2}&chd=t:{userModalUID},{userModalUID}&chds=0,{userModalUID * 2}" alt="">
+            <img src="https://quickchart.io/chart?cht=lc&chs=320x165&chxt=y&chxr=0,0,{userModalUID * 2}&chd=t:{userModalUID},{userModalUID}&chds=0,{userModalUID * 2}" alt="">
           </div>
         </div>
       </div>
