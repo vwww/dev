@@ -45,13 +45,12 @@ const charts = chartInfos.map((chartOptions, i) => {
       if (handlingOtherCharts) return
       handlingOtherCharts = true
 
-      const id = (e.target as unknown as Highcharts.Point).options.id
-      if (id) {
+      getEventPointIDs(e).forEach((id) => {
         charts.forEach((chart, j) => {
-          if (i === j || !id) return
+          if (i === j) return
           (chart.get(id) as Highcharts.Point)?.select(true, e.accumulate)
         })
-      }
+      })
 
       handlingOtherCharts = false
     },
@@ -59,8 +58,7 @@ const charts = chartInfos.map((chartOptions, i) => {
       if (handlingOtherCharts) return
       handlingOtherCharts = true
 
-      const id = (e.target as unknown as Highcharts.Point).options.id
-      if (id) {
+      getEventPointIDs(e).forEach((id) => {
         charts.forEach((chart, j) => {
           if (i === j) return
           const p = chart.get(id) as Highcharts.Point | undefined
@@ -68,34 +66,31 @@ const charts = chartInfos.map((chartOptions, i) => {
             p.select(false, e.accumulate)
           }
         })
-      }
+      })
 
       handlingOtherCharts = false
     },
     mouseOver (e) {
-      const id = (e.target as unknown as Highcharts.Point).options.id
-      if (!id) return
-
+      const pointIDs = getEventPointIDs(e)
       charts.forEach((chart, j) => {
         if (i === j) return
-        const p = chart.get(id) as Highcharts.Point | undefined
-        if (p) {
-          chart.series.forEach((series) => series.points.forEach((point) => point.setState(point === p ? 'hover' : 'inactive')))
-          chart.tooltip.refresh(p)
+        const p = new Set(pointIDs.map((id) => chart.get(id) as Highcharts.Point).filter(Boolean))
+        if (p.size) {
+          chart.series.forEach((series) => series.points.forEach((point) => point.setState(p.has(point) ? 'hover' : 'inactive')))
+          chart.tooltip.refresh([...p])
         }
       })
     },
     mouseOut (e) {
-      const id = (e.target as unknown as Highcharts.Point).options.id
-      if (!id) return
-
-      charts.forEach((chart, j) => {
-        if (i === j) return
-        const p = chart.get(id) as Highcharts.Point | undefined
-        if (p) {
-          chart.series.forEach((series) => series.points.forEach((point) => point.setState()))
-          chart.tooltip.hide()
-        }
+      getEventPointIDs(e).forEach((id) => {
+        charts.forEach((chart, j) => {
+          if (i === j) return
+          const p = chart.get(id) as Highcharts.Point | undefined
+          if (p) {
+            chart.series.forEach((series) => series.points.forEach((point) => point.setState()))
+            chart.tooltip.hide()
+          }
+        })
       })
     },
   }
@@ -121,6 +116,16 @@ const charts = chartInfos.map((chartOptions, i) => {
 
   return Highcharts.chart('chart' + i, Highcharts.merge(defaultOptions, chartOptions.options), updateWhenReady)
 })
+
+function getEventPointIDs (e: Event): string[] {
+  const { options } = e.target as unknown as Highcharts.Point
+  const id = options.id
+  if (id) {
+    return [id]
+  }
+  const { subpoints } = options as { subpoints: { id: string }[] }
+  return subpoints ? subpoints.map(({id}) => id) : []
+}
 
 function update (): void {
   window.localStorage?.setItem(STORAGE_KEY, $txt.value)
