@@ -53,9 +53,9 @@
   - name: Fast Infinite Downloads
     desc: Download faster than your internet speed!
     href: misc/streamdl
-  - name: Seizure Generator (Strobe)
+  - name: Strobe (Seizure Generator)
     desc: Strobe lights (stroboscopic lamps) flash light between black and white.
-    href: misc/seizure/
+    href: misc/strobe
   - name: Seizure Domain
     desc: This subdomain points to the seizure servers hosted by the U.S. Immigration and Customs Enforcement.
     date_added: 2011-03-28

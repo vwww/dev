@@ -5,14 +5,14 @@ import { pState } from '@/util/svelte.svelte'
 const MIN_WIN_AREA = 250000
 const DEFAULT_IMAGE_URL = '../../../assets/victorz/logo.png'
 
-const colorMode = pState('misc/seizure/mode', 0)
-const imageMode = pState('misc/seizure/imageMode', 0)
-const imageURL = pState('misc/seizure/imageURL', DEFAULT_IMAGE_URL)
-const interval = pState('misc/seizure/int', -1)
-const imageMultiplier = pState('misc/seizure/imageMult', 1)
-const userColor = pState('misc/seizure/color', '#fff')
-const userColor2 = pState('misc/seizure/color2', 'rgba(0, 0, 0, 0.5)')
-const useTimeMax = pState('misc/seizure/useTimeMax', 0)
+const colorMode = pState('misc/strobe/mode', 0)
+const imageMode = pState('misc/strobe/imageMode', 0)
+const imageURL = pState('misc/strobe/imageURL', DEFAULT_IMAGE_URL)
+const interval = pState('misc/strobe/int', -1)
+const imageMultiplier = pState('misc/strobe/imageMult', 1)
+const userColor = pState('misc/strobe/color', '#fff')
+const userColor2 = pState('misc/strobe/color2', 'rgba(0, 0, 0, 0.5)')
+const useTimeMax = pState('misc/strobe/useTimeMax', 0)
 
 let running = $state(false)
 let runBackgroundColorInt = 0
@@ -302,7 +302,7 @@ updateWindowSize()
 
 <p>Last usage time: {useTime < 0 ? '(click Start)' : formatSeconds(useTime) + ' s'} (longest {formatSeconds(useTimeMax.value) + ' s'})</p>
 
-<button onclick={start} class="btn d-block w-100 btn-primary">Start</button>
+<button onclick={start} class="btn d-block w-100 btn-primary mb-3">Start</button>
 
 <style>
 #strobeContainer {
