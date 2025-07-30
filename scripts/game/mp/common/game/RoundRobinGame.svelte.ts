@@ -21,6 +21,7 @@ export abstract class RoundRobinGame<
   playerInfo: P[] = $state([])
   turnIndex = $state(0)
   playerDiscInfo: D[] = $state([])
+  discIndex = 0
 
   canMove = $derived(this.playing && this.playerIsMe(this.playerInfo[this.turnIndex]))
 
@@ -89,6 +90,10 @@ export abstract class RoundRobinGame<
       discInfo.push(p)
     }
     this.playerDiscInfo = discInfo
+    this.discIndex = m.getInt()
+    if (this.discIndex < 0 || this.discIndex > this.playerDiscInfo.length) {
+      throw new Error('bad discIndex')
+    }
   }
 
   protected abstract processRoundStartInfo (m: ByteReader): void
@@ -107,11 +112,12 @@ export abstract class RoundRobinGame<
     this.playerInfo = playerInfo
     this.playerDiscInfo = []
     this.turnIndex = 0
+    this.discIndex = 0
 
     this.processRoundStartInfo(m)
   }
 
-  protected abstract eliminatePlayer (m: ByteReader, d: D, p: P, C: C, early: boolean): void
+  protected abstract eliminatePlayer (m: ByteReader, d: D, pn: number, p: P, C: C, early: boolean): boolean
   protected processEliminateBase (m: ByteReader, early: boolean): void {
     // can't imply hand from unspectate/leave/endTurn, as
     // private info of leaving players might need to be revealed
@@ -125,13 +131,14 @@ export abstract class RoundRobinGame<
     newDiscInfo.ownerName = formatClientName(c, playerInfo.owner)
     newDiscInfo.isMe = c === this.localClient
 
-    this.eliminatePlayer(m, newDiscInfo, playerInfo, c, early)
+    const insertTop = this.eliminatePlayer(m, newDiscInfo, pNum, playerInfo, c, early)
 
     this.playerInfo.splice(pNum, 1)
-    this.playerDiscInfo.push(newDiscInfo) // TODO playerDiscInfo index
+    this.playerDiscInfo.splice(this.discIndex, 0, newDiscInfo)
 
-    if (this.turnIndex > pNum) this.turnIndex--
-    else if (this.turnIndex == this.playerInfo.length) this.turnIndex = 0
+    if (insertTop) {
+      this.discIndex++
+    }
   }
   protected processEliminate (m: ByteReader): void {
     this.processEliminateBase(m, false)

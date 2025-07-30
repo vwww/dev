@@ -24,8 +24,8 @@ export type GamemodeFromOptions<T extends RoomCreateOptions> = { [roomOption in 
 
 export function getDefaultOptions<T extends RoomCreateOptions> (roomCreateOptions: T): GamemodeFromOptions<T> {
   return Object.fromEntries(roomCreateOptions.map((roomOption) => {
-    const [name, _, defaultValue] = roomOption
-    return [name, defaultValue]
+    const [name, type, defaultValue] = roomOption
+    return [name, type == 'I' ? BigInt(defaultValue) : defaultValue]
   })) as GamemodeFromOptions<T>
 }
 
@@ -37,6 +37,7 @@ export function parseGameModeGeneric<T extends RoomCreateOptions> (roomCreateOpt
       case 'b':
         return [name, data[name] === 'true']
       case 'I':
+        return [name, BigInt(data[name])]
       case 'e':
       case 'i':
         return [name, +data[name]]

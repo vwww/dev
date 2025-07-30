@@ -12,10 +12,11 @@ const { results }: Props = $props()
   {#each results as pastGame}
     <li class="list-group-item">
       <div>
-        Ranks:
-        {#each pastGame.players as p, id}
-          <span class="badge text-bg-{id ? 'secondary' : 'primary'}">
-            {p.name} ({p.cn})
+        {pastGame.duration / 1000}s:
+        {#each pastGame.players as p, i}
+          {' '}{i + 1}
+          <span class="badge text-bg-{i ? 'secondary' : 'primary'}">
+            {p.name}
           </span>
         {/each}
       </div>

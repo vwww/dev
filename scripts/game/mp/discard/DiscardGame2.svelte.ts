@@ -397,7 +397,6 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     }
 
     const eliminated = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
-    eliminated.reverse()
 
     const gameHistoryEntry: DiscardGameHistory = {
       survived: [],
@@ -433,7 +432,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     this.addHistory(gameHistoryEntry)
   }
 
-  protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, p: DiscardPlayerInfo, c: DiscardClient, early: boolean): void {
+  protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, pn: number, p: DiscardPlayerInfo, c: DiscardClient, early: boolean): boolean {
     let alt
     if (early) {
       const isMove = this.playerInfo[this.turnIndex] == p
@@ -469,6 +468,12 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
 
       this.setTimer(this.mode.optTurnTime)
     }
+
+    // fix turnIndex
+    if (this.turnIndex > pn) this.turnIndex--
+    else if (this.turnIndex === this.playerInfo.length - 1) this.turnIndex = 0
+
+    return false
   }
 
   private processPrivateInfoMyHand (m: ByteReader): void {

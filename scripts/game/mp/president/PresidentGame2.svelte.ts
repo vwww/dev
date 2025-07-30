@@ -291,7 +291,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     // this.addHistory(gameHistoryEntry)
   }
 
-  protected eliminatePlayer (m: ByteReader, d: PresidentDiscInfo, p: PresidentPlayerInfo, c?: PresidentClient): void {
+  protected eliminatePlayer (m: ByteReader, d: PresidentDiscInfo, pn: number, p: PresidentPlayerInfo, c?: PresidentClient): boolean {
     const isFirst = m.getBool()
 
     d.discarded = p.discarded
@@ -301,7 +301,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       // const rank = this.playerInfo.length
       // updateScore(c, rank, rank + this.playerDiscInfo.length)
     }
-    return void isFirst
+    return isFirst
   }
 
   private processPrivateInfo (m: ByteReader): void {

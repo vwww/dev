@@ -66,6 +66,7 @@ let roomList: PIORoomList
     <Leaderboard {leaderboard} {localClient} columns={[
       ['Score', (p) => p.score],
       ['Wins', (p) => p.wins],
+      ['Loss', (p) => p.losses],
       ['Streak', (p) => p.streak],
       ['Best Rank', (p) => p.rankBest],
       ['Worst Rank', (p) => p.rankWorst],

@@ -1,8 +1,9 @@
-import { clamp } from '@/util'
+import { clamp, type Repeat } from '@/util'
 import { formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
 import { filterChat } from '@gmc/game/CommonGame.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
@@ -25,10 +26,14 @@ const enum S2C {
   END_ROUND,
   MOVE_CONFIRM,
   END_TURN,
+  CALL_WIN,
+  CALL_FAIL,
   PLAYER_ELIMINATE,
   PLAYER_ELIMINATE_EARLY,
-  PLAYER_PRIVATE_HAND,
-  PLAYER_PRIVATE_REVEAL,
+  PLAYER_PRIVATE_INFO_HAND,
+  PLAYER_PRIVATE_INFO_MOVE,
+  PLAYER_PRIVATE_INFO_PENALTY,
+  PLAYER_PRIVATE_INFO_REVEAL,
 }
 
 const enum C2S {
@@ -38,8 +43,7 @@ const enum C2S {
   CHAT,
   ACTIVE,
   READY,
-  MOVE_CLAIM,
-  MOVE_ACTUAL,
+  MOVE,
   MOVE_CALL,
   MOVE_END,
 }
@@ -69,8 +73,9 @@ class CheatClient extends RoundRobinClient {
     super.readWelcome(m)
 
     this.score = m.getInt()
-    this.wins = m.getInt()
     this.streak = m.getInt()
+    this.wins = m.getInt()
+    this.losses = m.getInt()
     this.rankLast = m.getInt()
     this.rankBest = m.getInt()
     this.rankWorst = m.getInt()
@@ -84,7 +89,6 @@ export class CheatPlayerInfo extends RRTurnPlayerInfo {
 }
 
 export class CheatDiscInfo extends RRTurnDiscInfo {
-  discardClaim: CardCountTotal = newZeroCardCount()
   handSize = 0n
   duration = 0
 }
@@ -103,15 +107,37 @@ export type CheatMoveInfo =
     type: 'move'
     playerName: string
     playerIsMe: boolean
-    n: number
-    c: bigint
+    rank: number
+    count: bigint
   }
   | {
-    type: 'reveal'
-    actual: CardCountTotal
+    type: 'callSuccess'
+    playerName: string
+    playerIsMe: boolean
+    victimName: string
+    victimIsMe: boolean
+  }
+  | {
+    type: 'callFail'
+    playerName: string
+    playerIsMe: boolean
+  }
+  | {
+    type: 'pass'
+    playerName: string
+    playerIsMe: boolean
+  }
+  | {
+    type: 'play' | 'penalty' | 'reveal' | 'reveal2'
+    cards: CardCountTotal
+  }
+  | {
+    type: 'leave'
+    playerName: string
+    playerIsMe: boolean
+    handSize: bigint
   }
 
-// @ts-ignore
 const enum CheatModeCheck {
   ARBITER,
   CALLER,
@@ -120,15 +146,15 @@ const enum CheatModeCheck {
   NUM,
 }
 
-const enum CheatModeTricks {
+export const enum CheatModeTricks {
   SKIP,
   PASS,
   FORCE,
   NUM,
 }
 
-// const CARDS_PER_DECK = 52
-const MAX_DECKS = 166_799_986_198_907n
+const CARDS_PER_DECK = 54n
+const MAX_DECKS = 1n << 51n
 
 export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, CheatDiscInfo, CheatGameHistory> {
   PlayerInfoType = CheatPlayerInfo
@@ -136,21 +162,31 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   mode: CheatMode = $state(defaultMode())
 
-  trickTurns = $state(0)
-  trickCount = $state(0)
-  trickValue = $state(0)
+  canChallenge = $state(false)
+  shouldChallenge = $state(false)
+  trickCount = $state(0n)
+  trickRank = $state(0)
 
+  callTimerStart = $state(0)
+  callTimerEnd = $state(0)
+
+  passIndex = $state(0)
+
+  cardCountTotal = $state(newZeroCardCount())
   cardCountHandMine = $state(newZeroCardCount())
   cardCountAllMine = $state(newZeroCardCount())
-  cardCountAllOthers = $state(newZeroCardCount())
+  cardCountAllOthers = $derived(this.cardCountTotal.map((v, i) => v - this.cardCountHandMine[i]) as CardCountTotal)
   cardCountClaimMine = $state(newZeroCardCount())
   cardCountClaimOthers = $state(newZeroCardCount())
+  // cardCountClaimDisc = $state(newZeroCardCount())
   cardCountClaimRemain = $state(newZeroCardCount())
-  cardCountTotal = $state(newZeroCardCount())
   moveHistory = $state([] as CheatMoveInfo[])
 
-  pendingMove = $state(newZeroCardCount())
+  pendingMoveNum = $state(newZeroCardCountNumber())
+  pendingMoveTotal = $state(0n)
+  pendingMoveAck = $state(newZeroCardCount())
   pendingMoveClaim = $state(0)
+  pendingMoveClaimAck = $state(0)
 
   get ROUND_TIME () { return this.mode.optTurnTime }
   INTERMISSION_TIME = 30000
@@ -168,10 +204,14 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
-  sendMoveClaim (n: number, c: bigint): void { this.sendf('i2U', C2S.MOVE_CLAIM, n, c) }
-  sendMoveActual (actuals: CardCount): void {
-    const w = new ByteWriter().putInt(C2S.MOVE_ACTUAL)
-    writeCardCount(w, actuals)
+  sendMove (): void {
+    const moveBigInt = this.pendingMoveNum.map(BigInt) as CardCount
+    this.pendingMoveTotal = moveBigInt.reduce((a, b) => a + b, 0n)
+
+    const w = new ByteWriter()
+      .putInt(C2S.MOVE)
+      .putInt(this.pendingMoveClaim)
+    writeCardCount(w, moveBigInt)
     this.room?.send(w.toArray())
   }
   sendMoveCallCheat (): void { this.sendf('i', C2S.MOVE_CALL) }
@@ -194,10 +234,14 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
     [S2C.END_ROUND]: this.processEndRound,
     [S2C.END_TURN]: this.processEndTurn,
+    [S2C.CALL_WIN]: this.processCallWin,
+    [S2C.CALL_FAIL]: this.processCallFail,
     [S2C.PLAYER_ELIMINATE]: this.processEliminate,
     [S2C.PLAYER_ELIMINATE_EARLY]: this.processEliminateEarly,
-    [S2C.PLAYER_PRIVATE_HAND]: this.processPrivateInfoHand,
-    [S2C.PLAYER_PRIVATE_REVEAL]: this.processPrivateInfoResult,
+    [S2C.PLAYER_PRIVATE_INFO_HAND]: this.processPrivateInfoHand,
+    [S2C.PLAYER_PRIVATE_INFO_MOVE]: this.processPrivateInfoMove,
+    [S2C.PLAYER_PRIVATE_INFO_PENALTY]: this.processPrivateInfoPenalty,
+    [S2C.PLAYER_PRIVATE_INFO_REVEAL]: this.processPrivateInfoResult,
   }
 
   protected processWelcomeMode (m: ByteReader): void {
@@ -225,121 +269,392 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   protected processPlayerInfo (m: ByteReader, p: CheatPlayerInfo): void {
-    const flags = m.getUint64()
-
     p.discardClaim = readCardCount(m)
+
+    const flags = m.getUint64()
     p.handSize = flags >> 1n
     p.passed = !!(flags & 1n)
   }
 
   protected processDiscInfo (m: ByteReader, p: CheatDiscInfo): void {
-    p.discardClaim = readCardCount(m)
+    p.handSize = m.getUint64()
+    p.duration = m.getInt()
   }
 
-  protected processRoundStartInfo (): void {
-    const cards = 52n * this.mode.optDecks
+  protected processRoundStartInfo (m: ByteReader): void {
+    const cards = CARDS_PER_DECK * this.mode.optDecks
     const playersCount = BigInt(this.roundPlayers.length)
     const cardsPerPlayer = cards / playersCount
     const cardsExtra = cards % playersCount
     this.playerInfo.forEach((p, i) => {
+      p.discardClaim = newZeroCardCount()
       p.handSize = cardsPerPlayer
       if (i < cardsExtra) {
         p.handSize++
       }
+      p.passed = false
     })
 
+    this.canChallenge = false
+    this.trickCount = 0n
+
+    this.cardCountClaimMine = newZeroCardCount()
+    this.cardCountClaimOthers = newZeroCardCount()
+    this.cardCountClaimRemain = newTotalCardCount(this.mode.optDecks)
+    this.cardCountTotal = newTotalCardCount(this.mode.optDecks)
+
     this.moveHistory = []
+
+    this.turnIndex = m.getInt()
+    this.passIndex = -1
+    this.resetMoveIfMyTurn()
   }
 
   protected processRoundInfo (m: ByteReader): void {
-    const cardsRemain = readCardCount(m)
+    if (this.roundState !== GameState.ACTIVE) return
+
+    const flags = m.getUint64()
+    this.canChallenge = !!(flags & 1n)
+    if (this.trickCount = flags >> 1n) {
+      this.trickRank = m.getInt()
+    }
+
     const cardsClaim = readCardCount(m)
     const cardsTotal = newTotalCardCount(this.mode.optDecks)
-    // const cardsClaimRemain = [] // calc from total
-
-    this.cardCountAllOthers = cardsRemain
+    const cardsRemain = cardsTotal.map((v, i) => v - cardsClaim[i]) as CardCountTotal
+    this.cardCountClaimMine = newZeroCardCount()
     this.cardCountClaimOthers = cardsClaim
+    this.cardCountClaimRemain = cardsRemain
     this.cardCountTotal = cardsTotal
-    // this.cardCountClaimRemain = cardsClaimRemain
+
+    this.setCallTimer(this.canChallenge ? m.getInt() : 0)
+
+    this.passIndex = this.mode.optTricks === CheatModeTricks.PASS ? m.getInt() : -1
   }
 
   protected processMoveConfirm (m: ByteReader) {
-    this.pendingMove = readCardCount(m)
-    this.pendingMoveClaim = m.getInt()
+    this.pendingMoveClaimAck = m.getInt()
+    this.pendingMoveAck = readCardCount(m)
   }
 
   protected processEndTurn (m: ByteReader): void {
-    const [p] = this.playerInfo
+    const p = this.playerInfo[this.turnIndex]
     const cl = this.clients[p.owner]
 
-    const n = m.getInt()
-    const count = m.getUint64()
+    const playerName = formatClientName(cl, p.owner)
+    const playerIsMe = cl === this.localClient
 
-    this.moveHistory.push({
-      type: 'move',
-      playerName: formatClientName(cl, p.owner),
-      playerIsMe: cl === this.localClient,
-      n,
-      c: count,
-    })
+    const rank = m.getInt()
+    if (rank < 0) {
+      this.moveHistory.push({
+        type: 'pass',
+        playerName,
+        playerIsMe,
+      })
+
+      if (this.mode.optTricks === CheatModeTricks.PASS) {
+        this.nextTurnAfterPass(p)
+      } else if (this.mode.optTricks === CheatModeTricks.SKIP) {
+        p.passed = true
+        if (this.playerInfo.every((q) => q.passed)) {
+          this.unsetPassed()
+          this.trickCount = 0n
+        }
+      }
+
+      this.canChallenge = false
+    } else {
+      const count = m.getUint64()
+
+      if (this.nextRankPossible(rank) && !this.nextCountImpossible(count)) {
+        this.trickCount = count
+        this.trickRank = rank
+      } else {
+        this.trickCount = 0n
+      }
+
+      p.discardClaim[rank] += count
+      p.discardClaim[CardRank.NUM] += count
+      p.handSize -= count
+
+      const countClaim = playerIsMe ? this.cardCountClaimMine : this.cardCountClaimOthers
+      countClaim[rank] += count
+      countClaim[CardRank.NUM] += count
+      this.cardCountClaimRemain[rank] -= count
+      this.cardCountClaimRemain[CardRank.NUM] -= count
+
+      this.shouldChallenge = (this.canChallenge = !playerIsMe) && count > this.cardCountAllOthers[rank] + this.cardCountAllOthers[CardRank.Joker]
+      this.setCallTimer(this.mode.optCallTime)
+
+      this.moveHistory.push({
+        type: 'move',
+        playerName,
+        playerIsMe,
+        rank,
+        count,
+      })
+
+      if (this.mode.optTricks === CheatModeTricks.PASS) {
+        this.passIndex = -1
+
+        const nextIndex = this.nextUnpassed(this.turnIndex)
+        if (nextIndex === this.turnIndex) {
+          this.unsetPassed()
+          this.trickCount = 0n
+        } else {
+          this.turnIndex = nextIndex
+        }
+      } else if (this.mode.optTricks === CheatModeTricks.SKIP) {
+        this.unsetPassed()
+      }
+    }
+
+    if (this.mode.optTricks !== CheatModeTricks.PASS) {
+      if (++this.turnIndex === this.playerInfo.length) {
+        this.turnIndex = 0
+      }
+    }
 
     this.setTimer(this.mode.optTurnTime)
-    this.nextTurn()
+
+    this.resetMoveIfMyTurn()
   }
 
-  protected processExtendTurn (): void {
-    this.setTimer(this.mode.optTurnTime)
+  private nextTurnAfterPass (p: CheatPlayerInfo) {
+    const nextIndex = this.nextUnpassed(this.turnIndex)
+    if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) == this.turnIndex) {
+      this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
+      this.passIndex = -1
+      this.unsetPassed()
+      this.trickCount = 0n
+    } else {
+      this.turnIndex = nextIndex
+      p.passed = true
+    }
   }
 
-  protected processCheat1 (m: ByteReader): void {
-    this.processCheatCall(m, false)
+  nextUnpassed (start: number): number {
+    let i = start
+    do {
+      if (++i === this.playerInfo.length) {
+        i = 0
+      }
+    } while (i !== start && this.playerInfo[i].passed)
+    return i
   }
 
-  protected processCheat2 (m: ByteReader): void {
-    this.processCheatCall(m, true)
+  private unsetPassed () {
+    this.playerInfo.forEach((p) => p.passed = false)
   }
 
-  protected processCheatCall (m: ByteReader, callerWrong: boolean): void {
-    // cheat called
-    const caller = m.getInt()
+  private resetMoveIfMyTurn () {
+    if (this.clients[this.playerInfo[this.turnIndex].owner] === this.localClient) {
+      this.pendingMoveNum = newZeroCardCountNumber()
+      this.pendingMoveClaim = -1
+      this.sendMove()
+    }
+  }
+
+  protected processCall (m: ByteReader, wrong: boolean): void {
+    const caller = m.getCN()
     const callerInfo = this.playerInfo[caller]
+    const callerClient = this.clients[callerInfo.owner]
 
-    console.log(callerInfo)
-    // TODO
+    const victimInfo = wrong ? callerInfo : this.playerInfo[(this.turnIndex || this.playerInfo.length) - 1]
+    const victimClient = wrong ? callerClient : this.clients[victimInfo.owner]
+    this.moveHistory.push({
+      type: wrong ? 'callFail' : 'callSuccess',
+      playerName: formatClientName(callerClient, callerInfo.owner),
+      playerIsMe: callerClient === this.localClient,
+      victimName: formatClientName(victimClient, victimInfo.owner),
+      victimIsMe: victimClient === this.localClient,
+    })
+    victimInfo.handSize += this.cardCountClaimMine[CardRank.NUM] + this.cardCountClaimOthers[CardRank.NUM]
+
+    for (const p of this.playerInfo) {
+      p.discardClaim = newZeroCardCount()
+    }
+
+    // cardCountHandMine is updated by penalty message if applicable
+    this.cardCountAllMine = this.cardCountHandMine.slice() as CardCountTotal
+
+    this.cardCountClaimMine = newZeroCardCount()
+    this.cardCountClaimOthers = newZeroCardCount()
+    this.cardCountClaimRemain = newTotalCardCount(this.mode.optDecks)
+
+    this.canChallenge = false
+
+    this.setTimer(this.mode.optTurnTime)
+    this.setCallTimer(0)
+  }
+
+  protected processCallWin (m: ByteReader): void {
+    this.processCall(m, false)
+  }
+
+  protected processCallFail (m: ByteReader): void {
+    this.processCall(m, true)
   }
 
   protected processEndRound (m: ByteReader): void {
     const duration = m.getInt()
 
-    const players = this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName, isMe: d.isMe, duration: d.duration }))
+    const history: CheatGameHistory = {
+      duration,
+      players: this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
+    }
 
+    // handle last player
     const [p] = this.playerInfo
     const c = this.clients[p.owner]
+    const rank = this.discIndex + 1
     const totalPlayers = 1 + this.playerDiscInfo.length
-    updateScore(c, 1, totalPlayers)
+    updateScore(c, rank, totalPlayers)
+    history.players.splice(this.discIndex, 0, {
+      name: c.formatName(),
+      isMe: c === this.localClient,
+      duration,
+    })
 
-    this.addHistory({ duration, players }) // TODO push to players?
+    this.addHistory(history)
   }
 
-  protected eliminatePlayer (m: ByteReader, d: CheatDiscInfo, p: CheatPlayerInfo, c: CheatClient): void {
-    const rank = m.getInt()
+  protected eliminatePlayer (m: ByteReader, d: CheatDiscInfo, pn: number, p: CheatPlayerInfo, c: CheatClient, early: boolean): boolean {
     const duration = m.getInt()
-    d.handSize = p.handSize
     d.duration = duration
-    // TODO: how does dumping the cards affect other state?
+
+    if (early) {
+      this.cardCountClaimOthers[CardRank.Joker] += (d.handSize = p.handSize)
+      this.cardCountClaimOthers[CardRank.NUM] += d.handSize
+      this.cardCountClaimRemain[CardRank.Joker] -= d.handSize
+      this.cardCountClaimRemain[CardRank.NUM] -= d.handSize
+
+      if (pn + 1 === (this.turnIndex || this.playerInfo.length)) {
+        this.canChallenge = false
+      } else if (pn === this.turnIndex) {
+        this.nextTurnAfterPass(p)
+      }
+    }
 
     if (c) {
       const totalPlayers = this.playerInfo.length + this.playerDiscInfo.length
+      const rank = this.discIndex + (early ? this.playerInfo.length : 1)
       updateScore(c, rank, totalPlayers)
     }
+
+    if (early) {
+      this.moveHistory.push({
+        type: 'leave',
+        playerName: c.formatName(),
+        playerIsMe: c === this.localClient,
+        handSize: d.handSize,
+      })
+
+      this.setTimer(this.mode.optTurnTime)
+    }
+
+    const lastIndex = this.playerInfo.length - 1
+    // fix turnIndex
+    if (this.turnIndex > pn) this.turnIndex--
+    else if (this.turnIndex === lastIndex) this.turnIndex = 0
+
+    if (this.mode.optTricks == CheatModeTricks.PASS) {
+      if (early) {
+        // fix discIndex
+        if (this.discIndex > pn) {
+          this.discIndex--
+        } else if (this.discIndex === lastIndex) {
+          this.discIndex = 0
+        }
+      } else {
+        this.discIndex = this.turnIndex
+      }
+    }
+
+    return !early
   }
 
   private processPrivateInfoHand (m: ByteReader): void {
-    this.cardCountHandMine = readCardCount(m)
+    const c = readCardCount(m)
+    this.cardCountHandMine = c
+    this.cardCountAllMine = c.slice() as CardCountTotal
+  }
+
+  private processPrivateInfoMove (m: ByteReader): void {
+    const c = readCardCount(m)
+    for (let i = 0; i < CardRank.NUM; i++) {
+      this.pendingMoveNum[i] = Number(c[i])
+      this.cardCountHandMine[i] -= c[i]
+    }
+  }
+
+  private processPrivateInfoPenalty (m: ByteReader): void {
+    const cards = readCardCount(m)
+    this.moveHistory.push({ type: 'penalty', cards })
+    for (let i = 0; i < CardRank.NUM; i++) {
+      this.cardCountHandMine[i] += cards[i]
+    }
   }
 
   private processPrivateInfoResult (m: ByteReader): void {
-    this.moveHistory.push({ type: 'reveal', actual: readCardCount(m) })
+    const cards = readCardCount(m)
+    this.moveHistory.push({ type: 'reveal', cards })
+    if (this.mode.optCheck == CheatModeCheck.PUBLIC_ALL) {
+      const cards = readCardCount(m)
+      if (!cards[CardRank.NUM]) return
+
+      this.moveHistory.push({ type: 'reveal2', cards })
+    }
+  }
+
+  private setCallTimer (remain: number): void {
+    const end = Date.now() + remain
+    this.callTimerStart = end - Math.max(this.mode.optCallTime, remain)
+    this.callTimerEnd = end
+  }
+
+  allowRank (a: CardRank): boolean {
+    return !this.trickCount || this.checkRank(a, this.trickRank)
+  }
+
+  allowCount (c: bigint): boolean {
+    return !!c && (c == this.trickCount ? this.mode.optCountSame : c < this.trickCount ? this.mode.optCountLess : this.mode.optCountMore)
+  }
+
+  private checkRank (a: CardRank, b: CardRank): boolean {
+    if (a == b) {
+      return this.mode.optRank0
+    } else if (a == b + 1) {
+      return this.mode.optRank1u
+    } else if (a == b + 2) {
+      return this.mode.optRank2u
+    } else if (a == b - 1) {
+      return this.mode.optRank1d
+    } else if (a == b - 2) {
+      return this.mode.optRank2d
+    } else if (a == CardRank.Joker - 1 && b == 0) {
+      return this.mode.optRank1uw
+    } else if (a == 0 && b == CardRank.Joker - 1) {
+      return this.mode.optRank1dw
+    } else if (a == CardRank.Joker - 1 && b == 1 || a == CardRank.Joker - 2 && b == 0) {
+      return this.mode.optRank2uw
+    } else if (a == 0 && b == CardRank.Joker - 2 || a == 1 && b == CardRank.Joker - 1) {
+      return this.mode.optRank2dw
+    } else {
+      return this.mode.optRankother
+    }
+  }
+
+  private nextRankPossible (rank: number) {
+    return this.mode.optRank0 || this.mode.optRankother
+      || (rank == CardRank.Joker - 1 ? this.mode.optRank1uw : this.mode.optRank1u)
+      || (rank == 0 ? this.mode.optRank1dw : this.mode.optRank1d)
+      || (rank == CardRank.Joker - 2 ? this.mode.optRank2uw : this.mode.optRank2u)
+      || (rank == 1 ? this.mode.optRank2dw : this.mode.optRank2d)
+  }
+
+  private nextCountImpossible (count: bigint) {
+    return !this.mode.optCountSame && (count == 1n && !this.mode.optCountMore || count == 6n * this.mode.optDecks && !this.mode.optCountLess)
   }
 
   protected override readonly playersSortProps = [
@@ -367,16 +682,16 @@ function updateScore (c: CheatClient, rank: number, totalPlayers: number): void 
   }
 }
 
-type CardCount = [
-  bigint, bigint, bigint, bigint, bigint,
-  bigint, bigint, bigint, bigint, bigint,
-  bigint, bigint, bigint,
-  bigint,
-]
-type CardCountTotal = [...CardCount, bigint]
+type CardCount = Repeat<bigint, CardRank.NUM>
+type CardCountNumber = Repeat<number, CardRank.NUM>
+export type CardCountTotal = [...CardCount, bigint]
 
 function newZeroCardCount (): CardCountTotal {
   return [0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n, 0n]
+}
+
+function newZeroCardCountNumber (): CardCountNumber {
+  return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 }
 
 function newTotalCardCount (decks: bigint): CardCountTotal {
@@ -385,7 +700,7 @@ function newTotalCardCount (decks: bigint): CardCountTotal {
   return [
     normal, normal, normal, normal, normal,
     normal, normal, normal, normal, normal,
-    normal, normal, normal, jokers, 54n * decks
+    normal, normal, normal, jokers, CARDS_PER_DECK * decks
   ]
 }
 
@@ -416,8 +731,7 @@ function writeCardCount (w: ByteWriter, c: CardCount) {
   c.forEach((v) => w.putUint64(v))
 }
 
-//@ts-ignore
-const enum CardRank {
+export const enum CardRank {
   Ace,
   N2,
   N3,

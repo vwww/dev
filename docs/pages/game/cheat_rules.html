@@ -1,23 +1,24 @@
 ---
 title: Rules for Cheat
 date: "2020-01-12 11:48:28 -0700"
-mdate: 2025-07-06 10:44:00 -0600
+mdate: 2025-07-30 14:48:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'cheat') }}
 
 <h1>Gameplay</h1>
-<p>Cheat is a shedding card game, but players can be dishonest. The minimum player count is 2, but there must be at least 3 players to remove perfect information about card counts.</p>
-<p>Each turn, the current player discards some cards and claims that they are cards of the same rank. Players win when they have discarded all of their cards. The turn order is random.</p>
+<p>Cheat is a shedding card game, but players can be dishonest. The minimum player count is 2, but there must be at least 3 players to remove perfect information about initial card counts.</p>
+<p>Players are shuffled, and cards are dealt starting at the first player in the list. A random player is selected to move first.</p>
+<p>Each turn, the current player discards some cards and claims that they are cards of the same rank. Players win when they have discarded all of their cards.</p>
 <p>
   Other players have a chance to call "cheat" and challenge the cards that were just played, causing the entire discard pile to go to a player as a penalty.
   If the move was honest (the cards match the claim), penalty cards go to the player who made the claim. Otherwise, penalty cards go to the dishonest player.
-  The winner starts the first trick of the next round.
+  After the challenge, the turn timer is reset, but the game continues from where it left off.
   To allow for a chance to call "cheat", the system will allow time before the next move can be finalized.
   To prevent misclicks, calling cheat is not possible in the first 750 ms after a move has finished or player has left.
 </p>
 
-<p>If a player leaves, all his cards go into the bottom of the discard pile, but he gets the worst possible rank, and the turn timer and 750ms minimum call timer (but not maximum call timer) is reset. If he made the last move, it can no longer be challenged.</p>
+<p>If a player leaves, all his cards go to the bottom of the discard pile, but he gets the worst unfilled rank, and the turn timer is reset. If he made the last move, it can no longer be challenged. Otherwise, the 750ms minimum call timer (but not maximum call timer) is also reset.</p>
 
 <h2>Ranks</h2>
 <p>The cards ranks (4 each per deck) are in this order from lowest to highest:</p>
@@ -28,7 +29,7 @@ mdate: 2025-07-06 10:44:00 -0600
 <h1>Time Control</h1>
 <p>Intermissions last up to 30 seconds, ending early if all players are ready.</p>
 <p>
-  Each turn lasts up to 20 seconds by default, with automatic skip/pass/random move (in that order).
+  Each turn lasts up to 20 seconds by default, with automatic moves.
   Unused turn time cannot be carried to future turns.
   There is only a turn timer, not a game timer.
 </p>
@@ -36,7 +37,7 @@ mdate: 2025-07-06 10:44:00 -0600
 <h1>Options</h1>
 
 <h2>Turn Time / s <small>(default: 20, min: 5, max: 60)</small></h2>
-<p>A random move will be made after the turn timer expires.</p>
+<p>An arbitrary move will be made after the turn timer expires.</p>
 
 <h2>Call Time / s <small>(default: 5, min: 2, max: 10)</small></h2>
 <p>Turns use this time as the minimum time whenever there is a previous move, allowing players to call cheat. This cannot exceed the Turn Time.</p>
@@ -47,7 +48,7 @@ mdate: 2025-07-06 10:44:00 -0600
 <h2>Check</h2>
 <p>How are challenges resolved?</p>
 <ul>
-  <li><strong>arbiter</strong>: no information revealed
+  <li><strong>arbiter</strong>: arbiter checks and reveals only pass/fail
   <li><strong>caller</strong>: the player who called the challenge checks the cards privately
   <li><strong>public</strong> <em>(default)</em>: the challenged cards are revealed to all publicly
   <li><strong>public+</strong>: the cards below the challenged cards are shuffled, and all cards are revealed publicly
@@ -56,7 +57,7 @@ mdate: 2025-07-06 10:44:00 -0600
 <h2>Count (off/on, default: all on)</h2>
 <p>How many cards may be played after the first turn? Any count may be played on the first turn.</p>
 <p>If the current player has fewer cards than required, all of them may or must be played.</p>
-<p>If only decreasing is enabled, after playing a single card, the trick ends.</p>
+<p>If the next move would require an invalid number of cards (less than one or more than six times the number of decks), the trick ends.</p>
 <p>At least one option must be enabled, or else the server will enable all of them.</p>
 <ul>
   <li><strong>same</strong>: same count as the previous move
@@ -83,6 +84,46 @@ mdate: 2025-07-06 10:44:00 -0600
 <h2>Tricks</h2>
 <ul>
   <li><strong>skip</strong> <em>(default)</em>: play or skip your turn
-  <li><strong>pass</strong>: play or pass; passing prevents playing until next trick
+  <li><strong>pass</strong>: play or pass
+    <ul>
+      <li>Passing prevents playing until next trick.
+      <li>When everyone except P (the last player to move) has passed, P starts a new trick.
+      <li>If P already won, the player after P starts instead.
+    </ul>
   <li><strong>forced</strong>: must play every turn
+</ul>
+
+<h1>FUTURE Options</h1>
+
+<h2>Any Caller <small>(default: on)</small></h2>
+<p>Can players other than the current player call cheat?</p>
+
+<h2>Believe <small>(default: off)</small></h2>
+<p>Allow calling "believe": if last move was honest, discard pile is banished; otherwise, caller takes all cards.</p>
+
+<h2>Banish on New Trick <small>(default: off)</small></h2>
+<p>When a new trick has started, banish all cards in the discard pile before the new trick.</p>
+
+<h2>Challenge Pass Reset Trick <small>(default: off)</small></h2>
+<p>When a challenge passes, does a new trick start?</p>
+
+<h2>Challenge Fail Reset Trick <small>(default: off)</small></h2>
+<p>When a challenge fails, does a new trick start?</p>
+
+<h2>Challenge Pass Control Flow</h2>
+<p>Who plays after a challenge passes?</p>
+<ul>
+  <li><strong>no change</strong> <em>(default)</em>: player after dishonest player</li>
+  <li><strong>challenged</strong>: dishonest player who was challenged and lost</li>
+  <li><strong>after caller</strong>: player after player who challenged</li>
+  <li><strong>caller</strong>: player who challenged and won</li>
+</ul>
+
+<h2>Challenge Fail Control Flow</h2>
+<p>Who plays after a challenge fails?</p>
+<ul>
+  <li><strong>no change</strong> <em>(default)</em>: player after honest player</li>
+  <li><strong>challenged</strong>: honest player who was challenged and won</li>
+  <li><strong>after caller</strong>: player after player who challenged</li>
+  <li><strong>caller</strong>: player who challenged and lost</li>
 </ul>

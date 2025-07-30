@@ -37,13 +37,25 @@ export function defaultMode (): CheatMode {
 }
 
 export function getGameModeString (mode: CheatMode): string {
+  const optCmp = mode.optCountLess
+    ? mode.optCountSame
+      ? mode.optCountMore
+        ? '*'
+        : '≤'
+      : mode.optCountMore
+        ? '≠'
+        : '<'
+    : mode.optCountSame
+      ? mode.optCountMore
+        ? '≥'
+        : '='
+      : '>'
+
   return (
     mode.optCallTime + '/' + mode.optTurnTime + '/' +
     mode.optDecks + '/' +
-    mode.optCheck +
-    (mode.optCountLess ? 'L' : 'l') +
-    (mode.optCountSame ? 'S' : 's') +
-    (mode.optCountMore ? 'M' : 'm') +
+    mode.optCheck + '/' +
+    optCmp +
     mode.optTricks +
     (mode.optRank1uw ? 'U' : 'u') +
     (mode.optRank2uw ? 'U' : 'u') +

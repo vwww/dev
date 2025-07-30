@@ -218,8 +218,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     // TODO
   }
 
-  protected eliminatePlayer (m: ByteReader, d: BlackjackDiscInfo, p: BlackjackPlayerInfo): void {
+  protected eliminatePlayer (m: ByteReader, d: BlackjackDiscInfo, pn: number, p: BlackjackPlayerInfo): boolean {
     // TODO
+    return false
   }
 
   private processPrivateInfo (m: ByteReader): void {

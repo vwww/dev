@@ -1,7 +1,7 @@
 <script lang="ts">
 interface Props {
   ranks: string[]
-  counts: [string, number[]][]
+  counts: [string, (number | bigint)[]][]
 }
 
 const { ranks, counts }: Props = $props()

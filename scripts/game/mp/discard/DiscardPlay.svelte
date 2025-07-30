@@ -124,14 +124,14 @@ export function getCardName (card: number, ll: boolean): string | number {
         <div class="card-body">
           <ul>
             {#each [1, 2, 3, 4, 5, 6, 7, 8] as card}
-              <li class:fw-bold={roundState === 2 && playing && (card === myHand || (canMove && card === myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
+              <li class:fw-bold={roundState === GameState.ACTIVE && playing && (card === myHand || (canMove && card === myAltMove))}>{getCardName(card, ll)}: {getCardDesc(card, ll)}</li>
             {/each}
           </ul>
         </div>
       </div>
     </div>
   </div>
-  {#if roundState === 2 && playing}
+  {#if roundState === GameState.ACTIVE && playing}
     <div class="col-12">
       Your hand: <span class="badge text-bg-dark">{getCardName(myHand, ll)}</span>
       {#if canMove}
@@ -196,7 +196,7 @@ export function getCardName (card: number, ll: boolean): string | number {
         {@const outline = isMe ? '' : '-outline'}
         <br><span class="badge text-bg{outline}-{playerColor(isMe)}">{gameState.formatPlayerName(p)}</span>
         <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
-        {#if roundState === 2 && i === turnIndex}
+        {#if roundState === GameState.ACTIVE && i === turnIndex}
           <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myAltMove, ll) : '?'}</span>
         {/if}
         {#if p.immune}<badge class="badge text-bg{outline}-info">IMMUNE</badge>{/if}
