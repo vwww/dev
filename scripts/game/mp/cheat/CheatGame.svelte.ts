@@ -311,6 +311,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   protected processRoundInfo (m: ByteReader): void {
+    this.moveHistory = []
+
     if (this.roundState !== GameState.ACTIVE) return
 
     const flags = m.getUint64()
