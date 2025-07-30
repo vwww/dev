@@ -10,7 +10,7 @@ import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
-import { RPSGame } from './RPSGame2.svelte'
+import { RPSGame } from './RPSGame.svelte'
 import RPSHistory from './RPSHistory.svelte'
 import RPSPlay from './RPSPlay.svelte'
 

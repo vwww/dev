@@ -10,7 +10,7 @@ import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
-import { ActionlessGame } from './ActionlessGame2.svelte'
+import { ActionlessGame } from './ActionlessGame.svelte'
 import ActionlessHistory from './ActionlessHistory.svelte'
 import ActionlessPlay from './ActionlessPlay.svelte'
 

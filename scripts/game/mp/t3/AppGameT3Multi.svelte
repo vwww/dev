@@ -12,7 +12,7 @@ import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { T3Game } from './T3Game2.svelte'
+import { T3Game } from './T3Game.svelte'
 import T3Play from './T3Play.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'

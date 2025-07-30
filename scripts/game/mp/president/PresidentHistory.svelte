@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { PresidentGameHistory, PresidentRankType } from './PresidentGame2.svelte'
+import type { PresidentGameHistory, PresidentRankType } from './PresidentGame.svelte'
 
 interface Props {
   results: PresidentGameHistory[]

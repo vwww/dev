@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { RPSGameHistory } from './RPSGame2.svelte'
+import type { RPSGameHistory } from './RPSGame.svelte'
 
 interface Props {
   results: ArrayLike<RPSGameHistory>

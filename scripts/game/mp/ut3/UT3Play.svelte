@@ -6,7 +6,7 @@ import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { Winner } from '@/game/common/t3/game'
 
-import type { UT3Game } from './UT3Game2.svelte'
+import type { UT3Game } from './UT3Game.svelte'
 
 import Board from './Board.svelte'
 

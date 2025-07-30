@@ -10,7 +10,7 @@ import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { roomCreateOptions, getGameModeString } from './gamemode'
-import { BlackjackGame } from './BlackjackGame2.svelte'
+import { BlackjackGame } from './BlackjackGame.svelte'
 import BlackjackHistory from './BlackjackHistory.svelte'
 import BlackjackPlay from './BlackjackPlay.svelte'
 

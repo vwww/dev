@@ -2,7 +2,7 @@
 import CardCountTable from '@gmc/CardCountTable.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import type { PresidentGame } from './PresidentGame2.svelte'
+import type { PresidentGame } from './PresidentGame.svelte'
 
 interface Props {
   gameState: PresidentGame

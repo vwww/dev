@@ -6,7 +6,7 @@ import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import CheatMoveHistory from './CheatMoveHistory.svelte'
 
-import { CardRank, CheatModeTricks, type CardCountTotal, type CheatGame } from './CheatGame2.svelte'
+import { CardRank, CheatModeTricks, type CardCountTotal, type CheatGame } from './CheatGame.svelte'
 
 import { getGameModeString } from './gamemode'
 

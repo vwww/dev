@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { ActionlessGameHistory, ActionlessGameHistoryWin } from './ActionlessGame2.svelte'
+import type { ActionlessGameHistory, ActionlessGameHistoryWin } from './ActionlessGame.svelte'
 
 interface Props {
   results: ActionlessGameHistory[]

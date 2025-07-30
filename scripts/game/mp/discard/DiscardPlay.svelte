@@ -6,7 +6,7 @@ import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import DiscardMoveHistory from './DiscardMoveHistory.svelte'
 
-import type { DiscardGame } from './DiscardGame2.svelte'
+import type { DiscardGame } from './DiscardGame.svelte'
 
 import { getGameModeString, playerColor } from './gamemode'
 

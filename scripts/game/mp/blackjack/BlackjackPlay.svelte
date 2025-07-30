@@ -4,7 +4,7 @@ import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { type BlackjackGame } from './BlackjackGame2.svelte'
+import { type BlackjackGame } from './BlackjackGame.svelte'
 
 import { getGameModeString } from './gamemode'
 

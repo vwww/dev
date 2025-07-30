@@ -7,7 +7,7 @@ import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import TwoPlayerEarlyEnd from '@gmc/TwoPlayerEarlyEnd.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import type { T3Game } from './T3Game2.svelte'
+import type { T3Game } from './T3Game.svelte'
 
 import { getGameModeString } from './gamemode'
 

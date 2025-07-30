@@ -9,7 +9,7 @@ import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { CheatGame } from './CheatGame2.svelte'
+import { CheatGame } from './CheatGame.svelte'
 import CheatHistory from './CheatHistory.svelte'
 import CheatPlay from './CheatPlay.svelte'
 

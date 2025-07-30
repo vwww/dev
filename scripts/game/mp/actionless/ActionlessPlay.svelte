@@ -3,7 +3,7 @@ import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import type { ActionlessGame } from './ActionlessGame2.svelte'
+import type { ActionlessGame } from './ActionlessGame.svelte'
 
 import { getGameModeString } from './gamemode'
 

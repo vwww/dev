@@ -9,7 +9,7 @@ import { parseGameModeGeneric } from '@gmc/RoomOption'
 import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { DiscardGame } from './DiscardGame2.svelte'
+import { DiscardGame } from './DiscardGame.svelte'
 import DiscardPlay from './DiscardPlay.svelte'
 import DiscardGameHistory from './DiscardGameHistory.svelte'
 

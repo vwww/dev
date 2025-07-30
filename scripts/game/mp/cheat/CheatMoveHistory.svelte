@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { CheatMoveInfo } from './CheatGame2.svelte'
+import type { CheatMoveInfo } from './CheatGame.svelte'
 import { ranks } from './CheatPlay.svelte'
 
 interface Props {

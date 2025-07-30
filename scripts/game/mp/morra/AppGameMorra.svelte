@@ -10,7 +10,7 @@ import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { getGameModeString, roomCreateOptions } from './gamemode'
-import { MorraGame } from './MorraGame2.svelte'
+import { MorraGame } from './MorraGame.svelte'
 import MorraHistory from './MorraHistory.svelte'
 import MorraPlay from './MorraPlay.svelte'
 
