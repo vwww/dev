@@ -2,6 +2,10 @@ export function sum (array: number[]): number {
   return array.reduce((a, b) => a + b, 0)
 }
 
+export function sumB (array: bigint[]): bigint {
+  return array.reduce((a, b) => a + b, 0n)
+}
+
 export function randomArrayItem<T> (array: T[]): T {
   return array[Math.floor(Math.random() * array.length)]
 }

@@ -1,4 +1,4 @@
-import { clamp, type Repeat } from '@/util'
+import { clamp, sumB, type Repeat } from '@/util'
 import { formatClientName } from '@gmc/game/common'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { ByteWriter } from '@gmc/game/ByteWriter'
@@ -206,7 +206,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (): void {
     const moveBigInt = this.pendingMoveNum.map(BigInt) as CardCount
-    this.pendingMoveTotal = moveBigInt.reduce((a, b) => a + b, 0n)
+    this.pendingMoveTotal = sumB(moveBigInt)
 
     const w = new ByteWriter()
       .putInt(C2S.MOVE)
@@ -707,26 +707,9 @@ function newTotalCardCount (decks: bigint): CardCountTotal {
 }
 
 function readCardCount (m: ByteReader): CardCountTotal {
-  const c0 = m.getUint64()
-  const c1 = m.getUint64()
-  const c2 = m.getUint64()
-  const c3 = m.getUint64()
-  const c4 = m.getUint64()
-  const c5 = m.getUint64()
-  const c6 = m.getUint64()
-  const c7 = m.getUint64()
-  const c8 = m.getUint64()
-  const c9 = m.getUint64()
-  const c10 = m.getUint64()
-  const c11 = m.getUint64()
-  const c12 = m.getUint64()
-  const c13 = m.getUint64()
-  return [
-    c0, c1, c2, c3, c4,
-    c5, c6, c7, c8, c9,
-    c10, c11, c12, c13,
-    c0 + c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11 + c12 + c13,
-  ]
+  const v = Array.from({ length: CardRank.NUM }, () => m.getUint64())
+  v.push(sumB(v))
+  return v as CardCountTotal
 }
 
 function writeCardCount (w: ByteWriter, c: CardCount) {
