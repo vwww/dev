@@ -138,7 +138,7 @@ function accelApproxError (orbitDist: OrbitDist, orbitBaseAng: number, t: number
 }
 
 function randomize() {
-  orbs.value = Array(NUM_ORBS).fill(undefined).map((_, i) => ({
+  orbs.value = Array.from({ length: NUM_ORBS }, (_, i) => ({
     orbitDist: {
       distX: 1200 + 1000 * Math.random() | 0,
       baseDistYCycleAng: TAU * Math.random(),

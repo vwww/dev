@@ -50,7 +50,7 @@ function randomTweet (maxLen = TWEET_LEN): Tweet {
 
 function randomize (): void {
   const NUM_TWEETS = 16
-  tweets = Array(NUM_TWEETS).fill(undefined).map(randomTweet)
+  tweets = Array.from({ length: NUM_TWEETS }, randomTweet)
 }
 
 onMount(async () => {

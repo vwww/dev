@@ -85,7 +85,7 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
 
   protected processEndRound (m: ByteReader): void {
     const winCount = m.getInt()
-    const wins = Array(winCount).fill(false).map(() => m.getBool())
+    const wins = Array.from({ length: winCount }, () => m.getBool())
     const playerCount = Math.min(m.getInt(), this.roundPlayers.length)
 
     const gameHistoryEntry: ActionlessGameHistory = {

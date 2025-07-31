@@ -121,8 +121,8 @@ function init () {
       const width = scale.range()[1]
       const skip = scaleR(lowerBound)
 
-      const lineChartDatum0 = Array(Math.floor(width + 1 - skip)).fill(undefined).map((_, i) => [skip + i, 40 - 20 * scale(scaleR.invert(skip + i)) / width])
-      const lineChartDatum1 = Array(Math.floor(width + 1)).fill(undefined).map((_, i) => [i, 60 - 20 * scale.invert(i) / maxAge.value])
+      const lineChartDatum0 = Array.from({ length: Math.floor(width + 1 - skip) }, (_, i) => [skip + i, 40 - 20 * scale(scaleR.invert(skip + i)) / width])
+      const lineChartDatum1 = Array.from({ length: Math.floor(width + 1) }, (_, i) => [i, 60 - 20 * scale.invert(i) / maxAge.value])
 
       lineChart0
         .datum(lineChartDatum0)

@@ -154,7 +154,7 @@ export class MorraGame extends OneTurnGame<MorraClient, MorraGameHistory> {
       moveRnd,
       winner,
       inverted,
-      teams: Array(teamCount).fill(false).map((_, id) => ({
+      teams: Array.from({ length: teamCount }, (_, id) => ({
         id,
         winner: (id === winner) !== inverted,
         moveSum: 0n,

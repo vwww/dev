@@ -16,7 +16,7 @@ const maxRound = $derived(n + ot)
 const tableSize = $derived(maxRound + 1)
 
 const memo = $derived((() => {
-    const r = Array(tableSize).fill(undefined).map(() => Array(tableSize).fill(undefined))
+    const r = Array.from({ length: tableSize }, () => Array(tableSize))
     const maxNoLead = maxRound - leadRequired
     for (let i = 0; i <= maxNoLead; i++) {
         const m = Math.max(n, i + leadRequired)

@@ -227,14 +227,14 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
 
   protected processPlayerInfo (m: ByteReader, p: DiscardPlayerInfo): void {
     const discardSize = Math.min(m.getInt(), CARDS_PER_DECK * MAX_DECKS)
-    p.discarded = Array(discardSize).fill(undefined).map(() => m.getInt())
+    p.discarded = Array.from({ length: discardSize }, () => m.getInt())
     p.immune = m.getBool()
     p.discardSum = sum(p.discarded)
   }
 
   protected processDiscInfo (m: ByteReader, p: DiscardDiscInfo): void {
     const discardSize = Math.min(m.getInt(), CARDS_PER_DECK * MAX_DECKS)
-    p.discarded = Array(discardSize).fill(undefined).map(() => m.getInt())
+    p.discarded = Array.from({ length: discardSize }, () => m.getInt())
     p.discardSum = sum(p.discarded)
   }
 
