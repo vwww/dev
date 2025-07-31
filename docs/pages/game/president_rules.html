@@ -1,7 +1,7 @@
 ---
 title: Rules for President
 date: "2020-01-12 15:49:00 -0700"
-mdate: 2021-02-23 20:47:00 -0700
+mdate: 2025-07-30 19:49:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'president') }}
@@ -25,7 +25,7 @@ mdate: 2021-02-23 20:47:00 -0700
 <p>If a player leaves, his cards are discarded face up, but he gets the worst unfilled rank, and the turn timer is reset.</p>
 
 <h2>Card Transfers</h2>
-<p>On the first round, this part is skipped, and the player with the special 3 of hearts starts (but must play that card).</p>
+<p>In the first round, this part is skipped, and the player with the special 3 of hearts starts (but must play that card).</p>
 
 <ul>
   <li>President: first-place last round
@@ -89,7 +89,7 @@ mdate: 2021-02-23 20:47:00 -0700
 <p>A revolution ends the current trick and starts a new one.</p>
 
 <h2>One fewer 2 <small>(default: on)</small></h2>
-<p>For N >= 2, N-1 cards of rank 2 (3 if revolution is active) beat N cards that are not 2. The only higher move is N cards of rank 2.</p>
+<p>For N &ge; 2, N-1 cards of rank 2 (3 if revolution is active) beat N cards that are not 2. The only higher move is N cards of rank 2.</p>
 
 <h2>Play after pass <small>(default: off)</small></h2>
 <p>Passing does not prevent the player from continuing to play in the same trick.</p>
@@ -101,7 +101,7 @@ mdate: 2021-02-23 20:47:00 -0700
   <li><strong>disallow</strong>: players cannot equalize
   <li><strong>allow</strong> <em>(default)</em>: players can equalize
   <li><strong>equalize or skip</strong>: if a player equalizes, the next player must equalize or skip the current turn
-  <li><strong>equalize or pass</strong>: if a player equalizes, the next player must equalize or pass the round
+  <li><strong>equalize or pass</strong>: if a player equalizes, the next player must equalize or pass the trick
   <li><strong>force skip</strong>: if a player equalizes, the next player skips a turn
 </ul>
 
@@ -116,15 +116,6 @@ mdate: 2021-02-23 20:47:00 -0700
 <h2>Equalize only by scum <small>(default: off)</small></h2>
 <p>If on, only scum can equalize.</p>
 
-<h2>First Trick</h2>
-<p>Who starts the first trick?</p>
-<ul>
-  <li>Scum <em>(default)</em>
-  <li>President
-  <li>Random
-</ul>
-<p>When there is no president/scum (the first round), a random player is selected to start.</p>
-
 <h2>4-in-a-row <small>(default: off)</small></h2>
 <p>If at least 4 cards of the same rank are played in a trick (possibly by equalizing), the trick ends, allowing the next player to start a new trick.</p>
 
@@ -132,10 +123,19 @@ mdate: 2021-02-23 20:47:00 -0700
 <p>If an 8 is played, the trick ends, and the current player starts a new trick.</p>
 
 <h2>Single turn <small>(default: off)</small></h2>
-<p>Players play once per trick, so they are treated as having passed after playing. The player before the player starting the current trick will start the next trick.</p>
+<p>Players play once per trick, so they are treated as having passed after playing. Accordingly, the player before the player starting the current trick will start the next trick.</p>
 
 <h2>Penalize final 2 <small>(default: off)</small></h2>
-<p>If the last card played is 2, a player is effectively demoted to scum (enters the <em>front</em> of the <em>new</em> queue, after any others who are penalized).</p>
+<p>If the last card played is 2, a player is effectively demoted to scum (enters the <em>front</em> of the <em>new</em> queue).</p>
 
 <h2>Penalize final joker <small>(default: off)</small></h2>
 <p>Similar to the previous option, but applicable when a joker is the last card played.</p>
+
+<h2>First Trick</h2>
+<p>Who starts the first trick?</p>
+<ul>
+  <li>Scum <em>(default)</em>
+  <li>President
+  <li>Random
+</ul>
+<p>When there is no president/scum, as in the first round, a random player is selected to start.</p>
