@@ -1,7 +1,7 @@
 ---
 title: Rules for Cheat
 date: "2020-01-12 11:48:28 -0700"
-mdate: 2025-08-01 12:34:00 -0600
+mdate: 2025-08-01 17:41:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'cheat') }}
@@ -68,7 +68,7 @@ mdate: 2025-08-01 12:34:00 -0600
   <li><strong>zero</strong>: zero cards</li>
 </ul>
 
-<h2>Trick Rank First (off/on, default: all on)</h2>
+<h2>Trick Rank Start (off/on, default: all on)</h2>
 <p>What card ranks may start a trick?</p>
 <p>At least one option must be enabled, or else the server will enable all of them.</p>
 <ul>
@@ -95,15 +95,18 @@ mdate: 2025-08-01 12:34:00 -0600
 
 <h2>Tricks</h2>
 <ul>
-  <li><strong>forced</strong> <em>(default)</em>: must play every turn</li>
+  <li>Passing must be within a trick. Passing is not allowed when starting a trick.</li>
+  <li>Passing prevents playing again until the next turn or trick.</li>
+  <li>When everyone except P (the last player to move) has passed, P starts a new trick.</li>
+  <li>If P already won, the player after P starts instead.</li>
+</ul>
+
+<p>Is passing allowed in tricks?</p>
+
+<ul>
+  <li><strong>forced</strong> <em>(default)</em>: no passing, must play every turn</li>
   <li><strong>pass turn</strong>: play or pass your turn</li>
-  <li><strong>pass trick</strong>: play or pass the trick
-    <ul>
-      <li>Passing prevents playing again until the next trick.</li>
-      <li>When everyone except P (the last player to move) has passed, P starts a new trick.</li>
-      <li>If P already won, the player after P starts instead.</li>
-    </ul>
-  </li>
+  <li><strong>pass trick</strong>: play or pass the trick</li>
 </ul>
 
 <h1>FUTURE Options</h1>
