@@ -403,6 +403,10 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
         if (nextIndex === this.turnIndex) {
           this.unsetPassed()
           this.trickCount = 0n
+
+          if (!p.handSize) {
+            this.nextTurn()
+          }
         } else {
           this.turnIndex = nextIndex
         }
@@ -412,9 +416,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     }
 
     if (this.mode.optTricks !== CheatModeTricks.PASS) {
-      if (++this.turnIndex === this.playerInfo.length) {
-        this.turnIndex = 0
-      }
+      this.nextTurn()
     }
 
     this.setTimer(this.mode.optTurnTime)
