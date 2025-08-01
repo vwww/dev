@@ -18,6 +18,7 @@ const { results }: Props = $props()
           <span class="badge text-bg-{i ? 'secondary' : 'primary'}">
             {p.name}
           </span>
+          ({p.duration / 1000}s)
         {/each}
       </div>
     </li>
