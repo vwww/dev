@@ -189,38 +189,42 @@ export function getCardName (card: number, ll: boolean): string | number {
     {/if}
   {/if}
   <div class="col-12 col-sm-4">
-    <div class="mb-2">
-      <b>Active Players</b>
+    <b>Active Players</b>
+    <ol class="list-unstyled">
       {#each playerInfo as p, i}
         {@const isMe = gameState.playerIsMe(p)}
         {@const outline = isMe ? '' : '-outline'}
-        <br><span class="badge text-bg{outline}-{playerColor(isMe)}">{gameState.formatPlayerName(p)}</span>
-        <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
-        {#if roundState === GameState.ACTIVE && i === turnIndex}
-          <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myAltMove, ll) : '?'}</span>
-        {/if}
-        {#if p.immune}<badge class="badge text-bg{outline}-info">IMMUNE</badge>{/if}
-        {p.discardSum}
-        {#each p.discarded as d}
-          <span class="badge text-bg-light">{d}</span>
-        {/each}
+        <li>
+          <span class="badge text-bg{outline}-{playerColor(isMe)}">{gameState.formatPlayerName(p)}</span>
+          <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myHand, ll) : p.hand ? getCardName(p.hand, ll) : '?'}</span>
+          {#if roundState === GameState.ACTIVE && i === turnIndex}
+            <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myAltMove, ll) : '?'}</span>
+          {/if}
+          {#if p.immune}<badge class="badge text-bg{outline}-info">IMMUNE</badge>{/if}
+          {p.discardSum}
+          {#each p.discarded as d}
+            <span class="badge text-bg-light">{d}</span>
+          {/each}
+        </li>
       {:else}
-        <br>No players!
+        <li>No players!</li>
       {/each}
-    </div>
-    <div>
-      <b>Eliminated</b>
+    </ol>
+    <b>Eliminated</b>
+    <ol class="list-unstyled">
       {#each playerDiscInfo as p}
         {@const outline = p.isMe ? '' : '-outline'}
-        <br><span class="badge text-bg{outline}-danger">{p.ownerName}</span>
-        {p.discardSum}
-        {#each p.discarded as d}
-          <span class="badge text-bg-light">{d}</span>
-        {/each}
+        <li>
+          <span class="badge text-bg{outline}-danger">{p.ownerName}</span>
+          {p.discardSum}
+          {#each p.discarded as d}
+            <span class="badge text-bg-light">{d}</span>
+          {/each}
+        </li>
       {:else}
-        <br>No eliminations yet!
+        <li>No eliminations yet!</li>
       {/each}
-    </div>
+    </ol>
   </div>
   <div class="col-12 col-sm-8">
     <DiscardMoveHistory moves={moveHistory} {ll} />

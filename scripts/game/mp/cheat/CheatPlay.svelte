@@ -119,32 +119,36 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
     {/if}
   </div>
   <div class="col-12 col-sm-4">
-    <div class="mb-2">
-      <b>Active Players</b>
+    <b>Active Players</b>
+    <ol class="list-unstyled">
       {#each playerInfo as p, i}
         {@const isMe = gameState.playerIsMe(p)}
         {@const outline = isMe ? '' : '-outline'}
         {#if i === gameState.passIndex}
-          <br><badge class="badge text-bg-outline-success">IN</badge>
+          <li><badge class="badge text-bg-outline-success">IN</badge></li>
         {/if}
-        <br><span class="badge text-bg{outline}-{GameState.ACTIVE && i === turnIndex ? 'primary' : 'secondary'}">{gameState.formatPlayerName(p)}</span>
-        {#if i === turnIndex}<badge class="badge text-bg{outline}-primary">MOVE</badge>{/if}
-        {#if p.passed}<badge class="badge text-bg{outline}-danger">OUT</badge>{/if}
-        {p.handSize}
+        <li>
+          <span class="badge text-bg{outline}-{GameState.ACTIVE && i === turnIndex ? 'primary' : 'secondary'}">{gameState.formatPlayerName(p)}</span>
+          {#if i === turnIndex}<badge class="badge text-bg{outline}-primary">MOVE</badge>{/if}
+          {#if p.passed}<badge class="badge text-bg{outline}-danger">OUT</badge>{/if}
+          {p.handSize}
+        </li>
       {:else}
-        <br>No players!
+        <li>No players!</li>
       {/each}
-    </div>
-    <div>
-      <b>Done Players</b>
+    </ol>
+    <b>Done Players</b>
+    <ol class="list-unstyled">
       {#each playerDiscInfo as p}
         {@const outline = p.isMe ? '' : '-outline'}
-        <br><span class="badge text-bg{outline}-{p.handSize ? 'danger' : 'success'}">{p.ownerName}</span>
-        ({p.handSize ? 'left ' + p.handSize : 'success'}) {p.duration / 1000}s
+        <li>
+          <span class="badge text-bg{outline}-{p.handSize ? 'danger' : 'success'}">{p.ownerName}</span>
+          ({p.handSize ? 'left ' + p.handSize : 'success'}) {p.duration / 1000}s
+        </li>
       {:else}
-        <br>No leavers yet!
+        <li>No leavers yet!</li>
       {/each}
-    </div>
+    </ol>
   </div>
   <div class="col-12 col-sm-8">
     <CheatMoveHistory moves={moveHistory} {isSkip} />
