@@ -90,14 +90,17 @@ export class CheatPlayerInfo extends RRTurnPlayerInfo {
 
 export class CheatDiscInfo extends RRTurnDiscInfo {
   handSize = 0n
+  trickNum = 0
   duration = 0
 }
 
 export interface CheatGameHistory {
   duration: number
+  trickNum: number
   players: {
     name: string
     isMe?: boolean
+    trickNum: number
     duration: number
   }[]
 }
@@ -147,9 +150,9 @@ const enum CheatModeCheck {
 }
 
 export const enum CheatModeTricks {
-  SKIP,
-  PASS,
-  FORCE,
+  FORCED,
+  PASS_TURN,
+  PASS_TRICK,
   NUM,
 }
 
@@ -164,6 +167,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   canChallenge = $state(false)
   shouldChallenge = $state(false)
+  trickNum = $state(0)
+  trickTurn = $state(0)
   trickCount = $state(0n)
   trickRank = $state(0)
 
@@ -253,9 +258,13 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     const modeFlags2 = m.get()
     this.mode.optCheck = modeFlags0 & 3 // CheatModeCheck.NUM - 1 == 3
     this.mode.optTricks = Math.min((modeFlags0 >> 2) & 3, CheatModeTricks.NUM - 1)
-    this.mode.optCountSame = !!(modeFlags1 & (1 << 0))
-    this.mode.optCountMore = !!(modeFlags1 & (1 << 1))
-    this.mode.optCountLess = !!(modeFlags1 & (1 << 2))
+    this.mode.optCountSame = !!(modeFlags0 & (1 << 4))
+    this.mode.optCountMore = !!(modeFlags0 & (1 << 5))
+    this.mode.optCountLess = !!(modeFlags0 & (1 << 6))
+    this.mode.optCountZero = !!(modeFlags0 & (1 << 7))
+    this.mode.optRankStartA = !!(modeFlags1 & (1 << 0))
+    this.mode.optRankStartO = !!(modeFlags1 & (1 << 1))
+    this.mode.optRankStartK = !!(modeFlags1 & (1 << 2))
     this.mode.optRank0 = !!(modeFlags1 & (1 << 3))
     this.mode.optRank1u = !!(modeFlags1 & (1 << 4))
     this.mode.optRank1uw = !!(modeFlags1 & (1 << 5))
@@ -278,6 +287,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   protected processDiscInfo (m: ByteReader, p: CheatDiscInfo): void {
     p.handSize = m.getUint64()
+    p.trickNum = m.getInt()
     p.duration = m.getInt()
   }
 
@@ -296,6 +306,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     })
 
     this.canChallenge = false
+    this.trickNum = this.trickTurn = 0
     this.trickCount = 0n
 
     this.cardCountClaimMine = newZeroCardCount()
@@ -315,10 +326,12 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
     if (this.roundState !== GameState.ACTIVE) return
 
-    const flags = m.getUint64()
-    this.canChallenge = !!(flags & 1n)
-    if (this.trickCount = flags >> 1n) {
+    const flags = m.getInt()
+    this.trickNum = flags >> 1
+    this.canChallenge = !!(flags & 1)
+    if (this.trickTurn = m.getInt()) {
       this.trickRank = m.getInt()
+      this.trickCount = m.getUint64()
     }
 
     const cardsClaim = readCardCount(m)
@@ -331,7 +344,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
     this.setCallTimer(this.canChallenge ? m.getInt() : 0)
 
-    this.passIndex = this.mode.optTricks === CheatModeTricks.PASS ? m.getInt() : -1
+    this.passIndex = this.mode.optTricks !== CheatModeTricks.FORCED ? m.getInt() : -1
   }
 
   protected processMoveConfirm (m: ByteReader) {
@@ -354,14 +367,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
         playerIsMe,
       })
 
-      if (this.mode.optTricks === CheatModeTricks.PASS) {
+      if (this.mode.optTricks !== CheatModeTricks.FORCED) {
         this.nextTurnAfterPass(p)
-      } else if (this.mode.optTricks === CheatModeTricks.SKIP) {
-        p.passed = true
-        if (this.playerInfo.every((q) => q.passed)) {
-          this.unsetPassed()
-          this.trickCount = 0n
-        }
       }
 
       this.canChallenge = false
@@ -371,22 +378,28 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       if (this.nextRankPossible(rank) && !this.nextCountImpossible(count)) {
         this.trickCount = count
         this.trickRank = rank
+        this.trickTurn++
       } else {
-        this.trickCount = 0n
+        this.trickNum++
+        this.trickTurn = 0
       }
 
-      p.discardClaim[rank] += count
-      p.discardClaim[CardRank.NUM] += count
-      p.handSize -= count
+      if (count) {
+        p.discardClaim[rank] += count
+        p.discardClaim[CardRank.NUM] += count
+        p.handSize -= count
 
-      const countClaim = playerIsMe ? this.cardCountClaimMine : this.cardCountClaimOthers
-      countClaim[rank] += count
-      countClaim[CardRank.NUM] += count
-      this.cardCountClaimRemain[rank] -= count
-      this.cardCountClaimRemain[CardRank.NUM] -= count
+        const countClaim = playerIsMe ? this.cardCountClaimMine : this.cardCountClaimOthers
+        countClaim[rank] += count
+        countClaim[CardRank.NUM] += count
+        this.cardCountClaimRemain[rank] -= count
+        this.cardCountClaimRemain[CardRank.NUM] -= count
 
-      this.shouldChallenge = (this.canChallenge = !playerIsMe) && count > this.cardCountAllOthers[rank] + this.cardCountAllOthers[CardRank.Joker]
-      this.setCallTimer(this.mode.optCallTime)
+        this.shouldChallenge = (this.canChallenge = !playerIsMe) && count > this.cardCountAllOthers[rank] + this.cardCountAllOthers[CardRank.Joker]
+        this.setCallTimer(this.mode.optCallTime)
+      } else {
+        this.canChallenge = false
+      }
 
       this.moveHistory.push({
         type: 'move',
@@ -396,26 +409,28 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
         count,
       })
 
-      if (this.mode.optTricks === CheatModeTricks.PASS) {
+      if (this.mode.optTricks !== CheatModeTricks.FORCED) {
         this.passIndex = -1
 
         const nextIndex = this.nextUnpassed(this.turnIndex)
         if (nextIndex === this.turnIndex) {
           this.unsetPassed()
-          this.trickCount = 0n
+          this.trickNum++
+          this.trickTurn = 0
 
           if (!p.handSize) {
             this.nextTurn()
           }
         } else {
+          if (this.mode.optTricks === CheatModeTricks.PASS_TURN) {
+            this.unsetPassed()
+          }
           this.turnIndex = nextIndex
         }
-      } else if (this.mode.optTricks === CheatModeTricks.SKIP) {
-        this.unsetPassed()
       }
     }
 
-    if (this.mode.optTricks !== CheatModeTricks.PASS) {
+    if (this.mode.optTricks === CheatModeTricks.FORCED) {
       this.nextTurn()
     }
 
@@ -430,7 +445,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
       this.passIndex = -1
       this.unsetPassed()
-      this.trickCount = 0n
+      this.trickNum++
+      this.trickTurn = 0
     } else {
       this.turnIndex = nextIndex
       p.passed = true
@@ -505,6 +521,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
     const history: CheatGameHistory = {
       duration,
+      trickNum: this.trickNum,
       players: this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
     }
 
@@ -517,6 +534,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     history.players.splice(this.discIndex, 0, {
       name: c.formatName(),
       isMe: c === this.localClient,
+      trickNum: this.trickNum,
       duration,
     })
 
@@ -524,8 +542,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   protected eliminatePlayer (m: ByteReader, d: CheatDiscInfo, pn: number, p: CheatPlayerInfo, c: CheatClient, early: boolean): boolean {
-    const duration = m.getInt()
-    d.duration = duration
+    d.duration = m.getInt()
+    d.trickNum = this.trickNum
 
     if (early) {
       this.cardCountClaimOthers[CardRank.Joker] += (d.handSize = p.handSize)
@@ -535,7 +553,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
       if (pn + 1 === (this.turnIndex || this.playerInfo.length)) {
         this.canChallenge = false
-      } else if (pn === this.turnIndex) {
+      } else if (this.mode.optTricks !== CheatModeTricks.FORCED && pn === this.turnIndex) {
         this.nextTurnAfterPass(p)
       }
     }
@@ -562,16 +580,16 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     if (this.turnIndex > pn) this.turnIndex--
     else if (this.turnIndex === lastIndex) this.turnIndex = 0
 
-    if (this.mode.optTricks == CheatModeTricks.PASS) {
+    if (this.mode.optTricks !== CheatModeTricks.FORCED) {
       if (early) {
-        // fix discIndex
-        if (this.discIndex > pn) {
-          this.discIndex--
-        } else if (this.discIndex === lastIndex) {
-          this.discIndex = 0
+        // fix passIndex
+        if (this.passIndex > pn) {
+          this.passIndex--
+        } else if (this.passIndex === lastIndex) {
+          this.passIndex = 0
         }
       } else {
-        this.discIndex = this.turnIndex
+        this.passIndex = this.turnIndex
       }
     }
 
@@ -618,11 +636,15 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   allowRank (a: CardRank): boolean {
-    return !this.trickCount || this.checkRank(a, this.trickRank)
+    return this.trickTurn ? this.checkRank(a, this.trickRank) : this.checkRankStart(a)
   }
 
   allowCount (c: bigint): boolean {
-    return !!c && (c == this.trickCount ? this.mode.optCountSame : c < this.trickCount ? this.mode.optCountLess : this.mode.optCountMore)
+    return c ? c == this.trickCount ? this.mode.optCountSame : c < this.trickCount ? this.mode.optCountLess : this.mode.optCountMore : (this.mode.optCountZero && !!this.trickTurn)
+  }
+
+  private checkRankStart (a: CardRank): boolean {
+    return a == CardRank.Ace ? this.mode.optRankStartA : a == CardRank.FKing ? this.mode.optRankStartK : this.mode.optRankStartO
   }
 
   private checkRank (a: CardRank, b: CardRank): boolean {
@@ -658,7 +680,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   private nextCountImpossible (count: bigint) {
-    return !this.mode.optCountSame && (count == 1n && !this.mode.optCountMore || count == 6n * this.mode.optDecks && !this.mode.optCountLess)
+    return !this.mode.optCountSame && (count <= 1n && !this.mode.optCountMore || count == 6n * this.mode.optDecks && !this.mode.optCountLess)
   }
 
   protected override readonly playersSortProps = [

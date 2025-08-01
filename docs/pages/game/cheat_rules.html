@@ -1,7 +1,7 @@
 ---
 title: Rules for Cheat
 date: "2020-01-12 11:48:28 -0700"
-mdate: 2025-07-30 14:48:00 -0600
+mdate: 2025-08-01 12:34:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'cheat') }}
@@ -13,7 +13,9 @@ mdate: 2025-07-30 14:48:00 -0600
 <p>
   Other players have a chance to call "cheat" and challenge the cards that were just played, causing the entire discard pile to go to a player as a penalty.
   If the move was honest (the cards match the claim), penalty cards go to the player who made the claim. Otherwise, penalty cards go to the dishonest player.
-  After the challenge, the turn timer is reset, but the game continues from where it left off.
+</p>
+<p>
+  After a challenge, the turn timer is reset, and the game continues from where it left off.
   To allow for a chance to call "cheat", the system will allow time before the next move can be finalized.
   To prevent misclicks, calling cheat is not possible in the first 750 ms after a move has finished or player has left.
 </p>
@@ -39,7 +41,7 @@ mdate: 2025-07-30 14:48:00 -0600
 <h2>Turn Time / s <small>(default: 20, min: 5, max: 60)</small></h2>
 <p>An arbitrary move will be made after the turn timer expires.</p>
 
-<h2>Call Time / s <small>(default: 5, min: 2, max: 10)</small></h2>
+<h2>Call Time / s <small>(default: 3, min: 2, max: 10)</small></h2>
 <p>Turns use this time as the minimum time whenever there is a previous move, allowing players to call cheat. This cannot exceed the Turn Time.</p>
 
 <h2>Decks <small>(default: 1, min: 1, max: 2<sup>51</sup>)</small></h2>
@@ -48,26 +50,36 @@ mdate: 2025-07-30 14:48:00 -0600
 <h2>Check</h2>
 <p>How are challenges resolved?</p>
 <ul>
-  <li><strong>arbiter</strong>: arbiter checks and reveals only pass/fail
-  <li><strong>caller</strong>: the player who called the challenge checks the cards privately
-  <li><strong>public</strong> <em>(default)</em>: the challenged cards are revealed to all publicly
-  <li><strong>public+</strong>: the cards below the challenged cards are shuffled, and all cards are revealed publicly
+  <li><strong>arbiter</strong>: arbiter checks and reveals only pass/fail</li>
+  <li><strong>caller</strong>: the player who called the challenge checks the cards privately</li>
+  <li><strong>public</strong> <em>(default)</em>: the challenged cards are revealed to all publicly</li>
+  <li><strong>public+</strong>: the cards below the challenged cards are shuffled, and all cards are revealed publicly</li>
 </ul>
 
 <h2>Count (off/on, default: all on)</h2>
 <p>How many cards may be played after the first turn? Any count may be played on the first turn.</p>
 <p>If the current player has fewer cards than required, all of them may or must be played.</p>
-<p>If the next move would require an invalid number of cards (less than one or more than six times the number of decks), the trick ends.</p>
-<p>At least one option must be enabled, or else the server will enable all of them.</p>
+<p>If the next move would require zero or an invalid number of cards (less than one or more than six times the number of decks), the trick ends.</p>
+<p>At least one of the first 3 options must be enabled, or else the server will enable the first 3.</p>
 <ul>
-  <li><strong>same</strong>: same count as the previous move
-  <li><strong>more</strong>: more cards than the previous move
-  <li><strong>less</strong>: fewer cards than the previous
+  <li><strong>same</strong>: same count as the previous move</li>
+  <li><strong>more</strong>: more cards than the previous move</li>
+  <li><strong>less</strong>: fewer cards than the previous move, but not zero</li>
+  <li><strong>zero</strong>: zero cards</li>
 </ul>
 
-<h2>Trick Rank (off/on, default: first 5 on)</h2>
-<p>What card ranks may be played after the first turn? Any rank may be played on the first turn of a trick.</p>
-<p>If no card claim is possible, the current player starts a new trick.</p>
+<h2>Trick Rank First (off/on, default: all on)</h2>
+<p>What card ranks may start a trick?</p>
+<p>At least one option must be enabled, or else the server will enable all of them.</p>
+<ul>
+  <li><strong>A</strong>: Ace</li>
+  <li><strong>others</strong>: any rank other than Ace or King</li>
+  <li><strong>K</strong>: King</li>
+</ul>
+
+<h2>Trick Rank Subsequent (off/on, default: first 5 on)</h2>
+<p>What card ranks may be played after the first turn of a trick?</p>
+<p>If no card claim is possible for the next move, the trick ends.</p>
 <ul>
   <li><strong>same</strong>: same rank as previous move</li>
   <li><strong>up 1</strong>: previous plus one, when not wrapping</li>
@@ -83,14 +95,15 @@ mdate: 2025-07-30 14:48:00 -0600
 
 <h2>Tricks</h2>
 <ul>
-  <li><strong>skip</strong> <em>(default)</em>: play or skip your turn
-  <li><strong>pass</strong>: play or pass
+  <li><strong>forced</strong> <em>(default)</em>: must play every turn</li>
+  <li><strong>pass turn</strong>: play or pass your turn</li>
+  <li><strong>pass trick</strong>: play or pass the trick
     <ul>
-      <li>Passing prevents playing until next trick.
-      <li>When everyone except P (the last player to move) has passed, P starts a new trick.
-      <li>If P already won, the player after P starts instead.
+      <li>Passing prevents playing again until the next trick.</li>
+      <li>When everyone except P (the last player to move) has passed, P starts a new trick.</li>
+      <li>If P already won, the player after P starts instead.</li>
     </ul>
-  <li><strong>forced</strong>: must play every turn
+  </li>
 </ul>
 
 <h1>FUTURE Options</h1>

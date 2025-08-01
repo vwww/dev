@@ -12,13 +12,13 @@ const { results }: Props = $props()
   {#each results as pastGame}
     <li class="list-group-item">
       <div>
-        {pastGame.duration / 1000}s:
+        Trick {pastGame.trickNum} in {pastGame.duration / 1000}s:
         {#each pastGame.players as p, i}
           {' '}{i + 1}
           <span class="badge text-bg-{i ? 'secondary' : 'primary'}">
             {p.name}
           </span>
-          ({p.duration / 1000}s)
+          (on {p.trickNum} in {p.duration / 1000}s)
         {/each}
       </div>
     </li>

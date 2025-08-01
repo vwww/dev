@@ -4,10 +4,9 @@ import { ranks } from './CheatPlay.svelte'
 
 interface Props {
   moves: ArrayLike<CheatMoveInfo>
-  isSkip: boolean
 }
 
-const { moves, isSkip }: Props = $props()
+const { moves }: Props = $props()
 </script>
 
 <b>Move History</b>
@@ -16,10 +15,10 @@ const { moves, isSkip }: Props = $props()
     <li>
       {#if m.type == 'move'}
         {@const outline = m.playerIsMe ? '' : '-outline'}
-        <span class="badge text-bg{outline}-primary">{m.playerName}</span> played <span class="badge text-bg-light">{ranks[m.rank]}</span>{#if m.count > 1}{' '}&times;{m.count}{/if}.
+        <span class="badge text-bg{outline}-primary">{m.playerName}</span> played <span class="badge text-bg-light">{ranks[m.rank]}</span>{#if m.count != 1n}{' '}&times;{m.count}{/if}.
       {:else if m.type == 'pass'}
         {@const outline = m.playerIsMe ? '' : '-outline'}
-        <span class="badge text-bg{outline}-primary">{m.playerName}</span> {isSkip ? 'skipp' : 'pass'}ed.
+        <span class="badge text-bg{outline}-primary">{m.playerName}</span> passed.
       {:else if m.type == 'callSuccess'}
         {@const outline = m.playerIsMe ? '' : '-outline'}
         {@const outlineV = m.victimIsMe ? '' : '-outline'}
@@ -39,7 +38,7 @@ const { moves, isSkip }: Props = $props()
             {#if i + 1 == m.cards.length}
               {' '}{c} total.
             {:else}
-              <span class="badge text-bg-light">{ranks[i]}</span>{#if c > 1}{' '}&times;{c}{/if},{' '}
+              <span class="badge text-bg-light">{ranks[i]}</span>{#if c != 1n}{' '}&times;{c}{/if},{' '}
             {/if}
           {/if}
         {/each}
