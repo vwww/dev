@@ -64,14 +64,15 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
     {#if roundState === GameState.ACTIVE}
       {#if playing}
         <button
-          class="btn btn-{gameState.canChallenge ? gameState.shouldChallenge ? 'primary' : 'secondary' : 'outline-danger'} d-block w-100 mb-2"
+          class="btn btn-{gameState.canChallenge && gameState.shouldChallenge ? '' : 'outline-'}danger d-block w-100 mb-2"
+          class:disabled={!gameState.canChallenge}
           onclick={() => gameState.sendMoveCallCheat()}>Call Cheat</button>
 
         {#if canMove}
           {@const canSkipPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
           {@const pendingPass = gameState.pendingMoveClaim < 0}
           <div class="btn-group d-flex mb-3" role="group">
-            <button class="fw-bold w-100 btn btn-outline-danger" class:disabled={!canSkipPass}
+            <button class="fw-bold w-100 btn btn-outline-{canSkipPass ? 'danger' : 'secondary'}"
               class:active={pendingPass}
               onclick={() => (gameState.pendingMoveClaim = -1, gameState.sendMove())}>Pass</button>
             {#each { length: CardRank.NUM - 1 }, i}
@@ -114,7 +115,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
             </div>
           {/if}
 
-          <div class="col-12 mb-2" class:d-none={gameState.mode.optCallTime >= gameState.mode.optTurnTime}>
+          <div class="col-12 mb-2">
             <button class="btn btn-primary d-block w-100 mb-2" onclick={() => gameState.sendMoveEnd()}>End Move</button>
           </div>
         {/if}
