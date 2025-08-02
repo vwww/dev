@@ -324,7 +324,17 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   protected processRoundInfo (m: ByteReader): void {
     this.moveHistory = []
 
-    if (this.roundState !== GameState.ACTIVE) return
+    if (this.roundState !== GameState.ACTIVE) {
+      this.canChallenge = false
+      this.trickNum = this.trickTurn = 0
+      this.trickCount = 0n
+
+      this.cardCountClaimMine = newZeroCardCount()
+      this.cardCountClaimOthers = newZeroCardCount()
+      this.cardCountClaimRemain = newTotalCardCount(this.mode.optDecks)
+      this.cardCountTotal = newTotalCardCount(this.mode.optDecks)
+      return
+    }
 
     const flags = m.getInt()
     this.trickNum = flags >> 1
