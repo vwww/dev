@@ -26,7 +26,7 @@ const { moves }: Props = $props()
       {:else if m.type == 'callFail'}
         {@const outline = m.playerIsMe ? '' : '-outline'}
         <span class="badge text-bg{outline}-danger">{m.playerName}</span> called cheat wrongfully.
-      {:else if m.type == 'penalty' || m.type == 'reveal' || m.type == 'reveal2'}
+      {:else if m.type == 'play' || m.type == 'penalty' || m.type == 'reveal' || m.type == 'reveal2'}
         {({
           play: 'You played',
           penalty: 'You took',
