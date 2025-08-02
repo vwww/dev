@@ -71,16 +71,22 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
         {#if canMove}
           {@const canSkipPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
           {@const pendingPass = gameState.pendingMoveClaim < 0}
+          {@const okRank = pendingPass ? canSkipPass : gameState.allowRank(gameState.pendingMoveClaim)}
+          {@const okCount = pendingPass || gameState.allowCount(gameState.pendingMoveTotal)}
+          {@const rankOutline = okRank ? '' : 'outline-'}
+          {@const countOutline = okCount ? '' : 'outline-'}
           <div class="mb-2 text-center">
             Your move:
             {#if pendingPass}
-              <span class="badge text-bg-danger">PASS</span>
+              <span class="badge text-bg-{rankOutline}danger">PASS</span>
             {:else}
-              <span class="badge text-bg-light">{ranks[gameState.pendingMoveClaim]}</span> &times;{gameState.pendingMoveTotal}
-              {#if gameState.pendingMoveTotal == BigInt(gameState.pendingMoveNum[gameState.pendingMoveClaim]) + BigInt(gameState.pendingMoveNum[CardRank.Joker])}
-                <span class="badge text-bg-success">HONEST</span>
+              <span class="badge text-bg-{rankOutline}light">{ranks[gameState.pendingMoveClaim]}</span> &times;{gameState.pendingMoveTotal}
+              {#if gameState.pendingMoveTotal > 6n * gameState.mode.optDecks}
+                <span class="badge text-bg-outline-danger">IMPOSSIBLE</span>
+              {:else if gameState.pendingMoveTotal == BigInt(gameState.pendingMoveNum[gameState.pendingMoveClaim]) + BigInt(gameState.pendingMoveNum[CardRank.Joker])}
+                <span class="badge text-bg-{countOutline}success">HONEST</span>
               {:else}
-                <span class="badge text-bg-warning">BLUFF</span>
+                <span class="badge text-bg-{countOutline}warning">BLUFF</span>
               {/if}
             {/if}
           </div>
@@ -112,8 +118,6 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
             {/each}
           </div>
 
-          {@const okRank = pendingPass ? canSkipPass : gameState.allowRank(gameState.pendingMoveClaim)}
-          {@const okCount = pendingPass || gameState.allowCount(gameState.pendingMoveTotal)}
           {#if !(okRank && okCount)}
             <div class="alert alert-danger">
               {#if pendingPass}
@@ -123,7 +127,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
                   Rank {ranks[gameState.pendingMoveClaim]} is not allowed.
                 {/if}
                 {#if !okCount}
-                  Count {gameState.pendingMoveTotal} is not allowed{#if gameState.mode.optCountZero}{' '}on a new trick{/if}.
+                  Count {gameState.pendingMoveTotal} is not allowed{#if !gameState.pendingMoveTotal && gameState.mode.optCountZero}{' '}on a new trick{/if}.
                 {/if}
               {/if}
             </div>
