@@ -103,13 +103,13 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
           {#if !(okRank && okCount)}
             <div class="alert alert-danger">
               {#if pendingPass}
-                Passing is not allowed{#if gameState.mode.optTricks !== CheatModeTricks.FORCED}{' '}on the first turn{/if}.
+                Passing is not allowed{#if gameState.mode.optTricks !== CheatModeTricks.FORCED}{' '}on a new trick{/if}.
               {:else}
                 {#if !okRank}
                   Rank {ranks[gameState.pendingMoveClaim]} is not allowed.
                 {/if}
                 {#if !okCount}
-                  Count {gameState.pendingMoveTotal} is not allowed{#if gameState.mode.optCountZero}{' '}on the first turn{/if}.
+                  Count {gameState.pendingMoveTotal} is not allowed{#if gameState.mode.optCountZero}{' '}on a new trick{/if}.
                 {/if}
               {/if}
             </div>
