@@ -113,8 +113,8 @@ export class CheatDiscInfo extends RRTurnDiscInfo {
 }
 
 export interface CheatGameHistory {
-  duration: number
   trickNum: number
+  duration: number
   players: {
     name: string
     isMe?: boolean
@@ -582,15 +582,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       } else if (this.mode.optTricks !== CheatModeTricks.FORCED && pn === this.turnIndex) {
         this.nextTurnAfterPass(p)
       }
-    }
 
-    if (c) {
-      const totalPlayers = this.playerInfo.length + this.playerDiscInfo.length
-      const rank = this.discIndex + (early ? this.playerInfo.length : 1)
-      c.updateScore(rank, totalPlayers)
-    }
-
-    if (early) {
       this.moveHistory.push({
         type: 'leave',
         playerName: c.formatName(),
@@ -600,6 +592,10 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
       this.setTimer(this.mode.optTurnTime)
     }
+
+    const totalPlayers = this.playerInfo.length + this.playerDiscInfo.length
+    const rank = this.discIndex + (early ? this.playerInfo.length : 1)
+    c.updateScore(rank, totalPlayers)
 
     const lastIndex = this.playerInfo.length - 1
     // fix turnIndex
