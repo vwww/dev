@@ -58,6 +58,24 @@ class CheatClient extends RoundRobinClient {
   rankBest = $state(0)
   rankWorst = $state(0)
 
+  updateScore (rank: number, totalPlayers: number): void {
+    this.rankLast = rank
+    this.rankLast = rank
+    this.rankBest = Math.min(this.rankBest || rank, rank)
+    this.rankWorst = Math.max(this.rankWorst, rank)
+    this.score += (totalPlayers - rank) + 1
+
+    if (rank === 1) {
+      if (this.streak < 0) this.streak = 0
+      this.streak++
+      this.wins++
+    } else {
+      if (this.streak > 0) this.streak = 0
+      this.streak--
+      this.losses++
+    }
+  }
+
   resetScore () {
     this.score = 0
     this.streak = 0
@@ -538,7 +556,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     const c = this.clients[p.owner]
     const rank = this.discIndex + 1
     const totalPlayers = 1 + this.playerDiscInfo.length
-    updateScore(c, rank, totalPlayers)
+    c.updateScore(rank, totalPlayers)
     history.players.splice(this.discIndex, 0, {
       name: c.formatName(),
       isMe: c === this.localClient,
@@ -569,7 +587,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     if (c) {
       const totalPlayers = this.playerInfo.length + this.playerDiscInfo.length
       const rank = this.discIndex + (early ? this.playerInfo.length : 1)
-      updateScore(c, rank, totalPlayers)
+      c.updateScore(rank, totalPlayers)
     }
 
     if (early) {
@@ -705,24 +723,6 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     (p: CheatClient) => p.wins,
     (p: CheatClient) => p.streak,
   ]
-}
-
-function updateScore (c: CheatClient, rank: number, totalPlayers: number): void {
-  c.rankLast = rank
-  c.rankLast = rank
-  c.rankBest = Math.min(c.rankBest || rank, rank)
-  c.rankWorst = Math.max(c.rankWorst, rank)
-  c.score += (totalPlayers - rank) + 1
-
-  if (rank === 1) {
-    if (c.streak < 0) c.streak = 0
-    c.streak++
-    c.wins++
-  } else {
-    if (c.streak > 0) c.streak = 0
-    c.streak--
-    c.losses++
-  }
 }
 
 type CardCount = Repeat<bigint, CardRank.NUM>

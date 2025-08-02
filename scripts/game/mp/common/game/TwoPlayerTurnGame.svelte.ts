@@ -10,7 +10,7 @@ export class TwoPlayerTurnClient extends TurnBasedClient {
   ties = $state(0)
   total = $state(0)
 
-  setResult (this: TwoPlayerTurnClient, win: number): void {
+  setResult (win: number): void {
     if (!win) {
       this.wins++
       if (this.streak < 0) this.streak = 0
