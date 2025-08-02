@@ -203,6 +203,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   cardCountClaimOthers = $state(newZeroCardCount())
   // cardCountClaimDisc = $state(newZeroCardCount())
   cardCountClaimRemain = $state(newZeroCardCount())
+
   moveHistory = $state([] as CheatMoveInfo[])
 
   pendingMoveNum = $state(newZeroCardCountNumber())
