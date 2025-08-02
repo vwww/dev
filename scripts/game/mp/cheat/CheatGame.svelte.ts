@@ -188,7 +188,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   moveHistory = $state([] as CheatMoveInfo[])
 
   pendingMoveNum = $state(newZeroCardCountNumber())
-  pendingMoveTotal = $state(0n)
+  pendingMoveNumB = $derived(this.pendingMoveNum.map(BigInt) as CardCount)
+  pendingMoveTotal = $derived(sumB(this.pendingMoveNumB))
   pendingMoveAck = $state(newZeroCardCount())
   pendingMoveClaim = $state(0)
   pendingMoveClaimAck = $state(0)
@@ -210,13 +211,10 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
   sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
   sendMove (): void {
-    const moveBigInt = this.pendingMoveNum.map(BigInt) as CardCount
-    this.pendingMoveTotal = sumB(moveBigInt)
-
     const w = new ByteWriter()
       .putInt(C2S.MOVE)
       .putInt(this.pendingMoveClaim)
-    writeCardCount(w, moveBigInt)
+    writeCardCount(w, this.pendingMoveNumB)
     this.room?.send(w.toArray())
   }
   sendMoveCallCheat (): void { this.sendf('i', C2S.MOVE_CALL) }

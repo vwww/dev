@@ -71,6 +71,20 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
         {#if canMove}
           {@const canSkipPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
           {@const pendingPass = gameState.pendingMoveClaim < 0}
+          <div class="mb-2 text-center">
+            Your move:
+            {#if pendingPass}
+              <span class="badge text-bg-danger">PASS</span>
+            {:else}
+              <span class="badge text-bg-light">{ranks[gameState.pendingMoveClaim]}</span> &times;{gameState.pendingMoveTotal}
+              {#if gameState.pendingMoveTotal == BigInt(gameState.pendingMoveNum[gameState.pendingMoveClaim]) + BigInt(gameState.pendingMoveNum[CardRank.Joker])}
+                <span class="badge text-bg-success">HONEST</span>
+              {:else}
+                <span class="badge text-bg-warning">BLUFF</span>
+              {/if}
+            {/if}
+          </div>
+
           <div class="btn-group d-flex mb-3" role="group">
             <button class="fw-bold w-100 btn btn-outline-{canSkipPass ? 'danger' : 'secondary'}"
               class:active={pendingPass}
