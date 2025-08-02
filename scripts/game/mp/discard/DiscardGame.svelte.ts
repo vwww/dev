@@ -52,6 +52,24 @@ class DiscardClient extends RoundRobinClient {
   rankBest = $state(0)
   rankWorst = $state(0)
 
+  updateScore (rank: number, totalPlayers: number): void {
+    this.rankLast = rank
+    this.rankLast = rank
+    this.rankBest = Math.min(this.rankBest || rank, rank)
+    this.rankWorst = Math.max(this.rankWorst, rank)
+    this.score += (totalPlayers - rank) + 1
+
+    if (rank === 1) {
+      if (this.streak < 0) this.streak = 0
+      this.streak++
+      this.wins++
+    } else {
+      if (this.streak > 0) this.streak = 0
+      this.streak--
+      this.losses++
+    }
+  }
+
   resetScore () {
     this.score = 0
     this.streak = 0
@@ -425,7 +443,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
       })
 
       if (!c) continue
-      updateScore(c, rank, totalPlayers)
+      c.updateScore(rank, totalPlayers)
     }
     this.updatePlayers()
 
@@ -453,7 +471,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     if (c) {
       const rank = this.playerInfo.length
       const totalPlayers = rank + this.playerDiscInfo.length
-      updateScore(c, rank, totalPlayers)
+      c.updateScore(rank, totalPlayers)
       this.updatePlayers()
     }
 
@@ -540,24 +558,6 @@ function comparePlayerInfo (a: DiscardPlayerInfo, b: DiscardPlayerInfo): number 
   const aH = a.hand ?? 0
   const bH = b.hand ?? 0
   return (bH - aH) || (b.discardSum - a.discardSum)
-}
-
-function updateScore (c: DiscardClient, rank: number, totalPlayers: number): void {
-  c.rankLast = rank
-  c.rankLast = rank
-  c.rankBest = Math.min(c.rankBest || rank, rank)
-  c.rankWorst = Math.max(c.rankWorst, rank)
-  c.score += (totalPlayers - rank) + 1
-
-  if (rank === 1) {
-    if (c.streak < 0) c.streak = 0
-    c.streak++
-    c.wins++
-  } else {
-    if (c.streak > 0) c.streak = 0
-    c.streak--
-    c.losses++
-  }
 }
 
 type CardCount = Repeat<number, 8>
