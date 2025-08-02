@@ -442,7 +442,6 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
         discardSum: p.discardSum,
       })
 
-      if (!c) continue
       c.updateScore(rank, totalPlayers)
     }
     this.updatePlayers()
@@ -468,12 +467,10 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
     d.discardSum = p.discardSum + hand
     this.updateDiscardCount(hand)
 
-    if (c) {
-      const rank = this.playerInfo.length
-      const totalPlayers = rank + this.playerDiscInfo.length
-      c.updateScore(rank, totalPlayers)
-      this.updatePlayers()
-    }
+    const rank = this.playerInfo.length
+    const totalPlayers = rank + this.playerDiscInfo.length
+    c.updateScore(rank, totalPlayers)
+    this.updatePlayers()
 
     if (early) {
       this.moveHistory.push({
