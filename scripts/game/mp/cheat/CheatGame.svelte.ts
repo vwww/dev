@@ -649,7 +649,15 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   allowCount (c: bigint): boolean {
-    return c ? c == this.trickCount ? this.mode.optCountSame : c < this.trickCount ? this.mode.optCountLess : this.mode.optCountMore : (this.mode.optCountZero && !!this.trickTurn)
+    return this.trickTurn
+      ? c
+        ? c == this.trickCount
+          ? this.mode.optCountSame
+          : c < this.trickCount
+            ? this.mode.optCountLess
+            : this.mode.optCountMore && c <= 6n * this.mode.optDecks
+        : this.mode.optCountZero
+      : !!c
   }
 
   private checkRankStart (a: CardRank): boolean {
