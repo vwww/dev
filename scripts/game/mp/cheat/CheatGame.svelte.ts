@@ -465,7 +465,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   private nextTurnAfterPass (p: CheatPlayerInfo) {
     const nextIndex = this.nextUnpassed(this.turnIndex)
-    if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) == this.turnIndex) {
+    if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) === this.turnIndex) {
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
       this.passIndex = -1
       this.unsetPassed()
@@ -644,7 +644,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   private processPrivateInfoResult (m: ByteReader): void {
     const cards = readCardCount(m)
     this.moveHistory.push({ type: 'reveal', cards })
-    if (this.mode.optCheck == CheatModeCheck.PUBLIC_ALL) {
+    if (this.mode.optCheck === CheatModeCheck.PUBLIC_ALL) {
       const cards = readCardCount(m)
       if (!cards[CardRank.NUM]) return
 
@@ -665,7 +665,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   allowCount (c: bigint): boolean {
     return this.trickTurn
       ? c
-        ? c == this.trickCount
+        ? c === this.trickCount
           ? this.mode.optCountSame
           : c < this.trickCount
             ? this.mode.optCountLess
@@ -675,27 +675,27 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   private checkRankStart (a: CardRank): boolean {
-    return a == CardRank.Ace ? this.mode.optRankStartA : a == CardRank.FKing ? this.mode.optRankStartK : this.mode.optRankStartO
+    return a === CardRank.Ace ? this.mode.optRankStartA : a === CardRank.FKing ? this.mode.optRankStartK : this.mode.optRankStartO
   }
 
   private checkRank (a: CardRank, b: CardRank): boolean {
-    if (a == b) {
+    if (a === b) {
       return this.mode.optRank0
-    } else if (a == b + 1) {
+    } else if (a === b + 1) {
       return this.mode.optRank1u
-    } else if (a == b + 2) {
+    } else if (a === b + 2) {
       return this.mode.optRank2u
-    } else if (a == b - 1) {
+    } else if (a === b - 1) {
       return this.mode.optRank1d
-    } else if (a == b - 2) {
+    } else if (a === b - 2) {
       return this.mode.optRank2d
-    } else if (a == CardRank.Joker - 1 && b == 0) {
+    } else if (a === CardRank.Joker - 1 && b === 0) {
       return this.mode.optRank1uw
-    } else if (a == 0 && b == CardRank.Joker - 1) {
+    } else if (a === 0 && b === CardRank.Joker - 1) {
       return this.mode.optRank1dw
-    } else if (a == CardRank.Joker - 1 && b == 1 || a == CardRank.Joker - 2 && b == 0) {
+    } else if (a === CardRank.Joker - 1 && b === 1 || a === CardRank.Joker - 2 && b === 0) {
       return this.mode.optRank2uw
-    } else if (a == 0 && b == CardRank.Joker - 2 || a == 1 && b == CardRank.Joker - 1) {
+    } else if (a === 0 && b === CardRank.Joker - 2 || a === 1 && b === CardRank.Joker - 1) {
       return this.mode.optRank2dw
     } else {
       return this.mode.optRankother
@@ -704,14 +704,14 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   private nextRankPossible (rank: number) {
     return this.mode.optRank0 || this.mode.optRankother
-      || (rank == CardRank.Joker - 1 ? this.mode.optRank1uw : this.mode.optRank1u)
-      || (rank == 0 ? this.mode.optRank1dw : this.mode.optRank1d)
-      || (rank == CardRank.Joker - 2 ? this.mode.optRank2uw : this.mode.optRank2u)
-      || (rank == 1 ? this.mode.optRank2dw : this.mode.optRank2d)
+      || (rank === CardRank.Joker - 1 ? this.mode.optRank1uw : this.mode.optRank1u)
+      || (rank === 0 ? this.mode.optRank1dw : this.mode.optRank1d)
+      || (rank === CardRank.Joker - 2 ? this.mode.optRank2uw : this.mode.optRank2u)
+      || (rank === 1 ? this.mode.optRank2dw : this.mode.optRank2d)
   }
 
   private nextCountImpossible (count: bigint) {
-    return !this.mode.optCountSame && (count <= 1n && !this.mode.optCountMore || count == 6n * this.mode.optDecks && !this.mode.optCountLess)
+    return !this.mode.optCountSame && (count <= 1n && !this.mode.optCountMore || count === 6n * this.mode.optDecks && !this.mode.optCountLess)
   }
 
   protected override readonly playersSortProps = [
