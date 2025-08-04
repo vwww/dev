@@ -341,15 +341,16 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   protected processRoundInfo (m: ByteReader): void {
     this.moveHistory = []
 
+    this.cardCountHandMine = newZeroCardCount()
+    this.cardCountClaimMine = newZeroCardCount()
+    this.cardCountTotal = newTotalCardCount(this.mode.optDecks)
+
     if (this.roundState !== GameState.ACTIVE) {
       this.canChallenge = false
       this.trickNum = this.trickTurn = 0
       this.trickCount = 0n
-
-      this.cardCountClaimMine = newZeroCardCount()
       this.cardCountClaimOthers = newZeroCardCount()
       this.cardCountClaimRemain = newTotalCardCount(this.mode.optDecks)
-      this.cardCountTotal = newTotalCardCount(this.mode.optDecks)
       return
     }
 
@@ -362,12 +363,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     }
 
     const cardsClaim = readCardCount(m)
-    const cardsTotal = newTotalCardCount(this.mode.optDecks)
-    const cardsRemain = cardsTotal.map((v, i) => v - cardsClaim[i]) as CardCountTotal
-    this.cardCountClaimMine = newZeroCardCount()
     this.cardCountClaimOthers = cardsClaim
-    this.cardCountClaimRemain = cardsRemain
-    this.cardCountTotal = cardsTotal
+    this.cardCountClaimRemain = this.cardCountTotal.map((v, i) => v - cardsClaim[i]) as CardCountTotal
 
     this.setCallTimer(this.canChallenge ? m.getInt() : 0)
 
