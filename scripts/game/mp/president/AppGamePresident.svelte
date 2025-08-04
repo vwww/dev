@@ -69,7 +69,7 @@ let roomList: PIORoomList
       ['President', (p) => p.rank2p],
       ['VP', (p) => p.rank1p],
       ['Neutral', (p) => p.rank0],
-      ['VS', (p) => p.rank1s],
+      ['HS', (p) => p.rank1s],
       ['Scum', (p) => p.rank2s],
     ]} />
   </div>

@@ -1,8 +1,8 @@
 <script lang="ts">
 import CardCountTable from '@gmc/CardCountTable.svelte'
-import { GameState } from '@gmc/game/TurnBasedGame.svelte'
+//import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import type { PresidentGame } from './PresidentGame.svelte'
+import { GamePhase, type PresidentGame } from './PresidentGame.svelte'
 
 interface Props {
   gameState: PresidentGame
@@ -18,7 +18,11 @@ const {
 const canPass = false // temporary
 </script>
 
-{#if !gamePhase}<!-- global (transfer) -->
+<script module>
+export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', '2', '*', 'Total']
+</script>
+
+{#if gamePhase === GamePhase.GIVE_CARDS}<!-- global (transfer) -->
   Scum [pl] gives the two highest cards to President [pl], who must choose two cards to give back.
   High-Scum [pl] gives the two highest cards to Vice-President [pl], who must choose two cards to give back.
   <!-- scum -->
@@ -29,8 +33,8 @@ const canPass = false // temporary
   [cards0]
   [cards1]
   <button class="btn btn-primary d-block w-100">Confirm</button>
-{:else}
-  {#if gamePhase === 1}<!-- Possible Move UI (first move) -->
+{:else}<!-- gamePhase === GamePhase.PLAYING_* -->
+  {#if gamePhase === GamePhase.PLAYING}<!-- Possible Move UI (first move) -->
     Card: [buttons]
     Cardinality: [number] [slider]
     Jokers: [number] [slider]
@@ -47,11 +51,11 @@ const canPass = false // temporary
 {/if}
 
 <CardCountTable
-  ranks={['*', '2', 'A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3']}
+  {ranks}
   counts={[
-    ['You', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Others', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Played', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-    ['Total', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    ['You', gameState.cardCountMine],
+    ['Others', gameState.cardCountOthers],
+    ['Played', gameState.cardCountDiscard],
+    ['Total', gameState.cardCountTotal]
   ]}
 />

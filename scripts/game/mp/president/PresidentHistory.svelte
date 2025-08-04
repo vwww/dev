@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { PresidentGameHistory, PresidentRankType } from './PresidentGame.svelte'
+import type { PresidentGameHistory, PresidentRole } from './PresidentGame.svelte'
 
 interface Props {
   results: PresidentGameHistory[]
@@ -9,22 +9,22 @@ const { results }: Props = $props()
 
 const RANKS = [
   ['Scum', 'danger'],
-  ['VS', 'warning'],
+  ['High-Scum', 'warning'],
   ['∅', 'secondary'],
-  ['VP', 'success'],
+  ['Vice-President', 'success'],
   ['President', 'primary'],
 ]
 
-function rankName (r: PresidentRankType): string {
+function rankName (r: PresidentRole): string {
   return RANKS[r + 2][0]
 }
 
-function rankClass (r: PresidentRankType): string {
+function rankClass (r: PresidentRole): string {
   return RANKS[r + 2][1]
 }
 
-function rankBadgeClass (r: PresidentRankType): string {
-  return `badge text-bg-${rankClass(r)}`
+function rankBadgeClass (r: PresidentRole, isMe?: boolean): string {
+  return `badge text-bg-${isMe ? '' : 'outline-'}${rankClass(r)}`
 }
 </script>
 
@@ -34,17 +34,17 @@ function rankBadgeClass (r: PresidentRankType): string {
       <div>
         Ranks:
         {#each pastGame.players as p}
-          <span class={rankBadgeClass(p.prevRankType)}>
-            {p.name} ({p.cn})
-            {#if p.prevRankType != p.newRankType}
+          <span class={rankBadgeClass(p.prevRole, p.isMe)}>
+            {p.name}
+            {#if p.prevRole != p.newRole}
               <!-- hide old rank name if it was neutral -->
-              {#if p.prevRankType}
-                {rankName(p.prevRankType)}
+              {#if p.prevRole}
+                {rankName(p.prevRole)}
               {/if}
 
-              {p.prevRankType < p.newRankType ? '➚' : '➘'}
+              {p.prevRole < p.newRole ? '➚' : '➘'}
 
-              <span class={rankBadgeClass(p.newRankType)}>{rankName(p.newRankType)}</span>
+              <span class={rankBadgeClass(p.newRole, p.isMe)}>{rankName(p.newRole)}</span>
             {/if}
           </span>
         {/each}
