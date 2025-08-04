@@ -14,6 +14,7 @@ export const roomCreateOptions = [
     'forced (no passing)',
     'pass turn',
     'pass trick',
+    'single turn',
   ]],
   ['optCountSame', 'b', true, 'Count (same)', 'can play same count as previous move'],
   ['optCountMore', 'b', true, 'Count (more)', 'can play more cards than previous move'],

@@ -171,6 +171,7 @@ export const enum CheatModeTricks {
   FORCED,
   PASS_TURN,
   PASS_TRICK,
+  SINGLE_TURN,
   NUM,
 }
 
@@ -273,8 +274,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     const modeFlags0 = m.get()
     const modeFlags1 = m.get()
     const modeFlags2 = m.get()
-    this.mode.optCheck = modeFlags0 & 3 // CheatModeCheck.NUM - 1 == 3
-    this.mode.optTricks = Math.min((modeFlags0 >> 2) & 3, CheatModeTricks.NUM - 1)
+    this.mode.optCheck = modeFlags0 & 3 // Math.min(modeFlags0 & 3, CheatModeCheck.NUM - 1)
+    this.mode.optTricks = (modeFlags0 >> 2) & 3 // Math.min((modeFlags0 >> 2) & 3, CheatModeTricks.NUM - 1)
     this.mode.optCountSame = !!(modeFlags0 & (1 << 4))
     this.mode.optCountMore = !!(modeFlags0 & (1 << 5))
     this.mode.optCountLess = !!(modeFlags0 & (1 << 6))
@@ -399,13 +400,39 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     } else {
       const count = m.getUint64()
 
-      if (this.nextRankPossible(rank) && !this.nextCountImpossible(count)) {
+      let endTrick = !this.nextRankPossible(rank) || this.nextCountImpossible(count)
+
+      if (this.mode.optTricks !== CheatModeTricks.FORCED) {
+        this.passIndex = -1
+
+        const nextIndex = this.nextUnpassed(this.turnIndex)
+        if (nextIndex === this.turnIndex) {
+          endTrick = true
+        }
+
+        if (endTrick) {
+          this.unsetPassed()
+
+          if (!p.handSize) {
+            this.nextTurn()
+          }
+        } else if (this.mode.optTricks === CheatModeTricks.SINGLE_TURN && this.trickTurn) {
+          this.nextTurnAfterPass(p)
+        } else {
+          if (this.mode.optTricks === CheatModeTricks.PASS_TURN) {
+            this.unsetPassed()
+          }
+          this.turnIndex = nextIndex
+        }
+      }
+
+      if (endTrick) {
+        this.trickNum++
+        this.trickTurn = 0
+      } else {
         this.trickCount = count
         this.trickRank = rank
         this.trickTurn++
-      } else {
-        this.trickNum++
-        this.trickTurn = 0
       }
 
       if (count) {
@@ -432,26 +459,6 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
         rank,
         count,
       })
-
-      if (this.mode.optTricks !== CheatModeTricks.FORCED) {
-        this.passIndex = -1
-
-        const nextIndex = this.nextUnpassed(this.turnIndex)
-        if (nextIndex === this.turnIndex) {
-          this.unsetPassed()
-          this.trickNum++
-          this.trickTurn = 0
-
-          if (!p.handSize) {
-            this.nextTurn()
-          }
-        } else {
-          if (this.mode.optTricks === CheatModeTricks.PASS_TURN) {
-            this.unsetPassed()
-          }
-          this.turnIndex = nextIndex
-        }
-      }
     }
 
     if (this.mode.optTricks === CheatModeTricks.FORCED) {
