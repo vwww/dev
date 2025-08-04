@@ -106,8 +106,8 @@ export class UT3Game extends TwoPlayerTurnGame {
     [S2C.ROUND_INTERM]: this.processRoundInterm,
     [S2C.ROUND_START]: this.processRoundStart,
     [S2C.READY]: this.processReady,
-    [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
     [S2C.END_ROUND]: this.processEndRound,
+    [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
     [S2C.END_TURN]: this.processEndTurn,
     [S2C.OFFER_DRAW]: this.processOfferDraw,
   }
