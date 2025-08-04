@@ -624,8 +624,10 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   private processPrivateInfoMove (m: ByteReader): void {
     const cards = readCardCount(m)
-    for (let i = 0; i < CardRank.NUM; i++) {
-      this.pendingMoveNum[i] = Number(cards[i])
+    for (let i = 0; i <= CardRank.NUM; i++) {
+      if (i < CardRank.NUM) {
+        this.pendingMoveNum[i] = Number(cards[i])
+      }
       this.cardCountHandMine[i] -= cards[i]
     }
     this.moveHistory.push({ type: 'play', cards })
@@ -634,7 +636,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   private processPrivateInfoPenalty (m: ByteReader): void {
     const cards = readCardCount(m)
     this.moveHistory.push({ type: 'penalty', cards })
-    for (let i = 0; i < CardRank.NUM; i++) {
+    for (let i = 0; i <= CardRank.NUM; i++) {
       this.cardCountHandMine[i] += cards[i]
     }
   }
