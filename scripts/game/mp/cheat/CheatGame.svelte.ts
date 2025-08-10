@@ -336,7 +336,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
     this.turnIndex = m.getInt()
     this.passIndex = -1
-    this.resetMoveIfMyTurn()
+    this.resetMove()
   }
 
   protected processRoundInfo (m: ByteReader): void {
@@ -467,7 +467,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
     this.setTimer(this.mode.optTurnTime)
 
-    this.resetMoveIfMyTurn()
+    this.resetMove()
   }
 
   private nextTurnAfterPass (p: CheatPlayerInfo) {
@@ -498,12 +498,10 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     this.playerInfo.forEach((p) => p.passed = false)
   }
 
-  private resetMoveIfMyTurn () {
-    if (this.clients[this.playerInfo[this.turnIndex].owner] === this.localClient) {
-      this.pendingMoveNum = newZeroCardCountNumber()
-      this.pendingMoveClaim = -1
-      this.sendMove()
-    }
+  private resetMove () {
+    this.pendingMoveNum = newZeroCardCountNumber()
+    this.pendingMoveAck = newZeroCardCount()
+    this.pendingMoveClaim = this.pendingMoveClaimAck = -1
   }
 
   protected processCall (m: ByteReader, wrong: boolean): void {
