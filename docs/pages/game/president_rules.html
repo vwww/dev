@@ -1,7 +1,7 @@
 ---
 title: Rules for President
 date: "2020-01-12 15:49:00 -0700"
-mdate: 2025-08-03 18:00:00 -0600
+mdate: 2025-08-09 21:01:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'president') }}
@@ -13,7 +13,7 @@ mdate: 2025-08-03 18:00:00 -0600
 </p>
 
 <p>
-  Players are dealt cards, starting with the President (a random player in the first round).
+  Players are dealt cards, starting with the President, or a random player if there is no President.
   Hands are private information to each player, but everything else is public knowledge, including what cards have been played.
 </p>
 
@@ -25,7 +25,7 @@ mdate: 2025-08-03 18:00:00 -0600
 <p>If a player leaves, his cards are discarded face up, but he gets the worst unfilled rank, and the turn timer is reset.</p>
 
 <h2>Card Transfer Phase</h2>
-<p>If there is no President or Vice-President, such as in the first round, this part is skipped, and the player with the special 3 starts (but must play that card).</p>
+<p>If there is no President or Vice-President, like in the first round, this part is skipped, and the player with the special 3 starts (but must play that card).</p>
 
 <ul>
   <li>President: first-place last round
@@ -35,7 +35,7 @@ mdate: 2025-08-03 18:00:00 -0600
 </ul>
 
 <div class="alert alert-info">
-  To prevent cheating by reconnecting, new players join the <em>new</em> queue. Current players that win enter the <em>current</em> queue.
+  To prevent cheating by reconnecting, new players join the <em>new</em> queue. After winning, current players enter the <em>current</em> queue.
   When a round starts, a <em>combined</em> queue puts the <em>current</em> queue in front of the <em>new</em> queue. Scum and High-Scum are assigned to the back of the <em>combined</em> queue.
 </div>
 
@@ -76,7 +76,7 @@ mdate: 2025-08-03 18:00:00 -0600
 <p>Jokers are used as wildcards.</p>
 
 <h2>Keep jokers <small>(default: off)</small></h2>
-<p>Scum and High-Scum do not give jokers during the card transfer.</p>
+<p>Scum and High-Scum do not give jokers during the card transfer when other cards are available.</p>
 
 <h2>Must give lowest <small>(default: off)</small></h2>
 <p>President and Vice-President must give their lowest cards, speeding up the card transfer.</p>
@@ -99,12 +99,14 @@ mdate: 2025-08-03 18:00:00 -0600
 <h2>One fewer 2 <small>(default: on)</small></h2>
 <p>For N &ge; 2, N-1 cards of rank 2 (3 if revolution is active) beat N cards that are not 2 (3). The only higher move is N cards of rank 2 (3).</p>
 
+<p>If M cards of rank 2 (3) start a trick, N would be M, not M-1, so it is the higher move of M cards, not the lesser move of (M+1)-1 cards.</p>
+
 <h2>Pass</h2>
 <p>Can you play again later in the trick?</p>
 <ul>
   <li><strong>pass turn</strong>: play or pass your turn
   <li><strong>pass trick</strong> <em>(default)</em>: play or pass the trick
-  <li><strong>single turn</strong>: treated as passed after playing, so the player before the player starting the current trick will start the next trick
+  <li><strong>single turn</strong>: treated as passed unless starting a new trick (end a trick early to start the next one)
 </ul>
 
 <h2>Equalize</h2>
@@ -142,8 +144,8 @@ mdate: 2025-08-03 18:00:00 -0600
 <h2>First Trick</h2>
 <p>Who starts the first trick?</p>
 <ul>
-  <li>Scum <em>(default)</em>
-  <li>President
+  <li>Scum (or High-Scum) <em>(default)</em>
+  <li>President (or Vice-President)
   <li>Random
 </ul>
-<p>When there is no president/scum, as in the first round, the player holding the special 3 starts (but must play it).</p>
+<p>When there is no President or Vice-President, like in the first round, the player holding the special 3 starts (but must play it).</p>
