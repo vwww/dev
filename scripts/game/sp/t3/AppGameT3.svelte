@@ -216,7 +216,7 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
   {/each}
 </div>
 <div class="btn-group d-flex mb-2" role="group">
-  <span class="input-group-text">Board Full</span>
+  <span class="input-group-text">Tie</span>
   {#each SETTINGS_T as s, i}
     <button onclick={() => { winnerTie.value = i + 1 }} class:active={winnerTie.value === i + 1} class="w-100 btn btn-outline-{s[1]}">{s[0]}</button>
   {/each}
