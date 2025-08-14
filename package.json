@@ -36,11 +36,11 @@
     "@types/leaflet-fullscreen": "^1.0.9",
     "@types/packery": "^1.4.37",
     "@types/timeago": "^1.6.3",
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "@typescript-eslint/parser": "^8.39.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
-    "esbuild": "^0.25.8",
+    "esbuild": "^0.25.9",
     "esbuild-sass-plugin": "^3.3.1",
     "eslint": "^9.33.0",
     "eslint-config-love": "^121.0.0",
@@ -78,7 +78,7 @@
     "leaflet-hash": "^0.2.1",
     "leaflet-minimap": "^3.6.1",
     "packery": "^3.0.0",
-    "svelte": "^5.38.0",
+    "svelte": "^5.38.1",
     "svg-pan-zoom": "^3.6.2",
     "timeago": "^1.6.7"
   }
