@@ -109,17 +109,17 @@ export class CheatPlayerInfo extends RRTurnPlayerInfo {
 export class CheatDiscInfo extends RRTurnDiscInfo {
   handSize = 0n
   trickNum = 0
-  duration = 0
+  duration = 0n
 }
 
 export interface CheatGameHistory {
   trickNum: number
-  duration: number
+  duration: bigint
   players: {
     name: string
     isMe?: boolean
     trickNum: number
-    duration: number
+    duration: bigint
   }[]
 }
 
@@ -306,7 +306,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   protected processDiscInfo (m: ByteReader, p: CheatDiscInfo): void {
     p.handSize = m.getUint64()
     p.trickNum = m.getInt()
-    p.duration = m.getInt()
+    p.duration = m.getUint64()
   }
 
   protected processRoundStartInfo (m: ByteReader): void {
@@ -546,7 +546,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   protected processEndRound (m: ByteReader): void {
-    const duration = m.getInt()
+    const duration = m.getUint64()
 
     const history: CheatGameHistory = {
       duration,
@@ -571,7 +571,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   }
 
   protected eliminatePlayer (m: ByteReader, d: CheatDiscInfo, pn: number, p: CheatPlayerInfo, c: CheatClient, early: boolean): boolean {
-    d.duration = m.getInt()
+    d.duration = m.getUint64()
     d.trickNum = this.trickNum
 
     if (early) {

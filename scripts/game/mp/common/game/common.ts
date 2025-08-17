@@ -58,3 +58,9 @@ export function formatClientName (client?: GameClient, cn?: number) {
   }
   return `${client.name} (${client.cn})`
 }
+
+export function formatDuration (d: bigint): string {
+  const s = d / 1000n
+  const ms = Number(d % 1000n)
+  return `${s}${(ms / 1000 + '').slice(1)}s`
+}

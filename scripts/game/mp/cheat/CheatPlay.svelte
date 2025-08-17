@@ -1,4 +1,5 @@
 <script lang="ts">
+import { formatDuration } from '@gmc/game/common'
 import CardCountTable from '@gmc/CardCountTable.svelte'
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
@@ -170,7 +171,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
         {@const outline = p.isMe ? '' : '-outline'}
         <li>
           <span class="badge text-bg{outline}-{p.handSize ? 'danger' : 'success'}">{p.ownerName}</span>
-          ({p.handSize ? 'left ' + p.handSize : 'won'}) on trick {p.trickNum} in {p.duration / 1000}s
+          ({p.handSize ? 'left ' + p.handSize : 'won'}) on trick {p.trickNum} in {formatDuration(p.duration)}
         </li>
       {:else}
         <li>No leavers yet!</li>

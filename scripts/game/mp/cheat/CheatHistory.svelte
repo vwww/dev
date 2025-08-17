@@ -1,4 +1,6 @@
 <script lang="ts">
+import { formatDuration } from '@gmc/game/common'
+
 import type { CheatGameHistory } from './CheatGame.svelte'
 
 interface Props {
@@ -12,13 +14,13 @@ const { results }: Props = $props()
   {#each results as pastGame}
     <li class="list-group-item">
       <div>
-        Trick {pastGame.trickNum} in {pastGame.duration / 1000}s:
+        Trick {pastGame.trickNum} in {formatDuration(pastGame.duration)}:
         {#each pastGame.players as p, i}
           {' '}{i + 1}
           <span class="badge text-bg-{i ? 'secondary' : 'primary'}">
             {p.name}
           </span>
-          (on {p.trickNum} in {p.duration / 1000}s)
+          (on {p.trickNum} in {formatDuration(p.duration)})
         {/each}
       </div>
     </li>
