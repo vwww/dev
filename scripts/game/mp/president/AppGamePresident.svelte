@@ -10,7 +10,7 @@ import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { PresidentGame } from './PresidentGame.svelte'
-import PresidentHistory from './PresidentHistory.svelte'
+import PresidentHistory from './PresidentGameHistory.svelte'
 import PresidentPlay from './PresidentPlay.svelte'
 
 import { pState } from '@/util/svelte.svelte'
@@ -66,11 +66,11 @@ let roomList: PIORoomList
     <Leaderboard {leaderboard} {localClient} columns={[
       ['Score', (p) => p.score],
       ['Streak', (p) => p.streak],
-      ['President', (p) => p.rank2p],
-      ['VP', (p) => p.rank1p],
-      ['Neutral', (p) => p.rank0],
-      ['HS', (p) => p.rank1s],
-      ['Scum', (p) => p.rank2s],
+      ['President', (p) => p.roleCount[4]],
+      ['VP', (p) => p.roleCount[3]],
+      ['Neutral', (p) => p.roleCount[2]],
+      ['HS', (p) => p.roleCount[1]],
+      ['Scum', (p) => p.roleCount[0]],
     ]} />
   </div>
 

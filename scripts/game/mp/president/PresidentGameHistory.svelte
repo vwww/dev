@@ -1,4 +1,6 @@
 <script lang="ts">
+import { formatDuration } from '@gmc/game/common'
+
 import type { PresidentGameHistory, PresidentRole } from './PresidentGame.svelte'
 
 interface Props {
@@ -32,8 +34,9 @@ function rankBadgeClass (r: PresidentRole, isMe?: boolean): string {
   {#each results as pastGame}
     <li class="list-group-item">
       <div>
-        Ranks:
-        {#each pastGame.players as p}
+        Turn {pastGame.trickNum}:{pastGame.trickTurn} in {formatDuration(pastGame.duration)}:
+        {#each pastGame.players as p, i}
+          {' '}{i + 1}
           <span class={rankBadgeClass(p.prevRole, p.isMe)}>
             {p.name}
             {#if p.prevRole != p.newRole}
@@ -43,10 +46,12 @@ function rankBadgeClass (r: PresidentRole, isMe?: boolean): string {
               {/if}
 
               {p.prevRole < p.newRole ? '➚' : '➘'}
-
+            {/if}
+            {#if p.prevRole != p.newRole || p.newRole}
               <span class={rankBadgeClass(p.newRole, p.isMe)}>{rankName(p.newRole)}</span>
             {/if}
           </span>
+          (on {p.trickNum}:{p.trickTurn} in {formatDuration(p.duration)})
         {/each}
       </div>
     </li>

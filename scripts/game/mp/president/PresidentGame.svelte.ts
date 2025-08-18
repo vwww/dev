@@ -56,7 +56,6 @@ class PresidentClient extends RoundRobinClient {
 
   updateScore (rank: number, totalPlayers: number): void {
     this.rankLast = rank
-    this.rankLast = rank
     this.score += (totalPlayers - rank) + 1
 
     if ((this.roleLast = rank2role(rank, totalPlayers)) === 2) {
@@ -97,11 +96,13 @@ export class PresidentPlayerInfo extends RRTurnPlayerInfo {
   discarded: CardCountTotal = $state(newZeroCardCount())
   handSize = $state(0n)
   passed = $state(false)
+  penalize = false
 }
 
 export class PresidentDiscInfo extends RRTurnDiscInfo {
   trickNum = 0
-  duration = 0
+  trickTurn = 0
+  duration = 0n
   discarded: CardCountTotal = newZeroCardCount()
   hand: CardCountTotal = newZeroCardCount()
   prevRole = 0
@@ -110,12 +111,14 @@ export class PresidentDiscInfo extends RRTurnDiscInfo {
 
 export interface PresidentGameHistory {
   trickNum: number
-  duration: number
+  trickTurn: number
+  duration: bigint
   players: {
     name: string
     isMe?: boolean
     trickNum: number
-    duration: number
+    trickTurn: number
+    duration: bigint
 
     prevRole: PresidentRole
     newRole: PresidentRole
@@ -222,7 +225,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   trickCount = $state(0n)
   trickTotal = $state(0n)
   trickRank = $state(0)
-  trickMaxed = $state(false)
+  trick1Fewer = $state(false)
 
   passIndex = $state(0)
 
@@ -233,9 +236,12 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
   moveHistory = $state([] as PresidentMoveInfo[])
 
-  pendingMove = $state(0)
-  pendingMoveCount = $state(0)
-  // TODO pendingMoveAck
+  pendingMoveRank = $state(0)
+  pendingMoveBase = $state(0)
+  pendingMoveJokers = $state(0)
+  pendingMoveRankAck = $state(0)
+  pendingMoveBaseAck = $state(0)
+  pendingMoveJokersAck = $state(0)
 
   get ROUND_TIME () { return this.mode.optTurnTime }
   INTERMISSION_TIME = 30000
@@ -272,6 +278,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     [S2C.ROUND_INTERM]: this.processRoundInterm,
     [S2C.ROUND_START]: this.processRoundStart,
     [S2C.READY]: this.processReady,
+    [S2C.END_ROUND]: this.processEndRound,
     [S2C.MOVE_CONFIRM]: this.processMoveConfirm,
     [S2C.END_TURN]: this.processEndTurn,
     [S2C.END_TURN_TRANSFER]: this.processEndTurnTransfer,
@@ -313,11 +320,13 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     const flags = m.getUint64()
     p.handSize = flags >> 1n
     p.passed = !!(flags & 1n)
+    p.penalize = false
   }
 
   protected processDiscInfo (m: ByteReader, p: PresidentDiscInfo) {
     p.trickNum = m.getInt()
-    p.duration = m.getInt()
+    p.trickTurn = m.getInt()
+    p.duration = m.getUint64()
     p.discarded = readCardCount(m)
     p.hand = readCardCount(m)
     p.prevRole = m.getInt()
@@ -336,7 +345,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       if (i < cardsExtra) {
         p.handSize++
       }
-      p.passed = false
+      p.passed = p.penalize = false
     })
 
     this.giveFlags = 0
@@ -344,10 +353,8 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     this.givePlayerIndex = -1
     this.give0 = this.give1 = -1
 
-    this.pres = m.getCN()
-    this.vicePres = m.getCN()
-    if (this.pres >= 0) {
-      this.scum = m.getCN()
+    if ((this.scum = m.getCN()) >= 0) {
+      this.pres = 0
       const pPres = this.playerInfo[this.pres]
       const pScum = this.playerInfo[this.scum]
       pPres.role = 2
@@ -359,9 +366,13 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       } else if (pScum.owner === this.localClient.cn) {
         this.givePlayerIndex = this.pres
       }
+
+      this.addGivePublic(pScum, pPres, 2)
+    } else {
+      this.pres = -1
     }
-    if (this.vicePres >= 0) {
-      this.highScum = m.getCN()
+    if ((this.highScum = m.getCN()) >= 0) {
+      this.vicePres = m.getCN()
       const pVP = this.playerInfo[this.vicePres]
       const pHS = this.playerInfo[this.highScum]
       pVP.role = 1
@@ -373,6 +384,10 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       } else if (pHS.owner === this.localClient.cn) {
         this.givePlayerIndex = this.vicePres
       }
+
+      this.addGivePublic(pHS, pVP, 1)
+    } else {
+      this.vicePres = -1
     }
 
     this.trickNum = this.trickTurn = 0
@@ -390,8 +405,8 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       this.gamePhase = GamePhase.GIVE_CARDS
     } else {
       this.gamePhase = GamePhase.PLAYING_MUST_3
-      this.resetMoveIfMyTurn()
     }
+    this.resetMove()
   }
 
   protected processRoundInfo (m: ByteReader): void {
@@ -430,7 +445,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       const trickFlags = m.getUint64()
       this.trickCount = trickFlags >> 1n
       this.trickTotal = m.getUint64()
-      this.trickMaxed = !!(trickFlags & 1n)
+      this.trick1Fewer = !!(trickFlags & 1n)
     } else {
       this.trickCount = this.trickTotal = 0n
     }
@@ -450,137 +465,143 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   }
 
   protected processMoveConfirm (m: ByteReader) {
-    this.pendingMove = m.getInt()
-    this.pendingMoveCount = m.getInt()
+    this.pendingMoveRankAck = m.getInt()
+    this.pendingMoveBaseAck = Number(m.getUint64())
+    this.pendingMoveJokersAck = Number(m.getUint64())
   }
 
   protected processEndTurn (m: ByteReader): void {
-    if (this.gamePhase === GamePhase.GIVE_CARDS) {
-      // TODO replace with checkGivePhaseEnd() check?
-      // or delete checkGivePhaseEnd() if keeping this
-      this.gamePhase = GamePhase.PLAYING
-      this.resetMoveIfMyTurn()
-    } else {
-      const p = this.playerInfo[this.turnIndex]
-      const cl = this.clients[p.owner]
+    const p = this.playerInfo[this.turnIndex]
+    const cl = this.clients[p.owner]
 
-      const playerName = formatClientName(cl, p.owner)
-      const playerIsMe = cl === this.localClient
+    const playerName = formatClientName(cl, p.owner)
+    const playerIsMe = cl === this.localClient
 
-      const rank = m.getInt()
-      if (rank < 0) {
-        this.moveHistory.push({
-          type: 'pass',
-          playerName,
-          playerIsMe,
-        })
+    let rank = m.getInt()
+    if (rank < 0) {
+      this.moveHistory.push({
+        type: 'pass',
+        playerName,
+        playerIsMe,
+      })
 
-        // TODO handle skip in equalize phase
-        this.nextTurnAfterPass(p)
+      if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
+        this.turnIndex = this.nextUnpassed(this.turnIndex)
       } else {
-        let count = this.trickTurn ? this.trickCount : m.getUint64()
-        const jokersUsed = m.getUint64()
+        this.nextTurnAfterPass(p)
+      }
+      this.gamePhase = GamePhase.PLAYING
+    } else {
+      let count = this.trickTurn ? this.trickCount : m.getUint64()
+      const jokersUsed = m.getUint64()
 
-        if (false) { // TODO handle one fewer 2
+      if (this.mode.opt1Fewer2) {
+        const maxRank = this.revolution ? CardRank.N3 : CardRank.N2
+        if (this.trick1Fewer = (rank === maxRank)) {
           count--
+        } else if (rank === CardRank.Joker) {
+          rank = maxRank
         }
+      }
 
-        let forceEndTrick = this.mode.opt8 && rank == 8
-        let forceSkip = false
-        if (count >= 4 && this.mode.optRev) {
-          const revOK =
-            this.mode.optRev === PresidentModeRevolution.ON_STRICT ? !jokersUsed :
-            this.mode.optRev === PresidentModeRevolution.ON_RELAXED ? count - jokersUsed >= 4 :
-            this.mode.optRev === PresidentModeRevolution.ON
-          if (revOK) {
-            this.revolution = !this.revolution
-            if (this.mode.optRevEndTrick) {
-              forceEndTrick = true
-            }
-          }
-        }
-
-        if (this.trickRank === rank) {
-          this.trickTotal += count
-        } else {
-          this.trickTotal = count
-        }
-
-        if (this.mode.opt4inARow && this.trickTotal >= 4) {
-          forceEndTrick = true
-        }
-
-        if (this.trickRank === rank) {
-          if (p.role === -2 ? this.mode.optEqualizeEndTrickByScum : this.mode.optEqualizeEndTrickByOthers) {
-            forceEndTrick = true
-          }
-
-          if (!forceEndTrick && this.mode.optEqualize >= PresidentModeEqualize.CONTINUE_OR_SKIP) {
-            if (this.mode.optEqualize === PresidentModeEqualize.FORCE_SKIP) {
-              forceSkip = true
-            } else {
-              this.gamePhase = GamePhase.PLAYING_MUST_EQUALIZE
-            }
-          }
-        }
-
-        const maxRankNew = this.revolution ? CardRank.N3 : CardRank.N2
-        const nextIndex = this.nextUnpassed(this.turnIndex)
-        if (rank == maxRankNew && (!this.mode.optEqualize || this.mode.optEqualizeOnlyScum && this.scum !== nextIndex)) {
-          forceEndTrick = true
-        }
-
-        if (!forceEndTrick) {
-          this.trickCount = count
-          this.trickRank = rank
-          this.trickTurn++
-        } else {
-          this.trickNum++
-          this.trickTurn = 0
-        }
-
-        p.discarded[rank] += count
-        p.discarded[CardRank.NUM] += count
-        p.handSize -= count
-
-        this.cardCountDiscard[rank] += count
-        this.cardCountDiscard[CardRank.NUM] += count
-        if (playerIsMe) {
-          this.cardCountMine[rank] -= count
-          this.cardCountMine[CardRank.NUM] -= count
-        }
-
-        this.moveHistory.push({
-          type: 'move',
-          playerName,
-          playerIsMe,
-          rank,
-          count,
-        })
-
-        this.passIndex = -1
-        if (this.mode.optPass === PresidentModePass.SINGLE_TURN) {
-          // TODO only set pass if trickTurn > 1
-          this.nextTurnAfterPass(p)
-        } else {
-          const nextIndex = this.nextUnpassed(this.turnIndex)
-          if (nextIndex === this.turnIndex) {
-            this.unsetPassed()
-            this.trickNum++
-            this.trickTurn = 0
-          } else {
-            if (this.mode.optPass === PresidentModePass.PASS_TURN) {
-              this.unsetPassed()
-            }
-            this.turnIndex = nextIndex
-            if (forceSkip) {
-              this.turnIndex = this.nextUnpassed(this.turnIndex)
-            }
+      let endTrick = this.mode.opt8 && rank === CardRank.N8
+      let forceSkip = false
+      if (count >= 4 && this.mode.optRev) {
+        const revOK =
+          this.mode.optRev === PresidentModeRevolution.ON_STRICT ? !jokersUsed :
+          this.mode.optRev === PresidentModeRevolution.ON_RELAXED ? count - jokersUsed >= 4 :
+          this.mode.optRev === PresidentModeRevolution.ON
+        if (revOK) {
+          this.revolution = !this.revolution
+          if (this.mode.optRevEndTrick) {
+            endTrick = true
           }
         }
       }
-      this.resetMoveIfMyTurn()
+
+      if (this.trickRank === rank) {
+        this.trickTotal += count
+      } else {
+        this.trickTotal = count
+      }
+
+      if (this.mode.opt4inARow && this.trickTotal >= 4) {
+        endTrick = true
+      }
+
+      this.gamePhase = GamePhase.PLAYING
+
+      if (this.trickRank === rank) {
+        if (p.role === -2 ? this.mode.optEqualizeEndTrickByScum : this.mode.optEqualizeEndTrickByOthers) {
+          endTrick = true
+        }
+
+        if (!endTrick && this.mode.optEqualize >= PresidentModeEqualize.CONTINUE_OR_SKIP) {
+          if (this.mode.optEqualize === PresidentModeEqualize.FORCE_SKIP) {
+            forceSkip = true
+          } else {
+            this.gamePhase = GamePhase.PLAYING_MUST_EQUALIZE
+          }
+        }
+      }
+
+      const maxRankNew = this.revolution ? CardRank.N3 : CardRank.N2
+      const nextIndex = this.nextUnpassed(this.turnIndex)
+      if (nextIndex === this.turnIndex || rank === maxRankNew && (!this.mode.optEqualize || this.mode.optEqualizeOnlyScum && this.scum !== nextIndex)) {
+        endTrick = true
+      }
+
+      // apply move
+      p.discarded[rank] += count
+      p.discarded[CardRank.NUM] += count
+      p.handSize -= count
+
+      if (!p.handSize && rank === CardRank.N2 && this.mode.optPenalizeFinal2 && (count > jokersUsed) || jokersUsed && this.mode.optPenalizeFinalJoker) {
+        p.penalize = true
+      }
+
+      this.cardCountDiscard[rank] += count
+      this.cardCountDiscard[CardRank.NUM] += count
+      if (playerIsMe) {
+        this.cardCountMine[rank] -= count
+        this.cardCountMine[CardRank.NUM] -= count
+      }
+
+      this.passIndex = -1
+      if (endTrick) {
+        this.unsetPassed()
+      } else if (this.mode.optPass === PresidentModePass.SINGLE_TURN && this.trickTurn) {
+        this.nextTurnAfterPass(p)
+      } else {
+        if (this.mode.optPass === PresidentModePass.PASS_TURN) {
+          this.unsetPassed()
+        }
+        this.turnIndex = nextIndex
+
+        if (forceSkip) {
+          this.turnIndex = this.nextUnpassed(this.turnIndex)
+        }
+      }
+
+      if (endTrick) {
+        this.trickNum++
+        this.trickTurn = 0
+      } else {
+        this.trickRank = rank
+        if (!this.trickTurn++) {
+          this.trickCount = count
+        }
+      }
+
+      this.moveHistory.push({
+        type: 'move',
+        playerName,
+        playerIsMe,
+        rank,
+        count,
+      })
     }
+    this.resetMove()
 
     this.setTimer(this.mode.optTurnTime)
   }
@@ -613,20 +634,19 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     this.playerInfo.forEach((p) => p.passed = false)
   }
 
-  private resetMoveIfMyTurn () {
-    if (this.clients[this.playerInfo[this.turnIndex].owner] === this.localClient) {
-      // this.pendingMoveNum = newZeroCardCountNumber()
-      // this.pendingMoveClaim = -1
-      // this.sendMove()
-    }
+  private resetMove () {
+    this.pendingMoveRank = this.pendingMoveRankAck = -1
+    this.pendingMoveBase = this.pendingMoveBaseAck =
+    this.pendingMoveJokers = this.pendingMoveJokersAck = 0
   }
 
   protected processEndRound (m: ByteReader): void {
-    const duration = m.getInt()
+    const duration = m.getUint64()
 
     const history: PresidentGameHistory = {
       duration,
       trickNum: this.trickNum,
+      trickTurn: this.trickTurn,
       players: this.playerDiscInfo.map((d) => ({ ...d, name: d.ownerName }))
     }
 
@@ -640,6 +660,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       name: c.formatName(),
       isMe: c === this.localClient,
       trickNum: this.trickNum,
+      trickTurn: this.trickTurn,
       duration,
       prevRole: p.role,
       newRole: rank2role(rank, totalPlayers),
@@ -650,7 +671,8 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
   protected eliminatePlayer (m: ByteReader, d: PresidentDiscInfo, pn: number, p: PresidentPlayerInfo, c: PresidentClient, early: boolean): boolean {
     d.trickNum = this.trickNum
-    d.duration = m.getInt()
+    d.trickTurn = this.trickTurn
+    d.duration = m.getUint64()
 
     d.discarded = p.discarded
     d.hand = readCardCount(m)
@@ -658,15 +680,28 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     d.prevRole = p.role
 
     if (early){
-      if (pn === this.turnIndex) {
-        this.nextTurnAfterPass(p)
+      if (this.gamePhase == GamePhase.GIVE_CARDS) {
+				if (this.pres === pn) {
+					this.giveFlags &= ~2
+				} else if (this.vicePres === pn) {
+					this.giveFlags &= ~1
+				}
+
+        this.checkGivePhaseEnd()
+      } else if (pn === this.turnIndex) {
+        if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
+          this.turnIndex = this.nextUnpassed(this.turnIndex)
+        } else {
+          this.nextTurnAfterPass(p)
+        }
+        this.gamePhase = GamePhase.PLAYING
       }
 
       this.setTimer(this.mode.optTurnTime)
     }
 
     const totalPlayers = this.playerInfo.length + this.playerDiscInfo.length
-    const rank = this.discIndex + (early ? this.playerInfo.length : 1)
+    const rank = this.discIndex + (early || p.penalize ? this.playerInfo.length : 1)
     c.updateScore(rank, totalPlayers)
 
     d.newRole = rank2role(rank, totalPlayers)
@@ -683,15 +718,15 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       } else if (this.passIndex === lastIndex) {
         this.passIndex = 0
       }
-
-      this.fixGiveIndex('givePlayerIndex', pn)
-      this.fixGiveIndex('pres', pn)
-      this.fixGiveIndex('scum', pn)
-      this.fixGiveIndex('vicePres', pn)
-      this.fixGiveIndex('highScum', pn)
     } else {
       this.passIndex = this.turnIndex
     }
+
+    this.fixGiveIndex('givePlayerIndex', pn)
+    this.fixGiveIndex('pres', pn)
+    this.fixGiveIndex('scum', pn)
+    this.fixGiveIndex('vicePres', pn)
+    this.fixGiveIndex('highScum', pn)
 
     return !early
   }
@@ -711,30 +746,30 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   private processEndTurnTransfer (m: ByteReader): void {
     const pn = m.getCN()
     const p = this.playerInfo[pn]
-    const pl = this.clients[p.owner]
-    const playerName = pl.formatName()
-    const playerIsMe = pl === this.localClient
 
     const tn = p.role === 2 ? this.scum : this.highScum
     const t = this.playerInfo[tn]
-    const target = this.clients[t.owner]
-    const targetName = target.formatName()
-    const targetIsMe = target === this.localClient
 
     p.handSize -= BigInt(p.role)
     t.handSize += BigInt(p.role)
 
     this.giveFlags &= ~p.role
 
+    this.addGivePublic(p, t, p.role)
+    this.checkGivePhaseEnd()
+  }
+
+  private addGivePublic (src: PresidentPlayerInfo, dst: PresidentPlayerInfo, cardCount: number) {
+    const player = this.clients[src.owner]
+    const target = this.clients[dst.owner]
     this.moveHistory.push({
       type: 'give_public',
-      playerName,
-      playerIsMe,
-      targetName,
-      targetIsMe,
-      cardCount: p.role,
+      playerName: player.formatName(),
+      playerIsMe: player === this.localClient,
+      targetName: target.formatName(),
+      targetIsMe: target === this.localClient,
+      cardCount,
     })
-    this.checkGivePhaseEnd()
   }
 
   private processEndTurnTransferDiscard (m: ByteReader): void {
@@ -767,7 +802,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     if (!this.giveFlags) {
       this.gamePhase = GamePhase.PLAYING
       this.setTimer(this.mode.optTurnTime)
-      this.resetMoveIfMyTurn()
     }
   }
 
@@ -811,6 +845,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   }
 
   allowRank (a: CardRank, isScum: boolean): boolean {
+    // TODO check count here?
     return !this.trickTurn ||
       (a === this.trickRank
         ? (this.mode.optEqualize !== PresidentModeEqualize.DISALLOW && (!this.mode.optEqualizeOnlyScum || isScum))
