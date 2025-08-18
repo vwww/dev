@@ -509,8 +509,8 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       if (count >= 4 && this.mode.optRev) {
         const revOK =
           this.mode.optRev === PresidentModeRevolution.ON_STRICT ? !jokersUsed :
-          this.mode.optRev === PresidentModeRevolution.ON_RELAXED ? count - jokersUsed >= 4 :
-          this.mode.optRev === PresidentModeRevolution.ON
+            this.mode.optRev === PresidentModeRevolution.ON_RELAXED ? count - jokersUsed >= 4 :
+              this.mode.optRev === PresidentModeRevolution.ON
         if (revOK) {
           this.revolution = !this.revolution
           if (this.mode.optRevEndTrick) {
@@ -637,7 +637,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   private resetMove () {
     this.pendingMoveRank = this.pendingMoveRankAck = -1
     this.pendingMoveBase = this.pendingMoveBaseAck =
-    this.pendingMoveJokers = this.pendingMoveJokersAck = 0
+      this.pendingMoveJokers = this.pendingMoveJokersAck = 0
   }
 
   protected processEndRound (m: ByteReader): void {
@@ -679,13 +679,13 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
     d.prevRole = p.role
 
-    if (early){
+    if (early) {
       if (this.gamePhase == GamePhase.GIVE_CARDS) {
-				if (this.pres === pn) {
-					this.giveFlags &= ~2
-				} else if (this.vicePres === pn) {
-					this.giveFlags &= ~1
-				}
+        if (this.pres === pn) {
+          this.giveFlags &= ~2
+        } else if (this.vicePres === pn) {
+          this.giveFlags &= ~1
+        }
 
         this.checkGivePhaseEnd()
       } else if (pn === this.turnIndex) {
