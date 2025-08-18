@@ -10,7 +10,7 @@ import PIORoomList from '@gmc/PIORoomList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { CheatGame } from './CheatGame.svelte'
-import CheatHistory from './CheatHistory.svelte'
+import CheatHistory from './CheatGameHistory.svelte'
 import CheatPlay from './CheatPlay.svelte'
 
 import { pState } from '@/util/svelte.svelte'
