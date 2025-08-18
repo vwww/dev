@@ -14,7 +14,7 @@
     desc: an improved way to view the xkcd-1110 webcomic
     href: xkcd_map/
     badges:
-      - [primary, Fullscreen]
+      - [primary, ⛶]
   - name: ggroups.exe
     desc: view chat text in ggroups.exe of SUPERHOT
     href: misc/ggroups
