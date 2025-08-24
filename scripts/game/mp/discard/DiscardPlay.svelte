@@ -200,7 +200,7 @@ export function getCardName (card: number, ll: boolean): string | number {
           {#if roundState === GameState.ACTIVE && i === turnIndex}
             <span class="badge text-bg{outline}-dark">{isMe ? getCardName(myAltMove, ll) : '?'}</span>
           {/if}
-          {#if p.immune}<badge class="badge text-bg{outline}-info">IMMUNE</badge>{/if}
+          {#if p.immune}<span class="badge text-bg{outline}-info">IMMUNE</span>{/if}
           {p.discardSum}
           {#each p.discarded as d}
             <span class="badge text-bg-light">{d}</span>

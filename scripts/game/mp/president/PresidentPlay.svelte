@@ -239,12 +239,12 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
         {@const isMe = gameState.playerIsMe(p)}
         {@const outline = isMe ? '' : '-outline'}
         {#if i === gameState.passIndex && playerInfo.length > 1}
-          <li><badge class="badge text-bg-outline-success">IN</badge></li>
+          <li><span class="badge text-bg-outline-success">IN</span></li>
         {/if}
         <li>
           <span class="badge text-bg{outline}-{GameState.ACTIVE && i === turnIndex ? 'primary' : 'secondary'}">{gameState.formatPlayerName(p)}</span>
-          {#if i === turnIndex}<badge class="badge text-bg{outline}-primary">MOVE</badge>{/if}
-          {#if p.passed}<badge class="badge text-bg{outline}-danger">OUT</badge>{/if}
+          {#if i === turnIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
+          {#if p.passed}<span class="badge text-bg{outline}-danger">OUT</span>{/if}
           {p.handSize}
         </li>
       {:else}
