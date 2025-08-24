@@ -73,9 +73,9 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
         <p>Your Hand: <CardCountInline {ranks} cards={gameState.cardCountHandMine} /></p>
 
         {#if canMove}
-          {@const canSkipPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
+          {@const canPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
           {@const pendingPass = gameState.pendingMoveClaim < 0}
-          {@const okRank = pendingPass ? canSkipPass : gameState.allowRank(gameState.pendingMoveClaim)}
+          {@const okRank = pendingPass ? canPass : gameState.allowRank(gameState.pendingMoveClaim)}
           {@const okCount = pendingPass || gameState.allowCount(gameState.pendingMoveTotal)}
           {@const rankOutline = okRank ? '' : 'outline-'}
           {@const countOutline = okCount ? '' : 'outline-'}
@@ -112,11 +112,11 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
                 {@const max = gameState.cardCountHandMine[i].toString()}
                 <div class="col-4 col-md-3 col-lg-2">
                   {ranks[i]}
-                    <input type="number" class="form-control is-{gameState.pendingMoveNum[i] === Number(gameState.pendingMoveAck[i]) ? '' : 'in'}valid"
-                      bind:value={gameState.pendingMoveNum[i]}
-                      onchange={() => gameState.sendMove()}
-                      min="0" {max}>
-                    <input type="range" class="form-range" bind:value={gameState.pendingMoveNum[i]} onchange={() => gameState.sendMove()} min="0" {max}>
+                  <input type="number" class="form-control is-{gameState.pendingMoveNum[i] === Number(gameState.pendingMoveAck[i]) ? '' : 'in'}valid"
+                    bind:value={gameState.pendingMoveNum[i]}
+                    onchange={() => gameState.sendMove()}
+                    min="0" {max}>
+                  <input type="range" class="form-range" bind:value={gameState.pendingMoveNum[i]} onchange={() => gameState.sendMove()} min="0" {max}>
                 </div>
               {/if}
             {/each}
