@@ -82,7 +82,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
           <div class="mb-2 text-center">
             Your move:
             {#if pendingPass}
-              <span class="badge text-bg-{rankOutline}danger">PASS</span>
+              <span class="badge text-bg-{canPass ? '' : 'outline-'}danger">PASS</span>
             {:else}
               <span class="badge text-bg-{rankOutline}light">{ranks[gameState.pendingMoveClaim]}</span> &times;{gameState.pendingMoveTotal}
               {#if gameState.pendingMoveTotal > 6n * gameState.mode.optDecks}
