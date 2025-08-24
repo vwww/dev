@@ -1,4 +1,6 @@
 <script lang="ts">
+import CardCountInline from '@gmc/CardCountInline.svelte'
+
 import type { CheatMoveInfo } from './CheatGame.svelte'
 import { ranks } from './CheatPlay.svelte'
 
@@ -33,15 +35,7 @@ const { moves }: Props = $props()
           reveal: 'Previous move',
           reveal2: 'Cards under previous move',
         }[m.type])}:
-        {#each m.cards as c, i}
-          {#if c}
-            {#if i + 1 == m.cards.length}
-              {' '}{c} total.
-            {:else}
-              <span class="badge text-bg-light">{ranks[i]}</span>{#if c != 1n}{' '}&times;{c}{/if},{' '}
-            {/if}
-          {/if}
-        {/each}
+        <CardCountInline {ranks} cards={m.cards} />
       {:else if m.type == 'leave'}
         {@const outline = m.playerIsMe ? '' : '-outline'}
         <span class="badge text-bg{outline}-secondary">{m.playerName}</span> left, discarding &times;{m.handSize}.
