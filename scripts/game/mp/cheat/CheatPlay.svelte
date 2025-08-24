@@ -96,12 +96,12 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
           </div>
 
           <div class="btn-group d-flex mb-3" role="group">
-            <button class="fw-bold w-100 btn btn-outline-{canSkipPass ? 'danger' : 'secondary'}"
+            <button class="fw-bold w-100 btn btn-{gameState.pendingMoveClaimAck < 0 ? '' : 'outline-'}{canPass ? 'danger' : 'secondary'}"
               class:active={pendingPass}
               onclick={() => (gameState.pendingMoveClaim = -1, gameState.sendMove())}>Pass</button>
             {#each { length: CardRank.NUM - 1 }, i}
-              <button class="fw-bold w-100 btn btn-outline-{gameState.allowRank(i) ? 'primary' : 'secondary'}"
-                class:active={gameState.pendingMoveClaimAck == i}
+              <button class="fw-bold w-100 btn btn-{gameState.pendingMoveClaimAck == i ? '' : 'outline-'}{gameState.allowRank(i) ? 'primary' : 'secondary'}"
+                class:active={gameState.pendingMoveClaim == i}
                 onclick={() => (gameState.pendingMoveClaim = i, gameState.sendMove())}>{ranks[i]}</button>
             {/each}
           </div>
