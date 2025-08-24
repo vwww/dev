@@ -1,5 +1,6 @@
 <script lang="ts">
 import { formatDuration } from '@gmc/game/common'
+import CardCountInline from '@gmc/CardCountInline.svelte'
 import CardCountTable from '@gmc/CardCountTable.svelte'
 import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
@@ -68,6 +69,8 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
           class="btn btn-{gameState.canChallenge && gameState.shouldChallenge ? '' : 'outline-'}danger d-block w-100 mb-2"
           class:disabled={!gameState.canChallenge}
           onclick={() => gameState.sendMoveCallCheat()}>Call Cheat</button>
+
+        <p>Your Hand: <CardCountInline {ranks} cards={gameState.cardCountHandMine} /></p>
 
         {#if canMove}
           {@const canSkipPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
