@@ -155,7 +155,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
       {#each playerInfo as p, i}
         {@const isMe = gameState.playerIsMe(p)}
         {@const outline = isMe ? '' : '-outline'}
-        {#if i === gameState.passIndex}
+        {#if i === gameState.passIndex && playerInfo.length > 1}
           <li><badge class="badge text-bg-outline-success">IN</badge></li>
         {/if}
         <li>
