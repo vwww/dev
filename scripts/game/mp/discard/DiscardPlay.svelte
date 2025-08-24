@@ -212,9 +212,10 @@ export function getCardName (card: number, ll: boolean): string | number {
     </ol>
     <b>Eliminated</b>
     <ol class="list-unstyled">
-      {#each playerDiscInfo as p}
+      {#each playerDiscInfo as p, i}
         {@const outline = p.isMe ? '' : '-outline'}
         <li>
+          #{i + (i >= gameState.discIndex ? 1 + playerInfo.length : 1)}:
           <span class="badge text-bg{outline}-danger">{p.ownerName}</span>
           {p.discardSum}
           {#each p.discarded as d}

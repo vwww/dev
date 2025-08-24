@@ -170,9 +170,10 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
     </ol>
     <b>Done Players</b>
     <ol class="list-unstyled">
-      {#each playerDiscInfo as p}
+      {#each playerDiscInfo as p, i}
         {@const outline = p.isMe ? '' : '-outline'}
         <li>
+          #{i + (i >= gameState.discIndex ? 1 + playerInfo.length : 1)}:
           <span class="badge text-bg{outline}-{p.handSize ? 'danger' : 'success'}">{p.ownerName}</span>
           ({p.handSize ? 'left ' + p.handSize : 'won'}) on trick {p.trickNum} in {formatDuration(p.duration)}
         </li>
