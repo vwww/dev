@@ -81,7 +81,7 @@
         href: game/president_rules
         class: secondary
     badges:
-      - [secondary, TODO]
+      - [success, NEW]
   - name: Discard
     desc: Isomorphism of Love Letter
     href: game/discard
