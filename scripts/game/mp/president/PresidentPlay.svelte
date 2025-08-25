@@ -73,7 +73,7 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
 
 <div class="row">
   <div class="col-12">
-    <div class="mb-2 text-center">
+    <div class="my-2 text-center">
       Trick {gameState.trickNum}
       {#if trickTurn}
         Move {trickTurn}: <span class="badge text-bg-light">{ranks[gameState.trickRank]}</span> &times;{trickCount}
@@ -89,58 +89,62 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
       {/if}
     </div>
     {#if roundState === GameState.ACTIVE && playing}
-      <p>Your Hand: <CardCountInline {ranks} cards={gameState.cardCountMine} /></p>
+      <div class="my-2">Your Hand: <CardCountInline {ranks} cards={gameState.cardCountMine} /></div>
 
       {#if gamePhase === GamePhase.GIVE_CARDS}
         {@const give2 = (gameState.giveFlags & 2) && gameState.pres >= 0}
         {@const give1 = (gameState.giveFlags & 1) && gameState.vicePres >= 0}
         {@const give2me = give2 && playerInfo[gameState.pres].owner === localClient.cn}
         {@const give1me = give1 && playerInfo[gameState.vicePres].owner === localClient.cn}
-        {#if give2me || give1me}
-          You got <span class="badge text-bg-light">{ranks[gameState.take0]}</span>
-          {#if give2me}
-            and <span class="badge text-bg-light">{ranks[gameState.take1]}</span>
-          {/if}
-          from the {give2me ? 'Scum' : 'High-Scum'}. Give back {give2me ? 'two cards' : 'a card'}:
+        <div class="my-2">
+          {#if give2me || give1me}
+            <div>
+              You got <span class="badge text-bg-light">{ranks[gameState.take0]}</span>
+              {#if give2me}
+                and <span class="badge text-bg-light">{ranks[gameState.take1]}</span>
+              {/if}
+              from the {give2me ? 'Scum' : 'High-Scum'}. Give back {give2me ? 'two cards' : 'a card'}:
+            </div>
 
-          {@const canGive = gameState.cardCountMine[gameState.give0] && (
-              give1me ||
-                gameState.cardCountMine[gameState.give1]
-                && !(gameState.give0 === gameState.give1 && gameState.cardCountMine[gameState.give0] < 2)
-              )}
-          <div class="input-group">
-            {#snippet giveSelect(t: 'give0' | 'give1')}
-              <select class="form-select" bind:value={gameState[t]}>
-                {#each { length: CardRank.NUM }, i}
-                  {@const c = gameState.cardCountMine[i]}
-                  {#if c}
-                    <option value={i}>{ranks[i]} ({c})</option>
-                  {/if}
-                {/each}
-              </select>
-            {/snippet}
-            {@render giveSelect('give0')}
-            {#if give2me}
-              {@render giveSelect('give1')}
-            {/if}
-            <button class="btn btn-{canGive ? 'primary' : 'outline-secondary'}"
-              class:disabled={!canGive}
-              onclick={() => gameState.sendMoveTransfer(gameState.give0, gameState.give1)}>Give</button>
-          </div>
-        {/if}
-        {#if give2}
-          <p>The Scum gave the two highest cards to the President, who must choose two cards to give back.</p>
-        {/if}
-        {#if give1}
-          <p>The High-Scum gave the highest card to the Vice-President, who must choose a card to give back.</p>
-        {/if}
+            {@const canGive = gameState.cardCountMine[gameState.give0] && (
+                give1me ||
+                  gameState.cardCountMine[gameState.give1]
+                  && !(gameState.give0 === gameState.give1 && gameState.cardCountMine[gameState.give0] < 2)
+                )}
+            <div class="input-group my-2">
+              {#snippet giveSelect(t: 'give0' | 'give1')}
+                <select class="form-select" bind:value={gameState[t]}>
+                  {#each { length: CardRank.NUM }, i}
+                    {@const c = gameState.cardCountMine[i]}
+                    {#if c}
+                      <option value={i}>{ranks[i]} ({c})</option>
+                    {/if}
+                  {/each}
+                </select>
+              {/snippet}
+              {@render giveSelect('give0')}
+              {#if give2me}
+                {@render giveSelect('give1')}
+              {/if}
+              <button class="btn btn-{canGive ? 'primary' : 'outline-secondary'}"
+                class:disabled={!canGive}
+                onclick={() => gameState.sendMoveTransfer(gameState.give0, gameState.give1)}>Give</button>
+            </div>
+          {/if}
+          {#if give2}
+            <p>The Scum gave the two highest cards to the President, who must choose two cards to give back.</p>
+          {/if}
+          {#if give1}
+            <p>The High-Scum gave the highest card to the Vice-President, who must choose a card to give back.</p>
+          {/if}
+        </div>
       {:else if canMove}
         {@const wantPass = gameState.pendingMoveRank < 0}
         {@const isScum = playerInfo[turnIndex].role === -2}
         {@const okRank = wantPass ? trickTurn : gameState.allowRank(gameState.pendingMoveRank, isScum)}
         {@const rankOutline = okRank ? '' : 'outline-'}
         {@const maxRank = gameState.revolution ? CardRank.N3 : CardRank.N2}
-        <div class="mb-2 text-center">
+        <div class="my-2 text-center">
           Your move:
           {#if gameState.pendingMoveRankAck < 0}
             <span class="badge text-bg-{trickTurn ? '' : 'outline-'}danger">PASS</span>
@@ -152,7 +156,7 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
         </div>
 
         {@const showMaxButton = gameState.mode.opt1Fewer2 && trickTurn && trickCount > 1}
-        <div class="btn-group d-flex mb-3" role="group">
+        <div class="btn-group d-flex my-2" role="group">
           <button class="fw-bold w-100 btn btn-{gameState.pendingMoveRankAck < 0 ? '' : 'outline-'}{trickTurn ? 'danger' : 'secondary'}"
             class:active={wantPass}
             onclick={() => (gameState.pendingMoveRank = -1, gameState.sendMove())}>Pass</button>
