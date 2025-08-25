@@ -7,6 +7,7 @@ import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import PresidentMoveHistory from './PresidentMoveHistory.svelte'
+import PresidentRole from './PresidentRole.svelte'
 import PresidentRoleChange from './PresidentRoleChange.svelte'
 
 import { CardRank, GamePhase, type PresidentGame } from './PresidentGame.svelte'
@@ -246,6 +247,9 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
           {#if i === turnIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
           {#if p.passed}<span class="badge text-bg{outline}-danger">OUT</span>{/if}
           {p.handSize}
+          {#if p.role}
+            <PresidentRole role={p.role} />
+          {/if}
         </li>
       {:else}
         <li>No players!</li>
