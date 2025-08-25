@@ -897,7 +897,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     p.handSize -= n
   }
 
-  allowRank (a: CardRank, isScum: boolean): 0 | 1 | 2 {
+  allowRank (a: CardRank, isScum: boolean): 0 | 1 | 2 | 3 {
     const jokers = this.cardCountMine[CardRank.Joker]
     if (this.trickTurn) {
       const showMaxButton = this.mode.opt1Fewer2 && this.trickCount > 1 // this.trickTurn is satisfied
@@ -913,10 +913,10 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
           ? (this.mode.optEqualize !== PresidentModeEqualize.DISALLOW && (!this.mode.optEqualizeOnlyScum || isScum))
           : (this.gamePhase !== GamePhase.PLAYING_MUST_EQUALIZE && this.revolution
             ? !trickRankMax && (a < trickRankMsg || isJokerFlag)
-            : a > trickRankMsg)) ? rankCards >= count ? 2 : 1 : 0
+            : a > trickRankMsg)) ? rankCards == count ? 3 : rankCards >= count ? 2 : 1 : 0
     }
     const rankCards = this.cardCountMine[a]
-    return rankCards + jokers > 0 && (this.gamePhase !== GamePhase.PLAYING_MUST_3 || a === CardRank.N3) ? rankCards ? 2 : 1 : 0
+    return rankCards + jokers > 0 && (this.gamePhase !== GamePhase.PLAYING_MUST_3 || a === CardRank.N3) ? rankCards ? 3 : 1 : 0
   }
 
   protected override readonly playersSortProps = [

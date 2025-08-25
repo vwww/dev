@@ -163,7 +163,7 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
           {#snippet rankButton(i: CardRank)}
             {@const rank = i == CardRank.Joker ? maxRank : i}
             {@const cards = gameState.cardCountMine[rank]}
-            <button class="fw-bold w-100 btn btn-{gameState.pendingMoveRankAck === i ? '' : 'outline-'}{(cards ? ['warning', 'info', 'primary'] : ['secondary', 'success'])[gameState.allowRank(i, isScum)]}"
+            <button class="fw-bold w-100 btn btn-{gameState.pendingMoveRankAck === i ? '' : 'outline-'}{(cards ? ['warning', 'info', 'success', 'primary'] : ['danger', 'secondary'])[gameState.allowRank(i, isScum)]}"
               class:active={gameState.pendingMoveRank === i}
               onclick={() => (gameState.setPendingRank(i, cards, i === maxRank), gameState.sendMove())}>{ranks[rank]}{showMaxButton && i === maxRank ? '-' : ''}</button>
           {/snippet}
@@ -176,6 +176,20 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
           {#if showMaxButton && !gameState.revolution}
             {@render rankButton(CardRank.Joker)}
           {/if}
+        </div>
+
+        <div class="my-2">
+          <small>
+            Legend:
+            can play
+            <span class="badge text-bg-outline-primary">all base cards</span>,
+            <span class="badge text-bg-outline-success">some base cards</span>,
+            <span class="badge text-bg-outline-info">combined with jokers</span>,
+            <span class="badge text-bg-outline-secondary">jokers</span>
+            cannot play
+            <span class="badge text-bg-outline-warning">have cards</span>,
+            <span class="badge text-bg-outline-danger">don't have cards</span>
+          </small>
         </div>
 
         {#if wantPass}
