@@ -18,9 +18,12 @@ const { results }: Props = $props()
       <div>
         Turn {pastGame.trickNum}:{pastGame.trickTurn} in {formatDuration(pastGame.duration)}:
         {#each pastGame.players as p, i}
-          {' '}{i + 1}
-          <PresidentRoleChange {...p} />
-          (on {p.trickNum}:{p.trickTurn} in {formatDuration(p.duration)})
+          {' '}
+          <div class="d-inline-block">
+            #{i + 1}
+            <PresidentRoleChange {...p} />
+            (on {p.trickNum}:{p.trickTurn} in {formatDuration(p.duration)})
+          </div>
         {/each}
       </div>
     </li>

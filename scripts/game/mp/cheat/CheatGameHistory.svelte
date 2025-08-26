@@ -16,11 +16,14 @@ const { results }: Props = $props()
       <div>
         Trick {pastGame.trickNum} in {formatDuration(pastGame.duration)}:
         {#each pastGame.players as p, i}
-          {' '}{i + 1}
-          <span class="badge text-bg-{i ? 'secondary' : 'primary'}">
-            {p.name}
-          </span>
-          (on {p.trickNum} in {formatDuration(p.duration)})
+          {' '}
+          <div class="d-inline-block">
+            #{i + 1}
+            <span class="badge text-bg-{i ? 'secondary' : 'primary'}">
+              {p.name}
+            </span>
+            (on {p.trickNum} in {formatDuration(p.duration)})
+          </div>
         {/each}
       </div>
     </li>
