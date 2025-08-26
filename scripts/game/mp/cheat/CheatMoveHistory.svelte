@@ -15,7 +15,9 @@ const { moves }: Props = $props()
 <ol class="list-unstyled overflow-auto" style="max-height: 20rem">
   {#each moves as m}
     <li>
-      {#if m.type == 'move'}
+      {#if m.type == 'tEnd'}
+        [{m.trick}:{m.turn} end{m.move ? ' by pass' : ''}]
+      {:else if m.type == 'move'}
         {@const outline = m.playerIsMe ? '' : '-outline'}
         <span class="badge text-bg{outline}-primary">{m.playerName}</span> played <span class="badge text-bg-light">{ranks[m.rank]}</span>{#if m.count != 1n}{' '}&times;{m.count}{/if}.
       {:else if m.type == 'pass'}

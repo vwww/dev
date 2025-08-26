@@ -125,6 +125,12 @@ export interface CheatGameHistory {
 
 export type CheatMoveInfo =
   | {
+    type: 'tEnd'
+    trick: number
+    turn: number
+    move: boolean
+  }
+  | {
     type: 'move'
     playerName: string
     playerIsMe: boolean
@@ -393,14 +399,17 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       })
 
       if (this.mode.optTricks !== CheatModeTricks.FORCED) {
-        this.nextTurnAfterPass(p)
+        if (this.nextTurnAfterPass(p)) {
+          this.nextTrick()
+        }
       }
 
       this.canChallenge = false
     } else {
       const count = m.getUint64()
 
-      let endTrick = !this.nextRankPossible(rank) || this.nextCountImpossible(count)
+      const endTrickByMove = !this.nextRankPossible(rank) || this.nextCountImpossible(count)
+      let endTrick = endTrickByMove
 
       if (this.mode.optTricks !== CheatModeTricks.FORCED) {
         this.passIndex = -1
@@ -417,7 +426,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
             this.nextTurn()
           }
         } else if (this.mode.optTricks === CheatModeTricks.SINGLE_TURN && this.trickTurn) {
-          this.nextTurnAfterPass(p)
+          endTrick = this.nextTurnAfterPass(p)
         } else {
           if (this.mode.optTricks === CheatModeTricks.PASS_TURN) {
             this.unsetPassed()
@@ -427,8 +436,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       }
 
       if (endTrick) {
-        this.trickNum++
-        this.trickTurn = 0
+        this.nextTrick(endTrickByMove)
       } else {
         this.trickCount = count
         this.trickRank = rank
@@ -470,17 +478,29 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     this.resetMove()
   }
 
-  private nextTurnAfterPass (p: CheatPlayerInfo) {
+  private nextTrick (move = false): void {
+    this.moveHistory.push({
+      type: 'tEnd',
+      trick: this.trickNum,
+      turn: this.trickTurn,
+      move,
+    })
+
+    this.trickNum++
+    this.trickTurn = 0
+  }
+
+  private nextTurnAfterPass (p: CheatPlayerInfo): boolean {
     const nextIndex = this.nextUnpassed(this.turnIndex)
     if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) === this.turnIndex) {
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
       this.passIndex = -1
       this.unsetPassed()
-      this.trickNum++
-      this.trickTurn = 0
+      return true
     } else {
       this.turnIndex = nextIndex
       p.passed = true
+      return false
     }
   }
 
@@ -583,7 +603,9 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       if (pn + 1 === (this.turnIndex || this.playerInfo.length)) {
         this.canChallenge = false
       } else if (this.mode.optTricks !== CheatModeTricks.FORCED && pn === this.turnIndex) {
-        this.nextTurnAfterPass(p)
+        if (this.nextTurnAfterPass(p)) {
+          this.nextTrick()
+        }
       }
 
       this.moveHistory.push({

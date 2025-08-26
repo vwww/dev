@@ -24,6 +24,8 @@ const { moves }: Props = $props()
         {/if}
         {m.type == 'give' ? 'from' : 'to'}
         <span class="badge text-bg-outline-secondary">{m.playerName}</span>)
+      {:else if m.type == 'tEnd'}
+        [{m.trick}:{m.turn} end{m.move ? ' by pass' : ''}]
       {:else}
         {@const outline = m.playerIsMe ? '' : '-outline'}
         <span class="badge text-bg{outline}-{m.type == 'leave' ? 'secondary' : 'primary'}">{m.playerName}</span>

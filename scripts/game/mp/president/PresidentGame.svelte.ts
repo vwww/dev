@@ -130,6 +130,12 @@ export type PresidentRole = number // -2 = scum, -1 = vice scum, 0 = neutral, 1 
 
 export type PresidentMoveInfo =
   | {
+    type: 'tEnd'
+    trick: number
+    turn: number
+    move: boolean
+  }
+  | {
     type: 'move'
     playerName: string
     playerIsMe: boolean
@@ -523,7 +529,9 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
         this.turnIndex = this.nextUnpassed(this.turnIndex)
       } else {
-        this.nextTurnAfterPass(p)
+        if (this.nextTurnAfterPass(p)) {
+          this.nextTrick()
+        }
       }
       this.gamePhase = GamePhase.PLAYING
     } else {
@@ -581,6 +589,8 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
         }
       }
 
+      const endTrickByMove = endTrick
+
       const maxRankNew = this.revolution ? CardRank.N3 : CardRank.N2
       const nextIndex = this.nextUnpassed(this.turnIndex)
       if (nextIndex === this.turnIndex || rank === maxRankNew && (!this.mode.optEqualize || this.mode.optEqualizeOnlyScum && this.scum !== nextIndex)) {
@@ -610,7 +620,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       if (endTrick) {
         this.unsetPassed()
       } else if (this.mode.optPass === PresidentModePass.SINGLE_TURN && this.trickTurn) {
-        this.nextTurnAfterPass(p)
+        endTrick = this.nextTurnAfterPass(p)
       } else {
         if (this.mode.optPass === PresidentModePass.PASS_TURN) {
           this.unsetPassed()
@@ -623,8 +633,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       }
 
       if (endTrick) {
-        this.trickNum++
-        this.trickTurn = 0
+        this.nextTrick(endTrickByMove)
       } else {
         this.trickRank = rank
         if (!this.trickTurn++) {
@@ -646,17 +655,29 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     this.setTimer(this.mode.optTurnTime)
   }
 
-  private nextTurnAfterPass (p: PresidentPlayerInfo) {
+  private nextTrick (move = false): void {
+    this.moveHistory.push({
+      type: 'tEnd',
+      trick: this.trickNum,
+      turn: this.trickTurn,
+      move,
+    })
+
+    this.trickNum++
+    this.trickTurn = 0
+  }
+
+  private nextTurnAfterPass (p: PresidentPlayerInfo): boolean {
     const nextIndex = this.nextUnpassed(this.turnIndex)
     if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) === this.turnIndex) {
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
       this.passIndex = -1
       this.unsetPassed()
-      this.trickNum++
-      this.trickTurn = 0
+      return true
     } else {
       this.turnIndex = nextIndex
       p.passed = true
+      return false
     }
   }
 
@@ -737,7 +758,9 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
         if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
           this.turnIndex = this.nextUnpassed(this.turnIndex)
         } else {
-          this.nextTurnAfterPass(p)
+          if (this.nextTurnAfterPass(p)) {
+            this.nextTrick()
+          }
         }
         this.gamePhase = GamePhase.PLAYING
       }
