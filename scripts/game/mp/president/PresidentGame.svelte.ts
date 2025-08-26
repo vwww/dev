@@ -97,7 +97,6 @@ export class PresidentPlayerInfo extends RRTurnPlayerInfo {
   discarded: CardCountTotal = $state(newZeroCardCount())
   handSize = $state(0n)
   passed = $state(false)
-  penalize = false
 }
 
 export class PresidentDiscInfo extends RRTurnDiscInfo {
@@ -242,6 +241,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
   trickTotal = $state(0n)
   trickRank = $state(0)
   trick1Fewer = $state(false)
+  penalty = false
 
   passIndex = $state(0)
 
@@ -360,7 +360,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     const flags = m.getUint64()
     p.handSize = flags >> 1n
     p.passed = !!(flags & 1n)
-    p.penalize = false
   }
 
   protected processDiscInfo (m: ByteReader, p: PresidentDiscInfo) {
@@ -385,7 +384,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       if (i < cardsExtra) {
         p.handSize++
       }
-      p.passed = p.penalize = false
+      p.passed = false
     })
 
     this.moveHistory = []
@@ -601,10 +600,8 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       p.discarded[rank] += base
       p.discarded[CardRank.Joker] += jokers
       p.discarded[CardRank.NUM] += count
-      p.handSize -= count
-
-      if (!p.handSize && rank === CardRank.N2 && this.mode.optPenalizeFinal2 && base || jokers && this.mode.optPenalizeFinalJoker) {
-        p.penalize = true
+      if (!(p.handSize -= count)) {
+        this.penalty = !!(rank === CardRank.N2 && this.mode.optPenalizeFinal2 && base || jokers && this.mode.optPenalizeFinalJoker)
       }
 
       this.cardCountDiscard[rank] += base
@@ -776,7 +773,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     })
 
     const totalPlayers = this.playerInfo.length + this.playerDiscInfo.length
-    const rank = this.discIndex + (early || p.penalize ? this.playerInfo.length : 1)
+    const rank = this.discIndex + (early || this.penalty ? this.playerInfo.length : 1)
     c.updateScore(rank, totalPlayers)
 
     d.newRole = rank2role(rank, totalPlayers)
