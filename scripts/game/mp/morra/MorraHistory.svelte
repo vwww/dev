@@ -22,8 +22,10 @@ const { results }: Props = $props()
           {#if pastGame.teams.length < pastGame.playerCount}<span class="badge text-bg{outline}-primary">{team.moveSum}</span>:{/if}
           {#each team.players as player, i}
             {@const outline = team.meIndex == i ? '' : '-outline'}
-            <span class="badge me-1 text-bg{outline}-secondary">{player.name} ({player.cn})</span>
-            <span class="badge me-2 text-bg{outline}-primary">{player.move}</span>
+            <div class="d-inline-block">
+              <span class="badge me-1 text-bg{outline}-secondary">{player.name} ({player.cn})</span>
+              <span class="badge me-2 text-bg{outline}-primary">{player.move}</span>
+            </div>
           {/each}
         </div>
       {/each}
