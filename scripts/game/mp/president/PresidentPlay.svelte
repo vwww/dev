@@ -89,7 +89,7 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
       {/if}
     </div>
     {#if roundState === GameState.ACTIVE && playing}
-      <div class="my-2">Your Hand: <CardCountInline {ranks} cards={gameState.cardCountMine} /></div>
+      <div class="my-2">Your hand: <CardCountInline {ranks} cards={gameState.cardCountMine} /></div>
 
       {#if gamePhase === GamePhase.GIVE_CARDS}
         {@const give2 = (gameState.giveFlags & 2) && gameState.pres >= 0}

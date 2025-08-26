@@ -70,7 +70,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
           class:disabled={!gameState.canChallenge}
           onclick={() => gameState.sendMoveCallCheat()}>Call Cheat</button>
 
-        <p>Your Hand: <CardCountInline {ranks} cards={gameState.cardCountHandMine} /></p>
+        <div class="my-2">Your hand: <CardCountInline {ranks} cards={gameState.cardCountHandMine} /></div>
 
         {#if canMove}
           {@const canPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}

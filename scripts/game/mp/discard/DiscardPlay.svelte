@@ -133,7 +133,8 @@ export function getCardName (card: number, ll: boolean): string | number {
   </div>
   {#if roundState === GameState.ACTIVE && playing}
     <div class="col-12">
-      Your hand: <span class="badge text-bg-dark">{getCardName(myHand, ll)}</span>
+      Your hand:
+      <span class="badge text-bg-dark">{getCardName(myHand, ll)}</span>
       {#if canMove}
         <span class="badge text-bg-dark">{getCardName(myAltMove, ll)}</span>
       {/if}
