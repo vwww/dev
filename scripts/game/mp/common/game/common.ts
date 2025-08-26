@@ -19,7 +19,7 @@ export function logBugReportInstructions() {
 
 export function sortAndRankPlayers<P extends { cn: number; active: boolean; rank: number }>(players: P[], playerSortProps: ((p: P) => (number | bigint | string))[]): P[] {
   const sortedPlayers = players.filter((x) => x).sort((a, b) => {
-    for (const prop of [(p: P) => p.active, ...playerSortProps]) {
+    for (const prop of playerSortProps) {
       const aV = prop(a)
       const bV = prop(b)
       if (aV < bV) {
@@ -44,7 +44,8 @@ export function sortAndRankPlayers<P extends { cn: number; active: boolean; rank
     sortedPlayers[i].rank = rank
   })
 
-  return sortedPlayers
+  // move spectators to end
+  return sortedPlayers.sort((a, b) => +b.active - +a.active)
 }
 
 interface GameClient {

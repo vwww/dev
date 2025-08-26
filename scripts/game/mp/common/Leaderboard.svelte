@@ -52,10 +52,8 @@ let showSpect = $state(true)
               class:table-info={isMe && active}
               class:table-warning={isMe && !active}
               class:table-secondary={!isMe && !active}>
-              <th scope="row" colspan={active ? 1 : 2}>{c.name} ({c.cn})</th>
-              {#if active}
-                <td>{c.rank}</td>
-              {/if}
+              <th scope="row">{c.name} ({c.cn})</th>
+              <td>{c.rank}</td>
               {#each columns as column}
                 <td>{formatScore(column[1](c))}</td>
               {/each}
