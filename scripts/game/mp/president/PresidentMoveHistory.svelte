@@ -9,12 +9,18 @@ interface Props {
 }
 
 const { moves }: Props = $props()
+
+let compact = $state(true)
 </script>
 
 <b>Move History</b>
+<label class="form-check d-inline-block">
+  <input type="checkbox" class="form-check-input" bind:checked={compact}>
+  <span class="form-check-label">compact</span>
+</label>
 <div class="overflow-auto" style="max-height: 20rem">
   {#each moves as m}
-    <span class="d-inline-block">
+    <div class:d-inline-block={compact}>
       {#if m.type == 'give' || m.type == 'take'}
         (You
         {m.type == 'give' ? 'took' : 'gave'}
@@ -53,7 +59,7 @@ const { moves }: Props = $props()
           [unknown move {m}]
         {/if}
       {/if}
-    </span>
+    </div>
     {' '}
   {:else}
     No moves yet!
