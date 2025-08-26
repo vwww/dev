@@ -182,13 +182,13 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
           <small>
             Legend:
             can play
-            <span class="badge text-bg-outline-primary">all base cards</span>,
-            <span class="badge text-bg-outline-success">some base cards</span>,
-            <span class="badge text-bg-outline-info">combined with jokers</span>,
-            <span class="badge text-bg-outline-secondary">jokers</span>
+            <span class="badge text-bg-outline-primary">all cards</span>,
+            <span class="badge text-bg-outline-success">leftover cards</span>,
+            <span class="badge text-bg-outline-info">need jokers</span>,
+            <span class="badge text-bg-outline-secondary">using jokers</span>
             cannot play
             <span class="badge text-bg-outline-warning">have cards</span>,
-            <span class="badge text-bg-outline-danger">don't have cards</span>
+            <span class="badge text-bg-outline-danger">no cards</span>
           </small>
         </div>
 
