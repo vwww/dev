@@ -1,5 +1,6 @@
 <script lang="ts">
 import { formatDuration } from '@gmc/game/common'
+import CardCountBars from '@gmc/CardCountBars.svelte'
 import CardCountInline from '@gmc/CardCountInline.svelte'
 import CardCountTable from '@gmc/CardCountTable.svelte'
 import ProgressBar from '@gmc/ProgressBar.svelte'
@@ -28,6 +29,8 @@ const {
   playerDiscInfo,
   moveHistory,
 } = $derived(gameState)
+
+let showHandBars = $state(false)
 </script>
 
 <script module>
@@ -70,7 +73,14 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
           class:disabled={!gameState.canChallenge}
           onclick={() => gameState.sendMoveCallCheat()}>Call Cheat</button>
 
-        <div class="my-2">Your hand: <CardCountInline {ranks} cards={gameState.cardCountHandMine} /></div>
+        {@const CardCountComponent = showHandBars ? CardCountBars : CardCountInline}
+        <div class="my-2">
+          <label class="form-check d-inline-block">
+            <input type="checkbox" class="form-check-input" bind:checked={showHandBars}>
+            <span class="form-check-label">Your hand:</span>
+          </label>
+          <CardCountComponent {ranks} cards={gameState.cardCountHandMine} />
+        </div>
 
         {#if canMove}
           {@const canPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
