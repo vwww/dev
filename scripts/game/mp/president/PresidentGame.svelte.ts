@@ -614,18 +614,18 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       }
 
       this.passIndex = -1
-      if (endTrick) {
-        this.unsetPassed()
-      } else if (this.mode.optPass === PresidentModePass.SINGLE_TURN && this.trickTurn) {
-        endTrick = this.nextTurnAfterPass(p)
-      } else {
-        if (this.mode.optPass === PresidentModePass.PASS_TURN) {
-          this.unsetPassed()
-        }
-        this.turnIndex = nextIndex
+      if (!endTrick) {
+        if (this.mode.optPass === PresidentModePass.SINGLE_TURN && this.trickTurn) {
+          endTrick = this.nextTurnAfterPass(p)
+        } else {
+          if (this.mode.optPass === PresidentModePass.PASS_TURN) {
+            this.unsetPassed()
+          }
+          this.turnIndex = nextIndex
 
-        if (forceSkip) {
-          this.turnIndex = this.nextUnpassed(this.turnIndex)
+          if (forceSkip) {
+            this.turnIndex = this.nextUnpassed(this.turnIndex)
+          }
         }
       }
 
@@ -660,6 +660,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       move,
     })
 
+    this.unsetPassed()
     this.trickNum++
     this.trickTurn = 0
   }
@@ -669,7 +670,6 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) === this.turnIndex) {
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
       this.passIndex = -1
-      this.unsetPassed()
       return true
     } else {
       this.turnIndex = nextIndex

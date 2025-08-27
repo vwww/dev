@@ -419,19 +419,17 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
           endTrick = true
         }
 
-        if (endTrick) {
-          this.unsetPassed()
-
-          if (!p.handSize) {
-            this.nextTurn()
+        if (!endTrick) {
+          if (this.mode.optTricks === CheatModeTricks.SINGLE_TURN && this.trickTurn) {
+            endTrick = this.nextTurnAfterPass(p)
+          } else {
+            if (this.mode.optTricks === CheatModeTricks.PASS_TURN) {
+              this.unsetPassed()
+            }
+            this.turnIndex = nextIndex
           }
-        } else if (this.mode.optTricks === CheatModeTricks.SINGLE_TURN && this.trickTurn) {
-          endTrick = this.nextTurnAfterPass(p)
-        } else {
-          if (this.mode.optTricks === CheatModeTricks.PASS_TURN) {
-            this.unsetPassed()
-          }
-          this.turnIndex = nextIndex
+        } else if (!p.handSize) {
+          this.nextTurn()
         }
       }
 
@@ -486,6 +484,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       move,
     })
 
+    this.unsetPassed()
     this.trickNum++
     this.trickTurn = 0
   }
@@ -495,7 +494,6 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) === this.turnIndex) {
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
       this.passIndex = -1
-      this.unsetPassed()
       return true
     } else {
       this.turnIndex = nextIndex
