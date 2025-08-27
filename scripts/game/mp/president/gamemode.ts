@@ -19,7 +19,7 @@ export const roomCreateOptions = [
   ['optEqualize', 'e', 1, 'Equalize', '', ['disallow', 'allow', 'equalize or skip', 'equalize or pass', 'force skip (next player skips)']],
   ['optEqualizeEndTrickByScum', 'b', false, 'Equalize end trick by Scum', 'trick ends if Scum equalizes'],
   ['optEqualizeEndTrickByOthers', 'b', false, 'Equalize end trick by non-Scum', 'trick ends if others equalize'],
-  ['optEqualizeOnlyScum', 'b', false, 'Equalize only by Scum', 'only Scum can equalize'],
+  ['optEqualizeOnlyScum', 'b', false, 'First equalize only by Scum', 'only Scum can equalize first'],
   ['opt4inARow', 'b', false, '4-in-a-row', '4 or more cards of the same rank (including equalizing) ends trick'],
   ['opt8', 'b', false, '8-rule', 'rank 8 ends trick'],
   ['optPenalizeFinal2', 'b', false, 'Penalize final 2', 'playing 2 as last card incurs rank penalty'],
