@@ -21,7 +21,7 @@ const { name, isMe, prevRole, newRole }: Props = $props()
       {roleName(prevRole)}
     {/if}
 
-    {prevRole < newRole ? '➚' : '➘'}
+    {prevRole < newRole ? '➚' /* &#10138; &#x279A; */ : '➘' /* &#10136; &#x2798; */}
   {/if}
   {#if prevRole != newRole || newRole}
     <span class={roleBadgeClass(newRole, isMe)}>{roleName(newRole)}</span>

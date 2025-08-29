@@ -6,7 +6,7 @@ interface Props {
   endTime: number
   start?: number
   end?: number
-  active?: any
+  active?: unknown
 }
 
 const {
