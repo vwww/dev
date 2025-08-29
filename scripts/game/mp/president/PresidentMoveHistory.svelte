@@ -34,7 +34,7 @@ let compact = $state(true)
         [{m.trick}:{m.turn} end{m.move ? ' by pass' : ''}]
       {:else}
         {@const outline = m.playerIsMe ? '' : '-outline'}
-        <span class="badge text-bg{outline}-{m.type == 'leave' ? 'secondary' : 'primary'}">{m.playerName}</span>
+        <span class="badge text-bg{outline}-primary">{m.playerName}</span>
         {#if m.type == 'move'}
           played <span class="badge text-bg-light">{ranks[m.rank]}</span>{#if m.base != 1}{' '}&times;{m.base}{#if m.jokers}+{m.jokers}{/if}{/if}.
         {:else if m.type == 'pass'}
