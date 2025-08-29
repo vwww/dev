@@ -5,15 +5,25 @@ interface Props {
 }
 
 const { ranks, cards }: Props = $props()
+
+const total = $derived(cards.at(-1))
 </script>
 
-{#if cards.at(-1)}
-  {@const min = BigInt(cards.filter((x) => x).reduce((v, cur) => (v < cur ? v : cur)))}
-  {@const range = BigInt(cards.slice(0, -1).reduce((v, cur) => (v > cur ? v : cur))) - min}
+{#if total}
+  {@const jokerIndex = cards.length - 2}
+  {@const jokers = cards[jokerIndex]}
+  {#if jokers}
+    <span class="badge text-bg-light">{ranks[jokerIndex]}</span>{#if jokers > 1}{' '}&times;{jokers}{/if},
+  {/if}
+  {total} total.
+  {@const cardsMain = cards.slice(0, -2)}
+  {@const min = BigInt(cardsMain.filter((x) => x).reduce((v, cur) => (v < cur ? v : cur)))}
+  {@const max = BigInt(cardsMain.reduce((v, cur) => (v > cur ? v : cur)))}
+  {@const range = max - min}
   <table class="table table-sm">
     <tbody>
-      {#each cards as c, i}
-        {#if c && i + 1 < cards.length}
+      {#each cardsMain as c, i}
+        {#if c}
           <tr>
             <td>{ranks[i]}</td>
             <td class="w-100">
