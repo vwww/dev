@@ -751,18 +751,20 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
         }
 
         this.checkGivePhaseEnd()
-      } else if (pn === this.turnIndex) {
-        if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
-          this.turnIndex = this.nextUnpassed(this.turnIndex)
-        } else {
-          if (this.nextTurnAfterPass(p)) {
-            this.nextTrick()
+      } else {
+        if (pn === this.turnIndex) {
+          if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
+            this.turnIndex = this.nextUnpassed(this.turnIndex)
+          } else {
+            if (this.nextTurnAfterPass(p)) {
+              this.nextTrick()
+            }
           }
+          this.gamePhase = GamePhase.PLAYING
         }
-        this.gamePhase = GamePhase.PLAYING
-      }
 
-      this.setTimer(this.mode.optTurnTime)
+        this.setTimer(this.mode.optTurnTime)
+      }
     }
 
     this.moveHistory.push({
