@@ -933,7 +933,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
       return rankCards + jokers >= count && (a === trickRankMsg
           ? (this.mode.optEqualize !== PresidentModeEqualize.DISALLOW && (!this.mode.optEqualizeOnlyScum || isScum))
-          : (this.gamePhase !== GamePhase.PLAYING_MUST_EQUALIZE && this.revolution
+          : this.gamePhase !== GamePhase.PLAYING_MUST_EQUALIZE && (this.revolution
             ? !trickRankMax && (a < trickRankMsg || isJokerFlag)
             : a > trickRankMsg)) ? rankCards == count ? 3 : rankCards >= count ? 2 : 1 : 0
     }
