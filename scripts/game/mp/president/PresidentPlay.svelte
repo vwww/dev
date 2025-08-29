@@ -87,7 +87,7 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
         {#if gameState.revolution}
           <span class="badge text-bg-dark">REVOLUTION ON</span>
         {:else}
-          <span class="badge text-bg-outline-dark">REVOLUTION OFF</span>
+          <span class="badge text-bg-outline-dark">OFF REVOLUTION</span>
         {/if}
       {/if}
     </div>
