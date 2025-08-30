@@ -1,7 +1,7 @@
 ---
 title: Rules for President
 date: "2020-01-12 15:49:00 -0700"
-mdate: 2025-08-09 21:01:00 -0600
+mdate: 2025-08-30 11:30:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'president') }}
@@ -19,7 +19,7 @@ mdate: 2025-08-09 21:01:00 -0600
 
 <p>
   In each round, card transfers occur, based on the results of the previous round, and then tricks are played until one player remains.
-  Players win when they have no cards left (played all of their cards).
+  Players win when they have no cards left (played all of their cards), giving them the best unfilled rank.
 </p>
 
 <p>If a player leaves, his cards are discarded face up, but he gets the worst unfilled rank, and the turn timer is reset.</p>
@@ -31,13 +31,14 @@ mdate: 2025-08-09 21:01:00 -0600
   <li>President: first-place last round
   <li>Vice-President: second-place last round (minimum of 4 players if President exists)
   <li>Neutral: everyone else
-  <li>High-Scum: second-last in queue (if President and Vice-President exist) or last in queue (if Vice-President exists without President)
-  <li>Scum: last in queue (if President exists)
+  <li>High-Scum: second-last player (if President and Vice-President exist) or last player (if Vice-President exists without President)
+  <li>Scum: last player (if President exists)
 </ul>
 
 <div class="alert alert-info">
-  To prevent cheating by reconnecting, new players join the <em>new</em> queue. After winning, current players enter the <em>current</em> queue.
-  When a round starts, a <em>combined</em> queue puts the <em>current</em> queue in front of the <em>new</em> queue. Scum and High-Scum are assigned to the back of the <em>combined</em> queue.
+  To prevent cheating by reconnecting, new and rejoining players are more likely to be Scum.
+  Players are ordered by their ranks in the previous round, followed by new players ordered by join time.
+  When a round starts, Scum and High-Scum are assigned to the last players.
 </div>
 
 <p>The Scum gives the President his 2 best cards. The High-Scum gives the Vice-President his best card.</p>
@@ -137,7 +138,7 @@ mdate: 2025-08-09 21:01:00 -0600
 <p>If an 8 is played, the trick ends.</p>
 
 <h2>Penalize final 2 <small>(default: off)</small></h2>
-<p>Playing a 2 as the last card gets the worst unfilled rank instead of best unfilled rank, effectively entering the <em>front</em> of the <em>new</em> queue.</p>
+<p>Playing a 2 as the last card results in the worst unfilled rank instead of best unfilled rank.
 
 <h2>Penalize final joker <small>(default: off)</small></h2>
 <p>Similar to the previous option, but applicable when a joker is the last card played.</p>
