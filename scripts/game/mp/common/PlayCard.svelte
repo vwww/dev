@@ -8,8 +8,8 @@ interface Props {
   isReady?: unknown
   onReset: () => void
   onDisconnect: () => void
-  onSetActive: (active: boolean) => void
-  onSetReady: (ready: boolean) => void
+  onActive: () => void
+  onReady: () => void
   children: Snippet
 }
 
@@ -20,8 +20,8 @@ const {
   isReady = false,
   onReset,
   onDisconnect,
-  onSetActive,
-  onSetReady,
+  onActive,
+  onReady,
   children,
 }: Props = $props()
 </script>
@@ -49,14 +49,14 @@ const {
         {#if isActive}
           {#if canReady}
             {#if isReady}
-              <button class="btn btn-sm btn-success" onclick={() => onSetReady(false)}>Unready</button>
+              <button class="btn btn-sm btn-success" onclick={() => onReady()}>Unready</button>
             {:else}
-              <button class="btn btn-sm btn-info" onclick={() => onSetReady(true)}>Ready</button>
-              {/if}
+              <button class="btn btn-sm btn-info" onclick={() => onReady()}>Ready</button>
+            {/if}
           {/if}
-          <button class="btn btn-sm btn-secondary" onclick={() => onSetActive(false)}>Spectate</button>
+          <button class="btn btn-sm btn-secondary" onclick={() => onActive()}>Spectate</button>
         {:else}
-          <button class="btn btn-sm btn-primary" onclick={() => onSetActive(true)}>Unspectate</button>
+          <button class="btn btn-sm btn-primary" onclick={() => onActive()}>Unspectate</button>
         {/if}
         <div class="btn-group">
           <button class="btn btn-sm btn-warning" onclick={onReset}>Reset Score</button>

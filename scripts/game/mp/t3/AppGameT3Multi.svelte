@@ -63,8 +63,8 @@ let roomList: PIORoomList
   isActive={gameState.localClient.active}
   canReady={roundState === GameState.INTERMISSION}
   isReady={gameState.localClient.ready}
-  onSetActive={(a) => gameState.sendActive(a)}
-  onSetReady={(r) => gameState.sendReady(r)}
+  onActive={() => gameState.sendActive()}
+  onReady={() => gameState.sendReady()}
   onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <T3Play {gameState} t3Isomorphism={t3Isomorphism.value} />

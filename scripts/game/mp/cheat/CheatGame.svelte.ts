@@ -234,8 +234,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
   sendRename (newName: string): void { this.sendf('is', C2S.RENAME, newName) }
   sendPong (t: number): void { this.sendf('i2', C2S.PONG, t) }
   sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
-  sendActive (active: boolean): void { this.sendf('ib', C2S.ACTIVE, active) }
-  sendReady (ready: boolean): void { this.sendf('ib', C2S.READY, ready) }
+  sendActive (): void { this.sendf('i', C2S.ACTIVE) }
+  sendReady (): void { this.sendf('i', C2S.READY) }
   sendMove (): void {
     const w = new ByteWriter()
       .putInt(C2S.MOVE)
