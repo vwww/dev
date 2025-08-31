@@ -110,11 +110,10 @@ export abstract class TurnBasedGame<C extends TurnBasedClient, H> extends Common
 
   protected processReady (m: ByteReader): void {
     const cn = m.getCN()
-    const ready = m.getBool()
     const p = this.clients[cn]
-    if (p) {
-      p.ready = ready
-    }
+    if (!p) throw new Error('invalid ready cn ' + cn)
+
+    p.ready = !p.ready
   }
 
   protected abstract processEndRound (m: ByteReader): void

@@ -213,11 +213,10 @@ export abstract class CommonGame<C extends CommonClient> {
 
   protected processActive (m: ByteReader): void {
     const cn = m.getCN()
-    const active = m.getBool()
     const p = this.clients[cn]
     if (!p) throw new Error('invalid active cn ' + cn)
 
-    if ((p.active = active)) {
+    if ((p.active = !p.active)) {
       this.playerActivated(p)
     } else {
       this.playerDeactivated(p)
