@@ -36,7 +36,7 @@ let compact = $state(true)
         {@const outline = m.playerIsMe ? '' : '-outline'}
         <span class="badge text-bg{outline}-primary">{m.playerName}</span>
         {#if m.type == 'move'}
-          played <span class="badge text-bg-light">{ranks[m.rank]}</span>{#if m.base != 1}{' '}&times;{m.base}{#if m.jokers}+{m.jokers}{/if}{/if}.
+          played <span class="badge text-bg-light">{ranks[m.rank]}</span>{#if m.base != 1 || m.jokers}{' '}&times;{m.base}{#if m.jokers}+{m.jokers}{/if}{/if}.
         {:else if m.type == 'pass'}
           passed.
         {:else if m.type == 'give_public'}
