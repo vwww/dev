@@ -92,17 +92,19 @@ function getOutcomeText<T>(text: T[], textBitShift: number, detRandBits: number)
                 <th>Wins</th>
                 <th>Ties</th>
                 <th>Loss</th>
-                <th>#</th>
+                <th>Score</th>
                 <th>Players</th>
               </tr>
               {#each pastGame.moves as move, i}
+                {@const score = move.ltw[2] - move.ltw[0]}
                 <tr class:table-primary={pastGame.local && pastGame.local.move === i}>
                   <td>{['Rock', 'Paper', 'Scissors'][i]}</td>
                   <td>{move.ltw[2]}</td>
                   <td>{move.ltw[1]}</td>
                   <td>{move.ltw[0]}</td>
-                  <td>{pastGame.count[i]}</td>
+                  <td>{score > 0 ? '+' : ''}{score}</td>
                   <td>
+                    {pastGame.count[i]}:
                     {#each move.players as player, i}
                       <span class="badge text-bg{i == move.meIndex ? '' : '-outline'}-secondary">{player}</span>
                     {/each}
