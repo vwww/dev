@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte'
 
-import Board from './BoardTest.svelte'
+import Board from './Board.svelte'
 import MoveTable from './MoveTable.svelte'
 import { initMemo, getMemo as getMemoOrig, playerTypes, type MemoEntry } from '@gc/t3/ai'
 import { checkWin, occupied, remapWin, Winner, type WinnerMap } from '@gc/t3/game'
