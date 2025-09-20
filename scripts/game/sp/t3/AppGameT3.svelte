@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte'
 
-import BoardTest from './Board.svelte'
+import Board from './Board.svelte'
 import MoveTable from './MoveTable.svelte'
 import { initMemo, getMemo as getMemoOrig, playerTypes, type MemoEntry } from '@gc/t3/ai'
 import { checkWin, occupied, remapWin, Winner, type WinnerMap } from '@gc/t3/game'
@@ -194,7 +194,7 @@ export type GetMemoType = (state: number) => MemoEntry | undefined
 <div class="row">
   <div class="col-sm-6">
     <p>{@html currentMessage}</p>
-    <BoardTest {board} {winner} {winnerMap} {mark} showHints={showHints.value} {getMemo} onMove={moveHuman} />
+    <Board {board} {winner} {winnerMap} {mark} showHints={showHints.value} {getMemo} onMove={moveHuman} />
   </div>
 
   <div class="col-sm-6">
