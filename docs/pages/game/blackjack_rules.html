@@ -1,7 +1,7 @@
 ---
 title: Rules for Blackjack
 date: "2020-10-03 15:24:00 -0600"
-mdate: 2021-02-21 11:13:41 -0700
+mdate: 2025-09-03 19:35:00 -0600
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'blackjack') }}
@@ -12,12 +12,18 @@ mdate: 2021-02-21 11:13:41 -0700
 
 <h2>Rounds</h2>
 
+<p>Each round consists of these phases:</p>
+
 <ol>
-  <li><b>Bet phase</b>: Each player simultaneously places a bet, up to max(the player's balance + 200, 100). Bet amounts are not revealed until the end of this phase.
-  <li><b>Deal phase</b>: The dealer draws 2 cards, 1 revealed and 1 hidden. Each player gets 2 cards.
-  <li><b>Play phase</b>: Each player makes a move until he busts or stands, and then the next player moves.
-  <li><b>Finalize phase</b>: After all players have moved, the dealer reveals the hole card. If not all players have busted, the dealer hits until the hand value is at least 17 (possibly hits on Ace and 6).
-  <li><b>End phase</b>: Every player's hand is compared against the dealer's, and payouts are processed.
+  <li><b>Bet Phase</b>: Each player simultaneously places a bet, up to max(the player's balance + 200, 100). Bet amounts are not revealed until the next phase.
+  <li><b>Deal Phase</b>: The dealer draws 2 cards, 1 revealed and 1 hidden. Each player gets 2 cards.
+  <li><b>Insurance Phase</b> 1: If the dealer has a revealed Ace, each player can purchase insurance of (up to) half of the bet.
+  <li><b>Play Phase</b>: Each player makes a move until he busts or stands, and then the next player moves. All players move at the same time if Speed is enabled.
+  <li><b>Insurance Phase</b> 2: If the game mode specifies, players get an offer to buy insurance after the Play Phase instead of the Deal Phase.
+  <li><b>End Phase</b>:
+    The dealer reveals the hole card.
+    If not all players have busted, the dealer hits until the hand value is at least 17 (possibly hits on soft 17).
+    Every hand is compared against the dealer's, and payouts are processed.
 </ol>
 
 <h3>Payout</h3>
@@ -44,18 +50,23 @@ mdate: 2021-02-21 11:13:41 -0700
 </p>
 
 <h2>Moves</h2>
+<p>After the Deal Phase, if the dealer shows Ace, there is an Insurance Phase 1, where each player can bet (up to) half of the bet, which pays 2:1 if dealer has a blackjack.</p>
+
+<p>There might instead be an Insurance Phase 2 after the Play Phase, depending on the game mode.</p>
+
+<p>During the Play Phase, players can make these moves: (unless hand value is 21 or more)</p>
+
 <ul>
-  <li>Hit: get 1 card (turn ends if value exceeds 21)
+  <li>Hit: get 1 card
   <li>Stand: end turn
   <li>Double: if hand has 2 cards, double bet amount, get 1 card and stand
   <li>Split: with a hand of two equal-value cards, move one to a new hand, add a bet to the new hand equal to the original bet, and draw one card for both hands
-  <li>Surrender: if hand has 2 cards, forfeit half of bet
-  <li>Insurance: if dealer shows Ace, bet up to half of bet, which pays 2:1 if dealer has a blackjack.
+  <li>Surrender: if original hand has 2 cards, forfeit half of bet and recover the other half
 </ul>
 
 <h1>Time Control</h1>
 <p>Intermissions last up to 30 seconds, ending early if all players are ready.</p>
-<p>Each turn lasts up to 20 seconds by default, with automatic Stand. Unused turn time cannot be carried to future turns. There is only a turn timer, not a game timer.</p>
+<p>Each turn lasts up to 20 seconds by default, with automatic Stand and 0 insurance. Unused turn time cannot be carried to future turns. There is only a turn timer, not a game timer.</p>
 
 <h1>Options</h1>
 
@@ -64,14 +75,14 @@ mdate: 2021-02-21 11:13:41 -0700
 <h2>Turn Time / s <small>(default: 20, min: 5, max: 60)</small></h2>
 <p>An automatic move will be made after the turn timer expires.</p>
 
+<h2>Speed <small>(default: on)</small></h2>
+<p>All players move in the same turn, and cards are dealt to the first player to hit or double. The turn timer is extended whenever any player makes a move.</p>
+
 <h2>Inverted <small>(default: off)</small></h2>
 <p>Balance changes are negated.</p>
 
-<h2>Simple <small>(default: off)</small></h2>
-<p>Play with the simpler rules of 21, without the new rules in Blackjack. Just Hit or Stand, without worrying about splitting, doubling, surrendering, or insurance.</p>
-
-<h2>Decks <small>(default: 1, min: 1, max: 9)</small></h2>
-<p>Number of decks to use. 9 is treated as &infin; decks. Increases house edge.</p>
+<h2>Decks <small>(default: 1, min: 0, max: 255)</small></h2>
+<p>Number of decks to use. 0 is treated as &infin; decks. Increases house edge.</p>
 
 <h2>Dealer Hits on Soft 17 <small>(default: on)</small></h2>
 <p>Dealer hits on soft 17 instead of standing. Increases house edge.</p>
@@ -79,6 +90,9 @@ mdate: 2021-02-21 11:13:41 -0700
 <h2>Dealer Peek <small>(default: on)</small></h2>
 <p>Dealer peeks and, after early surrender, ends the game immediately if there is a blackjack. Decreases house edge.</p>
 <p>Typically on in American and off in European games.</p>
+
+<h2>Simple <small>(default: off)</small></h2>
+<p>Play with the simpler rules of 21, without the new rules in Blackjack. Just Hit or Stand, without worrying about splitting, doubling, surrendering, or insurance.</p>
 
 <h2>Double</h2>
 <p>Doubling is allowed when the hand value is</p>
@@ -92,20 +106,31 @@ mdate: 2021-02-21 11:13:41 -0700
 <h2>Double After Split <small>(default: on)</small></h2>
 <p>After splitting, allow doubling each hand separately. Decreases house edge.</p>
 
+<h2>Surrender After Split <small>(default: off)</small></h2>
+<p>After splitting, allow surrendering each hand separately. Decreases house edge.</p>
+
 <h2>Surrender</h2>
 <p>Surrendering is allowed when</p>
 <ul>
   <li><strong>off</strong>: never
-  <li><strong>late</strong> <em>(default)</em>: the dealer does not have a blackjack
+  <li><strong>late</strong> <em>(default)</em>: the dealer does not have a blackjack (forces Dealer Peek to be on)
   <li><strong>early non-ace</strong>: the dealer shows a non-Ace
   <li><strong>early</strong>: always
 </ul>
+<p>Later options decrease house edge.</p>
 
-<h2>Split Non-Ace <small>(default: 3, min: 0, max: 3)</small></h2>
+<h2>Split Non-Ace <small>(default: 3, min: 0, max: 255)</small></h2>
 <p>Pairs of 2 to 10 can be split N times to make N+1 hands. Decreases house edge.</p>
 
-<h2>Split Ace <small>(default: 1, min: 0, max: 3)</small></h2>
+<h2>Split Ace <small>(default: 1, min: 0, max: 255)</small></h2>
 <p>Pairs of aces can be split N times to make N+1 hands. Decreases house edge.</p>
 
 <h2>Hit Split Ace <small>(default: on)</small></h2>
 <p>Allow hitting split aces. Decreases house edge. If hit with a 10, the blackjack is not a "natural" blackjack.</p>
+
+<h2>Partial Insurance <small>(default: on)</small></h2>
+<p>Allow insuring up to (rather than exactly) half of initial bet value.</p>
+
+<h2>Late Insurance Offer <small>(default: off)</small></h2>
+<p>Move the Insurance Phase to after all players have moved. The offer is based on the total number of unsurrendered hands.</p>
+<p>This option will be disabled if Dealer Peek is on.</p>

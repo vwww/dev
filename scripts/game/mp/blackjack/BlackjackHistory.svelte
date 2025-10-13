@@ -23,7 +23,8 @@ function scoreBadgeClass (s: number): string {
         Ranks:
         {#each pastGame.players as p}
           <span class={scoreBadgeClass(p.score)}>
-            {p.name} ({p.cn})
+            {p.name}
+            {p.score - p.scoreChange}
             <span class={scoreBadgeClass(p.scoreChange)}>{p.scoreChange >= 0 ? '+' : ''}{p.scoreChange}</span>
             {p.score}
           </span>

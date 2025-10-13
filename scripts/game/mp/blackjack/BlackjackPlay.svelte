@@ -54,7 +54,7 @@ const {
   inQueue={gameState.roundPlayerQueue} />
 
 <CardCountTable
-  ranks={['A', 'Tens', '9', '8', '7', '6', '5', '4', '3', '2']}
+  ranks={['A', '2', '3', '4', '5', '6', '7', '8', '9', 'Tens', 'Total']}
   counts={[
     ['Remaining', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
     ['Played', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
