@@ -447,11 +447,11 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         isMe: c === this.localClient,
 
         hands: p.hands.map(([hand, bet]) => {
-          const outcome = hand.value > 21 ? BlackjackOutcome.BUST :
-            hand.isNaturalBlackjack(p.hands.length > 1) ?
-              dealerBJ ? BlackjackOutcome.PUSH : BlackjackOutcome.BLACKJACK_NATURAL
-              : (this.dealerHand.value === 21 || hand.value > this.dealerHand.value) ? BlackjackOutcome.WIN : BlackjackOutcome.LOSE
-          return [hand, bet, outcome]
+          return [hand, bet,
+            hand.value > 21 ? BlackjackOutcome.BUST :
+              hand.isNaturalBlackjack(p.hands.length > 1) ?
+                dealerBJ ? BlackjackOutcome.PUSH : BlackjackOutcome.BLACKJACK_NATURAL
+                : (this.dealerHand.value === 21 || hand.value > this.dealerHand.value) ? BlackjackOutcome.WIN : BlackjackOutcome.LOSE]
         }),
         insurance: p.insurance,
         insuranceOutcome: 0,
