@@ -1,7 +1,7 @@
 ---
 title: Rules for Blackjack
 date: "2020-10-03 15:24:00 -0600"
-mdate: 2025-10-13 11:44:00 -0600
+mdate: 2025-11-07 12:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'blackjack') }}
@@ -19,13 +19,17 @@ mdate: 2025-10-13 11:44:00 -0600
   <li><b>Deal Phase</b>: The dealer gets 2 cards, 1 face-down and 1 face-up. Each player gets 2 cards. The cards are dealt in this order:
     <ol>
       <li>Players get one card each.
-      <li>The dealer gets the face-down hole card.
+      <li>The dealer gets the face-down hole card (or face-up revealed card if there is no hole card).
       <li>Players get their second cards.
-      <li>The dealer gets the face-up revealed card.
+      <li>The dealer gets the face-up revealed card (if there is a hole card).
     </ol>
-  <li><b>Insurance Phase</b> 1: If the dealer reveals an Ace, each player can purchase insurance of (up to) half of the bet.
+  <li><b>Pre-Play Phase</b>: If the dealer reveals an Ace, each player can purchase insurance of (up to) half of the bet. If surrendering is possible, each player can surrender.
+    <ul>
+      <li>Before (late surrender) or after (early surrender), the dealer peeks at the hole card (if applicable).
+      <li>When the dealer peeks, the game ends immediately if there is a blackjack.
+    </ul>
   <li><b>Play Phase</b>: Each player makes a move until he busts or stands, and then the next player moves. All players move at the same time if Speed is enabled.
-  <li><b>Insurance Phase</b> 2: If the game mode specifies, players get an offer to buy insurance after the Play Phase instead of the Deal Phase.
+  <li><b>Post-Play Phase</b>: If applicable, players get an offer to buy insurance after the Play Phase instead of the Deal Phase.
   <li><b>End Phase</b>:
     The dealer reveals the face-down hole card.
     If not all players have busted, the dealer hits until the hand value is at least 17 (possibly hits on soft 17).
@@ -56,9 +60,9 @@ mdate: 2025-10-13 11:44:00 -0600
 </p>
 
 <h2>Moves</h2>
-<p>After the Deal Phase, if the dealer shows Ace, there is an Insurance Phase 1, where each player can bet (up to) half of the bet, which pays 2:1 if dealer has a blackjack.</p>
+<p>If the dealer shows Ace, during the Pre-Play (or Post-Play, depending on the game mode) phase, each player can bet (up to) half of the bet, which pays 2:1 if dealer has a blackjack.</p>
 
-<p>There might instead be an Insurance Phase 2 after the Play Phase, depending on the game mode.</p>
+<p>If surrendering is allowed, it is possible to do it during the Pre-Play phase. The game mode can also allow surrendering during the Play phase.</p>
 
 <p>During the Play Phase, players can make these moves: (unless hand value is 21 or more)</p>
 
@@ -67,7 +71,7 @@ mdate: 2025-10-13 11:44:00 -0600
   <li>Stand: end turn
   <li>Double: if hand has 2 cards, double bet amount, get 1 card and stand
   <li>Split: with a hand of two equal-value cards, move one to a new hand, add a bet to the new hand equal to the original bet, and draw one card for both hands
-  <li>Surrender: if original hand has 2 cards, forfeit half of bet and recover the other half
+  <li>Surrender: if original hand has 2 cards, forfeit half of bet and recover the other half (if mode allows)
 </ul>
 
 <h1>Time Control</h1>
@@ -76,7 +80,11 @@ mdate: 2025-10-13 11:44:00 -0600
 
 <h1>Options</h1>
 
-<p>Blackjack pays 3 to 2 (50% bonus), so bets must be an even integer. Paying 6 to 5 would require bets to be multiples of 10. This option might be added in the future.</p>
+<p>
+  Blackjack pays 3 to 2 (50% bonus), so bets must be an even integer.
+  Supporting both 3:2 and 6:5 would require bets to be multiples of 10.
+  This option might be added in the future.
+</p>
 
 <h2>Turn Time / s <small>(default: 20, min: 5, max: 60)</small></h2>
 <p>An automatic move will be made after the turn timer expires.</p>
@@ -93,15 +101,22 @@ mdate: 2025-10-13 11:44:00 -0600
 <h2>Dealer Hits on Soft 17 <small>(default: on)</small></h2>
 <p>Dealer hits on soft 17 instead of standing. Increases house edge.</p>
 
-<h2>Dealer Peek <small>(default: on)</small></h2>
-<p>Dealer peeks and, after early surrender, ends the game immediately if there is a blackjack. Decreases house edge.</p>
-<p>Typically on in American and off in European games.</p>
+<h2>Dealer Hole Card and Peek</h2>
+<p>Surrendering is allowed when</p>
+<ul>
+  <li><strong>No Hole Card</strong>: the dealer does not have a hole card
+  <li><strong>Hole Card, No Peek</strong>: the dealer has a hole card but does not peek
+  <li><strong>Hole Card, Late Surrender</strong> <em>(default)</em>: the dealer peeks after dealing
+  <li><strong>Hole Card, Early Surrender</strong>: the dealer peeks after early surrender
+</ul>
+<p>Typically Late Surrender in American games and No Hole Card in European games.</p>
+<p>Later options decrease house edge.</p>
 
 <h2>Simple <small>(default: off)</small></h2>
 <p>Play with the simpler rules of 21, without the new rules in Blackjack. Just Hit or Stand, without worrying about splitting, doubling, surrendering, or insurance.</p>
 
 <h2>Double</h2>
-<p>Doubling is allowed when the hand value is</p>
+<p>Doubling is allowed when the hard hand value is</p>
 <ul>
   <li>any (default)
   <li>9 to 11
@@ -115,13 +130,15 @@ mdate: 2025-10-13 11:44:00 -0600
 <h2>Surrender After Split <small>(default: off)</small></h2>
 <p>After splitting, allow surrendering each hand separately. Decreases house edge.</p>
 
+<h2>Surrender During Play <small>(default: off)</small></h2>
+<p>Allow surrendering a hand that has more than two cards. Decreases house edge.</p>
+
 <h2>Surrender</h2>
-<p>Surrendering is allowed when</p>
+<p>Surrendering is allowed</p>
 <ul>
   <li><strong>off</strong>: never
-  <li><strong>late</strong> <em>(default)</em>: the dealer does not have a blackjack (forces Dealer Peek to be on)
-  <li><strong>early non-ace</strong>: the dealer shows a non-Ace
-  <li><strong>early</strong>: always
+  <li><strong>non-ace</strong>: when the dealer shows a non-Ace
+  <li><strong>any <em>(default)</em></strong>: always
 </ul>
 <p>Later options decrease house edge.</p>
 
@@ -139,4 +156,4 @@ mdate: 2025-10-13 11:44:00 -0600
 
 <h2>Late Insurance Offer <small>(default: off)</small></h2>
 <p>Move the Insurance Phase to after all players have moved. The offer is based on the total number of unsurrendered hands.</p>
-<p>This option will be disabled if Dealer Peek is on.</p>
+<p>This option will be disabled if Hole Card Peek is on.</p>

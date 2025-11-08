@@ -63,9 +63,11 @@ let roomList: PIORoomList
     </GameHistoryCard>
 
     <Leaderboard {leaderboard} {localClient} columns={[
-      ['Score', (p) => p.balance],
+      ['Balance', (p) => p.balance],
+      ['Score', (p) => p.wins - p.loss],
       ['Wins', (p) => p.wins],
-      ['Streak', (p) => p.streak],
+      ['Ties', (p) => p.ties],
+      ['Loss', (p) => p.loss],
     ]} />
   </div>
 

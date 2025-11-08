@@ -1,6 +1,7 @@
 import { clamp, sum, type Repeat } from '@/util'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { filterChat } from '@gmc/game/CommonGame.svelte'
+import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 import { RoundRobinClient, RoundRobinGame, RRTurnDiscInfo, RRTurnPlayerInfo } from '@gmc/game/RoundRobinGame.svelte'
 import type { BaseGameRoom } from '@gmc/remote/BaseGameRoom'
 
@@ -38,7 +39,6 @@ const enum C2S {
 
 class BlackjackClient extends RoundRobinClient {
   balance = $state(0n)
-  streak = $state(0)
   wins = $state(0)
   loss = $state(0)
   ties = $state(0)
@@ -46,7 +46,6 @@ class BlackjackClient extends RoundRobinClient {
 
   resetScore () {
     this.balance = 0n
-    this.streak = 0
     this.wins = 0
     this.loss = 0
     this.ties = 0
@@ -56,28 +55,67 @@ class BlackjackClient extends RoundRobinClient {
     super.readWelcome(m)
 
     this.balance = m.getInt64()
-    this.streak = m.getInt()
     this.wins = m.getInt()
     this.loss = m.getInt()
     this.ties = m.getInt()
   }
 }
 
-export type Hand = [bet: number, cards: number[], value: number]
+class Hand {
+  cards: number[] = []
+  value = 0
+  valueHard = 0
+  #hasAce = false
+  isSoft = false
+
+  addCard (card: CardValue, front?: boolean): void {
+    this.cards[front ? 'unshift' : 'push'](card)
+
+    if (card === CardValue.Ace) {
+      this.#hasAce = true
+    }
+
+    this.valueHard += card + 1
+    this.value = this.valueHard + ((this.isSoft = this.#hasAce && this.valueHard <= 11) ? 10 : 0)
+  }
+
+  split (card0: CardValue, card1: CardValue): Hand {
+    const newHand = new Hand()
+    newHand.addCard(this.cards[1])
+    newHand.addCard(card1)
+
+    this.valueHard = this.cards[0] + (this.cards[1] = card0)
+    this.#hasAce = this.cards[0] === CardValue.Ace || this.cards[1] === CardValue.Ace
+    this.value = this.valueHard + ((this.isSoft = this.#hasAce && this.valueHard <= 11) ? 10 : 0)
+
+    return newHand
+  }
+
+  isNaturalBlackjack (isSplit: boolean): boolean {
+    return this.cards.length === 2 && this.value === 21 && !(isSplit && this.cards[0] === CardValue.Ace)
+  }
+}
+
+type HandBet = [hand: Hand, bet: number]
+type HandBetOutcome = [...HandBet, outcome: BlackjackOutcome]
 
 export class BlackjackPlayerInfo extends RRTurnPlayerInfo {
-  hands: Hand[] = $state([])
+  hands: HandBet[] = $state([])
   handIndex = $state(0)
+
+  insurance = $state(0)
 }
 
 export class BlackjackDiscInfo extends RRTurnDiscInfo {
-  hands: Hand[] = []
+  hands: HandBet[] = []
+
+  insurance = 0
+  scoreChange = 0
 }
 
 export interface BlackjackGameHistory {
-  duration: number
-  dealerHand: number[]
-  dealerHandVal: number
+  duration: bigint
+  dealerHand: Hand
   players: BlackjackGameHistoryPlayer[]
 }
 
@@ -85,7 +123,7 @@ export interface BlackjackGameHistoryPlayer {
   name: string
   isMe?: boolean
 
-  hands: [...Hand, outcome: BlackjackOutcome][]
+  hands: HandBetOutcome[]
   insurance: number
   insuranceOutcome: number
 
@@ -102,6 +140,14 @@ const enum BlackjackOutcome {
   LOSE,
 }
 
+const enum BlackjackModeDealer {
+  NO_HOLE,
+  HOLE_NO_PEEK,
+  HOLE1,
+  HOLE2,
+  NUM,
+}
+
 const enum BlackjackModeDouble {
   ANY,
   ON_9_10_11,
@@ -109,15 +155,12 @@ const enum BlackjackModeDouble {
   NUM,
 }
 
-/*
 const enum BlackjackModeSurrender {
   OFF,
-  LATE,
-  EARLY_NOT_ACE,
-  EARLY,
+  NOT_ACE,
+  ANY,
   NUM,
 }
-*/
 
 const enum BlackjackMove {
   HIT,
@@ -139,10 +182,12 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   mode: BlackjackMode = $state(defaultMode())
 
   gamePhase = $state(GamePhase.BET)
-  dealerCards: number[] = $state([])
-  dealerValue = 0
+  dealerHand = $state(new Hand())
+  // holeCard = $state(0)
+  cardCountHole = $state(newZeroCardCount())
+  cardCountShoeHasHole = $state(false)
   cardCountShoe = $state(newZeroCardCount())
-  cardCountTotal = $derived(newTotalCardCount(this.mode.optDecks || 1))
+  cardCountTotal = $derived(newTotalCardCount(this.mode.optDecks))
   cardCountPlayed = $derived(this.cardCountTotal.map((v, i) => v - this.cardCountShoe[i]) as CardCountTotal)
 
   get ROUND_TIME () { return this.mode.optTurnTime }
@@ -191,50 +236,70 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.mode.optInverted = !!(modeFlags0 & (1 << 1))
     this.mode.opt21 = !!(modeFlags0 & (1 << 2))
     this.mode.optDealerHitSoft = !!(modeFlags0 & (1 << 3))
-    this.mode.optDealerPeek = !!(modeFlags0 & (1 << 4))
-    this.mode.optInsureLate = !!(modeFlags0 & (1 << 5)) // moved to modeFlags0 because it doesn't fit in modeFlags1
+    this.mode.optDealer =  (modeFlags0 >> 4) & 3 // Math.min((modeFlags0 >> 4) & 3, BlackjackModeDealer.NUM - 1) // 2 bits exactly
+    // moved to modeFlags0 because they don't fit in modeFlags1
+    this.mode.optInsurePartial = !!(modeFlags0 & (1 << 6))
+    this.mode.optInsureLate = !!(modeFlags0 & (1 << 7))
 
     if (this.mode.opt21) {
       this.mode.optSplitNonAce = m.get()
       this.mode.optSplitAce = m.get()
       const modeFlags1 = m.get()
       this.mode.optDouble = Math.min(modeFlags1 & 3, BlackjackModeDouble.NUM - 1)
-      this.mode.optSurrender = (modeFlags1 >> 2) & 3 // Math.min((modeFlags0 >> 2) & 3, BlackjackModeSurrender.NUM - 1) // 2 bits exactly
-      
+      this.mode.optSurrender = Math.min((modeFlags0 >> 2) & 3, BlackjackModeSurrender.NUM - 1)
+
       this.mode.optSplitDouble = !!(modeFlags1 & (1 << 4))
       this.mode.optSplitSurrender = !!(modeFlags1 & (1 << 5))
-      this.mode.optHitSplitAce = !!(modeFlags1 & (1 << 6))
-      this.mode.optInsurePartial = !!(modeFlags1 & (1 << 7))
+      this.mode.optSurrenderPlay = !!(modeFlags1 & (1 << 6))
+      this.mode.optHitSplitAce = !!(modeFlags1 & (1 << 7))
+    } else {
+      this.mode.optInsureLate = false
     }
   }
 
   protected processPlayerInfo (m: ByteReader, p: BlackjackPlayerInfo): void {
-    p.hands = readHands(m)
+    p.hands = readHandBets(m)
     p.handIndex = m.getInt()
+    p.insurance = m.getInt()
   }
 
   protected processDiscInfo (m: ByteReader, p: BlackjackDiscInfo): void {
-    p.hands = readHands(m)
+    p.hands = readHandBets(m)
   }
 
   protected processRoundStartInfo (): void {
     this.gamePhase = GamePhase.BET
-    this.dealerCards = []
-    this.dealerValue = 0
+    this.dealerHand = new Hand()
+    this.cardCountShoeHasHole = false
+    this.cardCountHole = this.cardCountShoe.slice() as CardCountTotal
+
+    this.playerInfo.forEach((p) => {
+      p.hands = []
+      // p.handIndex = 0
+      p.insurance = 0
+    })
   }
 
   protected processRoundInfo (m: ByteReader): void {
+    if (this.roundState !== GameState.ACTIVE) {
+      this.cardCountShoe = newZeroCardCount()
+      return this.processRoundStartInfo()
+    }
+
     this.cardCountShoe = readCardCount(m)
 
     const flags = m.get()
     this.gamePhase = flags & 3
 
-    if (this.gamePhase == GamePhase.BET) {
+    if (this.gamePhase === GamePhase.BET) {
       return this.processRoundStartInfo()
     }
 
-    this.dealerCards = readHand(m)
-    // TODO
+    const dealerFlags = m.get()
+    this.dealerHand = new Hand()
+    this.dealerHand.addCard(dealerFlags & 0xf)
+    this.cardCountShoeHasHole = !!(dealerFlags & (1 << 4))
+    this.cardCountHole = readCardCount(m)
   }
 
   protected processEndTurn (m: ByteReader): void {
@@ -243,92 +308,254 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
     const p = this.playerInfo[turnIndex]
 
+    const handBet = p.hands[p.handIndex]
+    const [hand, bet] = handBet
+    const cost = bet * (this.mode.optInverted ? 1 : -1)
+    const costB = BigInt(cost)
+    let handFinished: boolean | undefined
     switch (move) {
-      case BlackjackMove.DOUBLE: {
-        const hand = p.hands[p.handIndex]
-        this.clients[p.owner].balance -= BigInt(hand[0])
-        hand[0] *= 2
+      case BlackjackMove.DOUBLE:
+        this.clients[p.owner].balance += costB
+        handBet[1] *= 2
+
+        handFinished = true
         // fallthrough
-      }
-      case BlackjackMove.HIT: {
+      case BlackjackMove.HIT:
         const card = m.get()
-        const hand = p.hands[p.handIndex]
-        hand[1].push(card)
-        hand[2] = getHandVal(hand[1])
-        if (move !== BlackjackMove.DOUBLE && hand[2] < 21) break
-        // fallthrough
-      }
-      case BlackjackMove.STAND:
-        p.handIndex++
+
+        this.consumeCard(card)
+
+        hand.addCard(card)
+        handFinished ||= hand.value >= 21
         break
-      case BlackjackMove.SPLIT: {
+      case BlackjackMove.SPLIT:
+        const card0 = m.get()
         const card1 = m.get()
-        const card2 = m.get()
 
-        const hand = p.hands[p.handIndex]
-        const newCards = [hand[1][1], card2]
-        const newHand: Hand = [hand[0], newCards, getHandVal(newCards)]
+        this.consumeCard(card0)
+        this.consumeCard(card1)
 
-        this.clients[p.owner].balance -= BigInt(hand[0])
-        hand[1][1] = card1
-        hand[2] = getHandVal(hand[1])
+        this.clients[p.owner].balance += costB
 
-        p.hands.splice(p.handIndex + 1, 0, newHand)
+        const handNew = hand.split(card0, card1)
+
+        p.hands.splice(p.handIndex + 1, 0, [handNew, bet])
+
+        handFinished = hand.value >= 21
         break
-      }
-      case BlackjackMove.SURRENDER: {
-        const hand = p.hands[p.handIndex]
-        this.clients[p.owner].balance -= BigInt(hand[0])
-        hand[0] *= -1
-        p.handIndex++
-        break
-      }
+      case BlackjackMove.SURRENDER:
+        const c = this.clients[p.owner]
+
+        c.balance += costB >> 1n
+        c.loss++
+
+        handBet[1] *= -1
+        // fallthrough
+      case BlackjackMove.STAND:
+        handFinished = true
     }
 
     this.setTimer(this.mode.optTurnTime)
-    if (!this.mode.optSpeed) {
-      this.nextTurn()
+    if (handFinished) {
+      do {
+        p.handIndex++
+      } while (p.handIndex < p.hands.length && p.hands[p.handIndex][0].value >= 21)
+
+      if (!this.mode.optSpeed && p.handIndex === p.hands.length) {
+        this.nextTurn()
+      }
     }
   }
 
   protected processEndRound (m: ByteReader): void {
     if (this.gamePhase === GamePhase.BET) {
-      // TODO bet amounts
-
-      // TODO deal cards: players, hole card, players, face-up card
-
-      this.gamePhase = false ? GamePhase.INSURANCE : GamePhase.PLAY
-    } else if (this.gamePhase === GamePhase.INSURANCE) {
-      if (!this.mode.optInsureLate) {
-        this.gamePhase = GamePhase.PLAY
+      // bet amounts
+      for (const p of this.playerInfo) {
+        const bet = m.getInt()
+        const cards = m.get()
+        const hand = new Hand()
+        hand.addCard(cards & 0xf)
+        hand.addCard((cards >> 4) & 0xf)
+        p.hands = [[hand, bet]]
+        p.handIndex = 0
       }
+      const dealerFaceUp = m.get()
+      this.dealerHand.addCard(dealerFaceUp)
+
+      // deal cards: players, hole card, players, face-up card
+      this.cardCountShoeHasHole = false
+      for (const p of this.playerInfo) {
+        this.consumeCard(p.hands[0][0].cards[0])
+      }
+      if (this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
+        this.cardCountShoeHasHole = true
+        this.checkHoleCard()
+        for (const p of this.playerInfo) {
+          this.consumeCard(p.hands[0][0].cards[1])
+        }
+      }
+      this.consumeCard(dealerFaceUp)
+
+      this.gamePhase = !this.mode.opt21 && (dealerFaceUp === CardValue.Ace || this.mode.optSurrender) ? GamePhase.PRE : GamePhase.PLAY
+      return
+    } else if (this.gamePhase === GamePhase.PRE) {
+      // insurance amounts
+      for (const p of this.playerInfo) {
+        const insurance = m.getInt()
+        p.insurance = insurance
+      }
+
+      // TODO! surrender
+
+      this.gamePhase = GamePhase.PLAY
+      return
+    } else if (this.gamePhase === GamePhase.POST) {
+      // insurance amounts
+      // TODO!
     } else { // this.gamePhase === GamePhase.PLAY
-      if (this.mode.optInsureLate) {
-        this.gamePhase = GamePhase.INSURANCE
+      if (this.mode.optInsureLate && this.dealerHand.cards.at(-1) === CardValue.Ace) {
+        this.gamePhase = GamePhase.POST
+        return
       }
     }
+
+    // end phase: read dealer cards
+    const duration = m.getUint64()
+
+    if (this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
+      const dealerHole = m.get()
+      this.dealerHand.addCard(dealerHole, true)
+    }
+
+    while (this.dealerShouldHit()) {
+      this.dealerHand.addCard(m.get())
+    }
+
+    const history: BlackjackGameHistory = {
+      duration,
+      dealerHand: this.dealerHand,
+      players: [],
+    }
+
+    const dealerBJ = this.dealerHand.value === 21 && this.dealerHand.cards.length < 3
+
+    for (const p of this.playerInfo) {
+      const c = this.clients[p.owner]
+
+      history.players.push({
+        name: c.formatName(),
+        isMe: c === this.localClient,
+
+        hands: p.hands.map(([hand, bet]) => {
+          const outcome = hand.value > 21 ? BlackjackOutcome.BUST :
+            hand.isNaturalBlackjack(p.hands.length > 1) ?
+              dealerBJ ? BlackjackOutcome.PUSH : BlackjackOutcome.BLACKJACK_NATURAL
+              : (this.dealerHand.value === 21 || hand.value > this.dealerHand.value) ? BlackjackOutcome.WIN : BlackjackOutcome.LOSE
+          return [hand, bet, outcome]
+        }),
+        insurance: p.insurance,
+        insuranceOutcome: 0,
+
+        score: 0,
+        scoreChange: 0,
+      })
+    }
+
+    for (const d of this.playerDiscInfo) {
+      history.players.push({
+        name: d.ownerName,
+        isMe: d.isMe,
+
+        hands: d.hands.map(([hand, bet]) => {
+          return [hand, bet, hand.value > 21 ? BlackjackOutcome.BUST : hand.isNaturalBlackjack(d.hands.length > 1) ? BlackjackOutcome.PUSH : BlackjackOutcome.LOSE]
+        }),
+        insurance: d.insurance,
+        insuranceOutcome: 0,
+
+        score: 0,
+        scoreChange: d.scoreChange,
+      })
+    }
+
+    this.addHistory(history)
   }
 
-  protected eliminatePlayer (m: ByteReader, d: BlackjackDiscInfo, pn: number, p: BlackjackPlayerInfo): boolean {
-    // TODO
+  protected eliminatePlayer (_m: ByteReader, d: BlackjackDiscInfo, pn: number, p: BlackjackPlayerInfo, c: BlackjackClient): boolean {
+    d.insurance = p.insurance
+    const hands = (d.hands = p.hands)
+    const handsLost = hands.filter(([hand, bet]) => bet > 0 && !hand.isNaturalBlackjack(hands.length > 1))
+    c.loss += handsLost.length
+    d.scoreChange = -sum(handsLost.map(([_, bet]) => bet))
+
+    if (!this.mode.optSpeed && this.gamePhase !== GamePhase.BET && pn === this.turnIndex) {
+      this.setTimer(this.mode.optTurnTime)
+    }
+
+    const lastIndex = this.playerInfo.length - 1
+    // fix turnIndex
+    if (this.turnIndex > pn) this.turnIndex--
+    else if (this.turnIndex === lastIndex) this.turnIndex = 0
+
     return true
   }
 
   protected override readonly playersSortProps = [
     (p: BlackjackClient) => p.balance,
+    (p: BlackjackClient) => p.wins - p.loss,
     (p: BlackjackClient) => p.wins,
-    (p: BlackjackClient) => p.streak,
+    (p: BlackjackClient) => p.ties,
   ]
+
+  private consumeCard (card: CardValue): void {
+    if (!this.mode.optDecks) return
+
+    if (this.cardCountShoeHasHole && this.cardCountHole[card]) {
+      this.cardCountHole[card]--
+      this.cardCountHole[CardValue.NUM]--
+    }
+
+    this.cardCountShoe[card]--
+    this.cardCountShoe[CardValue.NUM]--
+    this.checkHoleCard()
+    this.checkRefillShoe()
+  }
+
+  private checkHoleCard (): void {
+    if (!this.cardCountShoeHasHole) return
+
+    const cardCountHoleTotal = this.cardCountHole[CardValue.NUM]
+    const holeCard = this.cardCountHole.findIndex((v) => v === cardCountHoleTotal)
+    if (holeCard < CardValue.NUM) {
+      this.cardCountShoeHasHole = false
+
+      this.cardCountHole[holeCard] = this.cardCountHole[CardValue.NUM] = 1
+
+      this.cardCountShoe[holeCard]--
+      this.cardCountShoe[CardValue.NUM]--
+      this.checkRefillShoe()
+    }
+  }
+
+  private checkRefillShoe (): void {
+    if (!this.cardCountShoe[CardValue.NUM]) {
+      this.cardCountShoe = newTotalCardCount(this.mode.optDecks)
+    }
+  }
+
+  private dealerShouldHit (): boolean {
+    const { value, isSoft } = this.dealerHand
+    return value < 17 || this.mode.optDealerHitSoft && value === 17 && isSoft
+  }
 }
 
 export const enum GamePhase {
   BET,
-  INSURANCE,
+  PRE,
   PLAY,
-  // END,
+  POST,
 }
 
-const enum CardValues {
+const enum CardValue {
   Ace,
   N2,
   N3,
@@ -342,37 +569,28 @@ const enum CardValues {
   NUM,
 }
 
-function getHandVal (hand: number[]): number {
-  let total = 0
-  let hasAce = false
-  for (const card of hand) {
-    total += card + 1
-    if (card === CardValues.Ace) {
-      hasAce = true
-    }
-  }
-
-  if (hasAce && total <= 11) total += 10
-  return total
-}
-
-function readHand (m: ByteReader): number[] {
+function readHand (m: ByteReader): Hand {
   // TODO improve encoding scheme for hands
   const length = m.get()
-  return Array.from({ length }).map(() => Math.min(m.get(), CardValues.NUM - 1))
+  const hand = new Hand()
+  for (let i = 0; i < length; i++) {
+    hand.addCard(Math.min(m.get(), CardValue.NUM - 1))
+  }
+  return hand
 }
 
-function readHands (m: ByteReader): Hand[] {
+function readHandBet (m: ByteReader): HandBet {
+  return [readHand(m), m.getInt()]
+}
+
+function readHandBets (m: ByteReader): HandBet[] {
   const MAX_HANDS = 512
 
   const length = Math.min(m.getInt(), MAX_HANDS)
-  return Array.from({ length }).map(() => {
-    const hand = readHand(m)
-    return [m.getInt(), hand, getHandVal(hand)]
-  })
+  return Array.from({ length }).map(() => readHandBet(m))
 }
 
-type CardCount = Repeat<number, CardValues.NUM>
+type CardCount = Repeat<number, CardValue.NUM>
 
 export type CardCountTotal = [...CardCount, number]
 
@@ -385,16 +603,16 @@ function newZeroCardCount (): CardCountTotal {
 }
 
 function newTotalCardCount (decks: number): CardCountTotal {
-  const normal = 4 * decks
+  const normal = 4 * decks || 1
   return [
     normal, normal, normal, normal, normal,
     normal, normal, normal, normal, 4 * normal,
-    52 * decks
+    13 * normal
   ]
 }
 
 function readCardCount (m: ByteReader): CardCountTotal {
-  const v = Array.from({ length: CardValues.NUM }, () => m.get())
+  const v = Array.from({ length: CardValue.NUM }, () => m.get())
   v.push(sum(v))
   return v as CardCountTotal
 }

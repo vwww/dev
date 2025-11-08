@@ -6,20 +6,25 @@ export const roomCreateOptions = [
   ['optInverted', 'b', false, 'Inverted', 'negate balance changes'],
   ['optDecks', 'i', 1, 'Decks', 'number of decks, 0 is treated as infinity (increases house edge)', 0, 255],
   ['optDealerHitSoft', 'b', true, 'Dealer Hits on Soft 17', '(increases house edge)'],
-  ['optDealerPeek', 'b', true, 'Dealer Peek', 'dealer peeks and, after early surrender, ends the game immediately if there is a blackjack (decreases house edge)'],
+  ['optDealer', 'e', 2, 'Dealer Hole Card and Peek', '(later options decrease house edge)', [
+    'off',
+    'on, no peek',
+    'on, late surrender',
+    'on, early surrender',
+  ]],
   ['opt21', 'b', false, 'Simple', 'only hit and stand'],
-  ['optDouble', 'e', 0, 'Double', 'doubling is allowed for hand values of (later options increase house edge)', [
+  ['optDouble', 'e', 0, 'Double', 'doubling is allowed for hard hand values of (later options increase house edge)', [
     'any',
     '9 to 11',
     '10 or 11',
   ]],
   ['optSplitDouble', 'b', true, 'Double After Split', '(decreases house edge)'],
   ['optSplitSurrender', 'b', false, 'Surrender After Split', '(decreases house edge)'],
-  ['optSurrender', 'e', 1, 'Surrender', 'when is surrendering allowed?', [
-    'off',
-    'late (no blackjack)',
-    'early non-ace (not showing ace)',
-    'early (always)',
+  ['optSurrenderPlay', 'b', false, 'Surrender During Play', '(decreases house edge)'],
+  ['optSurrender', 'e', 2, 'Surrender', 'when is surrendering allowed? (later options decrease house edge)', [
+    'never',
+    'dealer shows non-ace',
+    'always',
   ]],
   ['optSplitNonAce', 'i', 3, 'Split Non-Ace', 'pairs of 2 to 10 can be split N times to make N+1 hands (decreases house edge)', 0, 255],
   ['optSplitAce', 'i', 1, 'Split Ace', 'pairs of aces can be split N times to make N+1 hands (decreases house edge) 10 with split ace is not a natural blackjack', 0, 255],
@@ -40,11 +45,12 @@ export function getGameModeString (mode: BlackjackMode): string {
     (mode.optInverted ? 'I' : 'i') +
     '/' + mode.optDecks + '/' +
     (mode.optDealerHitSoft ? 'H' : 'h') +
-    (mode.optDealerPeek ? 'P' : 'p') +
+    mode.optDealer +
     (mode.opt21 ? '-' :
       mode.optDouble +
-      (mode.optSplitDouble ? 'A' : 'a') +
-      (mode.optSplitSurrender ? 'A' : 'a') +
+      (mode.optSplitDouble ? 'D' : 'd') +
+      (mode.optSplitSurrender ? 'S' : 's') +
+      (mode.optSurrenderPlay ? 'P' : 'p') +
       mode.optSurrender +
       '/' + mode.optSplitNonAce +
       '/' + mode.optSplitAce +
