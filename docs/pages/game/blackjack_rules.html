@@ -1,7 +1,7 @@
 ---
 title: Rules for Blackjack
 date: "2020-10-03 15:24:00 -0600"
-mdate: 2025-11-07 12:00:00 -0700
+mdate: 2025-11-16 16:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'blackjack') }}
@@ -42,6 +42,12 @@ mdate: 2025-11-07 12:00:00 -0700
 <p>If the player's hand busts (exceeds 21), the dealer wins, even if the dealer also busts.</p>
 <p>If the hands are otherwise equal, it is a "push" and neither side wins.</p>
 
+<h2>Card Ranks</h2>
+<p>The cards (4 each per deck) are in this order from lowest to highest:</p>
+<pre>Ace (as 1) &lt; 2 &lt; 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; 10 = Jack = Queen = King &lt; Ace (as 11)</pre>
+
+<p>Jack, Queen, and King are equivalent to 10, so the interface combines them. Ace has a value of 1 or 11.</p>
+
 <h2>Hand Values</h2>
 <p>Hands are ranked from best to worst in 21 categories:</p>
 <ol>
@@ -50,7 +56,6 @@ mdate: 2025-11-07 12:00:00 -0700
   <li>Bust (worst): hand value is 22 or higher
 </ol>
 
-<p>Jack, Queen, and King are equivalent to 10. Ace has a value of 1 or 11.</p>
 <p>The hand value is intuitively the best possible sum of card values.</p>
 
 <p>
