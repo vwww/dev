@@ -107,7 +107,7 @@ export class Hand {
     newHand.addCard(this.cards[1])
     newHand.addCard(card1)
 
-    this.valueHard = this.cards[0] + (this.cards[1] = card0)
+    this.valueHard = this.cards[0] + (this.cards[1] = card0) + 2
     this.#hasAce = this.cards[0] === CardValue.Ace || this.cards[1] === CardValue.Ace
     this.value = this.valueHard + ((this.isSoft = this.#hasAce && this.valueHard <= 11) ? 10 : 0)
 
@@ -206,8 +206,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   PlayerInfoType = BlackjackPlayerInfo
   PlayerDiscType = BlackjackDiscInfo
 
-  // override canMove = $derived(this.playing && /*TODO*/)
-
   mode: BlackjackMode = $state(defaultMode())
 
   gamePhase = $state(GamePhase.BET)
@@ -221,6 +219,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
   pendingAmount = $state(0)
   localPlayer: BlackjackPlayerInfo | undefined = $state()
+
+  override canMove = $derived(this.playing && (this.gamePhase !== GamePhase.PLAY || this.mode.optSpeed || this.playerIsMe(this.playerInfo[this.turnIndex])))
 
   get ROUND_TIME () { return this.mode.optTurnTime }
   INTERMISSION_TIME = 30000
@@ -288,7 +288,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       this.mode.optSplitDouble = !!(modeFlags1 & (1 << 4))
       this.mode.optSplitSurrender = !!(modeFlags1 & (1 << 5))
       this.mode.optHitSurrender = !!(modeFlags1 & (1 << 6))
-      this.mode.optHitSplitAce = !!(modeFlags1 & (1 << 7))
+      this.mode.optSplitAceAdd = !!(modeFlags1 & (1 << 7))
     } else {
       this.mode.optInsureLate = false
     }
@@ -319,18 +319,18 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.gamePhase = GamePhase.BET
     this.dealerHand = new Hand()
     this.cardCountShoeHasHole = false
-    this.cardCountHole = this.cardCountShoe.slice() as CardCountTotal
-    this.pendingAmount = 100
 
     this.localPlayer = undefined
     this.playerInfo.forEach((p) => {
+      const bet = Math.max(2, Math.min(Number(MAX_BALANCE - this.clients[p.owner].balance), 100))
       p.hands = []
       p.handIndex = 0
-      p.bet = 100n
+      p.bet = BigInt(bet)
       p.insurance = 0n
       p.ready = false
       if (p.owner === this.localClient.cn) {
         this.localPlayer = p
+        this.pendingAmount = bet
       }
     })
   }
@@ -353,7 +353,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.dealerHand = new Hand()
     this.dealerHand.addCard(dealerFlags & 0xf)
     this.cardCountShoeHasHole = !!(dealerFlags & (1 << 4))
-    this.cardCountHole = readCardCount(m)
+    if (this.mode.optDecks && this.mode.optDealer !== BlackjackModeDealer.NO_HOLE) {
+      this.cardCountHole = readCardCount(m)
+    }
   }
 
   protected processEndTurn (m: ByteReader): void {
@@ -422,7 +424,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         // skip surrendered/finished players
         do {
           if (++this.turnIndex === this.playerInfo.length) {
-            this.turnIndex = 0
             break
           }
         } while (this.playerInfo[this.turnIndex].handIndex === this.playerInfo[this.turnIndex].hands.length)
@@ -449,7 +450,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         const cards = m.get()
         const hand = new Hand()
         hand.addCard(cards & 0xf)
-        hand.addCard((cards >> 4) & 0xf)
+        hand.addCard(cards >> 4)
         p.hands = [[hand, p.bet]]
         p.handIndex = hand.value >= 21 ? 1 : 0
         p.ready = false
@@ -464,6 +465,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       }
       if (this.mode.optDecks && this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
         this.cardCountShoeHasHole = true
+        this.cardCountHole = this.cardCountShoe.slice() as CardCountTotal
         this.checkHoleCard()
       } else {
         this.consumeCard(dealerFaceUp)
@@ -475,12 +477,21 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         this.consumeCard(dealerFaceUp)
       }
 
-      // peek early (late surrender, no insurance) result
       let earlyEnd = false
-      if (this.mode.opt21
+
+      // skip finished players
+      while (this.playerInfo[this.turnIndex].handIndex) {
+        if (++this.turnIndex === this.playerInfo.length) {
+          earlyEnd = true
+          break
+        }
+      }
+
+      // peek early (late surrender, no insurance) result
+      if (!earlyEnd && (this.mode.opt21
         ? this.mode.optDealer >= BlackjackModeDealer.HOLE0 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)
         : this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ten
-      ) {
+      )) {
         if (m.get()) {
           earlyEnd = true
         } else if (this.cardCountShoeHasHole) {
@@ -659,7 +670,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     }
     d.score = (c.balance += (d.scoreChange = scoreChange))
 
-    if (!this.mode.optSpeed && this.gamePhase !== GamePhase.BET && pn === this.turnIndex) {
+    if (!this.mode.optSpeed && this.gamePhase === GamePhase.PLAY && pn === this.turnIndex) {
       this.setTimer(this.mode.optTurnTime)
     }
 

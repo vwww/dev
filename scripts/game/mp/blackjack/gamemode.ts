@@ -28,7 +28,7 @@ export const roomCreateOptions = [
   ]],
   ['optSplitNonAce', 'i', 3, 'Split Non-Ace', 'pairs of 2 to 10 can be split N times to make N+1 hands (decreases house edge)', 0, 255],
   ['optSplitAce', 'i', 1, 'Split Ace', 'pairs of aces can be split N times to make N+1 hands (decreases house edge) 10 with split ace is not a natural blackjack', 0, 255],
-  ['optHitSplitAce', 'b', true, 'Hit Split Ace', 'allow hit after splitting ace (decreases house edge)'],
+  ['optSplitAceAdd', 'b', true, 'Hit Split Ace', 'allow hit/double after splitting ace (decreases house edge)'],
   ['optInsurePartial', 'b', true, 'Partial Insurance', 'Allow insuring up to rather than exactly (decreases house edge)'],
   ['optInsureLate', 'b', false, 'Late Insurance', 'Move Insurance to after all players have moved (decreases house edge)'],
 ] as const
@@ -54,7 +54,7 @@ export function getGameModeString (mode: BlackjackMode): string {
       mode.optSurrender +
       '/' + mode.optSplitNonAce +
       '/' + mode.optSplitAce +
-      (mode.optHitSplitAce ? 'H' : '') +
+      (mode.optSplitAceAdd ? 'A' : '') +
       '/' +
       (mode.optInsurePartial ? 'P' : 'p') +
       (mode.optInsureLate ? 'L' : '')

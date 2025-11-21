@@ -86,15 +86,14 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
           <button class="btn btn-info btn-lg" class:disabled={localPlayer.ready} onclick={() => gameState.sendMoveReady()}>&#9989; Ready</button>
         </div>
       {/if}
-    {:else}
-      {localPlayer?.handIndex} ? {localPlayer?.hands.length}
-      {#if localPlayer && localPlayer.handIndex < localPlayer.hands.length}
+    {:else if localPlayer}
+      {#if localPlayer.handIndex < localPlayer.hands.length}
         {@const handBet = localPlayer.hands[localPlayer.handIndex]}
         {@const [hand, bet] = handBet}
-        <p class="text-center"><span class="badge text-bg-outline-secondary">{bet}</span> bet on <BlackjackHand {hand} /></p>
+        <p class="text-center">You bet <span class="badge text-bg-outline-secondary">{bet}</span> on <BlackjackHand {hand} /></p>
       {/if}
 
-      {#if localPlayer}
+      {#if canMove}
         {#if gamePhase === GamePhase.PLAY}
           {@const handBet = localPlayer.hands[localPlayer.handIndex]}
           {#if handBet}
@@ -103,11 +102,12 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
             <div class="text-center">
               <button class="btn btn{mode.opt21
                 || hand.cards.length > 2
-                || handCount > 1 && (!mode.optSplitDouble || !mode.optHitSplitAce  && hand.cards[0] === CardValue.Ace)
+                || handCount > 1 && (!mode.optSplitDouble || !mode.optSplitAceAdd  && hand.cards[0] === CardValue.Ace)
                 || mode.optDouble !== BlackjackModeDouble.ANY && (hand.valueHard < (mode.optDouble == BlackjackModeDouble.ON_10_11 ? 10 : 9) || hand.valueHard > 11)
                   ? '-outline' : ''}-warning btn-lg"
+                class:d-none={mode.opt21}
                 onclick={() => gameState.sendMove(BlackjackMove.DOUBLE)}>&#8252;&#65039; Double</button>
-              <button class="btn btn{!mode.optHitSplitAce && handCount > 1 && hand.cards[0] === CardValue.Ace
+              <button class="btn btn{!mode.optSplitAceAdd && handCount > 1 && hand.cards[0] === CardValue.Ace
                 ? '-outline' : ''}-success btn-lg"
                 onclick={() => gameState.sendMove(BlackjackMove.HIT)}>&#11014;&#65039; Hit</button>
               <button class="btn btn-danger btn-lg"
@@ -117,6 +117,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 || hand.cards[0] !== hand.cards[1]
                 || handCount > (hand.cards[0] === CardValue.Ace ? mode.optSplitAce : mode.optSplitNonAce)
                   ? '-outline' : ''}-primary btn-lg"
+                class:d-none={mode.opt21}
                 onclick={() => gameState.sendMove(BlackjackMove.SPLIT)}>&harr;&#65039; Split</button>
               <button class="btn btn{mode.opt21
                 || !mode.optHitSurrender && hand.cards.length > 2
@@ -124,23 +125,30 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 || mode.optSurrender == BlackjackModeSurrender.NOT_ACE && dealerHand.cards[1] === CardValue.Ace
                 || handCount > 1 && !mode.optSplitSurrender
                   ? '-outline' : ''}-secondary btn-lg"
+                class:d-none={mode.opt21}
                 onclick={() => gameState.sendMove(BlackjackMove.SURRENDER)}>&#127987; Surrender</button>
             </div>
           {/if}
         {:else}
           {#if dealerHand.cards.at(-1) === CardValue.Ace && (gamePhase === GamePhase.POST || !mode.optInsureLate)}
             {@const max = sum(localPlayer.hands.map(([_, b]) => b < 0 ? 0 : Number(b >> 1n)))}
+            {@const step = mode.optInsurePartial ? 1 : Number(localPlayer.bet)}
             <div>
               Insurance Amount
-              <input type="number" class="form-control is-{gameState.pendingAmount === Number(localPlayer.insurance) ? '' : 'in'}valid" bind:value={gameState.pendingAmount} onchange={() => gameState.sendMoveInsurance()} min="0" {max}>
-              <input type="range" class="form-range" bind:value={gameState.pendingAmount} onchange={() => gameState.sendMoveInsurance()} min="0" {max}>
+              <input type="number" class="form-control is-{gameState.pendingAmount === Number(localPlayer.insurance) ? '' : 'in'}valid" bind:value={gameState.pendingAmount} onchange={() => gameState.sendMoveInsurance()} min="0" {max} {step}>
+              <input type="range" class="form-range" bind:value={gameState.pendingAmount} onchange={() => gameState.sendMoveInsurance()} min="0" {max} {step}>
             </div>
           {/if}
 
           <div class="text-center">
             <button class="btn btn-info btn-lg" class:disabled={localPlayer.ready} onclick={() => gameState.sendMoveReady()}>&#9989; Ready</button>
             {#if gamePhase === GamePhase.PRE}
-              <button class="btn btn-secondary btn" class:disabled={localPlayer.handIndex} onclick={() => gameState.sendMove(BlackjackMove.SURRENDER)}>&#127987; Surrender</button>
+              <button class="btn btn-secondary btn"
+                class:disabled={
+                  localPlayer.handIndex
+                  || mode.optSurrender == BlackjackModeSurrender.OFF
+                  || mode.optSurrender == BlackjackModeSurrender.NOT_ACE && dealerHand.cards[1] === CardValue.Ace}
+                onclick={() => gameState.sendMove(BlackjackMove.SURRENDER)}>&#127987; Surrender</button>
             {/if}
           </div>
         {/if}

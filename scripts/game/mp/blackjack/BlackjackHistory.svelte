@@ -32,10 +32,10 @@ function scoreBadgeClass (s: number | bigint): string {
               &rarr;
               {p.score}
               <ol class="list-unstyled">
-                {#if p.insurance > 0}
-                  <li>Insurance won <span class="badge text-bg-outline-success">+{p.insurance}</span></li>
-                {:else if p.insurance}
-                  <li>Insurance lost <span class="badge text-bg-outline-danger">{p.insurance}</span></li>
+                {#if p.insuranceOutcome > 0}
+                  <li>Insurance won <span class="badge text-bg-outline-success">+{p.insuranceOutcome}</span></li>
+                {:else if p.insuranceOutcome}
+                  <li>Insurance lost <span class="badge text-bg-outline-danger">{p.insuranceOutcome}</span></li>
                 {/if}
                 {#each p.hands as [hand, bet, outcome]}
                   <li>
