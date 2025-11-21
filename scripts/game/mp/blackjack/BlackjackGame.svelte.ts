@@ -23,6 +23,8 @@ const enum S2C {
   READY,
   END_ROUND,
   END_TURN,
+  END_TURN_AMOUNT,
+  END_TURN_READY,
   PLAYER_ELIMINATE,
 }
 
@@ -33,12 +35,15 @@ const enum C2S {
   CHAT,
   ACTIVE,
   READY,
-  MOVE_AMOUNT,
+  MOVE_BET,
+  MOVE_INSURANCE,
   MOVE,
+  MOVE_READY,
 }
 
 class BlackjackClient extends RoundRobinClient {
   balance = $state(0n)
+  streak = $state(0)
   wins = $state(0)
   loss = $state(0)
   ties = $state(0)
@@ -46,27 +51,45 @@ class BlackjackClient extends RoundRobinClient {
 
   resetScore () {
     this.balance = 0n
+    this.streak = 0
     this.wins = 0
     this.loss = 0
     this.ties = 0
+  }
+
+  addWin () {
+    if (this.streak < 0) this.streak = 0
+    this.streak++
+    this.wins++
+  }
+
+  addLoss () {
+    if (this.streak > 0) this.streak = 0
+    this.streak--
+    this.loss++
+  }
+
+  addTie () {
+    this.ties++
   }
 
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 
     this.balance = m.getInt64()
+    this.streak = m.getInt()
     this.wins = m.getInt()
     this.loss = m.getInt()
     this.ties = m.getInt()
   }
 }
 
-class Hand {
-  cards: number[] = []
-  value = 0
-  valueHard = 0
+export class Hand {
+  cards: number[] = $state([])
+  value = $state(0)
+  valueHard = $state(0)
   #hasAce = false
-  isSoft = false
+  isSoft = $state(false)
 
   addCard (card: CardValue, front?: boolean): void {
     this.cards[front ? 'unshift' : 'push'](card)
@@ -96,21 +119,24 @@ class Hand {
   }
 }
 
-type HandBet = [hand: Hand, bet: number]
+type HandBet = [hand: Hand, bet: bigint]
 type HandBetOutcome = [...HandBet, outcome: BlackjackOutcome]
 
 export class BlackjackPlayerInfo extends RRTurnPlayerInfo {
   hands: HandBet[] = $state([])
   handIndex = $state(0)
 
-  insurance = $state(0)
+  bet = $state(0n)
+  insurance = $state(0n)
+  ready = $state(false)
 }
 
 export class BlackjackDiscInfo extends RRTurnDiscInfo {
   hands: HandBet[] = []
 
-  insurance = 0
-  scoreChange = 0
+  insurance = 0n
+  score = 0n
+  scoreChange = 0n
 }
 
 export interface BlackjackGameHistory {
@@ -124,15 +150,16 @@ export interface BlackjackGameHistoryPlayer {
   isMe?: boolean
 
   hands: HandBetOutcome[]
-  insurance: number
-  insuranceOutcome: number
+  insurance: bigint
+  insuranceOutcome: bigint
 
-  score: number
-  scoreChange: number
+  score: bigint
+  scoreChange: bigint
 }
 
-const enum BlackjackOutcome {
-  PENDING,
+export const enum BlackjackOutcome {
+  // PENDING,
+  SURRENDERED,
   BUST,
   BLACKJACK_NATURAL,
   WIN,
@@ -143,26 +170,26 @@ const enum BlackjackOutcome {
 const enum BlackjackModeDealer {
   NO_HOLE,
   HOLE_NO_PEEK,
+  HOLE0,
   HOLE1,
-  HOLE2,
   NUM,
 }
 
-const enum BlackjackModeDouble {
+export const enum BlackjackModeDouble {
   ANY,
   ON_9_10_11,
   ON_10_11,
   NUM,
 }
 
-const enum BlackjackModeSurrender {
+export const enum BlackjackModeSurrender {
   OFF,
   NOT_ACE,
   ANY,
   NUM,
 }
 
-const enum BlackjackMove {
+export const enum BlackjackMove {
   HIT,
   STAND,
   DOUBLE,
@@ -172,6 +199,8 @@ const enum BlackjackMove {
 }
 
 // const MAX_DECKS = 255
+export const MAX_BALANCE = 9_000_000_000_000_000n
+const MIN_BALANCE = -MAX_BALANCE
 
 export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlayerInfo, BlackjackDiscInfo, BlackjackGameHistory> {
   PlayerInfoType = BlackjackPlayerInfo
@@ -190,6 +219,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   cardCountTotal = $derived(newTotalCardCount(this.mode.optDecks))
   cardCountPlayed = $derived(this.cardCountTotal.map((v, i) => v - this.cardCountShoe[i]) as CardCountTotal)
 
+  pendingAmount = $state(0)
+  localPlayer: BlackjackPlayerInfo | undefined = $state()
+
   get ROUND_TIME () { return this.mode.optTurnTime }
   INTERMISSION_TIME = 30000
 
@@ -206,8 +238,11 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
   sendActive (): void { this.sendf('i', C2S.ACTIVE) }
   sendReady (): void { this.sendf('i', C2S.READY) }
-  sendMoveAmount (amount: number): void { this.sendf('i2', C2S.MOVE_AMOUNT, amount) }
+  sendMoveBet (amount = BigInt(this.pendingAmount)): void { this.sendf('iU', C2S.MOVE_BET, amount) }
+  sendMoveInsurance (amount = BigInt(this.pendingAmount)): void { this.sendf('iU', C2S.MOVE_INSURANCE, amount) }
+  sendMoveSurrender (): void { this.sendMove(BlackjackMove.SURRENDER) }
   sendMove (move: BlackjackMove): void { this.sendf('i2', C2S.MOVE, move) }
+  sendMoveReady (): void { this.sendf('i', C2S.MOVE_READY) }
 
   MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
     [S2C.WELCOME]: this.processWelcome,
@@ -225,6 +260,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     [S2C.READY]: this.processReady,
     [S2C.END_ROUND]: this.processEndRound,
     [S2C.END_TURN]: this.processEndTurn,
+    [S2C.END_TURN_AMOUNT]: this.processEndTurnAmount,
+    [S2C.END_TURN_READY]: this.processEndTurnReady,
     [S2C.PLAYER_ELIMINATE]: this.processEliminate,
   }
 
@@ -241,7 +278,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.mode.optInsurePartial = !!(modeFlags0 & (1 << 6))
     this.mode.optInsureLate = !!(modeFlags0 & (1 << 7))
 
-    if (this.mode.opt21) {
+    if (!this.mode.opt21) {
       this.mode.optSplitNonAce = m.get()
       this.mode.optSplitAce = m.get()
       const modeFlags1 = m.get()
@@ -250,21 +287,32 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
       this.mode.optSplitDouble = !!(modeFlags1 & (1 << 4))
       this.mode.optSplitSurrender = !!(modeFlags1 & (1 << 5))
-      this.mode.optSurrenderPlay = !!(modeFlags1 & (1 << 6))
+      this.mode.optHitSurrender = !!(modeFlags1 & (1 << 6))
       this.mode.optHitSplitAce = !!(modeFlags1 & (1 << 7))
     } else {
       this.mode.optInsureLate = false
     }
+
+    this.localPlayer = undefined
   }
 
   protected processPlayerInfo (m: ByteReader, p: BlackjackPlayerInfo): void {
+    if (this.roundState !== GameState.ACTIVE) return
+
     p.hands = readHandBets(m)
     p.handIndex = m.getInt()
-    p.insurance = m.getInt()
+    const flags = m.getUint64()
+    const v = flags >> 1n
+    p.bet = this.roundState === GameState.ACTIVE && this.gamePhase === GamePhase.BET ? v : 0n
+    p.insurance = this.roundState === GameState.ACTIVE && this.gamePhase !== GamePhase.BET ? v : 0n
+    p.ready = !!(flags & 1n)
   }
 
   protected processDiscInfo (m: ByteReader, p: BlackjackDiscInfo): void {
     p.hands = readHandBets(m)
+    p.insurance = m.getUint64()
+    p.score = m.getInt64()
+    p.scoreChange = m.getInt64()
   }
 
   protected processRoundStartInfo (): void {
@@ -272,21 +320,27 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.dealerHand = new Hand()
     this.cardCountShoeHasHole = false
     this.cardCountHole = this.cardCountShoe.slice() as CardCountTotal
+    this.pendingAmount = 100
 
+    this.localPlayer = undefined
     this.playerInfo.forEach((p) => {
       p.hands = []
-      // p.handIndex = 0
-      p.insurance = 0
+      p.handIndex = 0
+      p.bet = 100n
+      p.insurance = 0n
+      p.ready = false
+      if (p.owner === this.localClient.cn) {
+        this.localPlayer = p
+      }
     })
   }
 
   protected processRoundInfo (m: ByteReader): void {
+    this.cardCountShoe = readCardCount(m)
+
     if (this.roundState !== GameState.ACTIVE) {
-      this.cardCountShoe = newZeroCardCount()
       return this.processRoundStartInfo()
     }
-
-    this.cardCountShoe = readCardCount(m)
 
     const flags = m.get()
     this.gamePhase = flags & 3
@@ -303,6 +357,19 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   }
 
   protected processEndTurn (m: ByteReader): void {
+    if (this.gamePhase === GamePhase.PRE) {
+      // surrender
+      const p = this.playerInfo[m.getInt()]
+
+      const handBet = p.hands[p.handIndex]
+      handBet[1] = -handBet[1]
+
+      p.handIndex++
+      return
+    } else if (this.gamePhase !== GamePhase.PLAY) {
+      return
+    }
+
     const turnIndex = this.mode.optSpeed ? m.getInt() : this.turnIndex
     const move = clamp(m.get(), 0, BlackjackMove.NUM - 1)
 
@@ -310,13 +377,10 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
     const handBet = p.hands[p.handIndex]
     const [hand, bet] = handBet
-    const cost = bet * (this.mode.optInverted ? 1 : -1)
-    const costB = BigInt(cost)
     let handFinished: boolean | undefined
     switch (move) {
       case BlackjackMove.DOUBLE:
-        this.clients[p.owner].balance += costB
-        handBet[1] *= 2
+        handBet[1] <<= 1n
 
         handFinished = true
         // fallthrough
@@ -335,8 +399,6 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         this.consumeCard(card0)
         this.consumeCard(card1)
 
-        this.clients[p.owner].balance += costB
-
         const handNew = hand.split(card0, card1)
 
         p.hands.splice(p.handIndex + 1, 0, [handNew, bet])
@@ -344,12 +406,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         handFinished = hand.value >= 21
         break
       case BlackjackMove.SURRENDER:
-        const c = this.clients[p.owner]
-
-        c.balance += costB >> 1n
-        c.loss++
-
-        handBet[1] *= -1
+        handBet[1] = -handBet[1]
         // fallthrough
       case BlackjackMove.STAND:
         handFinished = true
@@ -359,63 +416,107 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     if (handFinished) {
       do {
         p.handIndex++
-      } while (p.handIndex < p.hands.length && p.hands[p.handIndex][0].value >= 21)
+      } while (p.handIndex < p.hands.length && (p.hands[p.handIndex][0].value >= 21 || p.hands[p.handIndex][1] < 0))
 
       if (!this.mode.optSpeed && p.handIndex === p.hands.length) {
-        this.nextTurn()
+        // skip surrendered/finished players
+        do {
+          if (++this.turnIndex === this.playerInfo.length) {
+            this.turnIndex = 0
+            break
+          }
+        } while (this.playerInfo[this.turnIndex].handIndex === this.playerInfo[this.turnIndex].hands.length)
       }
     }
   }
 
+  protected processEndTurnAmount (m: ByteReader): void {
+    const p = this.playerInfo[m.getInt()]
+    p[this.gamePhase === GamePhase.BET ? 'bet' : 'insurance'] = m.getUint64()
+  }
+
+  protected processEndTurnReady (m: ByteReader): void {
+    const p = this.playerInfo[m.getInt()]
+    p.ready = true
+  }
+
   protected processEndRound (m: ByteReader): void {
     if (this.gamePhase === GamePhase.BET) {
-      // bet amounts
+      this.pendingAmount = 0
+
+      // hands
       for (const p of this.playerInfo) {
-        const bet = m.getInt()
         const cards = m.get()
         const hand = new Hand()
         hand.addCard(cards & 0xf)
         hand.addCard((cards >> 4) & 0xf)
-        p.hands = [[hand, bet]]
-        p.handIndex = 0
+        p.hands = [[hand, p.bet]]
+        p.handIndex = hand.value >= 21 ? 1 : 0
+        p.ready = false
       }
       const dealerFaceUp = m.get()
       this.dealerHand.addCard(dealerFaceUp)
 
-      // deal cards: players, hole card, players, face-up card
+      // deal cards: players, hole/face-up card, players, face-up card
       this.cardCountShoeHasHole = false
       for (const p of this.playerInfo) {
         this.consumeCard(p.hands[0][0].cards[0])
       }
-      if (this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
+      if (this.mode.optDecks && this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
         this.cardCountShoeHasHole = true
         this.checkHoleCard()
-        for (const p of this.playerInfo) {
-          this.consumeCard(p.hands[0][0].cards[1])
+      } else {
+        this.consumeCard(dealerFaceUp)
+      }
+      for (const p of this.playerInfo) {
+        this.consumeCard(p.hands[0][0].cards[1])
+      }
+      if (this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
+        this.consumeCard(dealerFaceUp)
+      }
+
+      // peek early (late surrender, no insurance) result
+      let earlyEnd = false
+      if (this.mode.opt21
+        ? this.mode.optDealer >= BlackjackModeDealer.HOLE0 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)
+        : this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ten
+      ) {
+        if (m.get()) {
+          earlyEnd = true
+        } else if (this.cardCountShoeHasHole) {
+          const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
+          this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
+          this.cardCountHole[impossible] = 0
         }
       }
-      this.consumeCard(dealerFaceUp)
-
-      this.gamePhase = !this.mode.opt21 && (dealerFaceUp === CardValue.Ace || this.mode.optSurrender) ? GamePhase.PRE : GamePhase.PLAY
-      return
-    } else if (this.gamePhase === GamePhase.PRE) {
-      // insurance amounts
-      for (const p of this.playerInfo) {
-        const insurance = m.getInt()
-        p.insurance = insurance
+      if (!earlyEnd) {
+        this.gamePhase = !this.mode.opt21 && (dealerFaceUp === CardValue.Ace ||
+          this.mode.optSurrender && this.mode.optDealer === BlackjackModeDealer.HOLE1)
+            ? GamePhase.PRE : GamePhase.PLAY
+        return this.setTimer(this.mode.optTurnTime)
       }
-
-      // TODO! surrender
-
-      this.gamePhase = GamePhase.PLAY
-      return
-    } else if (this.gamePhase === GamePhase.POST) {
-      // insurance amounts
-      // TODO!
-    } else { // this.gamePhase === GamePhase.PLAY
+    } else if (this.gamePhase === GamePhase.PRE) {
+      // peek late (early surrender) result
+      const dealerFaceUp = this.dealerHand.cards.at(-1)
+      let earlyEnd = false
+      if (this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ace
+        || this.mode.optDealer === BlackjackModeDealer.HOLE1 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)) {
+        if (m.get()) {
+          earlyEnd = true
+        } else if (this.cardCountShoeHasHole) {
+          const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
+          this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
+          this.cardCountHole[impossible] = 0
+        }
+      }
+      if (!earlyEnd) {
+        this.gamePhase = GamePhase.PLAY
+        return this.setTimer(this.mode.optTurnTime)
+      }
+    } else if (this.gamePhase === GamePhase.PLAY) {
       if (this.mode.optInsureLate && this.dealerHand.cards.at(-1) === CardValue.Ace) {
         this.gamePhase = GamePhase.POST
-        return
+        return this.setTimer(this.mode.optTurnTime)
       }
     }
 
@@ -425,10 +526,18 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     if (this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
       const dealerHole = m.get()
       this.dealerHand.addCard(dealerHole, true)
+      if (this.cardCountShoeHasHole) {
+        this.cardCountShoeHasHole = false
+        this.consumeCard(dealerHole)
+      }
     }
 
-    while (this.dealerShouldHit()) {
-      this.dealerHand.addCard(m.get())
+    if (this.playerInfo.some((p) => p.hands.some(([h, b]) => b > 0 && h.value <= 21))) {
+      while (this.dealerShouldHit()) {
+        const card = m.get()
+        this.dealerHand.addCard(card)
+        this.consumeCard(card)
+      }
     }
 
     const history: BlackjackGameHistory = {
@@ -437,27 +546,71 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       players: [],
     }
 
-    const dealerBJ = this.dealerHand.value === 21 && this.dealerHand.cards.length < 3
+    const dealerBJ = this.dealerHand.isNaturalBlackjack(false)
 
     for (const p of this.playerInfo) {
       const c = this.clients[p.owner]
+
+      let scoreChange = 0n
+
+      const hands = p.hands.map(([hand, bet]): HandBetOutcome => {
+        let outcome = BlackjackOutcome.PUSH
+
+        if (bet < 0) {
+          outcome = BlackjackOutcome.SURRENDERED
+          scoreChange += bet >> 1n
+          c.addLoss()
+        } else if (hand.value > 21) {
+          outcome = BlackjackOutcome.BUST
+          scoreChange -= bet
+          c.addLoss()
+        } else if (hand.isNaturalBlackjack(p.hands.length > 1)) {
+          if (dealerBJ) {
+            c.addTie()
+          } else {
+            outcome = BlackjackOutcome.BLACKJACK_NATURAL
+            scoreChange += bet + (bet >> 1n)
+            c.addWin()
+          }
+        } else if (hand.value === this.dealerHand.value) {
+          c.addTie()
+        } else if (this.dealerHand.value > 21 || hand.value > this.dealerHand.value) {
+          outcome = BlackjackOutcome.WIN
+          scoreChange += bet
+          c.addWin()
+        } else {
+          outcome = BlackjackOutcome.LOSE
+          scoreChange -= bet
+          c.addLoss()
+        }
+
+        return [hand, bet, outcome]
+      })
+
+      const insuranceOutcome = dealerBJ ? p.insurance : -p.insurance
+      scoreChange += insuranceOutcome
+
+      if (this.mode.optInverted) {
+        scoreChange = -scoreChange
+      }
+
+      c.balance += scoreChange
+      if (c.balance < MIN_BALANCE) {
+        c.balance = MIN_BALANCE
+      } else if (c.balance > MAX_BALANCE) {
+        c.balance = MAX_BALANCE
+      }
 
       history.players.push({
         name: c.formatName(),
         isMe: c === this.localClient,
 
-        hands: p.hands.map(([hand, bet]) => {
-          return [hand, bet,
-            hand.value > 21 ? BlackjackOutcome.BUST :
-              hand.isNaturalBlackjack(p.hands.length > 1) ?
-                dealerBJ ? BlackjackOutcome.PUSH : BlackjackOutcome.BLACKJACK_NATURAL
-                : (this.dealerHand.value === 21 || hand.value > this.dealerHand.value) ? BlackjackOutcome.WIN : BlackjackOutcome.LOSE]
-        }),
+        hands,
         insurance: p.insurance,
-        insuranceOutcome: 0,
+        insuranceOutcome: insuranceOutcome,
 
-        score: 0,
-        scoreChange: 0,
+        score: c.balance,
+        scoreChange,
       })
     }
 
@@ -466,13 +619,20 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         name: d.ownerName,
         isMe: d.isMe,
 
-        hands: d.hands.map(([hand, bet]) => {
-          return [hand, bet, hand.value > 21 ? BlackjackOutcome.BUST : hand.isNaturalBlackjack(d.hands.length > 1) ? BlackjackOutcome.PUSH : BlackjackOutcome.LOSE]
-        }),
+        hands: d.hands.map(([hand, bet]) => [
+          hand, bet,
+          bet < 0
+            ? BlackjackOutcome.SURRENDERED
+            : hand.value > 21
+              ? BlackjackOutcome.BUST
+              : hand.isNaturalBlackjack(d.hands.length > 1)
+                ? BlackjackOutcome.PUSH
+                : BlackjackOutcome.LOSE
+        ]),
         insurance: d.insurance,
-        insuranceOutcome: 0,
+        insuranceOutcome: -d.insurance,
 
-        score: 0,
+        score: d.score,
         scoreChange: d.scoreChange,
       })
     }
@@ -482,10 +642,22 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
   protected eliminatePlayer (_m: ByteReader, d: BlackjackDiscInfo, pn: number, p: BlackjackPlayerInfo, c: BlackjackClient): boolean {
     d.insurance = p.insurance
-    const hands = (d.hands = p.hands)
-    const handsLost = hands.filter(([hand, bet]) => bet > 0 && !hand.isNaturalBlackjack(hands.length > 1))
-    c.loss += handsLost.length
-    d.scoreChange = -sum(handsLost.map(([_, bet]) => bet))
+    let scoreChange = -p.insurance
+    for (const [hand, bet] of d.hands = p.hands) {
+      if (bet < 0) {
+        scoreChange += bet >> 1n
+        c.addLoss()
+      } else if (!hand.isNaturalBlackjack(p.hands.length > 1)) {
+        scoreChange -= bet
+        c.addLoss()
+      } else {
+        c.addTie()
+      }
+    }
+    if (this.mode.optInverted) {
+      scoreChange = -scoreChange
+    }
+    d.score = (c.balance += (d.scoreChange = scoreChange))
 
     if (!this.mode.optSpeed && this.gamePhase !== GamePhase.BET && pn === this.turnIndex) {
       this.setTimer(this.mode.optTurnTime)
@@ -509,13 +681,15 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   private consumeCard (card: CardValue): void {
     if (!this.mode.optDecks) return
 
-    if (this.cardCountShoeHasHole && this.cardCountHole[card]) {
-      this.cardCountHole[card]--
-      this.cardCountHole[CardValue.NUM]--
-    }
-
     this.cardCountShoe[card]--
     this.cardCountShoe[CardValue.NUM]--
+
+    if (this.cardCountShoeHasHole && this.cardCountHole[card] > this.cardCountShoe[card]) {
+      const diff = this.cardCountHole[card] - this.cardCountShoe[card]
+      this.cardCountHole[card] -= diff
+      this.cardCountHole[CardValue.NUM] -= diff
+    }
+
     this.checkHoleCard()
     this.checkRefillShoe()
   }
@@ -555,7 +729,7 @@ export const enum GamePhase {
   POST,
 }
 
-const enum CardValue {
+export const enum CardValue {
   Ace,
   N2,
   N3,
@@ -580,11 +754,11 @@ function readHand (m: ByteReader): Hand {
 }
 
 function readHandBet (m: ByteReader): HandBet {
-  return [readHand(m), m.getInt()]
+  return [readHand(m), m.getInt64()]
 }
 
 function readHandBets (m: ByteReader): HandBet[] {
-  const MAX_HANDS = 512
+  const MAX_HANDS = 256
 
   const length = Math.min(m.getInt(), MAX_HANDS)
   return Array.from({ length }).map(() => readHandBet(m))

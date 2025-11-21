@@ -1,7 +1,7 @@
 ---
 title: Rules for Blackjack
 date: "2020-10-03 15:24:00 -0600"
-mdate: 2025-11-16 16:00:00 -0700
+mdate: 2025-11-21 12:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'blackjack') }}
@@ -32,7 +32,7 @@ mdate: 2025-11-16 16:00:00 -0700
   <li><b>Post-Play Phase</b>: If applicable, players get an offer to buy insurance after the Play Phase instead of the Deal Phase.
   <li><b>End Phase</b>:
     The dealer reveals the face-down hole card.
-    If not all players have busted, the dealer hits until the hand value is at least 17 (possibly hits on soft 17).
+    Unless all hands are busted or surrendered, the dealer hits until the hand value is at least 17 (possibly hits on soft 17).
     Every hand is compared against the dealer's, and payouts are processed.
 </ol>
 
@@ -111,10 +111,10 @@ mdate: 2025-11-16 16:00:00 -0700
 <ul>
   <li><strong>No Hole Card</strong>: the dealer does not have a hole card
   <li><strong>Hole Card, No Peek</strong>: the dealer has a hole card but does not peek
-  <li><strong>Hole Card, Late Surrender</strong> <em>(default)</em>: the dealer peeks after dealing
-  <li><strong>Hole Card, Early Surrender</strong>: the dealer peeks after early surrender
+  <li><strong>Hole Card, Peek Early</strong> <em>(default)</em>: the dealer peeks after dealing and insurance offer (late surrender)
+  <li><strong>Hole Card, Peek Late</strong>: the dealer peeks after early surrender
 </ul>
-<p>Typically Late Surrender in American games and No Hole Card in European games.</p>
+<p>Typically Hole Card Peek Early in American games and No Hole Card in European games.</p>
 <p>Later options decrease house edge.</p>
 
 <h2>Simple <small>(default: off)</small></h2>
@@ -135,8 +135,8 @@ mdate: 2025-11-16 16:00:00 -0700
 <h2>Surrender After Split <small>(default: off)</small></h2>
 <p>After splitting, allow surrendering each hand separately. Decreases house edge.</p>
 
-<h2>Surrender During Play <small>(default: off)</small></h2>
-<p>Allow surrendering a hand that has more than two cards. Decreases house edge.</p>
+<h2>Surrender After Hit <small>(default: off)</small></h2>
+<p>Allow surrendering a hand of more than two cards. Decreases house edge.</p>
 
 <h2>Surrender</h2>
 <p>Surrendering is allowed</p>

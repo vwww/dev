@@ -20,7 +20,7 @@ export const roomCreateOptions = [
   ]],
   ['optSplitDouble', 'b', true, 'Double After Split', '(decreases house edge)'],
   ['optSplitSurrender', 'b', false, 'Surrender After Split', '(decreases house edge)'],
-  ['optSurrenderPlay', 'b', false, 'Surrender During Play', '(decreases house edge)'],
+  ['optHitSurrender', 'b', false, 'Surrender After Hit', '(decreases house edge)'],
   ['optSurrender', 'e', 2, 'Surrender', 'when is surrendering allowed? (later options decrease house edge)', [
     'never',
     'dealer shows non-ace',
@@ -50,7 +50,7 @@ export function getGameModeString (mode: BlackjackMode): string {
       mode.optDouble +
       (mode.optSplitDouble ? 'D' : 'd') +
       (mode.optSplitSurrender ? 'S' : 's') +
-      (mode.optSurrenderPlay ? 'P' : 'p') +
+      (mode.optHitSurrender ? 'P' : 'p') +
       mode.optSurrender +
       '/' + mode.optSplitNonAce +
       '/' + mode.optSplitAce +

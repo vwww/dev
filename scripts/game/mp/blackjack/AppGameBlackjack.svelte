@@ -64,10 +64,11 @@ let roomList: PIORoomList
 
     <Leaderboard {leaderboard} {localClient} columns={[
       ['Balance', (p) => p.balance],
+      ['Wins', (p) => [p.wins, p.total]],
+      ['Ties', (p) => [p.ties, p.total]],
+      ['Loss', (p) => [p.loss, p.total]],
       ['Score', (p) => p.wins - p.loss],
-      ['Wins', (p) => p.wins],
-      ['Ties', (p) => p.ties],
-      ['Loss', (p) => p.loss],
+      ['Streak', (p) => p.streak],
     ]} />
   </div>
 
