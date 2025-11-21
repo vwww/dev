@@ -71,8 +71,6 @@
       - name: Rules
         href: game/cheat_rules
         class: secondary
-    badges:
-      - [success, NEW]
   - name: President
     desc: Shed your cards first to be the President!
     href: game/president
@@ -80,8 +78,6 @@
       - name: Rules
         href: game/president_rules
         class: secondary
-    badges:
-      - [success, NEW]
   - name: Discard
     desc: Isomorphism of Love Letter
     href: game/discard
