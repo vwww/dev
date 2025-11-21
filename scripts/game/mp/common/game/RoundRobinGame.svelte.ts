@@ -89,10 +89,13 @@ export abstract class RoundRobinGame<
 
       discInfo.push(p)
     }
-    this.playerDiscInfo = discInfo
-    this.discIndex = m.getInt()
-    if (this.discIndex < 0 || this.discIndex > this.playerDiscInfo.length) {
-      throw new Error('bad discIndex')
+    if ((this.playerDiscInfo = discInfo).length) {
+      this.discIndex = m.getInt()
+      if (this.discIndex < 0 || this.discIndex > this.playerDiscInfo.length) {
+        throw new Error('bad discIndex')
+      }
+    } else {
+      this.discIndex = 0
     }
   }
 
