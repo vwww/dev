@@ -72,7 +72,7 @@ function handleKeydown (event: KeyboardEvent): void {
         onclick={() => chatState.setHoldMode(holdMode = 0)}>{queueLength} new</button>
       <button class="btn btn-sm btn-danger"
         class:d-none={!messages.length}
-        onclick={() => chatState.clear()}>Clear</button>
+        onclick={() => (chatState.clear(), holdMode = 0)}>Clear</button>
     </div>
   </div>
   <ul

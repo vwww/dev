@@ -54,6 +54,7 @@ export default class ChatState {
   clear (): void {
     this.messageBuf.length = 0
     this.queue.length = 0
+    this.holdMode = HoldMode.None
     this.queueLength = 0
     this.invalidate()
   }
