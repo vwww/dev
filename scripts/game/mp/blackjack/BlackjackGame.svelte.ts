@@ -500,7 +500,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           this.cardCountHole[impossible] = 0
         }
       }
-      this.gamePhase = !this.mode.opt21 && (dealerFaceUp === CardValue.Ace ||
+      this.gamePhase = !this.mode.opt21 && (!this.mode.optInsureLate && dealerFaceUp === CardValue.Ace ||
         this.mode.optSurrender && this.mode.optDealer === BlackjackModeDealer.HOLE1)
           ? GamePhase.PRE : GamePhase.PLAY
       return this.setTimer(this.mode.optTurnTime)

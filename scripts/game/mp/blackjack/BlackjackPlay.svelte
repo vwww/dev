@@ -121,7 +121,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 <button class="btn btn{mode.opt21
                   || !mode.optHitSurrender && hand.cards.length > 2
                   || mode.optSurrender == BlackjackModeSurrender.OFF
-                  || mode.optSurrender == BlackjackModeSurrender.NOT_ACE && dealerHand.cards[1] === CardValue.Ace
+                  || mode.optSurrender == BlackjackModeSurrender.NOT_ACE && dealerHand.cards.at(-1) === CardValue.Ace
                   || handCount > 1 && !mode.optSplitSurrender
                     ? '-outline' : ''}-secondary btn-lg"
                   class:d-none={mode.opt21}
@@ -131,7 +131,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
           {:else}
             {#if dealerHand.cards.at(-1) === CardValue.Ace && (gamePhase === GamePhase.POST || !mode.optInsureLate)}
               {@const max = sum(localPlayer.hands.map(([_, b]) => b < 0 ? 0 : Number(b >> 1n)))}
-              {@const step = mode.optInsurePartial ? 1 : Number(localPlayer.bet)}
+              {@const step = mode.optInsurePartial ? 1 : Number(localPlayer.bet >> 1n)}
               <div>
                 Insurance Amount
                 <input type="number" class="form-control is-{gameState.pendingAmount === Number(localPlayer.insurance) ? '' : 'in'}valid" bind:value={gameState.pendingAmount} onchange={() => gameState.sendMoveInsurance()} min="0" {max} {step}>
@@ -146,7 +146,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                   class:disabled={
                     localPlayer.handIndex
                     || mode.optSurrender == BlackjackModeSurrender.OFF
-                    || mode.optSurrender == BlackjackModeSurrender.NOT_ACE && dealerHand.cards[1] === CardValue.Ace}
+                    || mode.optSurrender == BlackjackModeSurrender.NOT_ACE && dealerHand.cards.at(-1) === CardValue.Ace}
                   onclick={() => gameState.sendMove(BlackjackMove.SURRENDER)}>&#127987; Surrender</button>
               {/if}
             </div>
