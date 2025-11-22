@@ -63,7 +63,7 @@
         href: game/blackjack_rules
         class: secondary
     badges:
-      - [secondary, TODO]
+      - [success, NEW]
   - name: Cheat
     desc: Shed cards, possibly dishonestly.
     href: game/cheat
