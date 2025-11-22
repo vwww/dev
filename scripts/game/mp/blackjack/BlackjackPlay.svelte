@@ -55,7 +55,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
     active={gameState.room} />
 {/if}
 
-<div class="my-2 text-center">
+<div class="my-3 text-center">
   Game Phase: { roundState === GameState.ACTIVE ? ['Bet', 'Pre-Play', 'Play', 'Post-Play'][gamePhase] : 'Inactive' }
   {#if localClient.balance || localClient.active}
     <br>
@@ -74,8 +74,8 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
     </div>
   {/if}
 
-  <div class="my-2">
-    {#if localPlayer}
+  {#if localPlayer}
+    <div class="my-3">
       {#if gamePhase === GamePhase.BET}
         {@const max = Math.max(2, localClient.balance < -100 ? 100
           : localClient.balance < (Number(MAX_BALANCE) - 200) / 2
@@ -157,76 +157,84 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
           {/if}
         {/if}
       {/if}
-    {/if}
-  </div>
-
-  <b>Active Players</b>
-  <ol class="list-unstyled">
-    {#each playerInfo as p, pi}
-      {@const isMe = gameState.playerIsMe(p)}
-      {@const outline = isMe ? '' : '-outline'}
-      <li>
-        <span class="badge text-bg{outline}-secondary">{gameState.formatPlayerName(p)}</span>
-        {#if gamePhase !== GamePhase.PLAY}
-          <span class="badge text-bg-{p.ready ? '' : 'outline-'}info">{p.ready ? 'READY' : 'UNREADY'}</span>
-        {/if}
-        {#if gamePhase === GamePhase.BET}
-          <span class="badge text-bg-outline-secondary">{p.bet}</span>
-        {:else}
-          {#if p.insurance}
-            Insurance <span class="badge text-bg-outline-secondary">{p.insurance}</span>
-          {/if}
-          <ol class="list-unstyled">
-            {#each p.hands as [hand, bet], hi}
-              <li>
-                <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
-                {#if (mode.optSpeed || pi === turnIndex) && hi === p.handIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
-              </li>
-            {/each}
-          </ol>
-        {/if}
-      </li>
-    {:else}
-      <li>No players!</li>
-    {/each}
-  </ol>
-
-  {#if playerDiscInfo.length}
-    <b>Disconnected Players</b>
-    <ol class="list-unstyled">
-      {#each playerDiscInfo as p}
-        <li>
-          <span class="badge text-bg{p.isMe ? '' : '-outline'}-secondary">{p.ownerName}</span>
-          <span class="badge text-bg-{p.scoreChange ? p.scoreChange < 0 ? 'danger' : 'success' : 'warning'}">{p.scoreChange >= 0 ? '+' : ''}{p.scoreChange}</span> &rarr; {p.score}
-          <ol class="list-unstyled">
-            {#if p.insurance}
-              <li>Insurance lost <span class="badge text-bg-outline-danger">-{p.insurance}</span></li>
-            {/if}
-            {#each p.hands as [hand, bet]}
-              <li>
-                <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
-                {#if bet < 0}
-                  <span class="badge text-bg-outline-secondary">SURRENDERED</span>
-                  <span class="badge text-bg-outline-danger">{bet >> 1n}</span>
-                {:else if hand.value > 21}
-                  <span class="badge text-bg-secondary">BUST</span>
-                  <span class="badge text-bg-outline-danger">-{bet}</span>
-                {:else if hand.isNaturalBlackjack(p.hands.length > 1)}
-                  <span class="badge text-bg-warning">PUSH</span>
-                  <span class="badge text-bg-outline-secondary">+0</span>
-                {:else}
-                  <span class="badge text-bg-danger">LOSE</span>
-                  <span class="badge text-bg-outline-danger">-{bet}</span>
-                {/if}
-              </li>
-            {/each}
-          </ol>
-        </li>
-      {/each}
-    </ol>
+    </div>
   {/if}
+
+  <div class="text-center">
+    <div class="d-inline-block text-start">
+      <b>Active Players</b>
+      <ol class="list-unstyled">
+        {#each playerInfo as p, pi}
+          {@const isMe = gameState.playerIsMe(p)}
+          {@const outline = isMe ? '' : '-outline'}
+          <li>
+            <span class="badge text-bg{outline}-secondary">{gameState.formatPlayerName(p)}</span>
+            {#if gamePhase !== GamePhase.PLAY}
+              <span class="badge text-bg-{p.ready ? '' : 'outline-'}info">{p.ready ? 'READY' : 'UNREADY'}</span>
+            {/if}
+            {#if gamePhase === GamePhase.BET}
+              <span class="badge text-bg-outline-secondary">{p.bet}</span>
+            {:else}
+              {#if p.insurance}
+                Insurance <span class="badge text-bg-outline-secondary">{p.insurance}</span>
+              {/if}
+              <ol class="list-unstyled">
+                {#each p.hands as [hand, bet], hi}
+                  <li>
+                    <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
+                    {#if (mode.optSpeed || pi === turnIndex) && hi === p.handIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
+                  </li>
+                {/each}
+              </ol>
+            {/if}
+          </li>
+        {:else}
+          <li>No players!</li>
+        {/each}
+      </ol>
+
+      {#if playerDiscInfo.length}
+        <b>Disconnected Players</b>
+        <ol class="list-unstyled">
+          {#each playerDiscInfo as p}
+            <li>
+              <span class="badge text-bg{p.isMe ? '' : '-outline'}-secondary">{p.ownerName}</span>
+              <span class="badge text-bg-{p.scoreChange ? p.scoreChange < 0 ? 'danger' : 'success' : 'warning'}">{p.scoreChange >= 0 ? '+' : ''}{p.scoreChange}</span> &rarr; {p.score}
+              <ol class="list-unstyled">
+                {#if p.insurance}
+                  <li>Insurance lost <span class="badge text-bg-outline-danger">-{p.insurance}</span></li>
+                {/if}
+                {#each p.hands as [hand, bet]}
+                  <li>
+                    <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
+                    {#if bet < 0}
+                      <span class="badge text-bg-outline-secondary">SURRENDERED</span>
+                      <span class="badge text-bg-outline-danger">{bet >> 1n}</span>
+                    {:else if hand.value > 21}
+                      <span class="badge text-bg-secondary">BUST</span>
+                      <span class="badge text-bg-outline-danger">-{bet}</span>
+                    {:else if hand.isNaturalBlackjack(p.hands.length > 1)}
+                      <span class="badge text-bg-warning">PUSH</span>
+                      <span class="badge text-bg-outline-secondary">+0</span>
+                    {:else}
+                      <span class="badge text-bg-danger">LOSE</span>
+                      <span class="badge text-bg-outline-danger">-{bet}</span>
+                    {/if}
+                  </li>
+                {/each}
+              </ol>
+            </li>
+          {/each}
+        </ol>
+      {/if}
+    </div>
+  </div>
 {:else if result}
-  <BlackjackHistory {result} />
+  <div class="my-3 text-center">
+    <div class="d-inline-block text-start">
+      <BlackjackHistory {result} />
+    </div>
+  </div>
 {/if}
 
 <div class="mt-2">
