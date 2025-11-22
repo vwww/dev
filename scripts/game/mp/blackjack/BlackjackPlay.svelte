@@ -57,6 +57,10 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
 
 <div class="my-2 text-center">
   Game Phase: { roundState === GameState.ACTIVE ? ['Bet', 'Pre-Play', 'Play', 'Post-Play'][gamePhase] : 'Inactive' }
+  {#if localClient.balance || localClient.active}
+    <br>
+    Balance: <span class="badge text-bg-secondary">{localClient.balance}</span>
+  {/if}
 </div>
 
 {#if roundState === GameState.ACTIVE}
