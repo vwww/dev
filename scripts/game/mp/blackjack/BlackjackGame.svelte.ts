@@ -442,7 +442,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   }
 
   protected processEndRound (m: ByteReader): void {
-    if (this.gamePhase === GamePhase.BET) {
+    EARLY_END: if (this.gamePhase === GamePhase.BET) {
       this.pendingAmount = 0
 
       // hands
@@ -477,53 +477,45 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         this.consumeCard(dealerFaceUp)
       }
 
-      let earlyEnd = false
-
       // skip finished players
       while (this.playerInfo[this.turnIndex].handIndex) {
         if (++this.turnIndex === this.playerInfo.length) {
-          earlyEnd = true
-          break
+          break EARLY_END
         }
       }
 
       // peek early (late surrender, no insurance) result
-      if (!earlyEnd && (this.mode.opt21
+      if (this.mode.opt21
         ? this.mode.optDealer >= BlackjackModeDealer.HOLE0 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)
         : this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ten
-      )) {
+      ) {
         if (m.get()) {
-          earlyEnd = true
+          break EARLY_END
         } else if (this.cardCountShoeHasHole) {
           const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
           this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
           this.cardCountHole[impossible] = 0
         }
       }
-      if (!earlyEnd) {
-        this.gamePhase = !this.mode.opt21 && (dealerFaceUp === CardValue.Ace ||
-          this.mode.optSurrender && this.mode.optDealer === BlackjackModeDealer.HOLE1)
-            ? GamePhase.PRE : GamePhase.PLAY
-        return this.setTimer(this.mode.optTurnTime)
-      }
+      this.gamePhase = !this.mode.opt21 && (dealerFaceUp === CardValue.Ace ||
+        this.mode.optSurrender && this.mode.optDealer === BlackjackModeDealer.HOLE1)
+          ? GamePhase.PRE : GamePhase.PLAY
+      return this.setTimer(this.mode.optTurnTime)
     } else if (this.gamePhase === GamePhase.PRE) {
       // peek late (early surrender) result
       const dealerFaceUp = this.dealerHand.cards.at(-1)
-      let earlyEnd = false
       if (this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ace
         || this.mode.optDealer === BlackjackModeDealer.HOLE1 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)) {
         if (m.get()) {
-          earlyEnd = true
+          break EARLY_END
         } else if (this.cardCountShoeHasHole) {
           const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
           this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
           this.cardCountHole[impossible] = 0
         }
       }
-      if (!earlyEnd) {
-        this.gamePhase = GamePhase.PLAY
-        return this.setTimer(this.mode.optTurnTime)
-      }
+      this.gamePhase = GamePhase.PLAY
+      return this.setTimer(this.mode.optTurnTime)
     } else if (this.gamePhase === GamePhase.PLAY) {
       if (this.mode.optInsureLate && this.dealerHand.cards.at(-1) === CardValue.Ace) {
         this.gamePhase = GamePhase.POST
