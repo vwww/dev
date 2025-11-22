@@ -59,7 +59,15 @@ let roomList: PIORoomList
     <GameHistoryCard
       canClear={pastGames.length}
       onClear={() => gameState.clearHistory()}>
-      <BlackjackHistory results={pastGames} />
+      <ul class="list-group list-group-flush overflow-auto" style="max-height: 15rem">
+        {#each pastGames as result}
+          <li class="list-group-item">
+            <BlackjackHistory {result} />
+          </li>
+        {:else}
+          <li class="list-group-item">No past games!</li>
+        {/each}
+      </ul>
     </GameHistoryCard>
 
     <Leaderboard {leaderboard} {localClient} columns={[

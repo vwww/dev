@@ -220,6 +220,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   pendingAmount = $state(0)
   localPlayer: BlackjackPlayerInfo | undefined = $state()
 
+  result: BlackjackGameHistory | undefined = $state()
+
   override canMove = $derived(this.playing && (this.gamePhase !== GamePhase.PLAY || this.mode.optSpeed || this.playerIsMe(this.playerInfo[this.turnIndex])))
 
   get ROUND_TIME () { return this.mode.optTurnTime }
@@ -294,6 +296,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     }
 
     this.localPlayer = undefined
+    this.result = undefined
   }
 
   protected processPlayerInfo (m: ByteReader, p: BlackjackPlayerInfo): void {
@@ -640,7 +643,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       })
     }
 
-    this.addHistory(history)
+    this.addHistory(this.result = history)
   }
 
   protected eliminatePlayer (_m: ByteReader, d: BlackjackDiscInfo, pn: number, p: BlackjackPlayerInfo, c: BlackjackClient): boolean {
