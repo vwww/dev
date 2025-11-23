@@ -1,6 +1,6 @@
 import { formatHexColor } from '@/util'
 import { type IConnector, ReadyState } from './IConnector'
-import { type IConnectorCallbacks } from './IConnectorCallbacks'
+import type { IConnectorCallbacks } from './IConnectorCallbacks'
 
 import '@/vendor/PlayerIOClient.js'
 

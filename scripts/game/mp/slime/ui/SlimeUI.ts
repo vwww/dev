@@ -1,6 +1,6 @@
 import { $idA, formatHexColor } from '@/util'
 import { CanvasGame } from '@gmc/ui/CanvasGame'
-import { type ISlimeUICallbacks } from './IConnectorCallbacks'
+import type { ISlimeUICallbacks } from './IConnectorCallbacks'
 import { SlimeInput } from './SlimeInput'
 
 export class SlimeUI {

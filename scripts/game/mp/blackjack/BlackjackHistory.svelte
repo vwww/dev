@@ -1,7 +1,7 @@
 <script lang="ts">
 import { formatDuration } from '@gmc/game/common'
 
-import { type BlackjackGameHistory } from './BlackjackGame.svelte'
+import type { BlackjackGameHistory } from './BlackjackGame.svelte'
 import BlackjackHand from './BlackjackHand.svelte'
 import BlackjackHandBetOutcome from './BlackjackHandBetOutcome.svelte'
 import BlackjackScoreChange from './BlackjackScoreChange.svelte'

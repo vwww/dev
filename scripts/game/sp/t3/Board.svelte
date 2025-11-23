@@ -2,7 +2,7 @@
 import { remapPathCount } from '@gc/t3/ai'
 import { Player, Winner, type WinnerMap, winnerMapToNum } from '@gc/t3/game'
 
-import { type GetMemoType } from './AppGameT3.svelte'
+import type { GetMemoType } from './AppGameT3.svelte'
 import Board from '@gc/t3/Board.svelte'
 import BoardCell from '@gc/t3/BoardCell.svelte'
 
