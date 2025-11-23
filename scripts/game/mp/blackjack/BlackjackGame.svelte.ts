@@ -812,7 +812,7 @@ function newTotalCardCount (decks: number): CardCountTotal {
 }
 
 function readCardCount (m: ByteReader): CardCountTotal {
-  const v = Array.from({ length: CardValue.NUM }, () => m.get())
+  const v = Array.from({ length: CardValue.NUM }, () => Number(m.getUint64()))
   v.push(sum(v))
   return v as CardCountTotal
 }
