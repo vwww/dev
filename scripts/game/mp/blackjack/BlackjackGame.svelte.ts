@@ -618,7 +618,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
         hands,
         insurance: p.insurance,
-        insuranceOutcome: insuranceOutcome,
+        insuranceOutcome,
 
         score: c.balance,
         scoreChange,

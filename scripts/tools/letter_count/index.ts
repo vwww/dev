@@ -105,7 +105,7 @@ const charts = chartInfos.map((chartOptions, i) => {
     plotOptions: {
       [chartOptions.type]: {
         point: {
-          events: events,
+          events,
         },
       },
     },

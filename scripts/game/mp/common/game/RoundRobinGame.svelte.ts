@@ -120,7 +120,7 @@ export abstract class RoundRobinGame<
     this.processRoundStartInfo(m)
   }
 
-  protected abstract eliminatePlayer (m: ByteReader, d: D, pn: number, p: P, C: C, early: boolean): boolean
+  protected abstract eliminatePlayer (m: ByteReader, d: D, pn: number, p: P, c: C, early: boolean): boolean
   protected processEliminateBase (m: ByteReader, early: boolean): void {
     // can't imply hand from unspectate/leave/endTurn, as
     // private info of leaving players might need to be revealed
