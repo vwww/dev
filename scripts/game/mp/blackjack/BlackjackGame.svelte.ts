@@ -425,12 +425,12 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         }
       }
 
-      if (this.mode.optSpeed) return
-
-      // skip surrendered/finished players
-      while (++this.turnIndex < this.playerInfo.length) {
-        if (this.playerInfo[this.turnIndex].handIndex < this.playerInfo[this.turnIndex].hands.length) {
-          return
+      if (!this.mode.optSpeed) {
+        // skip surrendered/finished players
+        while (++this.turnIndex < this.playerInfo.length) {
+          if (this.playerInfo[this.turnIndex].handIndex < this.playerInfo[this.turnIndex].hands.length) {
+            break
+          }
         }
       }
     }
