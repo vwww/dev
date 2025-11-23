@@ -518,6 +518,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       return this.setTimer(this.mode.optTurnTime)
     } else if (this.gamePhase === GamePhase.PLAY) {
       if (this.mode.optInsureLate && this.dealerHand.cards.at(-1) === CardValue.Ace) {
+        for (const p of this.playerInfo) {
+          p.handIndex = p.hands.length
+        }
         this.gamePhase = GamePhase.POST
         return this.setTimer(this.mode.optTurnTime)
       }
