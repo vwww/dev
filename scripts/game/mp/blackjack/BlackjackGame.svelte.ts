@@ -544,6 +544,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         break
       }
       case GamePhase.POST:
+      default:
         break
     }
 
