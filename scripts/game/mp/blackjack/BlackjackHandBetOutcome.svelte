@@ -11,7 +11,7 @@ const { hand: handBetOutcome }: Props = $props()
 const [hand, bet, outcome, delta] = $derived(handBetOutcome)
 </script>
 
-<span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} final />
+Bet <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} final />
 <span class="badge text-bg-{[
   'outline-secondary',
   'secondary',
