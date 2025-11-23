@@ -558,7 +558,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       }
     }
 
-    if (this.playerInfo.some((p) => p.hands.some(([h, b]) => b > 0 && (h.value < 21 || h.value === 21 && h.cards.length === 2)))) {
+    if (this.playerInfo.some((p) => p.hands.some(([h, b]) => b > 0 && (h.value < 21 || h.value === 21 && h.cards.length > 2)))) {
       while (this.dealerShouldHit()) {
         const card = m.get()
         this.dealerHand.addCard(card)
