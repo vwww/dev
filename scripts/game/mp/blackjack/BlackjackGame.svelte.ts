@@ -330,8 +330,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.mode.optInsureLate = !!(modeFlags0 & (1 << 7))
 
     if (!this.mode.opt21) {
-      this.mode.optSplitNonAce = m.get()
-      this.mode.optSplitAce = m.get()
+      this.mode.optSplitNonAce = Math.min(m.get(), 254)
+      this.mode.optSplitAce = Math.min(m.get(), 254)
       const modeFlags1 = m.get()
       this.mode.optDouble = Math.min(modeFlags1 & 3, BlackjackModeDouble.NUM - 1)
       this.mode.optSurrender = Math.min((modeFlags0 >> 2) & 3, BlackjackModeSurrender.NUM - 1)
@@ -785,10 +785,7 @@ function readHandBet (m: ByteReader): HandBet {
 }
 
 function readHandBets (m: ByteReader): HandBet[] {
-  const MAX_HANDS = 256
-
-  const length = Math.min(m.getInt(), MAX_HANDS)
-  return Array.from({ length }).map(() => readHandBet(m))
+  return Array.from({ length: m.get() }).map(() => readHandBet(m))
 }
 
 type CardCount = Repeat<number, CardValue.NUM>
