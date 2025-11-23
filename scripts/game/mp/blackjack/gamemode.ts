@@ -4,7 +4,7 @@ export const roomCreateOptions = [
   ['optTurnTime', 'i', 20000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 5000, 60000],
   ['optSpeed', 'b', true, 'Speed', 'all players move at once'],
   ['optInverted', 'b', false, 'Inverted', 'negate balance changes'],
-  ['optDecks', 'i', 1, 'Decks', 'number of decks, 0 is treated as infinity (increases house edge)', 0, 255],
+  ['optDecks', 'I', 1, 'Decks', 'number of decks, 0 is treated as infinity (increases house edge)', 0, 2251799813685248],
   ['optDealerHitSoft', 'b', true, 'Dealer Hits on Soft 17', '(increases house edge)'],
   ['optDealer', 'e', 2, 'Dealer Hole Card and Peek', '(later options decrease house edge)', [
     'off',

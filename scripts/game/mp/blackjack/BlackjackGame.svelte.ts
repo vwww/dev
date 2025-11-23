@@ -1,4 +1,4 @@
-import { clamp, sum, type Repeat } from '@/util'
+import { clamp, sumB, type Repeat } from '@/util'
 import { ByteReader } from '@gmc/game/ByteReader'
 import { filterChat } from '@gmc/game/CommonGame.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
@@ -247,7 +247,7 @@ export const enum BlackjackMove {
   NUM,
 }
 
-// const MAX_DECKS = 255
+const MAX_DECKS = 1n << 51n
 export const MAX_BALANCE = 9_000_000_000_000_000
 const MIN_BALANCE = -MAX_BALANCE
 
@@ -318,7 +318,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
   protected processWelcomeMode (m: ByteReader): void {
     this.mode.optTurnTime = m.getInt()
-    this.mode.optDecks = m.get() // clamp(m.get(), 0, MAX_DECKS) // 1 byte exactly
+    this.mode.optDecks = clamp(m.getUint64(), 0n, MAX_DECKS)
     const modeFlags0 = m.get()
     this.mode.optSpeed = !!(modeFlags0 & (1 << 0))
     this.mode.optInverted = !!(modeFlags0 & (1 << 1))
@@ -551,7 +551,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           } else if (this.cardCountShoeHasHole) {
             const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
             this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
-            this.cardCountHole[impossible] = 0
+            this.cardCountHole[impossible] = 0n
           }
         }
         this.gamePhase = !this.mode.opt21 && (!this.mode.optInsureLate && dealerFaceUp === CardValue.Ace ||
@@ -576,7 +576,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           } else if (this.cardCountShoeHasHole) {
             const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
             this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
-            this.cardCountHole[impossible] = 0
+            this.cardCountHole[impossible] = 0n
           }
         }
         this.gamePhase = GamePhase.PLAY
@@ -729,7 +729,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     if (holeCard < CardValue.NUM) {
       this.cardCountShoeHasHole = false
 
-      this.cardCountHole[holeCard] = this.cardCountHole[CardValue.NUM] = 1
+      this.cardCountHole[holeCard] = this.cardCountHole[CardValue.NUM] = 1n
 
       this.cardCountShoe[holeCard]--
       this.cardCountShoe[CardValue.NUM]--
@@ -788,29 +788,29 @@ function readHandBets (m: ByteReader): HandBet[] {
   return Array.from({ length: m.get() }).map(() => readHandBet(m))
 }
 
-type CardCount = Repeat<number, CardValue.NUM>
+type CardCount = Repeat<bigint, CardValue.NUM>
 
-export type CardCountTotal = [...CardCount, number]
+export type CardCountTotal = [...CardCount, bigint]
 
 function newZeroCardCount (): CardCountTotal {
   return [
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0,
-    0,
+    0n, 0n, 0n, 0n, 0n,
+    0n, 0n, 0n, 0n, 0n,
+    0n,
   ]
 }
 
-function newTotalCardCount (decks: number): CardCountTotal {
-  const normal = 4 * decks || 1
+function newTotalCardCount (decks: bigint): CardCountTotal {
+  const normal = 4n * decks || 1n
   return [
     normal, normal, normal, normal, normal,
-    normal, normal, normal, normal, 4 * normal,
-    13 * normal
+    normal, normal, normal, normal, 4n * normal,
+    13n * normal
   ]
 }
 
 function readCardCount (m: ByteReader): CardCountTotal {
-  const v = Array.from({ length: CardValue.NUM }, () => Number(m.getUint64()))
-  v.push(sum(v))
+  const v = Array.from({ length: CardValue.NUM }, () => m.getUint64())
+  v.push(sumB(v))
   return v as CardCountTotal
 }
