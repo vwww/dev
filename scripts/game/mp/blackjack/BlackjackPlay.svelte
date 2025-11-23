@@ -183,14 +183,14 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 {#each p.hands as [hand, bet], hi}
                   <li>
                     <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
-                    {#if mode.optSpeed || pi <= turnIndex}
+                    {#if mode.optDealer >= BlackjackModeDealer.HOLE0 && hand.isNaturalBlackjack(p.hands.length > 1)}
+                      <span class="badge text-bg-primary">BLACKJACK</span>
+                    {:else if mode.optSpeed || pi <= turnIndex}
                       {#if hi < p.handIndex}
                         {#if bet < 0}
                           <span class="badge text-bg-outline-secondary">SURRENDERED</span>
                         {:else if hand.value > 21}
                           <span class="badge text-bg-secondary">BUST</span>
-                        {:else if mode.optDealer >= BlackjackModeDealer.HOLE0 && hand.isNaturalBlackjack(p.hands.length > 1)}
-                          <span class="badge text-bg-primary">BLACKJACK</span>
                         {:else}
                           <span class="badge text-bg-outline-info">PENDING</span>
                         {/if}
