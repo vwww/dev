@@ -39,13 +39,13 @@ function scoreBadgeClass (s: number | bigint): string {
               <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} final />
               {#if outcome === BlackjackOutcome.SURRENDERED}
                 <span class="badge text-bg-outline-secondary">SURRENDERED</span>
-                <span class="badge text-bg-outline-danger">{bet >> 1n}</span>
+                <span class="badge text-bg-outline-danger">{bet / 2}</span>
               {:else if outcome === BlackjackOutcome.BUST}
                 <span class="badge text-bg-secondary">BUST</span>
                 <span class="badge text-bg-outline-danger">-{bet}</span>
               {:else if outcome === BlackjackOutcome.BLACKJACK_NATURAL}
                 <span class="badge text-bg-primary">BLACKJACK</span>
-                <span class="badge text-bg-outline-success">+{bet + (bet >> 1n)}</span>
+                <span class="badge text-bg-outline-success">+{bet * 1.5}</span>
               {:else if outcome === BlackjackOutcome.WIN}
                 <span class="badge text-bg-success">WIN</span>
                 <span class="badge text-bg-outline-success">+{bet}</span>

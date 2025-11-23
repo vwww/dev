@@ -42,7 +42,7 @@ const enum C2S {
 }
 
 class BlackjackClient extends RoundRobinClient {
-  balance = $state(0n)
+  balance = $state(0)
   streak = $state(0)
   wins = $state(0)
   loss = $state(0)
@@ -50,7 +50,7 @@ class BlackjackClient extends RoundRobinClient {
   total = $derived(this.wins + this.loss + this.ties)
 
   resetScore () {
-    this.balance = 0n
+    this.balance = 0
     this.streak = 0
     this.wins = 0
     this.loss = 0
@@ -76,7 +76,7 @@ class BlackjackClient extends RoundRobinClient {
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 
-    this.balance = m.getInt64()
+    this.balance = Number(m.getInt64())
     this.streak = m.getInt()
     this.wins = m.getInt()
     this.loss = m.getInt()
@@ -119,24 +119,24 @@ export class Hand {
   }
 }
 
-type HandBet = [hand: Hand, bet: bigint]
+type HandBet = [hand: Hand, bet: number]
 type HandBetOutcome = [...HandBet, outcome: BlackjackOutcome]
 
 export class BlackjackPlayerInfo extends RRTurnPlayerInfo {
   hands: HandBet[] = $state([])
   handIndex = $state(0)
 
-  bet = $state(0n)
-  insurance = $state(0n)
+  bet = $state(0)
+  insurance = $state(0)
   ready = $state(false)
 }
 
 export class BlackjackDiscInfo extends RRTurnDiscInfo {
   hands: HandBet[] = []
 
-  insurance = 0n
-  score = 0n
-  scoreChange = 0n
+  insurance = 0
+  score = 0
+  scoreChange = 0
 }
 
 export interface BlackjackGameHistory {
@@ -150,11 +150,11 @@ export interface BlackjackGameHistoryPlayer {
   isMe?: boolean
 
   hands: HandBetOutcome[]
-  insurance: bigint
-  insuranceOutcome: bigint
+  insurance: number
+  insuranceOutcome: number
 
-  score: bigint
-  scoreChange: bigint
+  score: number
+  scoreChange: number
 }
 
 export const enum BlackjackOutcome {
@@ -199,7 +199,7 @@ export const enum BlackjackMove {
 }
 
 // const MAX_DECKS = 255
-export const MAX_BALANCE = 9_000_000_000_000_000n
+export const MAX_BALANCE = 9_000_000_000_000_000
 const MIN_BALANCE = -MAX_BALANCE
 
 export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlayerInfo, BlackjackDiscInfo, BlackjackGameHistory> {
@@ -305,17 +305,17 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     p.hands = readHandBets(m)
     p.handIndex = m.getInt()
     const flags = m.getUint64()
-    const v = flags >> 1n
-    p.bet = this.roundState === GameState.ACTIVE && this.gamePhase === GamePhase.BET ? v : 0n
-    p.insurance = this.roundState === GameState.ACTIVE && this.gamePhase !== GamePhase.BET ? v : 0n
+    const v = Number(flags >> 1n)
+    p.bet = this.roundState === GameState.ACTIVE && this.gamePhase === GamePhase.BET ? v : 0
+    p.insurance = this.roundState === GameState.ACTIVE && this.gamePhase !== GamePhase.BET ? v : 0
     p.ready = !!(flags & 1n)
   }
 
   protected processDiscInfo (m: ByteReader, p: BlackjackDiscInfo): void {
     p.hands = readHandBets(m)
-    p.insurance = m.getUint64()
-    p.score = m.getInt64()
-    p.scoreChange = m.getInt64()
+    p.insurance = Number(m.getUint64())
+    p.score = Number(m.getInt64())
+    p.scoreChange = Number(m.getInt64())
   }
 
   protected processRoundStartInfo (): void {
@@ -328,8 +328,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       const bet = Math.max(2, Math.min(Number(MAX_BALANCE - this.clients[p.owner].balance), 100))
       p.hands = []
       p.handIndex = 0
-      p.bet = BigInt(bet)
-      p.insurance = 0n
+      p.bet = bet
+      p.insurance = 0
       p.ready = false
       if (p.owner === this.localClient.cn) {
         this.localPlayer = p
@@ -385,7 +385,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     let handFinished: boolean | undefined
     switch (move) {
       case BlackjackMove.DOUBLE:
-        handBet[1] <<= 1n
+        handBet[1] *= 2
 
         handFinished = true
         // fallthrough
@@ -438,7 +438,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
   protected processEndTurnAmount (m: ByteReader): void {
     const p = this.playerInfo[m.getInt()]
-    p[this.gamePhase === GamePhase.BET ? 'bet' : 'insurance'] = m.getUint64()
+    p[this.gamePhase === GamePhase.BET ? 'bet' : 'insurance'] = Number(m.getUint64())
   }
 
   protected processEndTurnReady (m: ByteReader): void {
@@ -577,14 +577,14 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     for (const p of this.playerInfo) {
       const c = this.clients[p.owner]
 
-      let scoreChange = 0n
+      let scoreChange = 0
 
       const hands = p.hands.map(([hand, bet]): HandBetOutcome => {
         let outcome = BlackjackOutcome.PUSH
 
         if (bet < 0) {
           outcome = BlackjackOutcome.SURRENDERED
-          scoreChange += bet >> 1n
+          scoreChange += bet / 2
           c.addLoss()
         } else if (hand.value > 21) {
           outcome = BlackjackOutcome.BUST
@@ -595,7 +595,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
             c.addTie()
           } else {
             outcome = BlackjackOutcome.BLACKJACK_NATURAL
-            scoreChange += bet + (bet >> 1n)
+            scoreChange += bet * 1.5
             c.addWin()
           }
         } else if (hand.value === this.dealerHand.value) {
@@ -620,12 +620,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         scoreChange = -scoreChange
       }
 
-      c.balance += scoreChange
-      if (c.balance < MIN_BALANCE) {
-        c.balance = MIN_BALANCE
-      } else if (c.balance > MAX_BALANCE) {
-        c.balance = MAX_BALANCE
-      }
+      c.balance = clamp(c.balance + scoreChange, MIN_BALANCE, MAX_BALANCE)
 
       history.players.push({
         name: c.formatName(),
@@ -671,7 +666,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     let scoreChange = -p.insurance
     for (const [hand, bet] of d.hands = p.hands) {
       if (bet < 0) {
-        scoreChange += bet >> 1n
+        scoreChange += bet / 2
         c.addLoss()
       } else if (!hand.isNaturalBlackjack(p.hands.length > 1)) {
         scoreChange -= bet
@@ -780,7 +775,7 @@ function readHand (m: ByteReader): Hand {
 }
 
 function readHandBet (m: ByteReader): HandBet {
-  return [readHand(m), m.getInt64()]
+  return [readHand(m), Number(m.getInt64())]
 }
 
 function readHandBets (m: ByteReader): HandBet[] {

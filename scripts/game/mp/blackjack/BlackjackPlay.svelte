@@ -134,8 +134,8 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
             {/if}
           {:else}
             {#if dealerHand.cards.at(-1) === CardValue.Ace && (gamePhase === GamePhase.POST || !mode.optInsureLate)}
-              {@const max = sum(localPlayer.hands.map(([_, b]) => b < 0 ? 0 : Number(b >> 1n)))}
-              {@const step = mode.optInsurePartial ? 1 : Number(localPlayer.bet >> 1n)}
+              {@const max = sum(localPlayer.hands.map(([_, b]) => b < 0 ? 0 : Number(b / 2)))}
+              {@const step = mode.optInsurePartial ? 1 : Number(localPlayer.bet / 2)}
               <div>
                 Insurance Amount
                 <input type="number" class="form-control is-{gameState.pendingAmount === Number(localPlayer.insurance) ? '' : 'in'}valid" bind:value={gameState.pendingAmount} onchange={() => gameState.sendMoveInsurance()} min="0" {max} {step}>
@@ -209,7 +209,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                     <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
                     {#if bet < 0}
                       <span class="badge text-bg-outline-secondary">SURRENDERED</span>
-                      <span class="badge text-bg-outline-danger">{bet >> 1n}</span>
+                      <span class="badge text-bg-outline-danger">{bet / 2}</span>
                     {:else if hand.value > 21}
                       <span class="badge text-bg-secondary">BUST</span>
                       <span class="badge text-bg-outline-danger">-{bet}</span>
