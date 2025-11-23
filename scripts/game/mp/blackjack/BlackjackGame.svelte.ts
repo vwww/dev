@@ -533,6 +533,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
             p.handIndex = p.hands.length
           }
           this.gamePhase = GamePhase.POST
+        } else {
+          break EARLY_END
         }
       } else {
         break EARLY_END
