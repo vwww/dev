@@ -449,8 +449,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   protected processEndRound (m: ByteReader): void {
     this.setTimer(this.mode.optTurnTime)
 
-    EARLY_END: {
-      if (this.gamePhase === GamePhase.BET) {
+    END: switch (this.gamePhase) {
+      case GamePhase.BET: {
         this.pendingAmount = 0
 
         // hands
@@ -488,7 +488,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         // skip finished players
         while (this.playerInfo[this.turnIndex].handIndex) {
           if (++this.turnIndex === this.playerInfo.length) {
-            break EARLY_END
+            break END
           }
         }
 
@@ -498,7 +498,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           : this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ten
         ) {
           if (m.get()) {
-            break EARLY_END
+            break END
           } else if (this.cardCountShoeHasHole) {
             const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
             this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
@@ -509,11 +509,12 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           this.mode.optSurrender && this.mode.optDealer === BlackjackModeDealer.HOLE1)
             ? GamePhase.PRE : GamePhase.PLAY
         return
-      } else if (this.gamePhase === GamePhase.PRE) {
+      }
+      case GamePhase.PRE: {
         // skip surrendered players
         while (this.playerInfo[this.turnIndex].handIndex) {
           if (++this.turnIndex === this.playerInfo.length) {
-            break EARLY_END
+            break END
           }
         }
 
@@ -522,7 +523,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         if (this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ace
           || this.mode.optDealer === BlackjackModeDealer.HOLE1 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)) {
           if (m.get()) {
-            break EARLY_END
+            break END
           } else if (this.cardCountShoeHasHole) {
             const impossible = dealerFaceUp === CardValue.Ace ? CardValue.Ten : CardValue.Ace
             this.cardCountHole[CardValue.NUM] -= this.cardCountHole[impossible]
@@ -531,18 +532,16 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         }
         this.gamePhase = GamePhase.PLAY
         return
-      } else if (this.gamePhase === GamePhase.PLAY) {
+      }
+      case GamePhase.PLAY: {
         if (this.mode.optInsureLate && this.dealerHand.cards.at(-1) === CardValue.Ace) {
           for (const p of this.playerInfo) {
             p.handIndex = p.hands.length
           }
           this.gamePhase = GamePhase.POST
           return
-        } else {
-          break EARLY_END
         }
-      } else {
-        break EARLY_END
+        break
       }
     }
 
