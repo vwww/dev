@@ -447,6 +447,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   }
 
   protected processEndRound (m: ByteReader): void {
+    this.setTimer(this.mode.optTurnTime)
+
     EARLY_END: {
       if (this.gamePhase === GamePhase.BET) {
         this.pendingAmount = 0
@@ -506,6 +508,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         this.gamePhase = !this.mode.opt21 && (!this.mode.optInsureLate && dealerFaceUp === CardValue.Ace ||
           this.mode.optSurrender && this.mode.optDealer === BlackjackModeDealer.HOLE1)
             ? GamePhase.PRE : GamePhase.PLAY
+        return
       } else if (this.gamePhase === GamePhase.PRE) {
         // skip surrendered players
         while (this.playerInfo[this.turnIndex].handIndex) {
@@ -527,20 +530,20 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           }
         }
         this.gamePhase = GamePhase.PLAY
+        return
       } else if (this.gamePhase === GamePhase.PLAY) {
         if (this.mode.optInsureLate && this.dealerHand.cards.at(-1) === CardValue.Ace) {
           for (const p of this.playerInfo) {
             p.handIndex = p.hands.length
           }
           this.gamePhase = GamePhase.POST
+          return
         } else {
           break EARLY_END
         }
       } else {
         break EARLY_END
       }
-
-      return this.setTimer(this.mode.optTurnTime)
     }
 
     // end phase: read dealer cards
