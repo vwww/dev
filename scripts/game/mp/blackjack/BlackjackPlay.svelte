@@ -6,7 +6,7 @@ import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { BlackjackModeDouble, BlackjackModeSurrender, BlackjackMove, CardValue, GamePhase, MAX_BALANCE, type BlackjackGame } from './BlackjackGame.svelte'
+import { BlackjackModeDealer, BlackjackModeDouble, BlackjackModeSurrender, BlackjackMove, CardValue, GamePhase, MAX_BALANCE, type BlackjackGame } from './BlackjackGame.svelte'
 import BlackjackHand from './BlackjackHand.svelte'
 import BlackjackHandBetOutcome from './BlackjackHandBetOutcome.svelte'
 import BlackjackHistory from './BlackjackHistory.svelte'
@@ -183,7 +183,21 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 {#each p.hands as [hand, bet], hi}
                   <li>
                     <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
-                    {#if (mode.optSpeed || pi === turnIndex) && hi === p.handIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
+                    {#if mode.optSpeed || pi <= turnIndex}
+                      {#if hi < p.handIndex}
+                        {#if bet < 0}
+                          <span class="badge text-bg-outline-secondary">SURRENDERED</span>
+                        {:else if hand.value > 21}
+                          <span class="badge text-bg-secondary">BUST</span>
+                        {:else if mode.optDealer >= BlackjackModeDealer.HOLE0 && hand.isNaturalBlackjack(p.hands.length > 1)}
+                          <span class="badge text-bg-primary">BLACKJACK</span>
+                        {:else}
+                          <span class="badge text-bg-outline-info">PENDING</span>
+                        {/if}
+                      {:else if hi === p.handIndex}
+                        <span class="badge text-bg{outline}-warning">MOVE</span>
+                      {/if}
+                    {/if}
                   </li>
                 {/each}
               </ol>

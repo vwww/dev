@@ -216,7 +216,7 @@ const enum BlackjackOutcome {
   LOSE,
 }
 
-const enum BlackjackModeDealer {
+export const enum BlackjackModeDealer {
   NO_HOLE,
   HOLE_NO_PEEK,
   HOLE0,
