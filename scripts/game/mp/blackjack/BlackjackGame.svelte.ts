@@ -543,6 +543,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         }
         break
       }
+      case GamePhase.POST:
+        break
     }
 
     // end phase: read dealer cards
