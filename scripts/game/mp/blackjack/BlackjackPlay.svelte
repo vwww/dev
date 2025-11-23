@@ -8,6 +8,7 @@ import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import { BlackjackModeDouble, BlackjackModeSurrender, BlackjackMove, CardValue, GamePhase, MAX_BALANCE, type BlackjackGame } from './BlackjackGame.svelte'
 import BlackjackHand from './BlackjackHand.svelte'
+import BlackjackHandBetOutcome from './BlackjackHandBetOutcome.svelte'
 import BlackjackHistory from './BlackjackHistory.svelte'
 
 import { getGameModeString } from './gamemode'
@@ -204,22 +205,9 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 {#if p.insurance}
                   <li>Insurance lost <span class="badge text-bg-outline-danger">-{p.insurance}</span></li>
                 {/if}
-                {#each p.hands as [hand, bet]}
+                {#each p.hands as hand}
                   <li>
-                    <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} />
-                    {#if bet < 0}
-                      <span class="badge text-bg-outline-secondary">SURRENDERED</span>
-                      <span class="badge text-bg-outline-danger">{bet / 2}</span>
-                    {:else if hand.value > 21}
-                      <span class="badge text-bg-secondary">BUST</span>
-                      <span class="badge text-bg-outline-danger">-{bet}</span>
-                    {:else if hand.isNaturalBlackjack(p.hands.length > 1)}
-                      <span class="badge text-bg-warning">PUSH</span>
-                      <span class="badge text-bg-outline-secondary">+0</span>
-                    {:else}
-                      <span class="badge text-bg-danger">LOSE</span>
-                      <span class="badge text-bg-outline-danger">-{bet}</span>
-                    {/if}
+                    <BlackjackHandBetOutcome {hand} />
                   </li>
                 {/each}
               </ol>

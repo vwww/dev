@@ -119,8 +119,58 @@ export class Hand {
   }
 }
 
-type HandBet = [hand: Hand, bet: number]
-type HandBetOutcome = [...HandBet, outcome: BlackjackOutcome]
+export type HandBet = [hand: Hand, bet: number]
+export type HandBetOutcome = [...HandBet, outcome: BlackjackOutcome, scoreChange: number]
+
+function resolveHands (handBets: HandBet[], dealerHand: Hand, dealerBJ: boolean): HandBetOutcome[] {
+  return handBets.map(([hand, bet]) => {
+    let outcome
+    let delta = 0
+
+    if (bet < 0) {
+      outcome = BlackjackOutcome.SURRENDERED
+      delta = bet / 2
+    } else if (hand.value > 21) {
+      outcome = BlackjackOutcome.BUST
+      delta = -bet
+    } else if (hand.isNaturalBlackjack(handBets.length > 1)) {
+      if (dealerBJ) {
+        outcome = BlackjackOutcome.PUSH
+      } else {
+        outcome = BlackjackOutcome.BLACKJACK_NATURAL
+        delta = bet * 1.5
+      }
+    } else if (hand.value === dealerHand.value) {
+      outcome = BlackjackOutcome.PUSH
+    } else if (dealerHand.value > 21 || hand.value > dealerHand.value) {
+      outcome = BlackjackOutcome.WIN
+      delta = bet
+    } else {
+      outcome = BlackjackOutcome.LOSE
+      delta = -bet
+    }
+
+    return [hand, bet, outcome, delta]
+  })
+}
+
+function resolveDiscHands (handBets: HandBet[]): HandBetOutcome[] {
+  return handBets.map(([hand, bet]) => [
+    hand, bet,
+    bet < 0
+      ? BlackjackOutcome.SURRENDERED
+      : hand.value > 21
+        ? BlackjackOutcome.BUST
+        : hand.isNaturalBlackjack(handBets.length > 1)
+          ? BlackjackOutcome.PUSH
+          : BlackjackOutcome.LOSE,
+    bet < 0
+      ? bet / 2
+      : hand.value <= 21 && hand.isNaturalBlackjack(handBets.length > 1)
+        ? 0
+        : -bet
+  ])
+}
 
 export class BlackjackPlayerInfo extends RRTurnPlayerInfo {
   hands: HandBet[] = $state([])
@@ -132,7 +182,7 @@ export class BlackjackPlayerInfo extends RRTurnPlayerInfo {
 }
 
 export class BlackjackDiscInfo extends RRTurnDiscInfo {
-  hands: HandBet[] = []
+  hands: HandBetOutcome[] = []
 
   insurance = 0
   score = 0
@@ -151,14 +201,13 @@ export interface BlackjackGameHistoryPlayer {
 
   hands: HandBetOutcome[]
   insurance: number
-  insuranceOutcome: number
+  insuranceDelta: number
 
   score: number
   scoreChange: number
 }
 
-export const enum BlackjackOutcome {
-  // PENDING,
+const enum BlackjackOutcome {
   SURRENDERED,
   BUST,
   BLACKJACK_NATURAL,
@@ -312,7 +361,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   }
 
   protected processDiscInfo (m: ByteReader, p: BlackjackDiscInfo): void {
-    p.hands = readHandBets(m)
+    p.hands = resolveDiscHands(readHandBets(m))
     p.insurance = Number(m.getUint64())
     p.score = Number(m.getInt64())
     p.scoreChange = Number(m.getInt64())
@@ -356,7 +405,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.dealerHand = new Hand()
     this.dealerHand.addCard(dealerFlags & 0xf)
     this.cardCountShoeHasHole = !!(dealerFlags & (1 << 4))
-    if (this.mode.optDecks && this.mode.optDealer !== BlackjackModeDealer.NO_HOLE) {
+    if (this.mode.optDecks && this.mode.optDealer > BlackjackModeDealer.NO_HOLE) {
       this.cardCountHole = readCardCount(m)
     }
   }
@@ -579,42 +628,15 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
       let scoreChange = 0
 
-      const hands = p.hands.map(([hand, bet]): HandBetOutcome => {
-        let outcome = BlackjackOutcome.PUSH
+      const hands = resolveHands(p.hands, this.dealerHand, dealerBJ)
 
-        if (bet < 0) {
-          outcome = BlackjackOutcome.SURRENDERED
-          scoreChange += bet / 2
-          c.addLoss()
-        } else if (hand.value > 21) {
-          outcome = BlackjackOutcome.BUST
-          scoreChange -= bet
-          c.addLoss()
-        } else if (hand.isNaturalBlackjack(p.hands.length > 1)) {
-          if (dealerBJ) {
-            c.addTie()
-          } else {
-            outcome = BlackjackOutcome.BLACKJACK_NATURAL
-            scoreChange += bet * 1.5
-            c.addWin()
-          }
-        } else if (hand.value === this.dealerHand.value) {
-          c.addTie()
-        } else if (this.dealerHand.value > 21 || hand.value > this.dealerHand.value) {
-          outcome = BlackjackOutcome.WIN
-          scoreChange += bet
-          c.addWin()
-        } else {
-          outcome = BlackjackOutcome.LOSE
-          scoreChange -= bet
-          c.addLoss()
-        }
+      for (const [_hand, _bet, _outcome, delta] of hands) {
+        scoreChange += delta
+        c[delta > 0 ? 'addWin' : delta ? 'addLoss' : 'addTie']()
+      }
 
-        return [hand, bet, outcome]
-      })
-
-      const insuranceOutcome = dealerBJ ? p.insurance : -p.insurance
-      scoreChange += insuranceOutcome
+      const insuranceDelta = dealerBJ ? p.insurance : -p.insurance
+      scoreChange += insuranceDelta
 
       if (this.mode.optInverted) {
         scoreChange = -scoreChange
@@ -628,7 +650,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
         hands,
         insurance: p.insurance,
-        insuranceOutcome,
+        insuranceDelta,
 
         score: c.balance,
         scoreChange,
@@ -640,18 +662,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         name: d.ownerName,
         isMe: d.isMe,
 
-        hands: d.hands.map(([hand, bet]) => [
-          hand, bet,
-          bet < 0
-            ? BlackjackOutcome.SURRENDERED
-            : hand.value > 21
-              ? BlackjackOutcome.BUST
-              : hand.isNaturalBlackjack(d.hands.length > 1)
-                ? BlackjackOutcome.PUSH
-                : BlackjackOutcome.LOSE
-        ]),
+        hands: d.hands,
         insurance: d.insurance,
-        insuranceOutcome: -d.insurance,
+        insuranceDelta: -d.insurance,
 
         score: d.score,
         scoreChange: d.scoreChange,
@@ -664,16 +677,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   protected eliminatePlayer (_m: ByteReader, d: BlackjackDiscInfo, pn: number, p: BlackjackPlayerInfo, c: BlackjackClient): boolean {
     d.insurance = p.insurance
     let scoreChange = -p.insurance
-    for (const [hand, bet] of d.hands = p.hands) {
-      if (bet < 0) {
-        scoreChange += bet / 2
-        c.addLoss()
-      } else if (!hand.isNaturalBlackjack(p.hands.length > 1)) {
-        scoreChange -= bet
-        c.addLoss()
-      } else {
-        c.addTie()
-      }
+    for (const [_hand, _bet, _outcome, delta] of d.hands = resolveDiscHands(p.hands)) {
+      scoreChange += delta
+      c[delta ? 'addLoss' : 'addTie']()
     }
     if (this.mode.optInverted) {
       scoreChange = -scoreChange
