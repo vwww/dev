@@ -23,8 +23,13 @@ const { result }: Props = $props()
         &rarr;
         {p.score}
         <ol class="list-unstyled">
-          {#if p.insuranceDelta > 0}
-            <li>Insurance {p.insuranceDelta > 0 ? 'won' : 'lost'} <BlackjackScoreChange delta={p.insuranceDelta} /></li>
+          {#if p.insurance}
+            <li>
+              Insurance
+              <span class="badge text-bg-outline-secondary">{p.insurance}</span>
+              {p.insuranceDelta > 0 ? 'won' : 'lost'}
+              <BlackjackScoreChange delta={p.insuranceDelta} />
+            </li>
           {/if}
           {#each p.hands as hand}
             <li>

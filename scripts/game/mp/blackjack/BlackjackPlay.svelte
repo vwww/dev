@@ -6,7 +6,7 @@ import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { BlackjackModeDouble, BlackjackModeSurrender, BlackjackMove, CardValue, GamePhase, MAX_BALANCE, type BlackjackGame } from './BlackjackGame.svelte'
+import { BlackjackModeDealer, BlackjackModeDouble, BlackjackModeSurrender, BlackjackMove, CardValue, GamePhase, MAX_BALANCE, type BlackjackGame } from './BlackjackGame.svelte'
 import BlackjackHand from './BlackjackHand.svelte'
 import BlackjackHandBetOutcome from './BlackjackHandBetOutcome.svelte'
 import BlackjackHistory from './BlackjackHistory.svelte'
@@ -177,7 +177,9 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
               <span class="badge text-bg-outline-secondary">{p.bet}</span>
             {:else}
               {#if p.insurance}
-                Insurance <span class="badge text-bg-outline-secondary">{p.insurance}</span>
+                Insurance
+                <span class="badge text-bg-outline-secondary">{p.insurance}</span>
+                {mode.optDealer >= BlackjackModeDealer.HOLE0 && gamePhase === GamePhase.PLAY ? 'lost' : ''}
               {/if}
               <ol class="list-unstyled">
                 {#each p.hands as [hand, bet], hi}

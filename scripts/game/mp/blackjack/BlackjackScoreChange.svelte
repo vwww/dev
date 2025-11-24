@@ -1,6 +1,6 @@
 <script lang="ts">
 interface Props {
-  delta: number
+  delta: bigint | number
   solid?: boolean
 }
 
