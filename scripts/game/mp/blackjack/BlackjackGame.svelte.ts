@@ -122,7 +122,7 @@ export class Hand {
 export type HandBet = [hand: Hand, bet: number]
 export type HandBetOutcome = [...HandBet, outcome: BlackjackOutcome, scoreChange: number]
 
-function resolveHands (handBets: HandBet[], dealerHand: Hand, dealerBJ: boolean): HandBetOutcome[] {
+function resolveHands (handBets: HandBet[], dealerValue: number, dealerBJ: boolean): HandBetOutcome[] {
   return handBets.map(([hand, bet]) => {
     let outcome
     let delta = 0
@@ -140,9 +140,9 @@ function resolveHands (handBets: HandBet[], dealerHand: Hand, dealerBJ: boolean)
         outcome = BlackjackOutcome.BLACKJACK_NATURAL
         delta = bet * 1.5
       }
-    } else if (hand.value === dealerHand.value) {
+    } else if (!dealerBJ && hand.value === dealerValue) {
       outcome = BlackjackOutcome.PUSH
-    } else if (dealerHand.value > 21 || hand.value > dealerHand.value) {
+    } else if (dealerValue > 21 || hand.value > dealerValue) {
       outcome = BlackjackOutcome.WIN
       delta = bet
     } else {
@@ -154,39 +154,22 @@ function resolveHands (handBets: HandBet[], dealerHand: Hand, dealerBJ: boolean)
   })
 }
 
-function resolveDiscHands (handBets: HandBet[]): HandBetOutcome[] {
-  return handBets.map(([hand, bet]) => [
-    hand, bet,
-    bet < 0
-      ? BlackjackOutcome.SURRENDERED
-      : hand.value > 21
-        ? BlackjackOutcome.BUST
-        : hand.isNaturalBlackjack(handBets.length > 1)
-          ? BlackjackOutcome.PUSH
-          : BlackjackOutcome.LOSE,
-    bet < 0
-      ? bet / 2
-      : hand.value <= 21 && hand.isNaturalBlackjack(handBets.length > 1)
-        ? 0
-        : -bet
-  ])
-}
-
 export class BlackjackPlayerInfo extends RRTurnPlayerInfo {
   hands: HandBet[] = $state([])
   handIndex = $state(0)
 
   bet = $state(0)
-  insurance = $state(0)
+  insurance = $state(0n)
   ready = $state(false)
 }
 
 export class BlackjackDiscInfo extends RRTurnDiscInfo {
   hands: HandBetOutcome[] = []
 
-  insurance = 0
+  insurance = 0n
   score = 0
-  scoreChange = 0
+  scoreChange = 0n
+  dealerCanBJ = false
 }
 
 export interface BlackjackGameHistory {
@@ -200,11 +183,13 @@ export interface BlackjackGameHistoryPlayer {
   isMe?: boolean
 
   hands: HandBetOutcome[]
-  insurance: number
-  insuranceDelta: number
+  insurance: bigint
+  insuranceDelta: bigint
 
   score: number
-  scoreChange: number
+  scoreChange: bigint
+
+  dealerCanBJ?: boolean
 }
 
 const enum BlackjackOutcome {
@@ -248,7 +233,7 @@ export const enum BlackjackMove {
 }
 
 const MAX_DECKS = 1n << 51n
-export const MAX_BALANCE = 9_000_000_000_000_000
+export const MAX_BALANCE = 9_000_000_000_000_000n
 const MIN_BALANCE = -MAX_BALANCE
 
 export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlayerInfo, BlackjackDiscInfo, BlackjackGameHistory> {
@@ -354,17 +339,18 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     p.hands = readHandBets(m)
     p.handIndex = m.getInt()
     const flags = m.getUint64()
-    const v = Number(flags >> 1n)
-    p.bet = this.roundState === GameState.ACTIVE && this.gamePhase === GamePhase.BET ? v : 0
-    p.insurance = this.roundState === GameState.ACTIVE && this.gamePhase !== GamePhase.BET ? v : 0
+    const v = flags >> 1n
+    p.bet = this.roundState === GameState.ACTIVE && this.gamePhase === GamePhase.BET ? Number(v) : 0
+    p.insurance = this.roundState === GameState.ACTIVE && this.gamePhase !== GamePhase.BET ? v : 0n
     p.ready = !!(flags & 1n)
   }
 
   protected processDiscInfo (m: ByteReader, p: BlackjackDiscInfo): void {
-    p.hands = resolveDiscHands(readHandBets(m))
-    p.insurance = Number(m.getUint64())
+    const flags = m.getUint64()
+    p.hands = resolveHands(readHandBets(m), 21, p.dealerCanBJ = !!(flags & 1n))
+    p.insurance = flags >> 1n
     p.score = Number(m.getInt64())
-    p.scoreChange = Number(m.getInt64())
+    p.scoreChange = m.getInt64()
   }
 
   protected processRoundStartInfo (): void {
@@ -374,11 +360,11 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
     this.localPlayer = undefined
     this.playerInfo.forEach((p) => {
-      const bet = Math.max(2, Math.min(Number(MAX_BALANCE - this.clients[p.owner].balance), 100))
+      const bet = Math.max(2, Math.min(Number(MAX_BALANCE - BigInt(this.clients[p.owner].balance)), 100))
       p.hands = []
       p.handIndex = 0
       p.bet = bet
-      p.insurance = 0
+      p.insurance = 0n
       p.ready = false
       if (p.owner === this.localClient.cn) {
         this.localPlayer = p
@@ -487,7 +473,11 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
   protected processEndTurnAmount (m: ByteReader): void {
     const p = this.playerInfo[m.getInt()]
-    p[this.gamePhase === GamePhase.BET ? 'bet' : 'insurance'] = Number(m.getUint64())
+    if (this.gamePhase === GamePhase.BET) {
+      p.bet = Number(m.getUint64())
+    } else {
+      p.insurance = m.getUint64()
+    }
   }
 
   protected processEndTurnReady (m: ByteReader): void {
@@ -626,23 +616,21 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     for (const p of this.playerInfo) {
       const c = this.clients[p.owner]
 
-      let scoreChange = 0
+      const insuranceDelta = dealerBJ ? p.insurance << 1n : -p.insurance
+      let scoreChange = BigInt(insuranceDelta)
 
-      const hands = resolveHands(p.hands, this.dealerHand, dealerBJ)
+      const hands = resolveHands(p.hands, this.dealerHand.value, dealerBJ)
 
       for (const [_hand, _bet, _outcome, delta] of hands) {
-        scoreChange += delta
+        scoreChange += BigInt(delta)
         c[delta > 0 ? 'addWin' : delta ? 'addLoss' : 'addTie']()
       }
-
-      const insuranceDelta = dealerBJ ? p.insurance : -p.insurance
-      scoreChange += insuranceDelta
 
       if (this.mode.optInverted) {
         scoreChange = -scoreChange
       }
 
-      c.balance = clamp(c.balance + scoreChange, MIN_BALANCE, MAX_BALANCE)
+      c.balance = Number(clamp(BigInt(c.balance) + scoreChange, MIN_BALANCE, MAX_BALANCE))
 
       history.players.push({
         name: c.formatName(),
@@ -668,6 +656,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
         score: d.score,
         scoreChange: d.scoreChange,
+        dealerCanBJ: d.dealerCanBJ,
       })
     }
 
@@ -676,15 +665,15 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
   protected eliminatePlayer (_m: ByteReader, d: BlackjackDiscInfo, pn: number, p: BlackjackPlayerInfo, c: BlackjackClient): boolean {
     d.insurance = p.insurance
-    let scoreChange = -p.insurance
-    for (const [_hand, _bet, _outcome, delta] of d.hands = resolveDiscHands(p.hands)) {
-      scoreChange += delta
-      c[delta ? 'addLoss' : 'addTie']()
+    let scoreChange = BigInt(-p.insurance)
+    for (const [_hand, _bet, _outcome, delta] of d.hands = resolveHands(p.hands, 21, d.dealerCanBJ = this.dealerCanBJ())) {
+      scoreChange += BigInt(delta)
+      c[delta > 0 ? 'addWin' : delta ? 'addLoss' : 'addTie']()
     }
     if (this.mode.optInverted) {
       scoreChange = -scoreChange
     }
-    d.score = (c.balance += (d.scoreChange = scoreChange))
+    d.score = (c.balance = Number(clamp(BigInt(c.balance) + (d.scoreChange = scoreChange), MIN_BALANCE, MAX_BALANCE)))
 
     if (!this.mode.optSpeed && this.gamePhase === GamePhase.PLAY && pn === this.turnIndex) {
       this.setTimer(this.mode.optTurnTime)
@@ -746,6 +735,16 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
   private dealerShouldHit (): boolean {
     const { value, isSoft } = this.dealerHand
     return value < 17 || this.mode.optDealerHitSoft && value === 17 && isSoft
+  }
+
+  dealerCanBJ (): boolean {
+    const dealerFaceUp = this.dealerHand.cards.at(-1)
+    return (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)
+      && (this.mode.optDealer < BlackjackModeDealer.HOLE0 ||
+        !this.mode.opt21
+        && this.gamePhase === GamePhase.PRE
+        && (this.mode.optDealer === BlackjackModeDealer.HOLE1 || dealerFaceUp === CardValue.Ace)
+      )
   }
 }
 

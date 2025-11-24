@@ -1,7 +1,7 @@
 ---
 title: Rules for Blackjack
 date: "2020-10-03 15:24:00 -0600"
-mdate: 2025-11-23 16:00:00 -0700
+mdate: 2025-11-23 20:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'blackjack') }}
@@ -65,7 +65,7 @@ mdate: 2025-11-23 16:00:00 -0700
 </p>
 
 <h2>Moves</h2>
-<p>If the dealer shows Ace, during the Pre-Play (or Post-Play, depending on the game mode) phase, each player can bet (up to) half of the bet, which pays 2:1 if dealer has a blackjack.</p>
+<p>If the dealer shows Ace, during the Pre-Play (or Post-Play, depending on the game mode) phase, each player can bet (up to) half of the bet as insurance, which pays 2:1 if dealer has a blackjack.</p>
 
 <p>If surrendering is allowed, it is possible to do it during the Pre-Play phase. The game mode can also allow surrendering during the Play phase.</p>
 
@@ -86,7 +86,7 @@ mdate: 2025-11-23 16:00:00 -0700
 <h1>Options</h1>
 
 <p>
-  Blackjack pays 3 to 2 (50% bonus), so bets must be an even integer.
+  Blackjack pays 3 to 2 (50% bonus), and maximum insurance is half of the bet amount, so bets must be an even integer.
   Supporting both 3:2 and 6:5 would require bets to be multiples of 10.
   This option might be added in the future.
 </p>

@@ -6,7 +6,7 @@ import ProgressBar from '@gmc/ProgressBar.svelte'
 import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
-import { BlackjackModeDealer, BlackjackModeDouble, BlackjackModeSurrender, BlackjackMove, CardValue, GamePhase, MAX_BALANCE, type BlackjackGame } from './BlackjackGame.svelte'
+import { BlackjackModeDouble, BlackjackModeSurrender, BlackjackMove, CardValue, GamePhase, MAX_BALANCE, type BlackjackGame } from './BlackjackGame.svelte'
 import BlackjackHand from './BlackjackHand.svelte'
 import BlackjackHandBetOutcome from './BlackjackHandBetOutcome.svelte'
 import BlackjackHistory from './BlackjackHistory.svelte'
@@ -81,7 +81,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
         {@const max = Math.max(2, localClient.balance < -100 ? 100
           : localClient.balance < (Number(MAX_BALANCE) - 200) / 2
             ? Number(localClient.balance) + 200
-            : Number(MAX_BALANCE - localClient.balance))}
+            : Number(MAX_BALANCE - BigInt(localClient.balance)))}
         <div>
           Bet Amount
           <input type="number" class="form-control is-{gameState.pendingAmount === Number(localPlayer.bet) ? '' : 'in'}valid" bind:value={gameState.pendingAmount} onchange={() => gameState.sendMoveInsurance()} min="2" {max}>
@@ -161,14 +161,6 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
     </div>
   {/if}
 
-  {@const dealerFaceUp = dealerHand.cards.at(-1)}
-  {@const dealerNoBJ = dealerFaceUp !== CardValue.Ace && dealerFaceUp !== CardValue.Ten
-    || mode.optDealer >= BlackjackModeDealer.HOLE0 && (
-      mode.opt21
-      || gamePhase >= GamePhase.PLAY
-      || mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ten
-    )
-  }
   <div class="text-center">
     <div class="d-inline-block text-start">
       <b>Active Players</b>
@@ -191,7 +183,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 {#each p.hands as [hand, bet], hi}
                   <li>
                     Bet <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} final={hi < p.handIndex} />
-                    {#if dealerNoBJ && hand.isNaturalBlackjack(p.hands.length > 1)}
+                    {#if !gameState.dealerCanBJ() && hand.isNaturalBlackjack(p.hands.length > 1)}
                       <span class="badge text-bg-primary">BLACKJACK</span>
                     {:else if mode.optSpeed || pi <= turnIndex}
                       {#if hi < p.handIndex}
