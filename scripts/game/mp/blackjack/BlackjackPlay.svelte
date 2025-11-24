@@ -163,8 +163,12 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
 
   {@const dealerFaceUp = dealerHand.cards.at(-1)}
   {@const dealerNoBJ = dealerFaceUp !== CardValue.Ace && dealerFaceUp !== CardValue.Ten
-    || mode.optDealer === BlackjackModeDealer.HOLE0 && mode.opt21
-    || mode.optDealer === BlackjackModeDealer.HOLE1 && (mode.opt21 || dealerFaceUp === CardValue.Ten || gamePhase >= GamePhase.PLAY)}
+    || mode.optDealer >= BlackjackModeDealer.HOLE0 && (
+      mode.opt21
+      || gamePhase >= GamePhase.PLAY
+      || mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ten
+    )
+  }
   <div class="text-center">
     <div class="d-inline-block text-start">
       <b>Active Players</b>
