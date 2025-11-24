@@ -161,6 +161,10 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
     </div>
   {/if}
 
+  {@const dealerFaceUp = dealerHand.cards.at(-1)}
+  {@const dealerNoBJ = dealerFaceUp !== CardValue.Ace && dealerFaceUp !== CardValue.Ten
+    || mode.optDealer === BlackjackModeDealer.HOLE0 && mode.opt21
+    || mode.optDealer === BlackjackModeDealer.HOLE1 && (mode.opt21 || dealerFaceUp === CardValue.Ten || gamePhase >= GamePhase.PLAY)}
   <div class="text-center">
     <div class="d-inline-block text-start">
       <b>Active Players</b>
@@ -183,7 +187,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                 {#each p.hands as [hand, bet], hi}
                   <li>
                     Bet <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} final={hi < p.handIndex} />
-                    {#if mode.optDealer >= BlackjackModeDealer.HOLE0 && hand.isNaturalBlackjack(p.hands.length > 1)}
+                    {#if dealerNoBJ && hand.isNaturalBlackjack(p.hands.length > 1)}
                       <span class="badge text-bg-primary">BLACKJACK</span>
                     {:else if mode.optSpeed || pi <= turnIndex}
                       {#if hi < p.handIndex}
