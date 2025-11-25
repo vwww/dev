@@ -525,6 +525,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         }
 
         // skip finished players
+        if (this.turnIndex === this.playerInfo.length) {
+          break END
+        }
         while (this.playerInfo[this.turnIndex].handIndex) {
           if (++this.turnIndex === this.playerInfo.length) {
             break END
@@ -551,6 +554,9 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       }
       case GamePhase.PRE: {
         // skip surrendered players
+        if (this.turnIndex === this.playerInfo.length) {
+          break END
+        }
         while (this.playerInfo[this.turnIndex].handIndex) {
           if (++this.turnIndex === this.playerInfo.length) {
             break END
@@ -679,10 +685,10 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       this.setTimer(this.mode.optTurnTime)
     }
 
-    const lastIndex = this.playerInfo.length - 1
+    // const lastIndex = this.playerInfo.length - 1
     // fix turnIndex
     if (this.turnIndex > pn) this.turnIndex--
-    else if (this.turnIndex === lastIndex) this.turnIndex = 0
+    // else if (this.turnIndex === lastIndex) this.turnIndex = 0
 
     return true
   }
