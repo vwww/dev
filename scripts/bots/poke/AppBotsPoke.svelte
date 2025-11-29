@@ -252,6 +252,10 @@ function highcharts (node: HTMLElement, config: Highcharts.Options) {
   <div class="col-4 clearfix">
     <ul class="list-group">
       <li class="list-group-item">
+        <span class="badge text-bg-secondary">{data1.length || '?'}</span>
+        Users Listed
+      </li>
+      <li class="list-group-item">
         <span class="badge text-bg-secondary">{infoPokes?.toLocaleString() ?? '?'}</span>
         Pokes Returned
       </li>
