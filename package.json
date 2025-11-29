@@ -27,8 +27,8 @@
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.2",
-    "@rspack/cli": "^1.6.4",
-    "@rspack/core": "^1.6.4",
+    "@rspack/cli": "^1.6.5",
+    "@rspack/core": "^1.6.5",
     "@types/bootstrap": "^5.2.10",
     "@types/d3": "^7.4.3",
     "@types/jquery": "^3.5.33",
@@ -78,7 +78,7 @@
     "leaflet-hash": "^0.2.1",
     "leaflet-minimap": "^3.6.1",
     "packery": "^3.0.0",
-    "svelte": "^5.44.0",
+    "svelte": "^5.45.2",
     "svg-pan-zoom": "^3.6.2",
     "timeago": "^1.6.7"
   }
