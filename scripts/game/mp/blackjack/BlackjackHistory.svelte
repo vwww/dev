@@ -31,6 +31,11 @@ const { result }: Props = $props()
               <BlackjackScoreChange delta={p.insuranceDelta} />
             </li>
           {/if}
+          {#if p.dealerCanBJ != null}
+            <li>
+              <small>Left when dealer blackjack was {p.dealerCanBJ ? '' : 'not'} possible</small>
+            </li>
+          {/if}
           {#each p.hands as hand}
             <li>
               <BlackjackHandBetOutcome {hand} />
