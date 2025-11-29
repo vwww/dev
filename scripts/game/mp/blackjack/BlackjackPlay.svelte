@@ -187,7 +187,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                     Bet <span class="badge text-bg-outline-secondary">{bet < 0 ? -bet : bet}</span> on <BlackjackHand {hand} final={hi < p.handIndex} />
                     {#if !gameState.dealerCanBJ() && hand.isNaturalBlackjack(p.hands.length > 1)}
                       <span class="badge text-bg-primary">BLACKJACK</span>
-                    {:else if mode.optSpeed || pi <= turnIndex}
+                    {:else if gamePhase > GamePhase.PLAY || mode.optSpeed || pi <= turnIndex}
                       {#if hi < p.handIndex}
                         {#if bet < 0}
                           <span class="badge text-bg-outline-secondary">SURRENDERED</span>
