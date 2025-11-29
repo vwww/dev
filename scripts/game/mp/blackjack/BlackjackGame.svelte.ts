@@ -456,14 +456,14 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     if (handFinished) {
       while (++p.handIndex < p.hands.length) {
         if (p.hands[p.handIndex][0].value < 21 && p.hands[p.handIndex][1] > 0) {
-          return
+          break
         }
       }
 
       if (!this.mode.optSpeed) {
         // skip surrendered/finished players
-        while (++this.turnIndex < this.playerInfo.length) {
-          if (this.playerInfo[this.turnIndex].handIndex < this.playerInfo[this.turnIndex].hands.length) {
+        while (this.playerInfo[this.turnIndex].handIndex >= this.playerInfo[this.turnIndex].hands.length) {
+          if (++this.turnIndex >= this.playerInfo.length) {
             break
           }
         }
