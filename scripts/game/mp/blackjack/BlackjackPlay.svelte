@@ -121,7 +121,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                   || hand.cards[0] !== hand.cards[1]
                   || handCount > (hand.cards[0] === CardValue.Ace ? mode.optSplitAce : mode.optSplitNonAce)
                     ? '-outline' : ''}-primary btn-lg"
-                  class:d-none={mode.opt21}
+                  class:d-none={mode.opt21 || !mode.optSplitAce && !mode.optSplitNonAce}
                   onclick={() => gameState.sendMove(BlackjackMove.SPLIT)}>&harr;&#65039; Split</button>
                 <button class="btn btn{mode.opt21
                   || !mode.optHitSurrender && hand.cards.length > 2
@@ -129,7 +129,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
                   || mode.optSurrender === BlackjackModeSurrender.NOT_ACE && dealerHand.cards.at(-1) === CardValue.Ace
                   || handCount > 1 && !mode.optSplitSurrender
                     ? '-outline' : ''}-secondary btn-lg"
-                  class:d-none={mode.opt21}
+                  class:d-none={mode.opt21 || mode.optSurrender === BlackjackModeSurrender.OFF}
                   onclick={() => gameState.sendMove(BlackjackMove.SURRENDER)}>&#127987; Surrender</button>
               </div>
             {/if}
@@ -146,11 +146,10 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
 
             <div class="text-center">
               <button class="btn btn-info btn-lg" class:disabled={localPlayer.ready} onclick={() => gameState.sendMoveReady()}>&#9989; Ready</button>
-              {#if gamePhase === GamePhase.PRE}
+              {#if gamePhase === GamePhase.PRE && mode.optSurrender !== BlackjackModeSurrender.OFF}
                 <button class="btn btn-secondary btn"
                   class:disabled={
                     localPlayer.handIndex
-                    || mode.optSurrender === BlackjackModeSurrender.OFF
                     || mode.optSurrender === BlackjackModeSurrender.NOT_ACE && dealerHand.cards.at(-1) === CardValue.Ace}
                   onclick={() => gameState.sendMove(BlackjackMove.SURRENDER)}>&#127987; Surrender</button>
               {/if}
