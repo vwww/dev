@@ -536,10 +536,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         }
 
         // peek early (late surrender, no insurance) result
-        if (this.mode.opt21
-          ? this.mode.optDealer >= BlackjackModeDealer.HOLE0 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)
-          : this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ten
-        ) {
+        if (this.mode.optDealer === BlackjackModeDealer.HOLE0 && (dealerFaceUp === CardValue.Ten || dealerFaceUp === CardValue.Ace && !this.mode.opt21)) {
           if (m.get()) {
             break END
           } else if (this.cardCountShoeHasHole) {
@@ -549,7 +546,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           }
         }
         this.gamePhase = !this.mode.opt21 && (!this.mode.optInsureLate && dealerFaceUp === CardValue.Ace ||
-          this.mode.optSurrender && this.mode.optDealer === BlackjackModeDealer.HOLE1)
+          this.mode.optDealer === BlackjackModeDealer.HOLE1 && dealerFaceUp === CardValue.Ten)
             ? GamePhase.PRE : GamePhase.PLAY
         return
       }
@@ -566,8 +563,8 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
 
         // peek late (early surrender) result
         const dealerFaceUp = this.dealerHand.cards.at(-1)
-        if (this.mode.optDealer === BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ace
-          || this.mode.optDealer === BlackjackModeDealer.HOLE1 && (dealerFaceUp === CardValue.Ace || dealerFaceUp === CardValue.Ten)) {
+        if (this.mode.optDealer >= BlackjackModeDealer.HOLE0 && dealerFaceUp === CardValue.Ace
+          || this.mode.optDealer === BlackjackModeDealer.HOLE1 && dealerFaceUp === CardValue.Ten) {
           if (m.get()) {
             break END
           } else if (this.cardCountShoeHasHole) {

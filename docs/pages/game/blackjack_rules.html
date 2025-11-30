@@ -1,7 +1,7 @@
 ---
 title: Rules for Blackjack
 date: "2020-10-03 15:24:00 -0600"
-mdate: 2025-11-23 20:00:00 -0700
+mdate: 2025-11-30 12:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'blackjack') }}
@@ -115,6 +115,7 @@ mdate: 2025-11-23 20:00:00 -0700
   <li><strong>Hole Card, Peek Late</strong>: the dealer peeks after early surrender
 </ul>
 <p>Typically Hole Card Peek Early in American games and No Hole Card in European games.</p>
+<p>If Simple is enabled or surrendering is disabled, Hole Card Peek Late will be set to Hole Card Peek Early.</p>
 <p>Later options decrease house edge.</p>
 
 <h2>Simple <small>(default: off)</small></h2>
