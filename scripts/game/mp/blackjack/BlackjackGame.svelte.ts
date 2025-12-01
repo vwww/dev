@@ -525,10 +525,12 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
           this.consumeCard(dealerFaceUp)
         }
 
-        // skip finished players
+        // fast end
         if (!this.playerInfo.length) {
           break END
         }
+
+        // skip finished players
         while (this.playerInfo[this.turnIndex].handIndex) {
           if (++this.turnIndex === this.playerInfo.length) {
             break END
@@ -551,10 +553,12 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         return
       }
       case GamePhase.PRE: {
-        // skip surrendered players
+        // fast end
         if (!this.playerInfo.length) {
           break END
         }
+
+        // skip surrendered players
         while (this.playerInfo[this.turnIndex].handIndex) {
           if (++this.turnIndex === this.playerInfo.length) {
             break END
@@ -577,6 +581,11 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         return
       }
       case GamePhase.PLAY: {
+        // fast end
+        if (!this.playerInfo.length) {
+          break END
+        }
+
         if (this.mode.optInsureLate && this.dealerHand.cards.at(-1) === CardValue.Ace) {
           for (const p of this.playerInfo) {
             p.handIndex = p.hands.length
