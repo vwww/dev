@@ -536,7 +536,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
         }
 
         // peek early (late surrender, no insurance) result
-        if (this.mode.optDealer === BlackjackModeDealer.HOLE0 && (dealerFaceUp === CardValue.Ten || dealerFaceUp === CardValue.Ace && !this.mode.opt21)) {
+        if (this.mode.optDealer === BlackjackModeDealer.HOLE0 && (dealerFaceUp === CardValue.Ten || dealerFaceUp === CardValue.Ace && this.mode.opt21)) {
           if (m.get()) {
             break END
           } else if (this.cardCountShoeHasHole) {
