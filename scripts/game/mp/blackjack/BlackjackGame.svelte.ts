@@ -310,22 +310,24 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
     this.mode.opt21 = !!(modeFlags0 & (1 << 2))
     this.mode.optDealerHitSoft = !!(modeFlags0 & (1 << 3))
     this.mode.optDealer =  (modeFlags0 >> 4) & 3 // Math.min((modeFlags0 >> 4) & 3, BlackjackModeDealer.NUM - 1) // 2 bits exactly
-    // moved to modeFlags0 because they don't fit in modeFlags1
-    this.mode.optInsurePartial = !!(modeFlags0 & (1 << 6))
-    this.mode.optInsureLate = !!(modeFlags0 & (1 << 7))
 
     if (!this.mode.opt21) {
       this.mode.optSplitNonAce = Math.min(m.get(), 254)
       this.mode.optSplitAce = Math.min(m.get(), 254)
       const modeFlags1 = m.get()
       this.mode.optDouble = Math.min(modeFlags1 & 3, BlackjackModeDouble.NUM - 1)
-      this.mode.optSurrender = Math.min((modeFlags0 >> 2) & 3, BlackjackModeSurrender.NUM - 1)
+      this.mode.optSurrender = Math.min((modeFlags1 >> 2) & 3, BlackjackModeSurrender.NUM - 1)
 
       this.mode.optSplitDouble = !!(modeFlags1 & (1 << 4))
       this.mode.optSplitSurrender = !!(modeFlags1 & (1 << 5))
       this.mode.optHitSurrender = !!(modeFlags1 & (1 << 6))
       this.mode.optSplitAceAdd = !!(modeFlags1 & (1 << 7))
+
+      // moved to modeFlags0 because they don't fit in modeFlags1
+      this.mode.optInsurePartial = !!(modeFlags0 & (1 << 6))
+      this.mode.optInsureLate = !!(modeFlags0 & (1 << 7))
     } else {
+      // this.mode.optInsurePartial = false
       this.mode.optInsureLate = false
     }
 
