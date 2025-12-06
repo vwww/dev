@@ -17,9 +17,10 @@ import { getGameModeString } from './gamemode'
 
 interface Props {
   gameState: PresidentGame
+  showCardCount: boolean
 }
 
-const { gameState }: Props = $props()
+const { gameState, showCardCount }: Props = $props()
 
 const {
   localClient,
@@ -300,21 +301,28 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
     <PresidentMoveHistory moves={moveHistory} />
   </div>
   <div class="col mt-2">
-    <CardCountTable
-      {ranks}
-      counts={[
-        ['You', gameState.cardCountMine],
-        ['Others', gameState.cardCountOthers],
-        ['Played', gameState.cardCountDiscard],
-        ['Total', gameState.cardCountTotal]
-      ]}
-    />
+    {#if showCardCount}
+      <CardCountTable
+        {ranks}
+        counts={[
+          ['You', gameState.cardCountMine],
+          ['Others', gameState.cardCountOthers],
+          ['Played', gameState.cardCountDiscard],
+          ['Total', gameState.cardCountTotal]
+        ]}
+      />
 
-    Played Cards
-    <CardCountTable
-      {ranks}
-      counts={Array.from(playedCardGen())}
-    />
+      {@const playedCards = Array.from(playedCardGen())}
+      {#if playedCards.length}
+      Played Cards
+        <CardCountTable
+          {ranks}
+          counts={playedCards}
+        />
+      {/if}
+    {:else}
+      <p>You: {gameState.cardCountMine[CardRank.NUM]}, Others: {gameState.cardCountOthers[CardRank.NUM]}, Played: {gameState.cardCountDiscard[CardRank.NUM]}</p>
+    {/if}
   </div>
 </div>
 

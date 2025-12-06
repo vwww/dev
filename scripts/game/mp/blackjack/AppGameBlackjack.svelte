@@ -27,11 +27,21 @@ const {
 } = $derived(gameState)
 
 let name = pState('game/mp/_shared/name', '')
+let showCardCount = pState('game/mp/_shared/cardCount', true)
 
 let roomList: PIORoomList
 </script>
 
 <NameBox bind:value={name.value} />
+
+<div class="input-group mb-3">
+  <span class="input-group-text flex-grow-1">
+    <label class="form-check mx-auto">
+      <input type="checkbox" class="form-check-input" bind:checked={showCardCount.value}>
+      Show Detailed Card Count
+    </label>
+  </span>
+</div>
 
 <PIORoomList
   bind:this={roomList}
@@ -51,7 +61,7 @@ let roomList: PIORoomList
   onReady={() => gameState.sendReady()}
   onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
-  <BlackjackPlay {gameState} />
+  <BlackjackPlay {gameState} showCardCount={showCardCount.value} />
 </PlayCard>
 
 <div class="row">

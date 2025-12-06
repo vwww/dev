@@ -29,7 +29,7 @@ const {
 
 let name = pState('game/mp/_shared/name', '')
 let showLLNames = pState('game/mp/discard/LL', true)
-let showCardCount = pState('game/mp/discard/cardCount', true)
+let showCardCount = pState('game/mp/_shared/cardCount', true)
 
 let roomList: PIORoomList
 </script>
@@ -46,7 +46,7 @@ let roomList: PIORoomList
   <span class="input-group-text flex-grow-1">
     <label class="form-check mx-auto">
       <input type="checkbox" class="form-check-input" bind:checked={showCardCount.value}>
-      Show Card Count
+      Show Detailed Card Count
     </label>
   </span>
 </div>

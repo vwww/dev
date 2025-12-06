@@ -27,11 +27,13 @@ const {
   roundState,
 } = $derived(gameState)
 
-let t3Isomorphism = pState('game/mp/t3/isomorphism', 0)
 let name = pState('game/mp/_shared/name', '')
+let t3Isomorphism = pState('game/mp/t3/isomorphism', 0)
 
 let roomList: PIORoomList
 </script>
+
+<NameBox bind:value={name.value} />
 
 <div class="btn-group d-flex mb-3" role="group">
   <span class="input-group-text">Isomorphism</span>
@@ -45,8 +47,6 @@ let roomList: PIORoomList
     class:active={t3Isomorphism.value === 2}
     onclick={() => { t3Isomorphism.value = 2 }}>Words</button>
 </div>
-
-<NameBox bind:value={name.value} />
 
 <PIORoomList
   bind:this={roomList}

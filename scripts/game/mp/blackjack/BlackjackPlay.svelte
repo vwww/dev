@@ -15,9 +15,10 @@ import { getGameModeString } from './gamemode'
 
 interface Props {
   gameState: BlackjackGame
+  showCardCount: boolean
 }
 
-const { gameState }: Props = $props()
+const { gameState, showCardCount }: Props = $props()
 
 const {
   localClient,
@@ -241,14 +242,18 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
 {/if}
 
 <div class="mt-2">
-  <CardCountTable
-    {ranks}
-    counts={[
-      [gameState.cardCountShoeHasHole ? 'Shoe+Hole' : 'Shoe', gameState.cardCountShoe],
-      ['Played', gameState.cardCountPlayed],
-      ['Total', gameState.cardCountTotal],
-    ]}
-  />
+  {#if showCardCount}
+    <CardCountTable
+      {ranks}
+      counts={[
+        [gameState.cardCountShoeHasHole ? 'Shoe+Hole' : 'Shoe', gameState.cardCountShoe],
+        ['Played', gameState.cardCountPlayed],
+        ['Total', gameState.cardCountTotal],
+      ]}
+    />
+  {:else}
+    <p>Shoe count: {gameState.cardCountShoe[CardValue.NUM] - (gameState.cardCountShoeHasHole ? 1n : 0n)}</p>
+  {/if}
 </div>
 
 <div>
