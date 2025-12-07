@@ -38,7 +38,10 @@ const enum C2S {
   CHAT,
   ACTIVE,
   READY,
-  MOVE,
+  MOVE_HAND0,
+  MOVE_HAND1,
+  MOVE_TARGET,
+  MOVE_GUESS,
   MOVE_END,
 }
 
@@ -208,10 +211,9 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   sendChat (s: string, flags: number, target = -1): void { this.sendf('i3s', C2S.CHAT, flags, target, filterChat(s)) }
   sendActive (): void { this.sendf('i', C2S.ACTIVE) }
   sendReady (): void { this.sendf('i', C2S.READY) }
-  sendMove (useHand: boolean, target: number, guess: number): void { this.sendf('ibi2', C2S.MOVE, useHand, target, guess) }
-  sendMoveUseHand (uh: boolean): void { this.sendMove(uh, this.pendingMoveTarget, this.pendingMoveGuess) }
-  sendMoveTarget (target: number): void { this.sendMove(this.pendingMoveUseHand, target, this.pendingMoveGuess) }
-  sendMoveGuess (guess: number): void { this.sendMove(this.pendingMoveUseHand, this.pendingMoveTarget, guess) }
+  sendMoveUseHand (uh: boolean): void { this.sendf('i', uh ? C2S.MOVE_HAND1 : C2S.MOVE_HAND0) }
+  sendMoveTarget (target: number): void { this.sendf('i2', C2S.MOVE_TARGET, target) }
+  sendMoveGuess (guess: number): void { this.sendf('i2', C2S.MOVE_GUESS, guess) }
   sendMoveEnd (): void { this.sendf('i', C2S.MOVE_END) }
 
   MESSAGE_HANDLERS: Record<number, (this: this, m: ByteReader) => void> = {
@@ -244,9 +246,10 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   }
 
   protected processPlayerInfo (m: ByteReader, p: DiscardPlayerInfo): void {
-    const discardSize = Math.min(m.getInt(), CARDS_PER_DECK * MAX_DECKS)
+    const flags = m.getInt()
+    const discardSize = Math.min(flags >> 1, CARDS_PER_DECK * MAX_DECKS)
     p.discarded = Array.from({ length: discardSize }, () => m.getInt())
-    p.immune = m.getBool()
+    p.immune = !!(flags & 1)
     p.discardSum = sum(p.discarded)
   }
 
@@ -285,9 +288,10 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   }
 
   protected processMoveConfirm (m: ByteReader) {
-    this.pendingMoveUseHand = m.getBool()
+    const flags = m.getInt()
+    this.pendingMoveUseHand = !!(flags & 1)
     this.pendingMoveTarget = m.getInt()
-    this.pendingMoveGuess = m.getInt()
+    this.pendingMoveGuess = flags >> 1
   }
 
   protected processEndTurn (m: ByteReader): void {

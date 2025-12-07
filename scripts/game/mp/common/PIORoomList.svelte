@@ -46,8 +46,10 @@ function formatPlayerCount (r: PIO.roomInfo): string {
   return spect ? `${active}+${spect}` : total + ''
 }
 
+// svelte-ignore state_referenced_locally
 const cm = new PIOConnectionManager(gameId)
 
+// svelte-ignore state_referenced_locally
 const roomCreateData: readonly OptionStoreAny[] = roomCreateOptions.map(o => [o, pState(`game/mp/_roomCreate/${roomType}/${o[0]}`, o[2])] as OptionStoreAny)
 
 function getRoomData (): object | null {

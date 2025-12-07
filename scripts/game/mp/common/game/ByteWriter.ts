@@ -30,10 +30,6 @@ export class ByteWriter {
     return this
   }
 
-  putBool (b: boolean): this {
-    return this.put(b ? 1 : 0)
-  }
-
   putFloat64 (n: number): this {
     const buf = new Uint8Array(8)
     new DataView(buf.buffer).setFloat64(0, n)
@@ -123,9 +119,6 @@ export class ByteWriter {
         case 'i':
           while(n--) this.putInt(args[j++])
           break
-        case 'b':
-          while(n--) this.putBool(args[j++])
-          break
         case 'U':
           while(n--) this.putUint64(args[j++])
           break
@@ -142,11 +135,10 @@ export class ByteWriter {
   }
 }
 
-type Spec = 's' | 'b' | 'i' | 'U' | 'd'
+type Spec = 's' | 'i' | 'U' | 'd'
 type SpecType<S extends Spec> =
   S extends 'd' | 'i' ? number :
   S extends 'U' ? bigint :
-  S extends 'b' ? boolean :
   S extends 's' ? string :
   never
 
