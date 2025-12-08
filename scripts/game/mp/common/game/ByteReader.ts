@@ -30,10 +30,6 @@ export class ByteReader {
     return n
   }
 
-  getBool (): boolean {
-    return !!this.get() // expects putInt() with 0 or 1
-  }
-
   getFloat64 (): number {
     return this.v.getFloat64((this.pos += 8) - 8)
   }

@@ -19,9 +19,10 @@ export abstract class CommonClient {
   }
 
   readWelcome (m: ByteReader): void {
-    this.active = m.getBool()
+    const flags = m.getInt()
+    this.active = !!(flags & 1)
     this.name = filterName(m.getString(MAX_NAME_LEN))
-    this.ping = m.getInt()
+    this.ping = flags >> 1
   }
 
   abstract resetScore (): void

@@ -79,13 +79,22 @@ export class ActionlessGame extends OneTurnGame<ActionlessClient, ActionlessGame
   }
 
   protected processWelcomeMode (m: ByteReader): void {
-    this.mode.optIndependent = m.getBool()
-    this.mode.optTeams = m.getInt()
+    const flags = m.getInt()
+    this.mode.optIndependent = !!(flags & 1)
+    this.mode.optTeams = flags >> 1
   }
 
   protected processEndRound (m: ByteReader): void {
     const winCount = m.getInt()
-    const wins = Array.from({ length: winCount }, () => m.getBool())
+    let b: number
+    const wins = Array.from({ length: winCount }, (_, i) => {
+      // unpack results
+      i &= 7
+      if (!i) {
+        b = m.get()
+      }
+      return !!(b & (1 << i))
+    })
     const playerCount = Math.min(m.getInt(), this.roundPlayers.length)
 
     const gameHistoryEntry: ActionlessGameHistory = {

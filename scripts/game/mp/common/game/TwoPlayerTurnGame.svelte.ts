@@ -96,8 +96,9 @@ export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClien
   }
 
   protected processEndRound (m: ByteReader): void {
-    const winner = m.getInt()
-    const earlyEnd = m.getBool()
+    const flags = m.getInt()
+    const winner = flags & 3
+    const earlyEnd = !!(flags & (1 << 2))
     const p0 = this.clients[this.p0]
     const p1 = this.clients[this.p1]
 
