@@ -100,7 +100,7 @@
       <script src="{{assets}}dist/{{ file }}.js"></script>
       {%- endfor %}
     {%- endfor %}
-    {%- if page.url.startsWith('/blog/') %}
+    {%- if page_url.startsWith('/blog/') %}
     <script>
       window.MathJax = {
         tex: {
