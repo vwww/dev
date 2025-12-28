@@ -62,6 +62,15 @@
         class: secondary
     badges:
       - [success, NEW]
+  - name: Cribbage
+    desc: Matching card game for 2-4 players.
+    href: game/cribbage
+    hrefs:
+      - name: Rules
+        href: game/cribbage_rules
+        class: secondary
+    badges:
+      - [secondary, TODO]
   - name: Cheat
     desc: Shed cards, possibly dishonestly.
     href: game/cheat
