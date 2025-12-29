@@ -684,6 +684,7 @@ export class BlackjackGame extends RoundRobinGame<BlackjackClient, BlackjackPlay
       })
     }
 
+    this.updatePlayers()
     this.addHistory(this.result = history)
   }
 

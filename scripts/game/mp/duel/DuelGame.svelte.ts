@@ -287,6 +287,7 @@ export class DuelGame extends RealTimeGame<DuelClient> {
     if (vc) {
       vc.deaths++
     }
+    this.updatePlayers()
 
     if (this.topType !== DuelTopType.MASS) {
       this.calcTop()

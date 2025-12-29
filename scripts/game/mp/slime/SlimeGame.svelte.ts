@@ -225,6 +225,7 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
     (p1Won ? this.p1 : this.p2).score++
     this.roundPlayers[p1Won ? 0 : 1].addWin()
     this.roundPlayers[p1Won ? 1 : 0].addLoss()
+    this.updatePlayers()
 
     this.status = p1Won !== (this.roundPlayers[1] === this.localClient) ? GameStatus.WIN : GameStatus.LOSS
   }

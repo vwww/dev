@@ -105,6 +105,7 @@ export abstract class TwoPlayerTurnGame extends TurnBasedGame<TwoPlayerTurnClien
     p0?.setResult(winner)
     p1?.setResult(1 - winner)
 
+    this.updatePlayers()
     this.addHistory({
       p0Name: formatClientName(p0, this.p0),
       p1Name: formatClientName(p1, this.p1),

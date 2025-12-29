@@ -585,6 +585,7 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
       duration,
     })
 
+    this.updatePlayers()
     this.addHistory(history)
   }
 

@@ -724,6 +724,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       newRole: rank2role(rank, totalPlayers),
     })
 
+    this.updatePlayers()
     this.addHistory(history)
   }
 
