@@ -42,7 +42,7 @@ function onclickhue (event: MouseEvent) {
   <div class="col-5 col-sm-4 col-md-3 col-lg-2">
     <div class="input-group mb-3">
       <span class="input-group-text">Hue</span>
-      <input bind:value={hue.value} type="text" class="form-control" placeholder="42" maxlength="2" style="background-color: hsl({parseInt(hue.value, 16) * (360 / 0x100)},95%,65%);">
+      <input bind:value={hue.value} type="text" class="form-control" placeholder="42" maxlength="2" style="background-color:hsl({parseInt(hue.value, 16) * (360 / 0x100)},95%,65%)">
     </div>
   </div>
   <div class="col mb-3">
