@@ -476,7 +476,7 @@ export class DuelGame extends RealTimeGame<DuelClient> {
         ctx.textAlign = 'left'
         ctx.textBaseline = 'top'
         ctx.font = (p === this.player1 ? 'bold ' : '') + (0.01 * W) + 'px Verdana, sans-serif'
-        const name = p.type === DuelPlayerType.HUMAN ? this.clients[p.pn].formatName() : '<bot>'
+        const name = p.type === DuelPlayerType.HUMAN ? this.clients[p.pn].formatName() : `<bot ${p.pn}>`
         ctx.fillText(name, 2, y + 1 + 0.005 * H)
       }
     }
