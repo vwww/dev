@@ -95,7 +95,7 @@ let slimePlay: SlimePlay
     </span>
     <span class="input-group-text flex-grow-1">
       <label class="form-check mx-auto">
-        <input id="fullscreen" type="checkbox" class="form-check-input" onclick={function () { slimePlay.requestFullscreen(); this.checked = false }}>
+        <input type="checkbox" class="form-check-input" onclick={function () { this.checked = false; slimePlay.requestFullscreen() }}>
         <span class="form-check-label">Full-Screen</span>
       </label>
     </span>

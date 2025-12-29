@@ -53,7 +53,7 @@ let canvasGame: CanvasGame
   </span>
   <span class="input-group-text flex-grow-1">
     <label class="form-check mx-auto">
-      <input id="fullscreen" type="checkbox" class="form-check-input" onclick={function () { canvasGame.requestFullscreen(); this.checked = false }}>
+      <input type="checkbox" class="form-check-input" onclick={function () { this.checked = false; canvasGame.requestFullscreen() }}>
       <span class="form-check-label">Full-Screen</span>
     </label>
   </span>
