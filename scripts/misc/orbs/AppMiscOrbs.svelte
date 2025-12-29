@@ -480,8 +480,8 @@ function ontouchstart (event: TouchEvent) {
 
 function mousemove (mouseX: number, mouseY: number) {
   const { left: rX, top: rY } = canvas.getBoundingClientRect()
-  const newX = clamp((mouseX - rX) / canvas.width, 0, 1)
-  const newY = clamp((mouseY - rY) / canvas.height, 0, 1)
+  const newX = clamp((mouseX - rX) / canvas.clientWidth, 0, 1)
+  const newY = clamp((mouseY - rY) / canvas.clientHeight, 0, 1)
 
   if (newY > 0.95) {
     // snap to time in progress bar
