@@ -2,6 +2,7 @@
 import { clamp } from '@/util'
 import { pState } from '@/util/svelte.svelte'
 import { onMount } from 'svelte'
+import { nonpassive } from 'svelte/legacy'
 import * as d from 'decoders'
 
 const NUM_ORBS = 24
@@ -409,21 +410,21 @@ function stopDrag () {
   }
 }
 
-function onmousedown (event: MouseEvent) {
+function mousedown (xx: number, yy: number): true | undefined {
   const { clientWidth, clientHeight } = canvas
-  const x = event.x - canvas.getBoundingClientRect().left
-  const y = event.y - canvas.getBoundingClientRect().top
+  const x = xx - canvas.getBoundingClientRect().left
+  const y = yy - canvas.getBoundingClientRect().top
 
   if (y > 0.95 * clientHeight) {
     // start dragging progress bar
     startDrag()
-    return
+    return true
   }
 
   if (y > 0.9 * clientHeight && x < 0.04 * clientWidth) {
     // play/stop button
     (playing ? playStop : playStart)()
-    return
+    return true
   }
 
   // detect selected orb
@@ -460,14 +461,27 @@ function onmousedown (event: MouseEvent) {
     selectedOrb = orb
     renderIfNotPlaying()
   }
+  return
 }
 
-function onmousemove (event: MouseEvent) {
-  if (!dragging) return
+function onmousedown (event: MouseEvent) {
+  mousedown(event.x, event.y)
+}
 
+function ontouchstart (event: TouchEvent) {
+  if (event.targetTouches.length < 1) return
+
+  const touch = event.targetTouches.item(0)
+  if (!touch) return
+  if (mousedown(touch.clientX, touch.clientY)) {
+    event.preventDefault()
+  }
+}
+
+function mousemove (mouseX: number, mouseY: number) {
   const { left: rX, top: rY } = canvas.getBoundingClientRect()
-  const newX = clamp((event.x - rX) / canvas.width, 0, 1)
-  const newY = clamp((event.y - rY) / canvas.height, 0, 1)
+  const newX = clamp((mouseX - rX) / canvas.width, 0, 1)
+  const newY = clamp((mouseY - rY) / canvas.height, 0, 1)
 
   if (newY > 0.95) {
     // snap to time in progress bar
@@ -493,6 +507,22 @@ function onmousemove (event: MouseEvent) {
   renderCanvas()
 }
 
+function onmousemove (event: MouseEvent) {
+  if (!dragging) return
+
+  mousemove(event.x, event.y)
+}
+
+function ontouchmove (event: TouchEvent) {
+  if (event.targetTouches.length < 1 || !dragging) return
+
+  event.preventDefault()
+
+  const touch = event.targetTouches.item(0)
+  if (!touch) return
+  mousemove(touch.clientX, touch.clientY)
+}
+
 onMount(() => {
   context = canvas!.getContext('2d')
   updateCanvasSize()
@@ -500,10 +530,14 @@ onMount(() => {
 })
 </script>
 
-<svelte:window {onresize} onmouseup={stopDrag} />
+<svelte:window {onresize} onmouseup={stopDrag} ontouchend={stopDrag} />
 
 <div class="my-2" style="container-type: inline-size">
-  <canvas bind:this={canvas} style="width: min(100cqw, 200cqh); height: min(50cqw, 100cqh)" {onmousedown} {onmousemove}></canvas>
+  <canvas bind:this={canvas} style="width: min(100cqw, 200cqh); height: min(50cqw, 100cqh)"
+    {onmousedown}
+    {onmousemove}
+    use:nonpassive={['touchstart', () => ontouchstart as EventListener]}
+    use:nonpassive={['touchmove', () => ontouchmove as EventListener]}></canvas>
 </div>
 
 <h2>Settings</h2>
