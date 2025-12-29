@@ -410,17 +410,17 @@ function stopDrag () {
 }
 
 function onmousedown (event: MouseEvent) {
-  const { width, height } = canvas
+  const { clientWidth, clientHeight } = canvas
   const x = event.x - canvas.getBoundingClientRect().left
   const y = event.y - canvas.getBoundingClientRect().top
 
-  if (y > 0.95 * height) {
+  if (y > 0.95 * clientHeight) {
     // start dragging progress bar
     startDrag()
     return
   }
 
-  if (y > 0.9 * height && x < 0.04 * width) {
+  if (y > 0.9 * clientHeight && x < 0.04 * clientWidth) {
     // play/stop button
     (playing ? playStop : playStart)()
     return
@@ -434,18 +434,18 @@ function onmousedown (event: MouseEvent) {
     const dx = x - ox
     const dy = y - oy
     const d2 = dx * dx + dy * dy
-    if (d2 < orbDistSquared && d2 <= radius * radius) {
+    if (d2 < orbDistSquared && d2 <= 4 * radius * radius) { // allow 2x radius as hitbox
       orb = i
       orbDistSquared = d2
     }
   }
 
-  const scale = width / 8000
-  const px = width / 2 / scale
-  const py = height / 2 / scale
+  const scale = clientWidth / 8000
+  const px = clientWidth / 2 / scale
+  const py = clientHeight / 2 / scale
 
   // check sun
-  checkOrb(-1, 0.5 * width, 0.5 * height, 80 * scale)
+  checkOrb(-1, 0.5 * clientWidth, 0.5 * clientHeight, 80 * scale)
   // check orbs
   orbs.value.forEach((orb, i) => {
     const [x, y] = calcPosAtGameTime(orb.orbitDist, orb.orbitBaseAng, renderT)

@@ -18,8 +18,9 @@ export class MouseInputManager {
   }
 
   private movestart (x: number, y: number, target: HTMLCanvasElement): void {
-    this.x = clamp((x - target.getBoundingClientRect().left) / target.width, 0, 1)
-    this.y = clamp((y - target.getBoundingClientRect().top) / target.height, 0, 1)
+    const r = target.getBoundingClientRect()
+    this.x = clamp((x - r.left) / target.clientWidth, 0, 1)
+    this.y = clamp((y - r.top) / target.clientHeight, 0, 1)
     this.valid = true
   }
 
