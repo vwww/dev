@@ -173,8 +173,8 @@ function playStop () {
 }
 
 function updateCanvasSize () {
-  canvas.width = canvas.parentElement!.clientWidth
-  canvas.height = canvas.parentElement!.clientHeight
+  canvas.width = Math.floor(canvas.clientWidth * window.devicePixelRatio)
+  canvas.height = Math.floor(canvas.clientHeight * window.devicePixelRatio)
 }
 
 function renderCircle (ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
@@ -502,10 +502,8 @@ onMount(() => {
 
 <svelte:window {onresize} onmouseup={stopDrag} />
 
-<div style="container-type: inline-size">
-  <div class="my-2" style="width: min(100cqw, 200cqh); height: min(50cqw, 100cqh)">
-    <canvas bind:this={canvas} {onmousedown} {onmousemove}></canvas>
-  </div>
+<div class="my-2" style="container-type: inline-size">
+  <canvas bind:this={canvas} style="width: min(100cqw, 200cqh); height: min(50cqw, 100cqh)" {onmousedown} {onmousemove}></canvas>
 </div>
 
 <h2>Settings</h2>

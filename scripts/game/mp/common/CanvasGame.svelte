@@ -12,20 +12,12 @@ interface Props {
 
 const { gameState, aspect = 2 }: Props = $props()
 
-let canvasParent: HTMLElement
 let canvas: HTMLCanvasElement
 let ctx: CanvasRenderingContext2D
 
 function resize (): void {
-  // if (document.fullscreen && document.fullscreenElement === canvas)
-  if (window.innerWidth === window.screen.width && window.innerHeight === window.screen.height) {
-    // fullscreen mode
-    canvas.width = Math.min(window.innerWidth, window.innerHeight * aspect)
-    canvas.height = Math.min(window.innerHeight, window.innerWidth / aspect)
-  } else {
-    canvas.width = Math.min(canvasParent.clientWidth, canvasParent.clientHeight * aspect)
-    canvas.height = Math.min(canvasParent.clientHeight, canvasParent.clientWidth / aspect)
-  }
+  canvas.width = Math.floor(canvas.clientWidth * window.devicePixelRatio)
+  canvas.height = Math.floor(canvas.clientHeight * window.devicePixelRatio)
 }
 
 onMount(() => {
@@ -61,8 +53,6 @@ export function requestFullscreen (options?: FullscreenOptions): Promise<void> {
 }
 </script>
 
-<div style="position: relative; width: 100%; padding-bottom: {100 / aspect}%">
-  <div bind:this={canvasParent} style="position: absolute; top: 0; bottom: 0; left: 0; right: 0">
-    <canvas bind:this={canvas} style="border: solid black 2px"></canvas>
-  </div>
+<div style="border: solid black 2px; container-type: inline-size">
+  <canvas bind:this={canvas} style="width: min(100cqw, {100 * aspect}cqh); height: min({100 / aspect}cqw, 100cqh)"></canvas>
 </div>
