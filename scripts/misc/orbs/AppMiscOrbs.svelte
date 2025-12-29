@@ -410,10 +410,10 @@ function stopDrag () {
   }
 }
 
-function mousedown (xx: number, yy: number): true | undefined {
+function mousedown (eventX: number, eventY: number): true | undefined {
   const { clientWidth, clientHeight } = canvas
-  const x = xx - canvas.getBoundingClientRect().left
-  const y = yy - canvas.getBoundingClientRect().top
+  const x = eventX - canvas.getBoundingClientRect().left
+  const y = eventY - canvas.getBoundingClientRect().top
 
   if (y > 0.95 * clientHeight) {
     // start dragging progress bar
@@ -460,6 +460,7 @@ function mousedown (xx: number, yy: number): true | undefined {
     }
     selectedOrb = orb
     renderIfNotPlaying()
+    return true
   }
   return
 }
@@ -478,10 +479,10 @@ function ontouchstart (event: TouchEvent) {
   }
 }
 
-function mousemove (mouseX: number, mouseY: number) {
+function mousemove (eventX: number, eventY: number) {
   const { left: rX, top: rY } = canvas.getBoundingClientRect()
-  const newX = clamp((mouseX - rX) / canvas.clientWidth, 0, 1)
-  const newY = clamp((mouseY - rY) / canvas.clientHeight, 0, 1)
+  const newX = clamp((eventX - rX) / canvas.clientWidth, 0, 1)
+  const newY = clamp((eventY - rY) / canvas.clientHeight, 0, 1)
 
   if (newY > 0.95) {
     // snap to time in progress bar
