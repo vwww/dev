@@ -38,6 +38,30 @@ const memo = $derived((() => {
 })())
 </script>
 
+<div class="input-group d-flex mb-2" role="group">
+  <span class="input-group-text">Presets</span>
+  <button
+    onclick={() => (nRaw.value = 2, leadRequiredRaw.value = 1)}
+    class:active={nRaw.value == 2 && leadRequiredRaw.value == 1}
+    class="flex-grow-1 btn btn-outline-secondary">Best-of-3</button>
+  <button
+    onclick={() => (nRaw.value = 3, leadRequiredRaw.value = 1)}
+    class:active={nRaw.value == 3 && leadRequiredRaw.value == 1}
+    class="flex-grow-1 btn btn-outline-secondary">Best-of-5</button>
+  <button
+    onclick={() => (nRaw.value = 10, leadRequiredRaw.value = 1)}
+    class:active={nRaw.value == 10 && leadRequiredRaw.value == 1}
+    class="flex-grow-1 btn btn-outline-secondary">Best-of-19</button>
+  <button
+    onclick={() => (nRaw.value = 13, leadRequiredRaw.value = 1)}
+    class:active={nRaw.value == 13 && leadRequiredRaw.value == 1}
+    class="flex-grow-1 btn btn-outline-secondary">Valorant Unrated</button>
+  <button
+    onclick={() => (nRaw.value = 13, leadRequiredRaw.value = 2, otRaw.value = 2)}
+    class:active={nRaw.value == 13 && leadRequiredRaw.value == 2 && otRaw.value == 2}
+    class="flex-grow-1 btn btn-outline-secondary">Valorant Competitive</button>
+</div>
+
 <p>Minimum score to win</p>
 <input type="number" class="form-control" min=1 bind:value={nRaw.value}>
 <input type="range" class="form-range" min=1 max=32 bind:value={nRaw.value}>
