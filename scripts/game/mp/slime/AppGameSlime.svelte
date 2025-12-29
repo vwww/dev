@@ -37,10 +37,10 @@ let slimePlay: SlimePlay
 </script>
 
 <div class="row">
-  <div class="col-6 col-md-7 col-lg-8 col-xl-9">
+  <div class="col-12 col-sm-6 col-md-7 col-lg-8 col-xl-9">
     <NameBox bind:value={name.value} />
   </div>
-  <div class="col-6 col-md-5 col-lg-4 col-xl-3">
+  <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3">
     <div class="input-group mb-3">
       <span class="input-group-text">Color</span>
       <input bind:value={color.value} type="text" class="form-control" placeholder="#77ff00" maxlength="7">
