@@ -264,10 +264,10 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
       const MouseX = Math.min(Math.max(x * 2, 0), 1)
       const MouseYJump = mouse.getY() < 0.45
 
-      const p1x = this.p1.x
+      const px = this.roundPlayers[1] === this.localClient ? 2 - this.p2.x : this.p1.x
 
-      if (!(keyFlags & 3) && Math.abs(p1x - MouseX) > 0.05) {
-        keyFlags |= p1x < MouseX ? 2 : 1
+      if (!(keyFlags & 3) && Math.abs(px - MouseX) > 0.05) {
+        keyFlags |= px < MouseX ? 2 : 1
       }
       if (MouseYJump) keyFlags |= 4
     }
