@@ -166,10 +166,10 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   protected override processWelcomeMode (m: ByteReader): void {
     this.mode.optServe = m.get() & 3 // 2 bits exactly
     this.mode.optIntermission = Math.min(Number(m.getUint64()), 3000)
-    this.mode.optSpeedGame = clamp(m.get(), 25, 800)
-    this.mode.optSpeedPlayer = clamp(m.get(), 25, 800)
-    this.mode.optSpeedBall = clamp(m.get(), 10, 800)
-    this.mode.optGravity = clamp(m.get(), 10, 800)
+    this.mode.optSpeedGame = clamp(Number(m.getUint64()), 25, 800)
+    this.mode.optSpeedPlayer = clamp(Number(m.getUint64()), 25, 800)
+    this.mode.optSpeedBall = clamp(Number(m.getUint64()), 10, 800)
+    this.mode.optGravity = clamp(Number(m.getUint64()), 10, 800)
   }
 
   protected override processRoundInfo (m: ByteReader): void {
