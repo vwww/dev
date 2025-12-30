@@ -1,7 +1,7 @@
 ---
 title: Slime Volleyball Multiplayer Rules
 date: "2025-12-27 20:00:00 -0700"
-mdate: 2025-12-28 16:00:00 -0700
+mdate: 2025-12-29 17:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'slime') }}
@@ -19,7 +19,6 @@ mdate: 2025-12-28 16:00:00 -0700
   <ul>
     <li>Bots
     <li>Client-side Prediction (Extrapolation, and possibly interpolation)
-    <li>Options for game speed, player speed, ball speed, and gravity
   </ul>
 </p>
 
@@ -36,3 +35,15 @@ mdate: 2025-12-28 16:00:00 -0700
 
 <h2>Intermission Time / s <small>(default: 1, min: 0, max: 3)</small></h2>
 <p>Time between rounds after a point is scored.</p>
+
+<h2>Game Speed <small>(default: 100%, min: 0.25, max: 8)</small></h2>
+<p>The game speed is multiplied by this factor.</p>
+
+<h2>Player Speed <small>(default: 1, min: 0.25, max: 8)</small></h2>
+<p>The player speed is multiplied by this factor.</p>
+
+<h2>Ball Speed <small>(default: 1, min: 0.10, max: 8)</small></h2>
+<p>The ball speed is multiplied by this factor.</p>
+
+<h2>Gravity <small>(default: 1, min: 0.10, max: 8)</small></h2>
+<p>The gravity is multiplied by this factor.</p>
