@@ -166,6 +166,9 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   protected override processWelcomeMode (m: ByteReader): void {
     this.mode.optServe = m.get() & 3 // 2 bits exactly
     this.mode.optIntermission = Math.min(Number(m.getUint64()), 3000)
+    this.mode.optSizePlayer = clamp(Number(m.getUint64()), 10, 400)
+    this.mode.optSizeBall = clamp(Number(m.getUint64()), 10, 1600)
+    this.mode.optSizeNet = Math.min(Number(m.getUint64()), 200)
     this.mode.optSpeedGame = clamp(Number(m.getUint64()), 25, 800)
     this.mode.optSpeedPlayer = clamp(Number(m.getUint64()), 25, 800)
     this.mode.optSpeedBall = clamp(Number(m.getUint64()), 10, 800)
@@ -461,8 +464,12 @@ export class GameDrawer {
   }
 
   drawNet (ctx: CanvasRenderingContext2D, W: number, H: number): void {
+    const w = 0.02 * W * this.game.mode.optSizeNet / 100
+    const hScaled = 0.175 * this.game.mode.optSizeNet / 100
+    const h = (hScaled + 0.025) * H
+
     ctx.fillStyle = '#fff'
-    ctx.fillRect(0.495 * W, 0.625 * H, 0.01 * W, 0.2 * H)
+    ctx.fillRect(0.5 * (W - w), (1 - FLOOR_SIZE - hScaled) * H, w, h)
   }
 
   drawBall (ctx: CanvasRenderingContext2D, W: number, H: number, flip: boolean, trace?: boolean): void {
@@ -478,7 +485,7 @@ export class GameDrawer {
     y = (1 - y) - FLOOR_SIZE
 
     ctx.beginPath()
-    ctx.arc(x * H, y * H, BALL_RADIUS * H, 0, 2 * Math.PI)
+    ctx.arc(x * H, y * H, BALL_RADIUS * this.game.mode.optSizeBall / 100 * H, 0, 2 * Math.PI)
     ctx.closePath()
     if (trace) {
       ctx.lineWidth = 2
@@ -498,6 +505,7 @@ export class GameDrawer {
   drawSlimer (ctx: CanvasRenderingContext2D, W: number, H: number, x: number, y: number,
     color: string | CanvasGradient | CanvasPattern, name: string, flip: boolean, p2: boolean, trace?: boolean): void {
     const b = this.game.ball
+    const slimeSize = SLIME_SIZE * this.game.mode.optSizePlayer / 100
 
     // transform to screen space
     if (flip) x = 2 - x
@@ -505,7 +513,7 @@ export class GameDrawer {
 
     // draw slimer
     ctx.beginPath()
-    ctx.arc(x * H, y * H, SLIME_SIZE * H, 0, Math.PI, true)
+    ctx.arc(x * H, y * H, slimeSize * H, 0, Math.PI, true)
     ctx.closePath()
     if (trace) {
       ctx.lineWidth = 2
@@ -517,10 +525,10 @@ export class GameDrawer {
     ctx.fill()
 
     // draw eye
-    let ex = x + ((flip !== p2) ? -0.0535 : 0.0535)
-    let ey = y - 0.0525
+    let ex = x + ((flip !== p2) ? -0.535 : 0.535) * slimeSize
+    let ey = y - 0.525 * slimeSize
     ctx.beginPath()
-    ctx.arc(ex * H, ey * H, 0.0175 * H, 0, 2 * Math.PI, true)
+    ctx.arc(ex * H, ey * H, 0.175 * slimeSize * H, 0, 2 * Math.PI, true)
     ctx.closePath()
     ctx.fillStyle = '#fff'
     ctx.fill()
@@ -528,16 +536,14 @@ export class GameDrawer {
     const dx = (flip ? 2 - (b.x + b.xe) : b.x + b.xe) - ex
     const dy = ((1 - (b.y + b.ye)) - FLOOR_SIZE) - ey
     const l2 = (dx * dx) + (dy * dy)
-    if (l2 > 0.005 * 0.005) {
-      const f = 0.005 / Math.sqrt(l2)
-      ex += dx * f
-      ey += dy * f
-    } else {
-      ex = b.x + b.xe
-      ey = b.y + b.ye
-    }
+    const pupilDisplacement = 0.05 * slimeSize
+    const f = l2 > pupilDisplacement * pupilDisplacement
+      ? pupilDisplacement / Math.sqrt(l2)
+      : 1
+    ex += dx * f
+    ey += dy * f
     ctx.beginPath()
-    ctx.arc(ex * H, ey * H, 0.01 * H, 0, 2 * Math.PI, true)
+    ctx.arc(ex * H, ey * H, 0.1 * slimeSize * H, 0, 2 * Math.PI, true)
     ctx.closePath()
     ctx.fillStyle = '#000'
     ctx.fill()
@@ -547,7 +553,7 @@ export class GameDrawer {
       ctx.font = (0.0225 * W) + 'px Verdana, sans-serif'
       ctx.textAlign = 'center'
       ctx.fillStyle = '#ccc'
-      ctx.fillText(name, x * H, (y - 0.05 - SLIME_SIZE) * H)
+      ctx.fillText(name, x * H, (y - 0.05 - slimeSize) * H)
     }
   }
 

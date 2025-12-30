@@ -1,7 +1,7 @@
 ---
 title: Slime Volleyball Multiplayer Rules
 date: "2025-12-27 20:00:00 -0700"
-mdate: 2025-12-29 17:00:00 -0700
+mdate: 2025-12-30 11:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'slime') }}
@@ -36,14 +36,23 @@ mdate: 2025-12-29 17:00:00 -0700
 <h2>Intermission Time / s <small>(default: 1, min: 0, max: 3)</small></h2>
 <p>Time between rounds after a point is scored.</p>
 
+<h2>Player Size <small>(default: 1, min: 0.1, max: 4)</small></h2>
+<p>The player size is scaled by this factor.</p>
+
+<h2>Ball Size <small>(default: 1, min: 0.1, max: 16)</small></h2>
+<p>The ball size is scaled by this factor.</p>
+
+<h2>Net Size <small>(default: 1, min: 0, max: 2)</small></h2>
+<p>The net size is scaled by this factor.</p>
+
 <h2>Game Speed <small>(default: 1, min: 0.25, max: 8)</small></h2>
-<p>The game speed is multiplied by this factor.</p>
+<p>The game speed is scaled by this factor.</p>
 
 <h2>Player Speed <small>(default: 1, min: 0.25, max: 8)</small></h2>
-<p>The player speed is multiplied by this factor.</p>
+<p>The player speed is scaled by this factor.</p>
 
 <h2>Ball Speed <small>(default: 1, min: 0.10, max: 8)</small></h2>
-<p>The ball speed is multiplied by this factor.</p>
+<p>The ball speed is scaled by this factor.</p>
 
 <h2>Gravity <small>(default: 1, min: 0.10, max: 8)</small></h2>
-<p>The gravity is multiplied by this factor.</p>
+<p>The gravity is scaled by this factor.</p>
