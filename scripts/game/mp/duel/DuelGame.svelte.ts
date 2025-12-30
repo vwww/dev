@@ -444,9 +444,13 @@ export class DuelGame extends RealTimeGame<DuelClient> {
     const W = ctx.canvas.width
 
     this.drawClear(ctx, W, H)
-    for (let i = 0; i < this.players.length; i++) {
-      const p = this.players[i]
-      if (p.type && p.alive) this.drawPlayer(ctx, W, H, p, p.type === DuelPlayerType.HUMAN && this.clients[i])
+    for (const p of
+        this.mode.optOverlap
+          ? this.players
+            .filter((p) => p.type && p.alive)
+            .sort((a, b) => a.m - b.m)
+          : this.players) {
+      if (p.type && p.alive) this.drawPlayer(ctx, W, H, p, p.type === DuelPlayerType.HUMAN && this.clients[p.pn])
     }
 
     // draw leaderboard
