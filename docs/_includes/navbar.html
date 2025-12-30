@@ -22,8 +22,7 @@
           {%- endif %}
           {%- for d in section.items %}
             <li>
-              {%- set href2 = d.href + '.html' -%}
-              <a class="dropdown-item{% if d.disabled %} disabled{% endif %}{% if d.href == href_check or href2 == href_check %} active{% endif %}"
+              <a class="dropdown-item{% if d.disabled %} disabled{% endif %}{% if d.href == href_check or (d.hrefs | default([]) | groupby('href'))[href_check] %} active{% endif %}"
               {%- if d.href_ext %}
                 href="{{d.href_ext}}"
                 target="_blank"
