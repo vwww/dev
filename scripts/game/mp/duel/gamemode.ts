@@ -17,19 +17,9 @@ export function defaultMode (): DuelMode {
 }
 
 export function getGameModeString (mode: DuelMode): string {
-  return (!mode.optSkill
-    ? 'pure luck'
-    : mode.optSkill >= 100
-      ? 'pure skill'
-      : `${mode.optSkill}% skill, ${100 - mode.optSkill}% luck`)
-    + `, ${mode.optBotWin}% bot auto-win`
-    + (!mode.optTransfer
-    ? ', no transfer'
-    : mode.optTransfer >= 100
-      ? ', full transfer'
-      : `, ${mode.optTransfer}% transfer`)
+  return `${mode.optSkill}% skill, ${100 - mode.optSkill}% luck`
+    + `, ${mode.optBotWin}% bot-factor`
+    + `, ${mode.optTransfer}% transfer`
     + `, ${mode.optDimension / DIMENSION_SCALE}D`
-    + (mode.optBotBalance
-      ? `, ${mode.optBotBalance} botbalance`
-      : '')
+    + `, ${mode.optBotBalance} botbalance`
 }
