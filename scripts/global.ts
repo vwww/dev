@@ -32,6 +32,9 @@ function init (): void {
     // Theme Switcher
     theme.init()
 
+    // Mirror Selector
+    $('#mirror-list a').filter(function () { return $(this).text() === location.hostname }).addClass('active')
+
     // Copyright year (update only once)
     $('#copyyear').text(now.getFullYear())
 

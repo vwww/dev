@@ -86,7 +86,7 @@
 
         <li class="dropdown">
           <a class="nav-link dropdown-toggle" href="#nav/mirror" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mirror</a>
-          <ul class="dropdown-menu" role="menu">
+          <ul class="dropdown-menu" role="menu" id="mirror-list">
             {%- for mirror in site.mirrors %}
             <li><a class="dropdown-item" href="{{mirror[1]}}{{page_url}}" rel="nofollow">{{mirror[0]}}</a></li>
             {%- endfor %}
