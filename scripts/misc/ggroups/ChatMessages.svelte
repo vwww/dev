@@ -26,12 +26,8 @@ function parseRawText (rawText: string, allowSecretSystemMessages: boolean): [ms
       msgClassNum = 3
     }
   } else if (rawText[0] === '!') {
-    if (!allowSecretSystemMessages) {
-      text = ''
-    } else {
-      msgClassNum = 2 // '^Fr^M1^Cr'
-      text = rawText.slice(1).toUpperCase()
-    }
+    msgClassNum = 2 // '^Fr^M1^Cr'
+    text = allowSecretSystemMessages ? rawText.slice(1).toUpperCase() : ''
   } else {
     let num = rawText.indexOf(':')
     if (num <= 0) num = 0
