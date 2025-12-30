@@ -1,7 +1,7 @@
 ---
 title: Duel Multiplayer Rules
 date: "2025-12-27 20:00:00 -0700"
-mdate: 2025-12-28 12:00:00 -0700
+mdate: 2025-12-29 17:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'duel') }}
@@ -28,6 +28,9 @@ mdate: 2025-12-28 12:00:00 -0700
 
 <h2>Bot Win Rate <small>(default: 90%, min: 0%, max: 100%)</small></h2>
 <p>Portion of duel outcome weight given to auto-win against bots.</p>
+
+<h2>Overlap <small>(default: 0%, min: 0%, max: 100%)</small></h2>
+<p>How much overlap is needed to count as a collision?</p>
 
 <h2>Mass Transfer <small>(default: 75%, min: 0%, max: 100%)</small></h2>
 <p>Portion of loser's mass transferred to the winner.</p>

@@ -151,6 +151,7 @@ export class DuelGame extends RealTimeGame<DuelClient> {
     this.mode.optSkill = Math.min(m.get(), 100)
     this.mode.optBotWin = Math.min(m.get(), 100)
     this.mode.optTransfer = Math.min(m.get(), 100)
+    this.mode.optOverlap = Math.min(m.get(), 100)
     this.mode.optDimension = Math.min(Number(m.getUint64()), 100 * DIMENSION_SCALE)
   }
 
