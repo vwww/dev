@@ -155,13 +155,13 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   }
 
   protected override playerDeactivated (player: SlimeClient): void {
-    if (this.roundPlayers.length === 2) {
+    if (this.roundPlayers.length > 1) {
       this.roundPlayers[player === this.roundPlayers[0] ? 1 : 0].addWin()
-      player.addLoss()
-
-      this.p1.score = this.p2.score = 0n
     }
 
+    player.addLoss()
+
+    this.p1.score = this.p2.score = 0n
     this.gameStart = Date.now()
 
     super.playerDeactivated(player)
@@ -181,24 +181,16 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
 
   protected override processRoundInfo (m: ByteReader): void {
     this.gameStart = Date.now() - Number(m.getUint64())
-    if (this.roundPlayers.length) {
-      this.roundStart = Date.now() - Number(m.getUint64())
+    this.roundStart = Date.now() - Number(m.getUint64())
 
-      const flags = m.get()
-      if (this.roundPlayers.length > 1 && (flags & 4)) {
-        [this.roundPlayers[0], this.roundPlayers[1]] = [this.roundPlayers[1], this.roundPlayers[0]]
-      }
-      this.status = flags & 3
-      this.p1.score = m.getUint64()
-      this.p2.score = m.getUint64()
-      this.processWorldState(m)
-    } else {
-      // reset players
-      this.p1.respawn(true)
-      this.p2.respawn(false)
-      // reset ball
-      this.ball.respawn(true)
+    const flags = m.get()
+    if (this.roundPlayers.length > 1 && (flags & 4)) {
+      [this.roundPlayers[0], this.roundPlayers[1]] = [this.roundPlayers[1], this.roundPlayers[0]]
     }
+    this.status = flags & 3
+    this.p1.score = m.getUint64()
+    this.p2.score = m.getUint64()
+    this.processWorldState(m)
   }
 
   protected processWorldState (m: ByteReader): void {
@@ -416,15 +408,12 @@ export class GameDrawer {
     const flip = flipP1 === (!this.game.roundPlayers.length || c1 === this.game.localClient)
 
     this.drawBall(ctx, W, H, flip)
-    this.drawSlimer(ctx, W, H, p1.x + p1.xe, p1.y + p1.ye, c1?.color ?? '#7f0', c1?.name ?? '', flip, false)
+    this.drawSlimer(ctx, W, H, p1.x + p1.xe, p1.y + p1.ye, c1?.color ?? '#7f0', c1?.name ?? '<bot>', flip, false)
+    this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c2?.color ?? c1?.colorInv ?? '#80f', c2?.name ?? '<bot>', flip, true)
     if (c1) {
       this.drawPing(ctx, W, H, c1.ping, !flip)
       if (c2) {
-        this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c2?.color, c2.name, flip, true)
         this.drawPing(ctx, W, H, c2.ping, flip)
-      } else {
-        this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c1.colorInv, '<bot>', flip, true)
-        this.drawPing(ctx, W, H, 0, flip)
       }
     }
 
