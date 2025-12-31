@@ -16,8 +16,15 @@ let canvas: HTMLCanvasElement
 let ctx: CanvasRenderingContext2D
 
 function resize (): void {
-  canvas.width = Math.floor(canvas.clientWidth * window.devicePixelRatio)
-  canvas.height = Math.floor(canvas.clientHeight * window.devicePixelRatio)
+  // if (document.fullscreen && document.fullscreenElement === canvas)
+  if (window.innerWidth === window.screen.width && window.innerHeight === window.screen.height) {
+    // fullscreen mode
+    canvas.width = Math.min(window.innerWidth, window.innerHeight * aspect)
+    canvas.height = Math.min(window.innerHeight, window.innerWidth / aspect)
+  } else {
+    canvas.width = Math.floor(canvas.clientWidth * window.devicePixelRatio)
+    canvas.height = Math.floor(canvas.clientHeight * window.devicePixelRatio)
+  }
 }
 
 onMount(() => {
