@@ -177,9 +177,9 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   }
 
   protected override processRoundInfo (m: ByteReader): void {
-    if (this.roundPlayers.length === 2) {
+    if (this.roundPlayers.length) {
       const flags = m.get()
-      if (flags & 4) {
+      if (this.roundPlayers.length > 1 && (flags & 4)) {
         [this.roundPlayers[0], this.roundPlayers[1]] = [this.roundPlayers[1], this.roundPlayers[0]]
       }
       this.status = flags & 3
@@ -231,11 +231,11 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
 
   protected processRoundWin (p1Won: boolean): void {
     (p1Won ? this.p1 : this.p2).score++
-    this.roundPlayers[p1Won ? 0 : 1].addWin()
-    this.roundPlayers[p1Won ? 1 : 0].addLoss()
+    this.roundPlayers[p1Won ? 0 : 1]?.addWin()
+    this.roundPlayers[p1Won ? 1 : 0]?.addLoss()
     this.updatePlayers()
 
-    this.status = p1Won !== (this.roundPlayers[1] === this.localClient) ? GameStatus.WIN : GameStatus.LOSS
+    this.status = p1Won === (this.roundPlayers[0] === this.localClient) ? GameStatus.WIN : GameStatus.LOSS
   }
 
   protected processRoundStart0 (_m: ByteReader): void {
@@ -285,7 +285,7 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
 
   override updateGameState (dt: number): void {
     // update network
-    if (this.room && this.roundPlayers.length === 2 && this.localClient.active) {
+    if (this.room && this.localClient.active) {
       const keyFlags = this.getKeyFlags()
       if (this.lastKeySent !== keyFlags) {
         this.sendMove(this.lastKeySent = keyFlags)
@@ -417,6 +417,7 @@ export class GameDrawer {
         this.drawPing(ctx, W, H, c2.ping, flip)
       } else {
         this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c1.colorInv, '<bot>', flip, true)
+        this.drawPing(ctx, W, H, 0, flip)
       }
     }
 
@@ -435,9 +436,7 @@ export class GameDrawer {
     } else if (!this.game.localClient.active) {
       status = !this.game.status
         ? 'Spectating'
-        : `${this.game.status === GameStatus.WIN ? 'Left' : 'Right'} wins the round!`
-    } else if (this.game.roundPlayers.length < 2) {
-      status = 'Waiting for opponent'
+        : `${this.game.status === GameStatus.WIN !== this.game.flipP1 ? 'Left' : 'Right'} wins the round!`
     } else if (this.game.status === GameStatus.WIN) {
       status = 'You won the round!'
     } else if (this.game.status === GameStatus.LOSS) {
