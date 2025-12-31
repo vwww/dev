@@ -151,6 +151,7 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
     super.playerActivated(player)
 
     this.p1.score = this.p2.score = 0n
+    this.gameStart = Date.now()
   }
 
   protected override playerDeactivated (player: SlimeClient): void {
@@ -160,6 +161,8 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
 
       this.p1.score = this.p2.score = 0n
     }
+
+    this.gameStart = Date.now()
 
     super.playerDeactivated(player)
   }
