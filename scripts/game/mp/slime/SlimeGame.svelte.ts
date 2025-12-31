@@ -437,17 +437,20 @@ export class GameDrawer {
     let status: string | undefined
     if (!this.game.room) {
       status = 'Disconnected'
-    } else if (!this.game.localClient.active) {
-      status = !this.game.status
-        ? 'Spectating'
-        : `${this.game.status === GameStatus.WIN !== this.game.flipP1 ? 'Left' : 'Right'} wins the round!`
-    } else if (this.game.status === GameStatus.WIN) {
-      status = 'You won the round!'
-    } else if (this.game.status === GameStatus.LOSS) {
-      status = 'You lost the round!'
+    } else {
+      if (!this.game.localClient.active) {
+        status = !this.game.status
+          ? 'Spectating'
+          : `${this.game.status === GameStatus.WIN !== this.game.flipP1 ? 'Left' : 'Right'} wins the round!`
+      } else if (this.game.status === GameStatus.WIN) {
+        status = 'You won the round!'
+      } else if (this.game.status === GameStatus.LOSS) {
+        status = 'You lost the round!'
+      }
+      const statusTime = `${this.game.roundPlayers.length && !this.game.status ? ((Date.now() - this.game.roundStart) / 1000).toFixed(1) + '/' : ''}${((Date.now() - this.game.gameStart) / 1000).toFixed(1)}`
+      status = status ? `${status} (${statusTime})` : statusTime
     }
-    const statusTime = `${this.game.roundPlayers.length && !this.game.status ? ((Date.now() - this.game.roundStart) / 1000).toFixed(1) + '/' : ''}${((Date.now() - this.game.gameStart) / 1000).toFixed(1)}`
-    this.drawStatus(ctx, W, H, status ? `${status} (${statusTime})` : statusTime)
+    this.drawStatus(ctx, W, H, status)
     this.drawFPS(ctx, W, H)
   }
 
