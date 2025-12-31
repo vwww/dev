@@ -98,6 +98,8 @@ class SlimeClient extends RealTimeClient {
 export class SlimeGame extends RealTimeGame<SlimeClient> {
   mode: SlimeMode = $state(defaultMode())
 
+  gameStart = Date.now()
+  roundStart = 0
   status = GameStatus.IN_PLAY
   readonly p1 = new Player(true)
   readonly p2 = new Player(false)
@@ -177,7 +179,10 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   }
 
   protected override processRoundInfo (m: ByteReader): void {
+    this.gameStart = Date.now() - Number(m.getUint64())
     if (this.roundPlayers.length) {
+      this.roundStart = Date.now() - Number(m.getUint64())
+
       const flags = m.get()
       if (this.roundPlayers.length > 1 && (flags & 4)) {
         [this.roundPlayers[0], this.roundPlayers[1]] = [this.roundPlayers[1], this.roundPlayers[0]]
@@ -251,6 +256,7 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
     this.p2.respawn(false)
     this.ball.respawn(p0Serves)
     this.status = GameStatus.IN_PLAY
+    this.roundStart = Date.now()
   }
 
   protected override readonly playersSortProps = [
@@ -442,7 +448,8 @@ export class GameDrawer {
     } else if (this.game.status === GameStatus.LOSS) {
       status = 'You lost the round!'
     }
-    if (status) this.drawStatus(ctx, W, H, status)
+    const statusTime = `${this.game.roundPlayers.length && !this.game.status ? ((Date.now() - this.game.roundStart) / 1000).toFixed(1) + '/' : ''}${((Date.now() - this.game.gameStart) / 1000).toFixed(1)}`
+    this.drawStatus(ctx, W, H, status ? `${status} (${statusTime})` : statusTime)
     this.drawFPS(ctx, W, H)
   }
 
