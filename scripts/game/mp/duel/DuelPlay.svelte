@@ -68,5 +68,4 @@ let canvasGame: CanvasGame
 <b>Lobby</b>
 <RoundPlayerList
   localClient={gameState.localClient}
-  inGame={gameState.roundPlayers}
-  inQueue={[]} />
+  inGame={gameState.roundPlayers} />

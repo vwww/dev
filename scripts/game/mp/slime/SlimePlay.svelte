@@ -27,5 +27,4 @@ export function requestFullscreen (options?: FullscreenOptions): Promise<void> {
 <b>Lobby</b>
 <RoundPlayerList
   localClient={gameState.localClient}
-  inGame={gameState.roundPlayers.length >= 2 ? gameState.roundPlayers : []}
-  inQueue={gameState.roundPlayers.length < 2 ? gameState.roundPlayers : []} />
+  inGame={gameState.roundPlayers}/>

@@ -8,7 +8,7 @@ interface RoundListPlayer {
 interface Props {
   localClient: RoundListPlayer
   inGame: ArrayLike<RoundListPlayer>
-  inQueue: ArrayLike<RoundListPlayer>
+  inQueue?: ArrayLike<RoundListPlayer>
 }
 
 const { localClient, inGame, inQueue }: Props = $props()
@@ -27,11 +27,13 @@ const { localClient, inGame, inQueue }: Props = $props()
   {/each}
 </div>
 
-<div>
-  Queue:
-  {#each inQueue as queuedPlayer}
-    {@render playerBadge(queuedPlayer, queuedPlayer.ready ? 'info' : 'secondary')}
-  {:else}
-    nobody
-  {/each}
-</div>
+{#if inQueue}
+  <div>
+    Queue:
+    {#each inQueue as queuedPlayer}
+      {@render playerBadge(queuedPlayer, queuedPlayer.ready ? 'info' : 'secondary')}
+    {:else}
+      nobody
+    {/each}
+  </div>
+{/if}
