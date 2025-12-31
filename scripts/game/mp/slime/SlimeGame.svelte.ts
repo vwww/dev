@@ -113,8 +113,6 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   lastKeySent = -1
   readonly input = new SlimeInput()
 
-  INTERMISSION_TIME = 30000
-
   override newClient () { return new SlimeClient }
 
   enterGame (room: BaseGameRoom, name: string, color: string): void {

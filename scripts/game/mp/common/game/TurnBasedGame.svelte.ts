@@ -23,6 +23,9 @@ export abstract class TurnBasedClient extends CommonClient {
 const MAX_HISTORY_LEN = 100
 
 export abstract class TurnBasedGame<C extends TurnBasedClient, H> extends CommonGame<C> {
+  abstract INTERMISSION_TIME: number
+  abstract ROUND_TIME: number
+
   roundState = $state(GameState.WAITING)
   roundTimerStart = $state(0)
   roundTimerEnd = $state(0)

@@ -79,8 +79,6 @@ export class DuelGame extends RealTimeGame<DuelClient> {
   topProp = $derived((['m', 'score', 'kills'] as const)[this.topType])
   duelTop: DuelPlayer[] = []
 
-  INTERMISSION_TIME = 30000
-
   override newClient () { return new DuelClient }
 
   enterGame (room: BaseGameRoom, name: string, hue: string): void {

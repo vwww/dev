@@ -5,8 +5,6 @@ import { CommonClient, CommonGame } from './CommonGame.svelte'
 export const RealTimeClient = CommonClient
 
 export abstract class RealTimeGame<C extends CommonClient> extends CommonGame<C> {
-  ROUND_TIME = 0
-
   sendReady (): void { }
 
   roundPlayers: C[] = $state([])

@@ -37,9 +37,6 @@ export abstract class CommonClient {
 export abstract class CommonGame<C extends CommonClient> {
   PROTOCOL_VERSION = 0
 
-  abstract INTERMISSION_TIME: number
-  abstract ROUND_TIME: number
-
   room?: BaseGameRoom = $state()
 
   localClient: C
