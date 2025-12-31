@@ -36,6 +36,7 @@ const enum C2S {
 
 class SlimeClient extends RealTimeClient {
   color = '#000'
+  colorInv = '#000'
 
   wins = $state(0)
   loss = $state(0)
@@ -71,7 +72,10 @@ class SlimeClient extends RealTimeClient {
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 
-    this.color = formatHexColor((m.get() << 16) | m.getUint16())
+    const color = (m.get() << 16) | m.getUint16()
+    const colorInv = color ^ 0xFFFFFF
+    this.color = formatHexColor(color)
+    this.colorInv = formatHexColor(colorInv)
 
     this.wins = m.getInt()
     this.loss = m.getInt()
@@ -84,7 +88,10 @@ class SlimeClient extends RealTimeClient {
   override processJoin (cn: number, m: ByteReader): void {
     super.processJoin(cn, m)
 
-    this.color = formatHexColor((m.get() << 16) | m.getUint16())
+    const color = (m.get() << 16) | m.getUint16()
+    const colorInv = color ^ 0xFFFFFF
+    this.color = formatHexColor(color)
+    this.colorInv = formatHexColor(colorInv)
   }
 }
 
@@ -143,21 +150,15 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   protected override playerActivated (player: SlimeClient): void {
     super.playerActivated(player)
 
-    if (this.roundPlayers.length === 2) {
-      this.p1.score = this.p2.score = 0n
-    }
+    this.p1.score = this.p2.score = 0n
   }
 
   protected override playerDeactivated (player: SlimeClient): void {
     if (this.roundPlayers.length === 2) {
-      if (player === this.roundPlayers[0]) {
-        [this.p1.score, this.p2.score] = [++this.p2.score, this.p1.score]
-        this.roundPlayers[1].addWin()
-      } else {
-        this.p1.score++
-        this.roundPlayers[0].addWin()
-      }
+      this.roundPlayers[player === this.roundPlayers[0] ? 1 : 0].addWin()
       player.addLoss()
+
+      this.p1.score = this.p2.score = 0n
     }
 
     super.playerDeactivated(player)
@@ -405,27 +406,25 @@ export class GameDrawer {
     // draw dynamic entities
     const { p1, p2, flipP1 } = this.game
     const [c1, c2] = this.game.roundPlayers
-    const flip = flipP1 !== (c2 === this.game.localClient)
-    const c1Name = c1?.name ?? ''
-    const c2Name = c2?.name ?? ''
-    const c1Color = c1?.color ?? '#7f0'
-    const c2Color = c2?.color ?? '#80f'
+    const flip = flipP1 === (!this.game.roundPlayers.length || c1 === this.game.localClient)
 
     this.drawBall(ctx, W, H, flip)
-    this.drawSlimer(ctx, W, H, p1.x + p1.xe, p1.y + p1.ye, c1Color, c1Name, flip, false)
+    this.drawSlimer(ctx, W, H, p1.x + p1.xe, p1.y + p1.ye, c1?.color ?? '#7f0', c1?.name ?? '', flip, false)
     if (c1) {
       this.drawPing(ctx, W, H, c1.ping, !flip)
       if (c2) {
-        this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c2Color, c2Name, flip, true)
+        this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c2?.color, c2.name, flip, true)
         this.drawPing(ctx, W, H, c2.ping, flip)
+      } else {
+        this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c1.colorInv, '<bot>', flip, true)
       }
     }
 
     // draw true positions
     if (this.game.drawDev) {
       this.drawBall(ctx, W, H, flip, true)
-      this.drawSlimer(ctx, W, H, p1.x, p1.y, c1Color, c1Name, flip, false, true)
-      this.drawSlimer(ctx, W, H, p2.x, p2.y, c2Color, c2Name, flip, true, true)
+      this.drawSlimer(ctx, W, H, p1.x, p1.y, '', '', flip, false, true)
+      this.drawSlimer(ctx, W, H, p2.x, p2.y, '', '', flip, true, true)
     }
 
     // draw HUD
