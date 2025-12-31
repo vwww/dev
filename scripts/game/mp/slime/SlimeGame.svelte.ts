@@ -233,7 +233,7 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
     this.roundPlayers[p1Won ? 1 : 0]?.addLoss()
     this.updatePlayers()
 
-    this.status = p1Won === (this.roundPlayers[0] === this.localClient) ? GameStatus.WIN : GameStatus.LOSS
+    this.status = p1Won === (!this.roundPlayers.length || this.roundPlayers[0] === this.localClient) ? GameStatus.WIN : GameStatus.LOSS
   }
 
   protected processRoundStart0 (_m: ByteReader): void {
@@ -439,7 +439,7 @@ export class GameDrawer {
       } else if (this.game.status === GameStatus.LOSS) {
         status = 'You lost the round!'
       }
-      const statusTime = `${this.game.roundPlayers.length && !this.game.status ? ((Date.now() - this.game.roundStart) / 1000).toFixed(1) + '/' : ''}${((Date.now() - this.game.gameStart) / 1000).toFixed(1)}`
+      const statusTime = `${!this.game.status ? ((Date.now() - this.game.roundStart) / 1000).toFixed(1) + '/' : ''}${((Date.now() - this.game.gameStart) / 1000).toFixed(1)}`
       status = status ? `${status} (${statusTime})` : statusTime
     }
     this.drawStatus(ctx, W, H, status)
