@@ -561,9 +561,8 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
 }
 
 function comparePlayerInfo (a: DiscardPlayerInfo, b: DiscardPlayerInfo): number {
-  const aH = a.hand ?? 0
-  const bH = b.hand ?? 0
-  return (bH - aH) || (b.discardSum - a.discardSum)
+  return ((b.hand ?? 0) - (a.hand ?? 0))
+    || (b.discardSum - a.discardSum)
 }
 
 type CardCount = Repeat<number, 8>
