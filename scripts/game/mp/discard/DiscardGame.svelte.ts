@@ -456,7 +456,7 @@ export class DiscardGame extends RoundRobinGame<DiscardClient, DiscardPlayerInfo
   protected eliminatePlayer (m: ByteReader, d: DiscardDiscInfo, pn: number, p: DiscardPlayerInfo, c: DiscardClient, early: boolean): boolean {
     let alt: number | undefined
     if (early) {
-      const isMove = this.playerInfo[this.turnIndex] == p
+      const isMove = this.turnIndex === pn
 
       if (isMove) {
         alt = m.getInt()

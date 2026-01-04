@@ -274,7 +274,7 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
           <li><span class="badge text-bg-outline-success">IN</span></li>
         {/if}
         <li>
-          <span class="badge text-bg{outline}-{GameState.ACTIVE && i === turnIndex ? 'primary' : 'secondary'}">{gameState.formatPlayerName(p)}</span>
+          <span class="badge text-bg{outline}-{i === turnIndex ? 'primary' : 'secondary'}">{gameState.formatPlayerName(p)}</span>
           {#if i === turnIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
           {#if p.passed}<span class="badge text-bg{outline}-danger">OUT</span>{/if}
           {p.handSize}
