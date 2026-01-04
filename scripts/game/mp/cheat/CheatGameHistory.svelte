@@ -19,7 +19,7 @@ const { results }: Props = $props()
           {' '}
           <div class="d-inline-block">
             #{i + 1}
-            <span class="badge text-bg-{i ? 'secondary' : 'primary'}">
+            <span class="badge text-bg{p.isMe ? '' : '-outline'}-{i ? 'secondary' : 'primary'}">
               {p.name}
             </span>
             (on {p.trickNum} in {formatDuration(p.duration)})
