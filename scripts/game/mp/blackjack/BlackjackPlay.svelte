@@ -48,7 +48,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Total'
     {:else if canMove}
       Make a move:
     {:else if localClient.inRound}
-      Waiting for opponent to move&hellip;
+      Waiting for others to move&hellip;
     {:else}
       Spectating:
     {/if}
