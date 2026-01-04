@@ -291,8 +291,8 @@ function resizeCanvas (): void {
     const parent = $canvas.parentNode! as HTMLElement
     const targetW = parent.clientWidth
     const targetH = parent.clientHeight
-    $canvas.width = targetW
-    $canvas.height = targetH
+    $canvas.width = targetW * window.devicePixelRatio
+    $canvas.height = targetH * window.devicePixelRatio
   }
 }
 
