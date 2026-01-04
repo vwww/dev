@@ -48,7 +48,7 @@ let compact = $state(true)
         {@const outline = m.playerIsMe ? '' : '-outline'}
         <span class="badge text-bg{outline}-secondary">{m.playerName}</span> left, discarding &times;{m.handSize}.
       {:else}
-        [unknown move {m}]
+        [unknown move {JSON.stringify(m)}]
       {/if}
     </div>
     {' '}

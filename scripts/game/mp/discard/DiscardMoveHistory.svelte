@@ -65,7 +65,7 @@ const { moves, ll }: Props = $props()
         <span class="badge text-bg-light">{getCardName(m.hand, ll)}</span>
         {#if m.alt != undefined}and <span class="badge text-bg-light">{getCardName(m.alt, ll)}</span>{/if}.
       {:else}
-        [unknown move {m}]
+        [unknown move {JSON.stringify(m)}]
       {/if}
     </li>
   {:else}

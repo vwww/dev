@@ -56,7 +56,7 @@ let compact = $state(true)
             won.
           {/if}
         {:else}
-          [unknown move {m}]
+          [unknown move {JSON.stringify(m)}]
         {/if}
       {/if}
     </div>
