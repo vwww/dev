@@ -113,7 +113,7 @@ export function getCardName (card: number, ll: boolean): string | number {
 </div>
 
 <div class="row">
-  <div class="col-12 mt-2 mb-3">
+  <div class="col-12 mb-3">
     <div class="card my-2">
       <div class="card-header">
         <h4 class="card-title">

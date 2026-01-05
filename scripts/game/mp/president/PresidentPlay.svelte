@@ -79,7 +79,7 @@ export const ranks = ['3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A
 
 <div class="row">
   <div class="col-12">
-    <div class="my-2 text-center">
+    <div class="mb-2 text-center">
       Trick {gameState.trickNum}
       {#if trickTurn}
         Move {trickTurn}: <span class="badge text-bg-light">{ranks[gameState.trickRank]}</span> &times;{trickCount}{#if gameState.trick1Fewer}-1{/if}
