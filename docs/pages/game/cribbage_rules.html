@@ -1,15 +1,16 @@
 ---
 title: Rules for Cribbage
 date: "2025-12-27 14:00:00 -0700"
+mdate: 2026-01-10 14:00:00 -0700
 ---
 {% import 'game.html' as game %}
 {{ game.tab(page_url, 'cribbage') }}
 
 <h1>Gameplay</h1>
 <p>Cribbage is a matching card game. The minimum player count is 2, and the maximum player count is 4.</p>
-<p>Players are shuffled and move in a random order.</p>
+<p>Players are shuffled to get the turn order for the match.</p>
 
-<p>If a player leaves, he gets the worst unfilled rank, and the round ends without giving a result to other players.</p>
+<p>If a player leaves, he gets the worst unfilled rank, and the hand ends immediately.</p>
 
 <h2>Rounds</h2>
 
@@ -22,15 +23,15 @@ date: "2025-12-27 14:00:00 -0700"
       <li>Each player is dealt 6 cards (2 players) or 5 cards (3 or 4 players).
       <li>If there are 3 players, a face-down card is dealt into the crib. Otherwise, the crib is empty.
       <li>Each player keeps 4 cards, discarding the other 1 or 2 face-down into the crib.
-      <li>After players have moved, a face-up card is revealed. If the card is a Jack, the dealer gets 2 points.
+      <li>After players are done, the starter card is revealed. If the card is a Jack, the dealer scores 2 points.
     </ul>
   <li><b>Play</b>:
     <ul>
       <li>The player after the dealer moves first.
-      <li>Players play one card if the count (cumulative value of cards played) does not exceed 31 and must do so if possible, or automatically pass (call "Go").
+      <li>Players must play one card that does not cause the count (total value of cards played) to exceed 31 if possible, or else they must pass (call "Go").
       <li>If the count is 15, the player scores 2 points.
-      <li>Completing a pair scores 2 points. Completing 3 of a kind counts as 3 pairs for 6 points. Completing 4 of a kind counts as 6 pairs for 12 points.
-      <li>A run of 3 or more cards (consecutively played but in any order, with consecutive values when sorted) scores the number of cards in the run.
+      <li>Each pair in the longest suffix of equal ranks scores 2 points. 3-of-a-kind counts as 3 pairs for 6 points. 4-of-a-kind counts as 6 pairs for 12 points.
+      <li>The longest suffix that is a run (consecutive ranks when sorted) scores the suffix length if it is at least 3.
       <li>The next player moves until everyone has passed.
       <li>The last player to move scores 1 point if the count is less than 31 or 2 points if the count is 31.
       <li>The count is reset to 0, and the next player (after the last player to move) moves first. If all cards have been played, the game goes to the Show.
@@ -38,9 +39,9 @@ date: "2025-12-27 14:00:00 -0700"
   <li><b>Show</b>: Starting with the player after the dealer, each player scores points by combining his hand (played cards) with the starter card and considering each subset of those cards:
     <ul>
       <li>Total of 15 (2 points)
-      <li>Runs of at least 3 cards (1 point per card)
+      <li>Maximal-length runs of at least 3 cards (1 point per card)
       <li>Pairs (2 points)
-      <li>Four-card flush (same suit) (4 points)
+      <li>Four-card flush (same suit) with suit different from starter (4 points)
       <li>Five-card flush (5 points)
       <li>Jack of same suit as the starter card (1 point)
     </ul>
@@ -67,3 +68,18 @@ date: "2025-12-27 14:00:00 -0700"
 
 <h2>Score Target <small>(default: 121, min: 1, max: 1000)</small></h2>
 <p>The game immediately ends when a player has at least this score. 61 and 121 are commonly used values.</p>
+
+<h2>Skip Empty <small>(default: on)</small></h2>
+<p>Automatically pass when you do not have any cards left.</p>
+
+<h2>Skip Pass <small>(default: on)</small></h2>
+<p>Automatically pass when you have cards but cannot play any.</p>
+
+<h2>Skip Only Move <small>(default: off)</small></h2>
+<p>Automatically move when only one move is possible.</p>
+
+<h2>Pre-Show Phase <small>(default: off)</small></h2>
+<p>Add a pause point before the Show phase.</p>
+
+<h2>Post-Show Phase <small>(default: on)</small></h2>
+<p>Add a pause point after the Show phase, before the next hand.</p>
