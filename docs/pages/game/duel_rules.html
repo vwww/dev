@@ -16,6 +16,16 @@ mdate: 2025-12-29 17:00:00 -0700
   The winrate of humans against bots is also increased.
 </p>
 
+<p>When one player collides with or covers enough of another player, a duel occurs, and one player beats the other.</p>
+
+<p>During a duel, the steps below are evaluated. There will always be one winner and one loser, never a tie. If one step does not apply, the next step is evaluated.</p>
+
+<ul>
+  <li>For player vs bot, there is some percent chance (bot win rate) that the player automatically wins.</li>
+  <li>There is some percent chance (skill) that the player is selected by weight. If this happens, the chance of winning is the player's mass divided by the total mass of both players.</li>
+  <li>In the last step, the player is selected by luck. There is a 50% chance for each player.</li>
+</ul>
+
 <p>This game is still under development.</p>
 
 <h1>Options</h1>
