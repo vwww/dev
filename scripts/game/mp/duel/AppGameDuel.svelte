@@ -18,6 +18,7 @@ const chatState = new ChatState()
 const gameState = new DuelGame(chatState)
 
 const {
+  room: inGame,
   leaderboard,
   localClient,
 } = $derived(gameState)
@@ -62,24 +63,27 @@ function onclickhue (event: MouseEvent) {
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={gameState.room}
+  {inGame}
   isActive={gameState.localClient.active}
   canReady={false}
   isReady={false}
   onActive={() => gameState.sendActive()}
   onReady={() => gameState.sendReady()}
-  onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <DuelPlay {gameState} />
 </PlayCard>
 
 <div class="row">
   <div class="col-12 col-xl-8">
-    <Leaderboard {leaderboard} {localClient} columns={[
-      ['Score', (p) => p.score],
-      ['Kills', (p) => p.kills],
-      ['Deaths', (p) => p.deaths],
-    ]} />
+    <Leaderboard {leaderboard} {localClient}
+      {inGame}
+      onReset={() => gameState.sendReset()}
+      columns={[
+        ['Score', (p) => p.score],
+        ['Kills', (p) => p.kills],
+        ['Deaths', (p) => p.deaths],
+      ]}
+    />
   </div>
 
   <div class="col-12 col-xl-4 mb-3">

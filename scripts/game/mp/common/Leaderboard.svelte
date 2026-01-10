@@ -7,9 +7,12 @@ interface Props {
   leaderboard: ArrayLike<C>
   localClient: C
   columns?: [string, (client: C) => Score][]
+
+  inGame: unknown
+  onReset: () => void
 }
 
-const { leaderboard, localClient, columns = [] }: Props = $props()
+const { leaderboard, localClient, columns = [], inGame, onReset }: Props = $props()
 
 function formatScore(s: Score) {
   if (typeof s === 'object') {
@@ -28,10 +31,19 @@ let showSpect = $state(true)
 <div class="card mb-3">
   <div class="card-header">
     <h4 class="float-start">Leaderboard</h4>
-    <label class="form-check float-end">
-      <input type="checkbox" class="form-check-input" bind:checked={showSpect}>
-      <span class="form-check-label">show spectators</span>
-    </label>
+    <div class="float-end">
+      <div class="input-group float-end">
+        {#if inGame}
+          <button class="btn btn-sm btn-warning" onclick={onReset}>Reset My Score</button>
+        {/if}
+        <span class="input-group-text">
+          <label class="form-check mx-auto">
+            <input type="checkbox" class="form-check-input" bind:checked={showSpect}>
+            show spectators
+          </label>
+        </span>
+      </div>
+    </div>
   </div>
   <div class="table-responsive" style="max-height: 20rem">
     <table class="table table-sm">

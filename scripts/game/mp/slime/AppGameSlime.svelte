@@ -30,6 +30,7 @@ $effect(() => { gameState.drawHat = drawHat.value })
 $effect(() => { gameState.drawDev = devMode.value })
 
 const {
+  room: inGame,
   leaderboard,
   localClient,
 } = $derived(gameState)
@@ -61,13 +62,12 @@ let slimePlay: SlimePlay
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={gameState.room}
+  {inGame}
   isActive={gameState.localClient.active}
   canReady={false}
   isReady={false}
   onActive={() => gameState.sendActive()}
   onReady={() => gameState.sendReady()}
-  onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
 
   <div class="input-group mb-3">
@@ -114,12 +114,16 @@ let slimePlay: SlimePlay
 
 <div class="row">
   <div class="col-12 col-xl-8">
-    <Leaderboard {leaderboard} {localClient} columns={[
-      ['Streak', (p) => p.streak],
-      ['Score', (p) => p.score],
-      ['Win', (p) => [p.wins, p.total]],
-      ['Loss', (p) => [p.loss, p.total]],
-    ]} />
+    <Leaderboard {leaderboard} {localClient}
+      {inGame}
+      onReset={() => gameState.sendReset()}
+      columns={[
+        ['Streak', (p) => p.streak],
+        ['Score', (p) => p.score],
+        ['Win', (p) => [p.wins, p.total]],
+        ['Loss', (p) => [p.loss, p.total]],
+      ]}
+    />
   </div>
 
   <div class="col-12 col-xl-4 mb-3">

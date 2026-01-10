@@ -6,7 +6,6 @@ interface Props {
   isActive?: unknown
   canReady?: unknown
   isReady?: unknown
-  onReset: () => void
   onDisconnect: () => void
   onActive: () => void
   onReady: () => void
@@ -18,7 +17,6 @@ const {
   isActive = false,
   canReady = false,
   isReady = false,
-  onReset,
   onDisconnect,
   onActive,
   onReady,
@@ -59,7 +57,6 @@ const {
           <button class="btn btn-sm btn-primary" onclick={() => onActive()}>Unspectate</button>
         {/if}
         <div class="btn-group">
-          <button class="btn btn-sm btn-warning" onclick={onReset}>Reset Score</button>
           <button class="btn btn-sm btn-danger" onclick={onDisconnect}>Disconnect</button>
         </div>
       </div>

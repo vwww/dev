@@ -22,6 +22,7 @@ const chatState = new ChatState()
 const gameState = new CribbageGame(chatState)
 
 const {
+  room: inGame,
   pastGames,
   leaderboard,
   localClient,
@@ -85,13 +86,12 @@ let roomList: PIORoomList
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={gameState.room}
+  {inGame}
   isActive={gameState.localClient.active}
   canReady={roundState === GameState.INTERMISSION}
   isReady={gameState.localClient.ready}
   onActive={() => gameState.sendActive()}
   onReady={() => gameState.sendReady()}
-  onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <CribbagePlay {gameState}
     colorScheme={colorScheme.value}
@@ -109,15 +109,19 @@ let roomList: PIORoomList
       <CribbageHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard {leaderboard} {localClient} columns={[
-      ['Score', (p) => p.score],
-      ['Win', (p) => p.wins],
-      ['Loss', (p) => p.losses],
-      ['Streak', (p) => p.streak],
-      ['Rank Last', (p) => p.rankLast],
-      ['Best', (p) => p.rankBest],
-      ['Worst', (p) => p.rankWorst],
-    ]} />
+    <Leaderboard {leaderboard} {localClient}
+      {inGame}
+      onReset={() => gameState.sendReset()}
+      columns={[
+        ['Score', (p) => p.score],
+        ['Win', (p) => p.wins],
+        ['Loss', (p) => p.losses],
+        ['Streak', (p) => p.streak],
+        ['Rank Last', (p) => p.rankLast],
+        ['Best', (p) => p.rankBest],
+        ['Worst', (p) => p.rankWorst],
+      ]}
+    />
   </div>
 
   <div class="col-12 col-xl-4 mb-3">

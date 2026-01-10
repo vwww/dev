@@ -20,6 +20,7 @@ const chatState = new ChatState()
 const gameState = new RPSGame(chatState)
 
 const {
+  room: inGame,
   pastGames,
   leaderboard,
   localClient,
@@ -43,13 +44,12 @@ let roomList: PIORoomList
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={gameState.room}
+  {inGame}
   isActive={gameState.localClient.active}
   canReady={roundState === GameState.INTERMISSION}
   isReady={gameState.localClient.ready}
   onActive={() => gameState.sendActive()}
   onReady={() => gameState.sendReady()}
-  onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <RPSPlay {gameState} />
 </PlayCard>
@@ -62,17 +62,21 @@ let roomList: PIORoomList
       <RPSHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard {leaderboard} {localClient} columns={[
-      ['Streak', (p) => p.roundStreak],
-      ['Score', (p) => p.roundScore],
-      ['Round Win', (p) => [p.roundWins, p.roundTotal]],
-      ['Tie', (p) => [p.roundTies, p.roundTotal]],
-      ['Loss', (p) => [p.roundLosses, p.roundTotal]],
-      ['Battle Score', (p) => p.battleScore],
-      ['Win', (p) => [p.battleWins, p.battleTotal]],
-      ['Tie', (p) => [p.battleTies, p.battleTotal]],
-      ['Loss', (p) => [p.battleLosses, p.battleTotal]],
-    ]} />
+    <Leaderboard {leaderboard} {localClient}
+      {inGame}
+      onReset={() => gameState.sendReset()}
+      columns={[
+        ['Streak', (p) => p.roundStreak],
+        ['Score', (p) => p.roundScore],
+        ['Round Win', (p) => [p.roundWins, p.roundTotal]],
+        ['Tie', (p) => [p.roundTies, p.roundTotal]],
+        ['Loss', (p) => [p.roundLosses, p.roundTotal]],
+        ['Battle Score', (p) => p.battleScore],
+        ['Win', (p) => [p.battleWins, p.battleTotal]],
+        ['Tie', (p) => [p.battleTies, p.battleTotal]],
+        ['Loss', (p) => [p.battleLosses, p.battleTotal]],
+      ]}
+    />
   </div>
 
   <div class="col-12 col-xl-4 mb-3">

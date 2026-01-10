@@ -21,6 +21,7 @@ const chatState = new ChatState()
 const gameState = new UT3Game(chatState)
 
 const {
+  room: inGame,
   pastGames,
   leaderboard,
   localClient,
@@ -44,13 +45,12 @@ let roomList: PIORoomList
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={gameState.room}
+  {inGame}
   isActive={gameState.localClient.active}
   canReady={roundState === GameState.INTERMISSION}
   isReady={gameState.localClient.ready}
   onActive={() => gameState.sendActive()}
   onReady={() => gameState.sendReady()}
-  onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <UT3Play {gameState} />
 </PlayCard>
@@ -63,13 +63,17 @@ let roomList: PIORoomList
       <TwoPlayerWinner results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard {leaderboard} {localClient} columns={[
-      ['Streak', (p) => p.streak],
-      ['Score', (p) => p.score],
-      ['Win', (p) => [p.wins, p.total]],
-      ['Loss', (p) => [p.loss, p.total]],
-      ['Ties', (p) => [p.ties, p.total]],
-    ]} />
+    <Leaderboard {leaderboard} {localClient}
+      {inGame}
+      onReset={() => gameState.sendReset()}
+      columns={[
+        ['Streak', (p) => p.streak],
+        ['Score', (p) => p.score],
+        ['Win', (p) => [p.wins, p.total]],
+        ['Loss', (p) => [p.loss, p.total]],
+        ['Ties', (p) => [p.ties, p.total]],
+      ]}
+    />
   </div>
 
   <div class="col-12 col-xl-4 mb-3">

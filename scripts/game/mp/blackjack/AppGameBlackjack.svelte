@@ -20,6 +20,7 @@ const chatState = new ChatState()
 const gameState = new BlackjackGame(chatState)
 
 const {
+  room: inGame,
   pastGames,
   leaderboard,
   localClient,
@@ -53,13 +54,12 @@ let roomList: PIORoomList
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={gameState.room}
+  {inGame}
   isActive={gameState.localClient.active}
   canReady={roundState === GameState.INTERMISSION}
   isReady={gameState.localClient.ready}
   onActive={() => gameState.sendActive()}
   onReady={() => gameState.sendReady()}
-  onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <BlackjackPlay {gameState} showCardCount={showCardCount.value} />
 </PlayCard>
@@ -80,14 +80,18 @@ let roomList: PIORoomList
       </ul>
     </GameHistoryCard>
 
-    <Leaderboard {leaderboard} {localClient} columns={[
-      ['Balance', (p) => p.balance],
-      ['Score', (p) => p.wins - p.loss],
-      ['Wins', (p) => [p.wins, p.total]],
-      ['Ties', (p) => [p.ties, p.total]],
-      ['Loss', (p) => [p.loss, p.total]],
-      ['Streak', (p) => p.streak],
-    ]} />
+    <Leaderboard {leaderboard} {localClient}
+      {inGame}
+      onReset={() => gameState.sendReset()}
+      columns={[
+        ['Balance', (p) => p.balance],
+        ['Score', (p) => p.wins - p.loss],
+        ['Wins', (p) => [p.wins, p.total]],
+        ['Ties', (p) => [p.ties, p.total]],
+        ['Loss', (p) => [p.loss, p.total]],
+        ['Streak', (p) => p.streak],
+      ]}
+    />
   </div>
 
   <div class="col-12 col-lg-4 mb-3">

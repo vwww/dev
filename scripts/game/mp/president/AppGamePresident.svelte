@@ -22,6 +22,7 @@ const chatState = new ChatState()
 const gameState = new PresidentGame(chatState)
 
 const {
+  room: inGame,
   pastGames,
   leaderboard,
   localClient,
@@ -55,13 +56,12 @@ let roomList: PIORoomList
   {roomCreateOptions} />
 
 <PlayCard
-  inGame={gameState.room}
+  {inGame}
   isActive={gameState.localClient.active}
   canReady={roundState === GameState.INTERMISSION}
   isReady={gameState.localClient.ready}
   onActive={() => gameState.sendActive()}
   onReady={() => gameState.sendReady()}
-  onReset={() => gameState.sendReset()}
   onDisconnect={() => (gameState.leaveGame(), roomList.refreshRooms())}>
   <PresidentPlay {gameState} showCardCount={showCardCount.value} />
 </PlayCard>
@@ -74,16 +74,20 @@ let roomList: PIORoomList
       <PresidentHistory results={pastGames} />
     </GameHistoryCard>
 
-    <Leaderboard {leaderboard} {localClient} columns={[
-      ['Score', (p) => p.score],
-      ['Streak', (p) => p.streak],
-      ['Last', (p) => p.rankLast ? `${p.rankLast} (${roleName(p.roleLast)})` : 'N/A'],
-      ['President', (p) => p.roleCount[4]],
-      ['VP', (p) => p.roleCount[3]],
-      ['Neutral', (p) => p.roleCount[2]],
-      ['HS', (p) => p.roleCount[1]],
-      ['Scum', (p) => p.roleCount[0]],
-    ]} />
+    <Leaderboard {leaderboard} {localClient}
+      {inGame}
+      onReset={() => gameState.sendReset()}
+      columns={[
+        ['Score', (p) => p.score],
+        ['Streak', (p) => p.streak],
+        ['Last', (p) => p.rankLast ? `${p.rankLast} (${roleName(p.roleLast)})` : 'N/A'],
+        ['President', (p) => p.roleCount[4]],
+        ['VP', (p) => p.roleCount[3]],
+        ['Neutral', (p) => p.roleCount[2]],
+        ['HS', (p) => p.roleCount[1]],
+        ['Scum', (p) => p.roleCount[0]],
+      ]}
+    />
   </div>
 
   <div class="col-12 col-xl-4 mb-3">
