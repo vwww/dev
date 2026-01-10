@@ -24,6 +24,7 @@ const {
   roundState,
   playerInfo,
   turnIndex,
+  playing,
   canMove,
   playerDiscInfo,
   mode,
@@ -93,7 +94,7 @@ const {
       Starter: <CribbageCard card={gameState.starter} {colorScheme} />
     {/if}
   </div>
-  {#if localPlayer}
+  {#if playing && localPlayer}
     <div class="mb-2">
       Your hand:
       {#each myHand as card, i}

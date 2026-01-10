@@ -111,6 +111,7 @@ export interface CribbageGameHistory {
   trick: number
   turn: number
   duration: bigint
+  scoreTarget: number
   players: {
     name: string
     isMe?: boolean
@@ -888,6 +889,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
       hand: this.handNum,
       trick: this.trickNum,
       turn: this.trickTurn,
+      scoreTarget: this.mode.optScoreTarget,
       players: [],
     }
 
