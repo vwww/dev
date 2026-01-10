@@ -423,9 +423,9 @@ export class GameDrawer {
     this.drawSlimer(ctx, W, H, p1.x + p1.xe, p1.y + p1.ye, c1?.color ?? '#7f0', c1?.name ?? '<bot>', flip, false)
     this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c2?.color ?? c1?.colorInv ?? '#80f', c2?.name ?? '<bot>', flip, true)
     if (c1) {
-      this.drawPing(ctx, W, H, c1.ping, flip ? 0 : 1)
+      this.drawPing(ctx, W, H, c1.ping, flip ? 1 : 0)
       if (c2) {
-        this.drawPing(ctx, W, H, c2.ping, flip ? 1 : 0)
+        this.drawPing(ctx, W, H, c2.ping, flip ? 0 : 1)
       }
     }
     if (localClient !== c1 && localClient !== c2) {
