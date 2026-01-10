@@ -407,9 +407,9 @@ export class GameDrawer {
     this.drawNet(ctx, W, H)
 
     // draw dynamic entities
-    const { p1, p2, flipP1 } = this.game
+    const { p1, p2, flipP1, localClient } = this.game
     const [c1, c2] = this.game.roundPlayers
-    const flip = flipP1 === (!this.game.roundPlayers.length || c1 === this.game.localClient)
+    const flip = flipP1 === (!this.game.roundPlayers.length || c1 === localClient)
 
     if (this.game.drawHat) {
       this.drawHat(ctx, H, p1.x + p1.xe, p1.y + p1.ye, 'blue', flip, false)
@@ -419,10 +419,13 @@ export class GameDrawer {
     this.drawSlimer(ctx, W, H, p1.x + p1.xe, p1.y + p1.ye, c1?.color ?? '#7f0', c1?.name ?? '<bot>', flip, false)
     this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c2?.color ?? c1?.colorInv ?? '#80f', c2?.name ?? '<bot>', flip, true)
     if (c1) {
-      this.drawPing(ctx, W, H, c1.ping, !flip)
+      this.drawPing(ctx, W, H, c1.ping, flip ? 0 : 1)
       if (c2) {
-        this.drawPing(ctx, W, H, c2.ping, flip)
+        this.drawPing(ctx, W, H, c2.ping, flip ? 1 : 0)
       }
+    }
+    if (localClient !== c1 && localClient !== c2) {
+      this.drawPing(ctx, W, H, localClient.ping, 2)
     }
 
     // draw true positions
@@ -438,7 +441,7 @@ export class GameDrawer {
     if (!this.game.room) {
       status = 'Disconnected'
     } else {
-      if (!this.game.localClient.active) {
+      if (!localClient.active) {
         status = !this.game.status
           ? 'Spectating'
           : this.game.status === GameStatus.INIT
@@ -613,12 +616,12 @@ export class GameDrawer {
     ctx.fillText(Math.round(fps) + ' fps', 0.01 * W, 0.97 * H)
   }
 
-  drawPing (ctx: CanvasRenderingContext2D, W: number, H: number, ping: number, left: boolean): void {
+  drawPing (ctx: CanvasRenderingContext2D, W: number, H: number, ping: number, type: 0 | 1 | 2): void {
     if (ping < 0) return
 
     ctx.font = (0.02 * W) + 'px monospace'
-    ctx.textAlign = left ? 'left' : 'right'
+    ctx.textAlign = (['left', 'right', 'center'] as const)[type]
     ctx.fillStyle = '#fa0'
-    ctx.fillText(ping + ' ms', (left ? 0.01 : 0.99) * W, 0.85 * H)
+    ctx.fillText(ping + ' ms', [0.01, 0.99, 0.5][type] * W, (type > 1 ? 0.9 : 0.85) * H)
   }
 }
