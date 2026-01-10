@@ -9,10 +9,11 @@ interface Props {
   columns?: [string, (client: C) => Score][]
 
   inGame: unknown
+  canReset: unknown
   onReset: () => void
 }
 
-const { leaderboard, localClient, columns = [], inGame, onReset }: Props = $props()
+const { leaderboard, localClient, columns = [], inGame, canReset, onReset }: Props = $props()
 
 function formatScore(s: Score) {
   if (typeof s === 'object') {
@@ -34,7 +35,7 @@ let showSpect = $state(true)
     <div class="float-end">
       <div class="input-group float-end">
         {#if inGame}
-          <button class="btn btn-sm btn-warning" onclick={onReset}>Reset My Score</button>
+          <button class="btn btn-sm btn-{canReset ? 'warning' : 'outline-secondary'}" onclick={onReset}>Reset My Score</button>
         {/if}
         <span class="input-group-text">
           <label class="form-check mx-auto">

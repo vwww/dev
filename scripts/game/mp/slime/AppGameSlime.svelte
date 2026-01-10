@@ -31,6 +31,7 @@ $effect(() => { gameState.drawDev = devMode.value })
 
 const {
   room: inGame,
+  canReset,
   leaderboard,
   localClient,
 } = $derived(gameState)
@@ -116,6 +117,7 @@ let slimePlay: SlimePlay
   <div class="col-12 col-xl-8">
     <Leaderboard {leaderboard} {localClient}
       {inGame}
+      {canReset}
       onReset={() => gameState.sendReset()}
       columns={[
         ['Streak', (p) => p.streak],

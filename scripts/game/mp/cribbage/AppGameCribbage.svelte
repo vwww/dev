@@ -23,6 +23,7 @@ const gameState = new CribbageGame(chatState)
 
 const {
   room: inGame,
+  canReset,
   pastGames,
   leaderboard,
   localClient,
@@ -111,6 +112,7 @@ let roomList: PIORoomList
 
     <Leaderboard {leaderboard} {localClient}
       {inGame}
+      {canReset}
       onReset={() => gameState.sendReset()}
       columns={[
         ['Score', (p) => p.score],

@@ -78,6 +78,10 @@ class PresidentClient extends RoundRobinClient {
     this.roleCount = [0, 0, 0, 0, 0]
   }
 
+  canResetScore () {
+    return this.rankLast
+  }
+
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 

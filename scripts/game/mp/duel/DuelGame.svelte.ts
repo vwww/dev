@@ -43,6 +43,10 @@ class DuelClient extends RealTimeClient {
     this.score = 0n
   }
 
+  canResetScore () {
+    return this.kills || this.deaths
+  }
+
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 

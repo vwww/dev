@@ -22,6 +22,7 @@ const gameState = new DiscardGame(chatState)
 
 const {
   room: inGame,
+  canReset,
   pastGames,
   leaderboard,
   localClient,
@@ -82,6 +83,7 @@ bind:this={roomList}
 
     <Leaderboard {leaderboard} {localClient}
       {inGame}
+      {canReset}
       onReset={() => gameState.sendReset()}
       columns={[
         ['Score', (p) => p.score],

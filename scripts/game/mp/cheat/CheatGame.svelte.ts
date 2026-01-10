@@ -60,7 +60,6 @@ class CheatClient extends RoundRobinClient {
 
   updateScore (rank: number, totalPlayers: number): void {
     this.rankLast = rank
-    this.rankLast = rank
     this.rankBest = Math.min(this.rankBest || rank, rank)
     this.rankWorst = Math.max(this.rankWorst, rank)
     this.score += (totalPlayers - rank) + 1
@@ -85,6 +84,10 @@ class CheatClient extends RoundRobinClient {
     this.rankLast = 0
     this.rankBest = 0
     this.rankWorst = 0
+  }
+
+  canResetScore () {
+    return this.rankLast
   }
 
   override readWelcome (m: ByteReader): void {

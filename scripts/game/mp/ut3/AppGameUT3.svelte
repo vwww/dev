@@ -22,6 +22,7 @@ const gameState = new UT3Game(chatState)
 
 const {
   room: inGame,
+  canReset,
   pastGames,
   leaderboard,
   localClient,
@@ -65,6 +66,7 @@ let roomList: PIORoomList
 
     <Leaderboard {leaderboard} {localClient}
       {inGame}
+      {canReset}
       onReset={() => gameState.sendReset()}
       columns={[
         ['Streak', (p) => p.streak],

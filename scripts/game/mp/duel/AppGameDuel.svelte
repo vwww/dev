@@ -19,6 +19,7 @@ const gameState = new DuelGame(chatState)
 
 const {
   room: inGame,
+  canReset,
   leaderboard,
   localClient,
 } = $derived(gameState)
@@ -77,6 +78,7 @@ function onclickhue (event: MouseEvent) {
   <div class="col-12 col-xl-8">
     <Leaderboard {leaderboard} {localClient}
       {inGame}
+      {canReset}
       onReset={() => gameState.sendReset()}
       columns={[
         ['Score', (p) => p.score],

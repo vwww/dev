@@ -37,6 +37,10 @@ export class TwoPlayerTurnClient extends TurnBasedClient {
     this.total = 0
   }
 
+  canResetScore () {
+    return this.total
+  }
+
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 

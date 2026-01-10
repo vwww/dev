@@ -32,6 +32,7 @@ export abstract class CommonClient {
   }
 
   abstract resetScore (): void
+  abstract canResetScore (): unknown
 }
 
 export abstract class CommonGame<C extends CommonClient> {
@@ -43,12 +44,15 @@ export abstract class CommonGame<C extends CommonClient> {
   clients: C[] = []
   leaderboard: C[] = $state([])
 
+  canReset: unknown
+
   protected abstract playersSortProps: ((p: C) => (number | bigint | string))[]
 
   abstract newClient (): C
 
   constructor (public chat: ChatState) {
     this.localClient = this.newClient()
+    this.canReset = $derived(this.room && this.localClient.canResetScore())
     setTimeout(logBugReportInstructions, 100)
   }
 

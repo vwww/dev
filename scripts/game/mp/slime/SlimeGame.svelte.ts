@@ -53,6 +53,10 @@ class SlimeClient extends RealTimeClient {
     this.total = 0
   }
 
+  canResetScore () {
+    return this.total
+  }
+
   addWin () {
     if (this.streak < 0) this.streak = 0
     this.streak++

@@ -67,6 +67,10 @@ class RPSClient extends OneTurnClient {
     this.battleScore = 0n
   }
 
+  canResetScore () {
+    return this.roundTotal
+  }
+
   override readWelcome (m: ByteReader): void {
     super.readWelcome(m)
 
