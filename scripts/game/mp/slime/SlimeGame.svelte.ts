@@ -106,6 +106,7 @@ export class SlimeGame extends RealTimeGame<SlimeClient> {
   readonly ball = new Ball()
 
   drawFancyBackground = false
+  drawHat = false
   drawDev = false
   flipP1 = false
   readonly drawer = new GameDrawer(this)
@@ -410,6 +411,10 @@ export class GameDrawer {
     const [c1, c2] = this.game.roundPlayers
     const flip = flipP1 === (!this.game.roundPlayers.length || c1 === this.game.localClient)
 
+    if (this.game.drawHat) {
+      this.drawHat(ctx, H, p1.x + p1.xe, p1.y + p1.ye, 'blue', flip, false)
+      this.drawHat(ctx, H, p2.x + p2.xe, p2.y + p2.ye, 'blue', flip, true)
+    }
     this.drawBall(ctx, W, H, flip)
     this.drawSlimer(ctx, W, H, p1.x + p1.xe, p1.y + p1.ye, c1?.color ?? '#7f0', c1?.name ?? '<bot>', flip, false)
     this.drawSlimer(ctx, W, H, p2.x + p2.xe, p2.y + p2.ye, c2?.color ?? c1?.colorInv ?? '#80f', c2?.name ?? '<bot>', flip, true)
@@ -504,6 +509,26 @@ export class GameDrawer {
         : this.game.status === GameStatus.LOSS
           ? 'red'
           : '#ff0'
+    ctx.fill()
+  }
+
+  drawHat (ctx: CanvasRenderingContext2D, H: number, x: number, y: number,
+    color: string | CanvasGradient | CanvasPattern, flip: boolean, p2: boolean): void {
+    const slimeSize = SLIME_SIZE * this.game.mode.optSizePlayer / 100
+
+    // transform to screen space
+    if (flip) x = 2 - x
+    y = (1 - y) - FLOOR_SIZE
+
+    // draw hat
+    const ty = y - 3 * slimeSize
+    const by = y - 0.01 * slimeSize
+    ctx.beginPath()
+    ctx.moveTo((x + ((flip !== p2) ? -0.6 : 0.6) * slimeSize) * H, ty * H)
+    ctx.lineTo(x * H, by * H)
+    ctx.lineTo((x + ((flip !== p2) ? -0.8 : 0.8) * slimeSize) * H, by * H)
+    ctx.closePath()
+    ctx.fillStyle = color
     ctx.fill()
   }
 

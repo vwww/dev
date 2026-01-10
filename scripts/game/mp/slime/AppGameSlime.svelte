@@ -21,10 +21,12 @@ const name = pState('game/mp/_shared/name', '')
 const color = pState('game/mp/slime/color', '#77ff00')
 const flip = pState('game/mp/slime/f', false)
 const background = pState('game/mp/slime/b', false)
+const drawHat = pState('game/mp/slime/h', false)
 const devMode = pState('game/mp/slime/d', false)
 
 $effect(() => { gameState.flipP1 = flip.value })
 $effect(() => { gameState.drawFancyBackground = background.value })
+$effect(() => { gameState.drawHat = drawHat.value })
 $effect(() => { gameState.drawDev = devMode.value })
 
 const {
@@ -85,6 +87,12 @@ let slimePlay: SlimePlay
       <label class="form-check mx-auto">
         <input type="checkbox" class="form-check-input" bind:checked={background.value}>
         Fancy Background
+      </label>
+    </span>
+    <span class="input-group-text flex-grow-1">
+      <label class="form-check mx-auto">
+        <input type="checkbox" class="form-check-input" bind:checked={drawHat.value}>
+        Silly Hat
       </label>
     </span>
     <span class="input-group-text flex-grow-1">
