@@ -256,4 +256,5 @@ export function getCardName (card: number, ll: boolean): string | number {
 <RoundPlayerList
   localClient={gameState.localClient}
   inGame={gameState.roundPlayers}
-  inQueue={gameState.roundPlayerQueue} />
+  inQueue={gameState.roundPlayerQueue}
+  spectators={gameState.spectators} />

@@ -263,4 +263,5 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
 <RoundPlayerList
   localClient={gameState.localClient}
   inGame={gameState.roundPlayers}
-  inQueue={gameState.roundPlayerQueue} />
+  inQueue={gameState.roundPlayerQueue}
+  spectators={gameState.spectators} />

@@ -313,4 +313,5 @@ const {
 <RoundPlayerList
   localClient={gameState.localClient}
   inGame={gameState.roundPlayers}
-  inQueue={gameState.roundPlayerQueue} />
+  inQueue={gameState.roundPlayerQueue}
+  spectators={gameState.spectators} />

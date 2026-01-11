@@ -43,6 +43,7 @@ export abstract class CommonGame<C extends CommonClient> {
   localClient: C
   clients: C[] = []
   leaderboard: C[] = $state([])
+  spectators: C[] = $state([])
 
   canReset: unknown
 
@@ -131,6 +132,7 @@ export abstract class CommonGame<C extends CommonClient> {
     }
 
     this.processWelcomeGame(m)
+    this.spectators = this.clients.filter(c => !c.active)
 
     this.updatePlayers()
   }
@@ -225,8 +227,22 @@ export abstract class CommonGame<C extends CommonClient> {
 
     if ((p.active = !p.active)) {
       this.playerActivated(p)
+
+      this.spectators = this.spectators.filter((s) => s !== p)
     } else {
       this.playerDeactivated(p)
+
+      let lo = 0
+      let hi = this.spectators.length
+      while (lo < hi) {
+        let mid = (lo + hi) >>> 1
+        if (this.spectators[mid].cn < p.cn) {
+          lo = mid + 1
+        } else {
+          hi = mid
+        }
+      }
+      this.spectators.splice(lo, 0, p)
     }
     this.updatePlayers()
   }

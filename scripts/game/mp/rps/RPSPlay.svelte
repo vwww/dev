@@ -58,4 +58,5 @@ const canMove = $derived(localClient.active && roundState == GameState.ACTIVE &&
 <RoundPlayerList
   localClient={gameState.localClient}
   inGame={gameState.roundPlayers}
-  inQueue={gameState.roundPlayerQueue} />
+  inQueue={gameState.roundPlayerQueue}
+  spectators={gameState.spectators} />
