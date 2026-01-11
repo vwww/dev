@@ -251,7 +251,15 @@ const {
           <span class="badge text-bg-outline-secondary">{p.score}</span>/{mode.optScoreTarget}
           {#if i === dealer}<span class="badge text-bg{outline}-success">DEALER</span>{/if}
           {#if i === turnIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
-          {#if p.passed}<span class="badge text-bg{outline}-info">{gamePhase === GamePhase.PLAY ? 'PASS' : 'READY'}</span>{/if}
+          {#if gamePhase === GamePhase.PLAY}
+            {#if p.passed}
+              <span class="badge text-bg{outline}-info">PASS</span>
+            {:else if !p.handSize}
+              <span class="badge text-bg{outline}-info">OUT</span>
+            {/if}
+          {:else if p.passed}
+              <span class="badge text-bg{outline}-info">READY</span>
+          {/if}
           {#if isMe && gamePhase === GamePhase.PLAY}
             {#each myHand as card, i}
               <CribbageCard {card} {colorScheme} outline={i >= localPlayer.played.length} />

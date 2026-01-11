@@ -130,6 +130,7 @@ export type CribbageMoveInfo =
   | CribbageMoveInfoFinal
   | CribbageMoveInfoPlay
   | CribbageMoveInfoPass
+  | CribbageMoveInfoOut
   | CribbageMoveInfoShow
   | CribbageMoveInfoLeave
 
@@ -174,6 +175,10 @@ interface CribbageMoveInfoPlay extends CribbageMoveInfoScoreCards {
 
 interface CribbageMoveInfoPass extends CribbageMoveInfoPlayer {
   type: 'pass'
+}
+
+interface CribbageMoveInfoOut extends CribbageMoveInfoPlayer {
+  type: 'out'
 }
 
 interface CribbageMoveInfoShow extends CribbageMoveInfoScoreCards {
@@ -687,7 +692,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     p.passed = true
 
     this.moveHistory.push({
-      type: 'pass',
+      type: p.handSize ? 'pass' : 'out',
       playerName: c.formatName(),
       playerIsMe: c === this.localClient,
     })

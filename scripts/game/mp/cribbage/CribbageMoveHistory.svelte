@@ -62,6 +62,8 @@ let compact = $state(true)
           {/if}
         {:else if m.type === 'pass'}
           passed.
+        {:else if m.type === 'out'}
+          was out.
         {:else if m.type === 'leave'}
           left.
         {:else}
