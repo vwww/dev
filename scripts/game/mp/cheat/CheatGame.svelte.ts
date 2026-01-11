@@ -202,6 +202,8 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
 
   callTimerStart = $state(0)
   callTimerEnd = $state(0)
+  callTimerActive = $state(false)
+  callTimerTimeout?: number
 
   passIndex = $state(0)
 
@@ -685,6 +687,11 @@ export class CheatGame extends RoundRobinGame<CheatClient, CheatPlayerInfo, Chea
     const end = Date.now() + remain
     this.callTimerStart = end - Math.max(this.mode.optCallTime, remain)
     this.callTimerEnd = end
+
+    this.callTimerActive = true
+
+    clearTimeout(this.callTimerTimeout)
+    this.callTimerTimeout = window.setTimeout(() => this.callTimerActive = false, remain)
   }
 
   allowRank (a: CardRank): boolean {

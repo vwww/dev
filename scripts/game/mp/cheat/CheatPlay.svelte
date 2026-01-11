@@ -68,93 +68,93 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
       {/if}
     </div>
 
-    {#if roundState === GameState.ACTIVE}
-      {#if playing}
-        <button
-          class="btn btn-{gameState.canChallenge && gameState.shouldChallenge ? '' : 'outline-'}danger d-block w-100 mb-2"
-          class:disabled={!gameState.canChallenge}
-          onclick={() => gameState.sendMoveCallCheat()}>Call Cheat</button>
+    {#if playing}
+      <button
+        class="btn btn-{gameState.canChallenge && gameState.shouldChallenge ? '' : 'outline-'}danger d-block w-100 mb-2"
+        class:disabled={!gameState.canChallenge}
+        onclick={() => gameState.sendMoveCallCheat()}>Call Cheat</button>
 
-        {@const CardCountComponent = showHandBars ? CardCountBars : CardCountInline}
-        <div class="my-2">
-          <label class="form-check d-inline-block">
-            <input type="checkbox" class="form-check-input" bind:checked={showHandBars}>
-            <span class="form-check-label">Your hand:</span>
-          </label>
-          <CardCountComponent {ranks} cards={gameState.cardCountHandMine} />
+      {@const CardCountComponent = showHandBars ? CardCountBars : CardCountInline}
+      <div class="my-2">
+        <label class="form-check d-inline-block">
+          <input type="checkbox" class="form-check-input" bind:checked={showHandBars}>
+          <span class="form-check-label">Your hand:</span>
+        </label>
+        <CardCountComponent {ranks} cards={gameState.cardCountHandMine} />
+      </div>
+
+      {#if canMove}
+        {@const canPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
+        {@const pendingPass = gameState.pendingMoveClaim < 0}
+        {@const okRank = pendingPass ? canPass : gameState.allowRank(gameState.pendingMoveClaim)}
+        {@const okCount = pendingPass || gameState.allowCount(gameState.pendingMoveTotal)}
+        {@const rankOutline = okRank ? '' : 'outline-'}
+        {@const countOutline = okCount ? '' : 'outline-'}
+        <div class="mb-2 text-center">
+          Your move:
+          {#if pendingPass}
+            <span class="badge text-bg-{canPass ? '' : 'outline-'}danger">PASS</span>
+          {:else}
+            <span class="badge text-bg-{rankOutline}light">{ranks[gameState.pendingMoveClaim]}</span> &times;{gameState.pendingMoveTotal}
+            {#if gameState.pendingMoveTotal > 6n * gameState.mode.optDecks}
+              <span class="badge text-bg-outline-danger">IMPOSSIBLE</span>
+            {:else if gameState.pendingMoveTotal == BigInt(gameState.pendingMoveNum[gameState.pendingMoveClaim]) + BigInt(gameState.pendingMoveNum[CardRank.Joker])}
+              <span class="badge text-bg-{countOutline}success">HONEST</span>
+            {:else}
+              <span class="badge text-bg-{countOutline}warning">BLUFF</span>
+            {/if}
+          {/if}
         </div>
 
-        {#if canMove}
-          {@const canPass = gameState.mode.optTricks !== CheatModeTricks.FORCED && gameState.trickTurn}
-          {@const pendingPass = gameState.pendingMoveClaim < 0}
-          {@const okRank = pendingPass ? canPass : gameState.allowRank(gameState.pendingMoveClaim)}
-          {@const okCount = pendingPass || gameState.allowCount(gameState.pendingMoveTotal)}
-          {@const rankOutline = okRank ? '' : 'outline-'}
-          {@const countOutline = okCount ? '' : 'outline-'}
-          <div class="mb-2 text-center">
-            Your move:
+        <div class="btn-group d-flex mb-3" role="group">
+          <button class="fw-bold w-100 btn btn-{gameState.pendingMoveClaimAck < 0 ? '' : 'outline-'}{canPass ? 'danger' : 'secondary'}"
+            class:active={pendingPass}
+            onclick={() => (gameState.pendingMoveClaim = -1, gameState.sendMove())}>Pass</button>
+          {#each { length: CardRank.NUM - 1 }, i}
+            <button class="fw-bold w-100 btn btn-{gameState.pendingMoveClaimAck == i ? '' : 'outline-'}{gameState.allowRank(i) ? 'primary' : 'secondary'}"
+              class:active={gameState.pendingMoveClaim == i}
+              onclick={() => (gameState.pendingMoveClaim = i, gameState.sendMove())}>{ranks[i]}</button>
+          {/each}
+        </div>
+
+        <div class="row">
+          {#each { length: CardRank.NUM }, i}
+            {#if gameState.cardCountHandMine[i]}
+              {@const max = gameState.cardCountHandMine[i].toString()}
+              <div class="col-4 col-md-3 col-lg-2">
+                {ranks[i]}
+                <input type="number" class="form-control is-{gameState.pendingMoveNum[i] === Number(gameState.pendingMoveAck[i]) ? '' : 'in'}valid"
+                  bind:value={gameState.pendingMoveNum[i]}
+                  onchange={() => gameState.sendMove()}
+                  min="0" {max}>
+                <input type="range" class="form-range" bind:value={gameState.pendingMoveNum[i]} onchange={() => gameState.sendMove()} min="0" {max}>
+              </div>
+            {/if}
+          {/each}
+        </div>
+
+        {#if !(okRank && okCount)}
+          <div class="alert alert-danger">
             {#if pendingPass}
-              <span class="badge text-bg-{canPass ? '' : 'outline-'}danger">PASS</span>
+              Passing is not allowed{#if gameState.mode.optTricks !== CheatModeTricks.FORCED}{' '}on a new trick{/if}.
             {:else}
-              <span class="badge text-bg-{rankOutline}light">{ranks[gameState.pendingMoveClaim]}</span> &times;{gameState.pendingMoveTotal}
-              {#if gameState.pendingMoveTotal > 6n * gameState.mode.optDecks}
-                <span class="badge text-bg-outline-danger">IMPOSSIBLE</span>
-              {:else if gameState.pendingMoveTotal == BigInt(gameState.pendingMoveNum[gameState.pendingMoveClaim]) + BigInt(gameState.pendingMoveNum[CardRank.Joker])}
-                <span class="badge text-bg-{countOutline}success">HONEST</span>
-              {:else}
-                <span class="badge text-bg-{countOutline}warning">BLUFF</span>
+              {#if !okRank}
+                Rank {ranks[gameState.pendingMoveClaim]} is not allowed.
+              {/if}
+              {#if !okCount}
+                Count {gameState.pendingMoveTotal} is not allowed{#if !gameState.pendingMoveTotal && gameState.mode.optCountZero}{' '}on a new trick{/if}.
               {/if}
             {/if}
           </div>
-
-          <div class="btn-group d-flex mb-3" role="group">
-            <button class="fw-bold w-100 btn btn-{gameState.pendingMoveClaimAck < 0 ? '' : 'outline-'}{canPass ? 'danger' : 'secondary'}"
-              class:active={pendingPass}
-              onclick={() => (gameState.pendingMoveClaim = -1, gameState.sendMove())}>Pass</button>
-            {#each { length: CardRank.NUM - 1 }, i}
-              <button class="fw-bold w-100 btn btn-{gameState.pendingMoveClaimAck == i ? '' : 'outline-'}{gameState.allowRank(i) ? 'primary' : 'secondary'}"
-                class:active={gameState.pendingMoveClaim == i}
-                onclick={() => (gameState.pendingMoveClaim = i, gameState.sendMove())}>{ranks[i]}</button>
-            {/each}
-          </div>
-
-          <div class="row">
-            {#each { length: CardRank.NUM }, i}
-              {#if gameState.cardCountHandMine[i]}
-                {@const max = gameState.cardCountHandMine[i].toString()}
-                <div class="col-4 col-md-3 col-lg-2">
-                  {ranks[i]}
-                  <input type="number" class="form-control is-{gameState.pendingMoveNum[i] === Number(gameState.pendingMoveAck[i]) ? '' : 'in'}valid"
-                    bind:value={gameState.pendingMoveNum[i]}
-                    onchange={() => gameState.sendMove()}
-                    min="0" {max}>
-                  <input type="range" class="form-range" bind:value={gameState.pendingMoveNum[i]} onchange={() => gameState.sendMove()} min="0" {max}>
-                </div>
-              {/if}
-            {/each}
-          </div>
-
-          {#if !(okRank && okCount)}
-            <div class="alert alert-danger">
-              {#if pendingPass}
-                Passing is not allowed{#if gameState.mode.optTricks !== CheatModeTricks.FORCED}{' '}on a new trick{/if}.
-              {:else}
-                {#if !okRank}
-                  Rank {ranks[gameState.pendingMoveClaim]} is not allowed.
-                {/if}
-                {#if !okCount}
-                  Count {gameState.pendingMoveTotal} is not allowed{#if !gameState.pendingMoveTotal && gameState.mode.optCountZero}{' '}on a new trick{/if}.
-                {/if}
-              {/if}
-            </div>
-          {/if}
-
-          <div class="col-12 mb-2">
-            <button class="btn btn-{false ? 'outline-' : ''}primary d-block w-100 mb-2" onclick={() => gameState.sendMoveEnd()}>End Move</button>
-          </div>
         {/if}
-      {/if}
 
+        <div class="col-12 mb-2">
+          <button class="btn btn-{gameState.callTimerActive ? 'outline-' : ''}primary d-block w-100 mb-2" onclick={() => gameState.sendMoveEnd()}>End Move</button>
+        </div>
+      {/if}
+    {/if}
+
+    {#if gameState.room && roundState === GameState.ACTIVE && gameState.callTimerActive}
       <ProgressBar
         startTime={gameState.callTimerStart}
         endTime={gameState.callTimerEnd}
@@ -171,7 +171,7 @@ export const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q
           <li><span class="badge text-bg-outline-success">IN</span></li>
         {/if}
         <li>
-          <span class="badge text-bg{outline}-{GameState.ACTIVE && i === turnIndex ? 'primary' : 'secondary'}">{gameState.formatPlayerName(p)}</span>
+          <span class="badge text-bg{outline}-{i === turnIndex ? 'primary' : 'secondary'}">{gameState.formatPlayerName(p)}</span>
           {#if i === turnIndex}<span class="badge text-bg{outline}-primary">MOVE</span>{/if}
           {#if p.passed}<span class="badge text-bg{outline}-danger">OUT</span>{/if}
           {p.handSize}
