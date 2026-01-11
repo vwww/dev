@@ -33,7 +33,7 @@ let name = pState('game/mp/_shared/name', '')
 let roomList: PIORoomList
 </script>
 
-<NameBox bind:value={name.value} />
+<NameBox bind:value={name.value} onchange={() => gameState.sendRename(name.value)} />
 
 <PIORoomList
   bind:this={roomList}

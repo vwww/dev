@@ -39,7 +39,7 @@ let showValuePlay = pState('game/mp/cribbage/showValuePlay', true)
 let roomList: PIORoomList
 </script>
 
-<NameBox bind:value={name.value} />
+<NameBox bind:value={name.value} onchange={() => gameState.sendRename(name.value)} />
 
 <div class="input-group mb-3">
   <span class="input-group-text flex-grow-1">

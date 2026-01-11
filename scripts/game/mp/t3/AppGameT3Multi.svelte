@@ -35,7 +35,7 @@ let t3Isomorphism = pState('game/mp/t3/isomorphism', 0)
 let roomList: PIORoomList
 </script>
 
-<NameBox bind:value={name.value} />
+<NameBox bind:value={name.value} onchange={() => gameState.sendRename(name.value)} />
 
 <div class="btn-group d-flex mb-3" role="group">
   <span class="input-group-text">Isomorphism</span>

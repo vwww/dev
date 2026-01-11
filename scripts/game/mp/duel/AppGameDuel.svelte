@@ -39,7 +39,7 @@ function onclickhue (event: MouseEvent) {
 
 <div class="row">
   <div class="col-7 col-sm-8 col-md-9 col-lg-10">
-    <NameBox bind:value={name.value} />
+    <NameBox bind:value={name.value} onchange={() => gameState.sendRename(name.value)} />
   </div>
   <div class="col-5 col-sm-4 col-md-3 col-lg-2">
     <div class="input-group mb-3">
