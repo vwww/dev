@@ -220,7 +220,7 @@ const {
                     bind:group={gameState.pendingMove}>
                 </th>
                 <td colspan={showValuePlay ? 3 : 2}>
-                  {gameState.mode.optSkipPass || myHand.some((card, i) => i >= localPlayer.played.length && trickCount + Math.min((card >> 2) + 1, 10) <= 31) ? 'Random' : 'Pass'}
+                  {gameState.mode.optSkipEmpty && gameState.mode.optSkipPass || myHand.some((card, i) => i >= localPlayer.played.length && trickCount + Math.min((card >> 2) + 1, 10) <= 31) ? 'Random' : 'Pass'}
                 </td>
               </tr>
             </tbody>
