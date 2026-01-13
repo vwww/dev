@@ -112,8 +112,8 @@ export default class ChatState {
       const deleteCount = this.messageBuf.length - this.maxChatMessages
       if (deleteCount > 0) {
         this.messageBuf.splice(0, deleteCount)
-        this.invalidate()
       }
+      this.invalidate()
     }
   }
 
