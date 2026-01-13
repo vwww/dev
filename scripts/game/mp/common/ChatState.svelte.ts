@@ -216,7 +216,7 @@ export function processChat (g: ChatGameInterface, s: string): void {
       case 'mew':
       case 'mewhisper':
       case 'mepm':
-        me = false
+        me = true
         // fallthrough
       case 'w':
       case 'whisper':
