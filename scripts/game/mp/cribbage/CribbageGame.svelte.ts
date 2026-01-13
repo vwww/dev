@@ -782,13 +782,17 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     const cardsUsed: number[] = []
     function backtrack (i: number, target: number) {
       const c = cards[i]
+      const prevRow = reachableValues[cards.length - 1 - i]
 
       // use current card
       const v = Math.min((c >> 2) + 1, 10)
       if (target >= v) {
         cardsUsed.push(c)
         if (target > v) {
-          backtrack(i + 1, target - v)
+          const newTarget = target - v
+          if (prevRow & (1 << newTarget)) {
+            backtrack(i + 1, newTarget)
+          }
         } else {
           scoreDelta += 2
           scoreReasons.push({
@@ -801,7 +805,6 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
       }
 
       // skip current card
-      const prevRow = reachableValues[cards.length - 1 - i]
       if (prevRow & (1 << target)) {
         backtrack(i + 1, target)
       }
