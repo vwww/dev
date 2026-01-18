@@ -3,7 +3,7 @@ import { randomHexColor } from '@/util'
 import { pState } from '@/util/svelte.svelte'
 
 const MIN_WIN_AREA = 250000
-const DEFAULT_IMAGE_URL = '../../../assets/victorz/logo.png'
+const DEFAULT_IMAGE_URL = '../assets/victorz/logo.png'
 
 const colorMode = pState('misc/strobe/mode', 0)
 const imageMode = pState('misc/strobe/imageMode', 0)
@@ -140,7 +140,7 @@ updateWindowSize()
 
 <div id="strobeContainer" class:invisible={!running} style="text-align:center;background-color:{curColor};opacity:{curOpacity}" ondblclick={stop} role="presentation">
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-  <img onclick={stop} src="stop.png" alt="Stop">
+  <img onclick={stop} src="seizure/stop.png" alt="Stop">
   <div class="container">
     <button onclick={stop} class="btn d-block w-100 btn-danger">Secondary Stop</button>
     <div style="color: white; mix-blend-mode: difference">
