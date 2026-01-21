@@ -210,7 +210,7 @@ export abstract class CommonGame<C extends CommonClient> {
     const playerName = formatClientName(player, cn)
     const targetPlayer = this.clients[target]
     const targetName = targetPlayer
-      ? player === this.localClient
+      ? targetPlayer === this.localClient
         ? 'you'
         : formatClientName(targetPlayer, target)
       : undefined
