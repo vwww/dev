@@ -203,7 +203,8 @@ export abstract class CommonGame<C extends CommonClient> {
   protected processChat (m: ByteReader): void {
     const cn = m.getCN()
     const flags = m.getInt()
-    const target = m.getInt()
+    const sayTarget = flags & 3
+    const target = sayTarget === 1 ? m.getInt() : -1
     const msg = m.getString(MAX_CHAT_LEN)
 
     const player = this.clients[cn]
