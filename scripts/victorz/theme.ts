@@ -1,14 +1,16 @@
 const KEY = 'theme'
 
 export function init (): void {
-  for (const e of document.getElementsByClassName('theme-switcher')) {
-    e.addEventListener('click', function themeSwitcherClick (this: HTMLElement, event) {
-      event.preventDefault()
-      const { theme } = this.dataset
-      set(theme!)
-      if (window.localStorage) localStorage[KEY] = theme
-    })
+  function themeSwitcherClick (this: HTMLElement, event: Event) {
+    event.preventDefault()
+    const { theme } = this.dataset
+    set(theme!)
+    if (window.localStorage) localStorage[KEY] = theme
   }
+  for (const e of document.getElementsByClassName('theme-switcher')) {
+    e.addEventListener('click', themeSwitcherClick)
+  }
+
   if (window.localStorage) {
     // Restore theme
     if (localStorage[KEY] !== undefined) set(localStorage[KEY] as string)
