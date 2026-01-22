@@ -30,16 +30,15 @@ function start () {
 
   function doPing () {
     const start = Date.now()
-    function doneCallback () {
-      const delay = Date.now() - start
-
-      if (rsPing!.getCount()) {
-        rsJitter!.addValue(Math.abs(delay - rsPing!.getLast()))
-      }
-      rsPing!.addValue(delay)
-    }
     fetch(url, { method: 'HEAD' })
-      .finally(doneCallback)
+      .finally(function () {
+        const delay = Date.now() - start
+
+        if (rsPing!.getCount()) {
+          rsJitter!.addValue(Math.abs(delay - rsPing!.getLast()))
+        }
+        rsPing!.addValue(delay)
+      })
 
     if (remain && !--remain) {
       stop()
