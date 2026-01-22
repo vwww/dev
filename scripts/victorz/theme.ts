@@ -15,7 +15,7 @@ export function init (): void {
     // Listen for changes from other tabs
     addEventListener('storage', (e) => e.storageArea === localStorage && e.key === KEY && set(e.newValue!))
     // Remove save warning
-    $('#theme-switcher-msg').removeClass('btn-danger').addClass('btn-info')
+    $('#theme-switcher-msg').removeClass('bg-danger').addClass('bg-info')
     $('#theme-switcher-msg-text').text('Can save')
     $('.theme-switcher-msg').remove()
   }
