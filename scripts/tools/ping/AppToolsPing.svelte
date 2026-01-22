@@ -1,6 +1,4 @@
 <script lang="ts">
-import jQuery from 'jquery'
-
 import RollingStats from '@/util/RollingStats.svelte'
 import { pState } from '@/util/svelte.svelte'
 
@@ -40,12 +38,8 @@ function start () {
       }
       rsPing!.addValue(delay)
     }
-    jQuery.ajax({
-      url,
-      method: 'HEAD',
-    })
-      .done(doneCallback)
-      .fail(doneCallback)
+    fetch(url, { method: 'HEAD' })
+      .finally(doneCallback)
 
     if (remain && !--remain) {
       stop()

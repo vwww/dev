@@ -1,7 +1,6 @@
-import $ from 'jquery'
-
 function resizeTagCloud (): void {
-  if (!$('.tag-cloud').length) {
+  const clouds = document.getElementsByClassName('tag-cloud')
+  if (!clouds.length) {
     return
   }
 
@@ -9,11 +8,13 @@ function resizeTagCloud (): void {
   let numMin = Number.MAX_VALUE
   let numMax = Number.MIN_VALUE
 
-  $('.tag-cloud a').each(function () {
-    const num = parseInt($(this).find('sup').text()) || 1
-    numMin = Math.min(numMin, num)
-    numMax = Math.max(numMax, num)
-  })
+  for (const cloud of clouds) {
+    for (const a of cloud.children) {
+      const num = parseInt(a.lastElementChild?.textContent!) || 1
+      numMin = Math.min(numMin, num)
+      numMax = Math.max(numMax, num)
+    }
+  }
 
   // Set sizes based on the counts
   if (numMin > numMax) {
@@ -24,10 +25,12 @@ function resizeTagCloud (): void {
   const sizeGrow = 100 // 50-150
 
   const sizeMult = sizeGrow / Math.sqrt(numMax - numMin + 1)
-  $('.tag-cloud a').each(function () {
-    const num = parseInt($(this).find('sup').text()) || 1
-    $(this).css('font-size', (sizeMin + Math.sqrt(num - numMin + 1) * sizeMult) + '%')
-  })
+  for (const cloud of clouds) {
+    for (const a of cloud.children) {
+      const num = parseInt(a.lastElementChild?.textContent!) || 1
+      ;(a as HTMLElement).style.fontSize = (sizeMin + Math.sqrt(num - numMin + 1) * sizeMult) + '%'
+    }
+  }
 }
 
-$(resizeTagCloud)
+document.addEventListener('DOMContentLoaded', resizeTagCloud)
