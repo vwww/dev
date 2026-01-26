@@ -33,6 +33,7 @@ const taxRatePercent = pState('tool/fund/taxRateP', 30)
 const showResultType = pState('tool/fund/showResultType', 3)
 const showDiffAsMultiplier = pState('tool/fund/showDiffAsMultiplier', false)
 const showGainAsMultiplier = pState('tool/fund/showGainAsMultiplier', false)
+const showStartAsRow = pState('tool/fund/showStartAsRow', true)
 
 const capitalGainsRate = $derived(capitalGainsRatePercent.value / 100)
 const taxRate = $derived(taxRatePercent.value / 100)
@@ -385,6 +386,17 @@ function formatDollarsDiff (dollars: number): string {
         <span class="form-check-label">Multiplier</span>
       </label>
     </div>
+    <div class="my-2">
+      <b class="me-3">Show start year and end year as</b>
+      <label class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" bind:group={showStartAsRow.value} value={false}>
+        <span class="form-check-label">Columns and Rows</span>
+      </label>
+      <label class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" bind:group={showStartAsRow.value} value={true}>
+        <span class="form-check-label">Rows and Columns</span>
+      </label>
+    </div>
     <h2>Comparison</h2>
     {#snippet comparisonTable(name: string, outcomes: OutcomeMatrix[], outcomeIndex: number)}
       {@const outcome = outcomes[outcomeIndex]}
@@ -395,7 +407,7 @@ function formatDollarsDiff (dollars: number): string {
           <thead>
             <tr>
               <th rowspan=2 colspan=2></th>
-              <th colspan={tableSize}>End Year</th>
+              <th colspan={tableSize}>{showStartAsRow.value ? 'End' : 'Start'} Year</th>
             </tr>
             <tr style="position: sticky; top: 0; z-index: 1">
               {#each outcome as [year]}
@@ -404,18 +416,21 @@ function formatDollarsDiff (dollars: number): string {
             </tr>
           </thead>
           <tbody>
-            {#each outcome as [year, [rowA, rowB]], i}
+            {#each outcome as [year], i}
               <tr>
                 {#if !i}
-                  <th rowspan={tableSize}><div style="writing-mode: vertical-lr; transform: rotate(180deg)">Start Year</div></th>
+                  <th rowspan={tableSize}><div style="writing-mode: vertical-lr; transform: rotate(180deg)">{showStartAsRow.value ? 'Start' : 'End'} Year</div></th>
                 {/if}
                 <th style="position: sticky; left: 0">{year}</th>
-                {#if i}
+                {#if i && showStartAsRow.value}
                   <td colspan={i} class="table-secondary"></td>
                 {/if}
-                {#each rowA?.cols ?? rowB?.cols ?? [], j}
-                  {@const colA = rowA?.cols[j]}
-                  {@const colB = rowB?.cols[j]}
+                {#each { length: showStartAsRow.value ? outcome.length - i : i + 1 }, j}
+                  {@const periodStart = showStartAsRow.value ? i : j}
+                  {@const periodOffset = showStartAsRow.value ? j : i - j}
+                  {@const row = outcome[periodStart][1]}
+                  {@const colA = row[0]?.cols[periodOffset]}
+                  {@const colB = row[1]?.cols[periodOffset]}
                   {@const formatDiff = showDiffAsMultiplier.value ? formatMultiplier : formatPercentChange}
                   {@const formatGain = showGainAsMultiplier.value ? formatMultiplier : formatPercentChange}
                   {@const resultA = colA ? formatGain(colA.value) : 'N/A'}
@@ -423,13 +438,16 @@ function formatDollarsDiff (dollars: number): string {
                   {@const resultDiff = colA && colB ? formatDiff(colA.value / colB.value) : '?'}
                   <td
                     class="ra"
-                    class:table-warning={selectedPeriod?.[1] == outcomeIndex && selectedPeriod[2] == i && selectedPeriod[3] == j}
-                    role="button" onclick={() => selectedPeriod = [name, outcomeIndex, i, j]}>
+                    class:table-warning={selectedPeriod?.[1] == outcomeIndex && selectedPeriod[2] == periodStart && selectedPeriod[3] == periodOffset}
+                    role="button" onclick={() => selectedPeriod = [name, outcomeIndex, periodStart, periodOffset]}>
                     {#if showResultType.value & 1}<span class="{colA && colB && colA.value != colB.value ? colA.value > colB.value ? 'text-success' : 'text-danger' : ''}">{resultDiff}</span>{/if}
                     {#if showResultType.value == 3}<br>{/if}
                     {#if showResultType.value & 2}{resultA}<br>{resultB}{/if}
                   </td>
                 {/each}
+                {#if !showStartAsRow.value && i < outcome.length - 1}
+                  <td colspan={outcome.length - 1 - i} class="table-secondary"></td>
+                {/if}
               </tr>
             {/each}
           </tbody>
