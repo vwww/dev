@@ -12,7 +12,11 @@ export function pState<T> (key: string, startValue: T, syncTabs = false) {
     }
 
     // needed to save nested properties
-    $effect(() => localStorage.setItem(key, val === undefined ? 'undefined' : JSON.stringify(val)))
+    $effect(() => {
+      if (localStorage.getItem(key) || val !== startValue) {
+        localStorage.setItem(key, val === undefined ? 'undefined' : JSON.stringify(val))
+      }
+    })
 
     if (syncTabs) {
       window.addEventListener('storage', (e) =>
