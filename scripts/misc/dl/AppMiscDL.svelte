@@ -4,6 +4,8 @@ import { parseManifest, type NodeBrowse, type NodeDirectory } from './node'
 const DOWNLOAD_PREFIX = 'https://v-dl.pages.dev/'
 const MANIFEST_URL = DOWNLOAD_PREFIX + 'manifest.json'
 
+let loadError: unknown = $state()
+
 // File browser
 let fileRoot: NodeDirectory | undefined = $state()
 let curPath: NodeDirectory[] = $state([])
@@ -116,7 +118,7 @@ async function init () {
 
     browseLocationHash()
   } catch (e) {
-    console.error(e)
+    console.error(loadError = e)
   }
 }
 
@@ -125,82 +127,93 @@ void init()
 
 <svelte:window onhashchange={browseLocationHash} />
 
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb breadcrumb-dl">
-    {#each curPath as item, index}
-      {#if index + 1 === curPath.length}
-        <li class="breadcrumb-item active" aria-current="page">{item.name} ({formatSize(item.size)})</li>
-      {:else}
-        <li class="breadcrumb-item"><a href="#{getPathString(curPath.slice(0, index + 1))}" onclick={(event) => (event.preventDefault(), up((curPath.length - 1) - index))}>{item.name}</a></li>
-      {/if}
-    {/each}
-  </ol>
-</nav>
-
-<table class="table table-striped table-bordered table-hover">
-  <thead>
-    <tr>
-      {#snippet fileHeader (id: string, name: string)}
-        <th onclick={() => setSort(id)} class="sort-{curSort === id ? curSortReverse ? 'd' : 'a' : 'n'}">{name}</th>
-      {/snippet}
-      {@render fileHeader('name', 'Name')}
-      {@render fileHeader('size', 'Size')}
-      {@render fileHeader('remark', 'Remarks')}
-      {@render fileHeader('mtime', 'Modified Time')}
-    </tr>
-  </thead>
-  <tbody>
-    {#if fileRoot}
-      {#if curPath.length > 2}
-        <tr class="table-success" role="button" onclick={() => up(curPath.length - 1)}>
-          <!-- svelte-ignore a11y_invalid_attribute We actually want this to unset the hash -->
-          <td><a onclick={(event) => event.preventDefault()} href="" class="file-root">. (root)</a></td>
-          <td title={formatSize(fileRoot.size, true)}>{formatSize(fileRoot.size)}</td>
-          <td>Go to the top!</td>
-          <td>{formatDateTime(fileRoot.mtime)}</td>
-        </tr>
-      {/if}
-      {#if curPath.length > 1}
-        {@const curParent = curPath[curPath.length - 2]}
-        <tr class="table-warning" role="button" onclick={() => up(1)}>
-          <td><a onclick={(event) => event.preventDefault()} href="#{getPathString(curPath.slice(0, -1))}" class="file-up">.. (up)</a></td>
-          <td title={formatSize(curParent.size, true)}>{formatSize(curParent.size)}</td>
-          <td>Move up the tree!</td>
-          <td>{formatDateTime(curParent.mtime)}</td>
-        </tr>
-      {/if}
-      {#each curNode?.children.slice().sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
-        {#if child.type === 'd'}
-          <tr role="button" onclick={() => enterChild(child)}>
-            <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir{child.name == '1337' ? '2' : ''}">{child.name}</a></td>
-            <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
-            <td>{child.remark}</td>
-            <td>{formatDateTime(child.mtime)}</td>
-          </tr>
-        {:else if child.type === 'f'}
-          <tr>
-            <td><a href={getDownloadPath(curPath, child)} target="_blank" class="file-file" data-ext={ext(child.name)}>{child.name}</a></td>
-            <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
-            <td>{child.remark}</td>
-            <td>{formatDateTime(child.mtime)}</td>
-          </tr>
-        {:else if child.type === 'l'}
-          <tr>
-            <td><a href={child.href} target="_blank" class="file-link">{child.name}</a></td>
-            <td>-</td>
-            <td>{child.remark}</td>
-            <td>{formatDateTime(child.mtime)}</td>
-          </tr>
+{#if fileRoot}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dl">
+      {#each curPath as item, index}
+        {#if index + 1 === curPath.length}
+          <li class="breadcrumb-item active" aria-current="page">{item.name} ({formatSize(item.size)})</li>
+        {:else}
+          <li class="breadcrumb-item"><a href="#{getPathString(curPath.slice(0, index + 1))}" onclick={(event) => (event.preventDefault(), up((curPath.length - 1) - index))}>{item.name}</a></li>
         {/if}
       {/each}
-    {:else}
-      <tr class="table-danger">
-        <!-- svelte-ignore a11y_invalid_attribute -->
-        <td><a href="#" target="_blank" class="file-loading">[Loading]</a></td>
-        <td><em>Unknown</em></td>
-        <td>Possible malfunction!</td>
-        <td>{formatDateTime(Date.now())}</td>
+    </ol>
+  </nav>
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        {#snippet fileHeader (id: string, name: string)}
+          <th onclick={() => setSort(id)} class="sort-{curSort === id ? curSortReverse ? 'd' : 'a' : 'n'}">{name}</th>
+        {/snippet}
+        {@render fileHeader('name', 'Name')}
+        {@render fileHeader('size', 'Size')}
+        {@render fileHeader('remark', 'Remarks')}
+        {@render fileHeader('mtime', 'Modified Time')}
       </tr>
-    {/if}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {#if fileRoot}
+        {#if curPath.length > 2}
+          <tr class="table-success" role="button" onclick={() => up(curPath.length - 1)}>
+            <!-- svelte-ignore a11y_invalid_attribute We actually want this to unset the hash -->
+            <td><a onclick={(event) => event.preventDefault()} href="" class="file-root">. (root)</a></td>
+            <td title={formatSize(fileRoot.size, true)}>{formatSize(fileRoot.size)}</td>
+            <td>Go to the top!</td>
+            <td>{formatDateTime(fileRoot.mtime)}</td>
+          </tr>
+        {/if}
+        {#if curPath.length > 1}
+          {@const curParent = curPath[curPath.length - 2]}
+          <tr class="table-warning" role="button" onclick={() => up(1)}>
+            <td><a onclick={(event) => event.preventDefault()} href="#{getPathString(curPath.slice(0, -1))}" class="file-up">.. (up)</a></td>
+            <td title={formatSize(curParent.size, true)}>{formatSize(curParent.size)}</td>
+            <td>Move up the tree!</td>
+            <td>{formatDateTime(curParent.mtime)}</td>
+          </tr>
+        {/if}
+        {#each curNode?.children.slice().sort((a, b) => cmpProp(a, b, 'type') || cmpProp(a, b, curSort, curSortReverse)) as child}
+          {#if child.type === 'd'}
+            <tr role="button" onclick={() => enterChild(child)}>
+              <td><a onclick={(event) => event.preventDefault()} href="#{getChildPath(curPath, child)}" class="file-dir{child.name == '1337' ? '2' : ''}">{child.name}</a></td>
+              <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
+              <td>{child.remark}</td>
+              <td>{formatDateTime(child.mtime)}</td>
+            </tr>
+          {:else if child.type === 'f'}
+            <tr>
+              <td><a href={getDownloadPath(curPath, child)} target="_blank" class="file-file" data-ext={ext(child.name)}>{child.name}</a></td>
+              <td title={formatSize(child.size, true)}>{formatSize(child.size)}</td>
+              <td>{child.remark}</td>
+              <td>{formatDateTime(child.mtime)}</td>
+            </tr>
+          {:else if child.type === 'l'}
+            <tr>
+              <td><a href={child.href} target="_blank" class="file-link">{child.name}</a></td>
+              <td>-</td>
+              <td>{child.remark}</td>
+              <td>{formatDateTime(child.mtime)}</td>
+            </tr>
+          {/if}
+        {/each}
+      {:else}
+        <tr class="table-danger">
+          <!-- svelte-ignore a11y_invalid_attribute -->
+          <td><a href="#" target="_blank" class="file-loading">[Loading]</a></td>
+          <td><em>Unknown</em></td>
+          <td>Possible malfunction!</td>
+          <td>{formatDateTime(Date.now())}</td>
+        </tr>
+      {/if}
+    </tbody>
+  </table>
+{:else if loadError}
+  <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error</h4>
+    <pre>{(loadError as Error).stack ?? loadError}</pre>
+  </div>
+{:else}
+  <div class="alert alert-warning" role="alert">
+    This page is loading the listing&hellip;
+  </div>
+{/if}

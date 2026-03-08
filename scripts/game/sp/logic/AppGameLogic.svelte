@@ -1,6 +1,8 @@
 <script lang="ts">
 import { pState } from '@/util/svelte.svelte'
 
+let loadError: unknown = $state()
+
 let logicPresets: Preset[][] = $state([])
 
 const title = pState('game/sp/logic/title', '')
@@ -58,26 +60,30 @@ function reset (): void {
 }
 
 async function loadLogic () {
-  const resp = await fetch('logic.json')
-  const p: Record<string, (RawPreset | null)[]> = await resp.json()
+  try {
+    const resp = await fetch('logic.json')
+    const p: Record<string, (RawPreset | null)[]> = await resp.json()
 
-  logicPresets = Object.keys(p).sort().map((presetKey) => p[presetKey]
-    .flatMap((puzzle, num) => puzzle
-      ? {
-          num,
-          name: puzzle.name,
-          desc: puzzle.desc.trim(),
-          clues: puzzle.clues.map((c) => c.trim()),
-          types: puzzle.types || [],
-          rules: puzzle.rules || [],
-          solution: puzzle.solution2 ? puzzle.solution2.map((x) => [...x].map((y, i) => puzzle.types[i].vals[+y])) : puzzle.solution,
-        }
-      : []
+    logicPresets = Object.keys(p).sort().map((presetKey) => p[presetKey]
+      .flatMap((puzzle, num) => puzzle
+        ? {
+            num,
+            name: puzzle.name,
+            desc: puzzle.desc.trim(),
+            clues: puzzle.clues.map((c) => c.trim()),
+            types: puzzle.types || [],
+            rules: puzzle.rules || [],
+            solution: puzzle.solution2 ? puzzle.solution2.map((x) => [...x].map((y, i) => puzzle.types[i].vals[+y])) : puzzle.solution,
+          }
+        : []
+      )
     )
-  )
+  } catch (e) {
+    console.error(loadError = e)
+  }
 }
 
-loadLogic()
+void loadLogic()
 </script>
 
 <div class="row">
@@ -190,5 +196,16 @@ loadLogic()
         {/each}
       </tbody>
     </table>
+  {:else}
+    {#if loadError}
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Error</h4>
+        <pre>{(loadError as Error).stack ?? loadError}</pre>
+      </div>
+    {:else}
+      <div class="alert alert-warning" role="alert">
+        This page is loading the presets&hellip;
+      </div>
+    {/if}
   {/each}
 </div>

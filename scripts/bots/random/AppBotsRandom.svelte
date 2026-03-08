@@ -9,6 +9,7 @@ const TWEET_LEN = 280
 type Tweet = [short: string, long?: string]
 
 let rankedWords: string[] | undefined = $state()
+let loadError: unknown = $state()
 let tweets: Tweet[] = $state([])
 
 function getWord (): string {
@@ -54,9 +55,13 @@ function randomize (): void {
 }
 
 onMount(async () => {
-  const res = await fetch('random_rankedWords.json')
-  rankedWords = await res.json()
-  randomize()
+  try {
+    const res = await fetch('random_rankedWords.json')
+    rankedWords = await res.json()
+    randomize()
+  } catch (e) {
+    console.error(loadError = e)
+  }
 })
 </script>
 
@@ -71,8 +76,15 @@ p {
 
 {#if rankedWords}
   <button class="btn btn-primary d-block w-100 mb-3" onclick={randomize}>Randomize</button>
+{:else if loadError}
+  <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error</h4>
+    <pre>{(loadError as Error).stack ?? loadError}</pre>
+  </div>
 {:else}
-  <div class="alert alert-danger" role="alert">This page is loading the word list&hellip;</div>
+  <div class="alert alert-warning" role="alert">
+    This page is loading the word list&hellip;
+  </div>
 {/if}
 
 <div>

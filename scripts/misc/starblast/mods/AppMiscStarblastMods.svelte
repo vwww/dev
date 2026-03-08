@@ -391,7 +391,7 @@ onMount(async function () {
 {#if useLive && loadError}
   <div class="alert alert-danger" role="alert">
     <h4 class="alert-heading">Error</h4>
-    {loadError}
+    <pre>{(loadError as Error).stack ?? loadError}</pre>
   </div>
 {:else}
   <div class="list-group">
