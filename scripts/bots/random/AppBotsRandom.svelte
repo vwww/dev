@@ -1,8 +1,9 @@
 <script lang="ts">
 import { onMount } from 'svelte'
-import { slide } from 'svelte/transition'
 
 import { randomArrayItemZipf } from '@/util'
+
+import TweetList from './TweetList.svelte'
 
 const TWEET_LEN = 280
 
@@ -65,15 +66,6 @@ onMount(async () => {
 })
 </script>
 
-<style>
-p {
-	border: 1px dashed;
-	display: inline-block;
-	font-size: 1.6em;
-	position: relative;
-}
-</style>
-
 {#if rankedWords}
   <button class="btn btn-primary d-block w-100 mb-3" onclick={randomize}>Randomize</button>
 {:else if loadError}
@@ -87,15 +79,4 @@ p {
   </div>
 {/if}
 
-<div>
-  {#each tweets as [tweetShort, tweetFull] (tweetShort)}
-    <p transition:slide title={tweetFull}>
-      {#if tweetFull}
-        <span class="badge text-bg-danger">{tweetFull.length}</span>
-      {:else}
-        <span class="badge text-bg-{tweetShort.length === TWEET_LEN ? 'success' : 'warning'}">{tweetShort.length}</span>
-      {/if}
-      {tweetShort}
-    </p>
-  {/each}
-</div>
+<TweetList {tweets} />
