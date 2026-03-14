@@ -75,7 +75,7 @@ async function downloadFile (url: string) {
 function parseGrammar () {
   try {
     grammar = Grammar.fromStr(grammarSourceText = grammarText)
-    grammarRule = grammar.productionOrder[0]
+    grammarRule = grammar.productionOrder.at(-1)!
     grammarTime = new Date().toISOString()
     grammarError = undefined
   } catch (e) {
