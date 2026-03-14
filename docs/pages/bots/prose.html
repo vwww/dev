@@ -1,16 +1,17 @@
 ---
 title: Prose Generator
 date: "2019-09-19 19:33:00 -0600"
+mdate: 2026-03-14 11:00:00 -0600
+entry: app_bots_prose
 ---
-<div class="alert alert-secondary" role="alert">
-  This bot does not exist yet. It is still under development.
-
-  As I no longer use Twitter, this bot will never be deployed. It might become a preview that generates tweets locally.
+<div class="alert alert-warning" role="alert">
+  As I no longer use Twitter, this bot will never be deployed. Below is a preview that generates tweets locally.
 </div>
 
 <div class="row">
   <div class="col-md-8">
-    <p><a href="https://twitter.com/prosegen">@prosegen</a> is a future bot. It will generate sentences from a probabilistic context-free grammar.</p>
+    <p><a href="https://twitter.com/prosegen">@prosegen</a> was planned to be a bot that would generate sentences from a probabilistic context-free grammar.</p>
+    <p>However, the probabilistic portion has not yet been implemented, and each alternative in a production rule has equal probability to be selected.</p>
   </div>
 
   <div class="col-md-4">
@@ -18,3 +19,7 @@ date: "2019-09-19 19:33:00 -0600"
     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
   </div>
 </div>
+
+<h2>Local Stream</h2>
+
+{% include 'app.html' %}

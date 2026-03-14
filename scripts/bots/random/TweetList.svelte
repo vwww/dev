@@ -11,23 +11,21 @@ const { tweets }: Props = $props()
 </script>
 
 <div>
-  {#each tweets as [tweetShort, tweetFull] (tweetShort)}
-    <p transition:slide title={tweetFull}>
+  {#each tweets as [tweetShort, tweetFull], i (i + tweetShort)}
+    <div class="t my-2 px-3 py-2" transition:slide title={tweetFull}>
       {#if tweetFull}
         <span class="badge text-bg-danger">{tweetFull.length}</span>
       {:else}
         <span class="badge text-bg-{tweetShort.length === TWEET_LEN ? 'success' : 'warning'}">{tweetShort.length}</span>
       {/if}
       {tweetShort}
-    </p>
+    </div>
   {/each}
 </div>
 
 <style>
-p {
+.t {
   border: 1px dashed;
-  display: inline-block;
   font-size: 1.6em;
-  position: relative;
 }
 </style>
