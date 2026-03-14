@@ -33,24 +33,17 @@ function validateInput (this: HTMLTextAreaElement) {
 }
 </style>
 
-<div class="row mb-3">
-  <div class="col-sm-6 col-md-3 col-lg-2">
-    <p><a href="https://twitter.com/googuns_lulz">@googuns_lulz</a> was inspired by other <code>@googuns_</code> Twitter bots.</p>
+<p>
+  <a href="https://twitter.com/googuns_lulz">@googuns_lulz</a> was inspired by other <code>@googuns_</code> Twitter bots.
 
-    <p>Some parts of its messages are random, but some are defined.</p>
-  </div>
-  <div class="col-sm-6 col-md-4 col-lg-4">
-    <a class="twitter-timeline" data-height="300" data-chrome="nofooter" data-dnt="true" href="https://twitter.com/googuns_lulz">Tweets by @googuns_lulz</a>
-    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-  </div>
-  <div class="col-md-5 col-lg-6">
-    <h2>Message Parser</h2>
+  Some parts of its messages are random, but some are defined.
+</p>
 
-    <p>Copy and paste a tweet:</p>
+<h2>Message Parser</h2>
 
-    <textarea class="form-control" bind:value={v.value} oninput={validateInput} maxlength="280" placeholder={'0'.repeat(280)}></textarea>
-  </div>
-</div>
+<p>Copy and paste a tweet:</p>
+
+<textarea class="form-control my-3" bind:value={v.value} oninput={validateInput} maxlength="280" placeholder={'0'.repeat(280)}></textarea>
 
 <Parse2 value={v.value} />
 <Parse1 value={v.value} />
