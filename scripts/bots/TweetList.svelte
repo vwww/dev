@@ -2,15 +2,17 @@
 import { pState } from '@/util/svelte.svelte'
 import { slide } from 'svelte/transition'
 
-const TWEET_LEN = 280
-
 interface Props {
-  tweets: [short: string, long?: string][]
+  tweets: string[]
 }
 
 const { tweets }: Props = $props()
 
 let showFullTweet = pState('game/mp/_shared/showFullTweet', false)
+</script>
+
+<script module>
+export const TWEET_LEN = 280
 </script>
 
 <div class="input-group mb-3">
@@ -23,14 +25,13 @@ let showFullTweet = pState('game/mp/_shared/showFullTweet', false)
 </div>
 
 <div>
-  {#each tweets as [tweetShort, tweetFull], i (i + tweetShort)}
-    <div class="tweet my-2 px-3 py-2" class:showFull={showFullTweet.value} transition:slide title={tweetFull}>
-      {#if tweetFull}
-        <span class="badge text-bg-danger">{tweetFull.length}</span>
-      {:else}
-        <span class="badge text-bg-{tweetShort.length === TWEET_LEN ? 'success' : 'warning'}">{tweetShort.length}</span>
+  {#each tweets as tweet, i (i + tweet)}
+    {@const exceed = tweet.length > TWEET_LEN}
+    <div class="tweet my-2 px-3 py-2" class:showFull={showFullTweet.value} transition:slide>
+      <span class="badge text-bg-{exceed ? 'danger' : tweet.length === TWEET_LEN ? 'success' : 'warning'}">{tweet.length}</span>
+      <span>{exceed ? tweet.slice(0, TWEET_LEN - 1) : tweet}</span>{#if exceed}
+        <span class="text-muted">&hellip;</span><span class="text-danger">{tweet.slice(TWEET_LEN - 1)}</span>
       {/if}
-      <span class="body" data-short={tweetShort} data-full={tweetFull || tweetShort}></span>
     </div>
   {/each}
 </div>
@@ -40,8 +41,8 @@ let showFullTweet = pState('game/mp/_shared/showFullTweet', false)
   border: 1px dashed;
   font-size: 1.6em;
 
-  .body::after {
-    content: attr(data-short);
+  .text-danger {
+    display: none;
   }
 
   &:hover, &:active, &:focus {
@@ -49,8 +50,11 @@ let showFullTweet = pState('game/mp/_shared/showFullTweet', false)
   }
 
   &.showFull, &:hover, &:active, &:focus {
-    .body::after {
-      content: attr(data-full);
+    .text-muted {
+      display: none;
+    }
+    .text-danger {
+      display: initial;
     }
   }
 }
