@@ -3,7 +3,7 @@ import { onMount } from 'svelte'
 
 import { randomArrayItemZipf } from '@/util'
 
-import TweetList from './TweetList.svelte'
+import TweetList from '../TweetList.svelte'
 
 const TWEET_LEN = 280
 

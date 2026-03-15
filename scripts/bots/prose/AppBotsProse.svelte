@@ -1,5 +1,5 @@
 <script lang="ts">
-import TweetList from '../random/TweetList.svelte'
+import TweetList from '../TweetList.svelte'
 
 import { Grammar, TokenStream } from './grammar'
 
