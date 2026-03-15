@@ -20,6 +20,7 @@ export class TokenStream {
   }
 
   next (): string {
+    let iterLimit = 1 << 16
     while (this.stack.length) {
       const [terminal, value] = this.stack.pop()!
 
@@ -33,6 +34,10 @@ export class TokenStream {
               throw new Error('stack overflow')
             }
             this.stack.push(rule[i])
+          }
+
+          if (!--iterLimit) {
+            throw new Error('iterarion limit reached')
           }
           continue
         }
