@@ -241,9 +241,9 @@ function cleft (prefix: string, suffix: string): [string, string] {
 function makeTweet (): Tweet {
   const abstractRules = []
 
-  while (!abstractRules.length || Math.random() < 0.1) {
+  do {
     abstractRules.push(randomArrayItem(RULES))
-  }
+  } while (Math.random() < 0.1)
 
   const rules = abstractRules.map(([cOrMany, rule]) => {
     const c = typeof cOrMany === 'string' ? cOrMany : randomArrayItem(cOrMany)
