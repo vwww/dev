@@ -30,19 +30,19 @@ const RULES: [string | string[], string | ((s: string) => string)][] = [
       '[Whoever] are',
       '[Whoever] was',
       'those [who] are',
-      'person [who] is',
+      'person [who is]',
       'person [who] are',
       'persons [who] are',
-      'persons [who] is',
+      'persons [who are]',
       'people [who] are',
-      'people [who] is',
+      'people [who are]',
       'people [who] were',
-      'people [who] was',
+      'people [who were]',
     ],
     (s) => {
       const words = s.split(' ')
-      const withFix = words.at(-2)!.slice(1, -1)
-      return `unlike ‘${withFix.replace('o', 'om')}’, ‘${withFix}’ is the subject of ‘${words.at(-1)}’`
+      const withFix = words.at(-2)!.replace(/[[\]]/g, '')
+      return `unlike ‘${withFix.replace('o', 'om')}’, ‘${withFix}’ is the subject of ‘${words.at(-1)!.replace(']', '')}’`
     }
   ],
 ]
