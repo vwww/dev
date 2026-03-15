@@ -140,14 +140,8 @@ function randMistakeNoun (): string {
 
 const MSG_LOADERS: ((secondPerson: boolean, clause: string) => [prefix: string, suffix: string])[] = [
   (secondPerson, c) => cleft(yourPrepend(secondPerson, c), randPastPerfect().join(' ')),
-  (secondPerson, c) => {
-    const [m, v] = randPastPerfect()
-    return cleft(yourPrepend(secondPerson, c), m+' '+v)
-  },
-  (secondPerson, c) => {
-    const [m, v] = randInfinitive()
-    return cleft(yourPrepend(secondPerson, c), m+' '+v)
-  },
+  (secondPerson, c) => cleft(yourPrepend(secondPerson, c), randPastPerfect().join(' ')),
+  (secondPerson, c) => cleft(yourPrepend(secondPerson, c), randInfinitive().join(' ')),
   (secondPerson, c) => {
     const a = randomArrayItem(['could', 'might', 'would'])
     const b = randomArrayItem(['have been', 'be'])
@@ -172,31 +166,31 @@ const MSG_LOADERS: ((secondPerson: boolean, clause: string) => [prefix: string, 
   },
   (secondPerson, c) => {
     let suffix: string
-    // infinitive rather than perfect (50%)
-    const [m, v] = Math.random() < .50 ? randInfinitive() : randPastPerfect()
     const n = randMistakeNoun()
+    // infinitive rather than perfect (50%)
+    const mv = (Math.random() < .50 ? randInfinitive : randPastPerfect)().join(' ')
     if (Math.random() < .50) { // perfect (have) instead of simple past (50%)
       const h = secondPerson ? 'have' : 'has'
       const a = randomArrayItem(['written', 'made', 'created', 'tweeted', 'posted', 'typed'])
-      suffix = `${h} ${a} ${n} and ${m} ${v}`
+      suffix = `${h} ${a} ${n} and ${mv}`
     } else {
       const a = randomArrayItem(['wrote', 'made', 'created', 'tweeted', 'posted', 'typed'])
-      suffix = `${a} ${n} and ${m} ${v}`
+      suffix = `${a} ${n} and ${mv}`
     }
     return cleft(c, suffix)
   },
   (secondPerson, c) => {
     let suffix: string
-    // infinitive rather than perfect (50%)
-    const [m, v] = Math.random() < .50 ? randInfinitive() : randPastPerfect()
     const n = randTweetNoun(true)
+    // infinitive rather than perfect (50%)
+    const mv = (Math.random() < .50 ? randInfinitive : randPastPerfect)().join(' ')
     if (Math.random() < .50) { // perfect (have) instead of simple past (50%)
       const h = secondPerson ? 'have' : 'has'
       const a = randomArrayItem(['miswritten', 'botched', 'blundered', 'messed up', 'malformed', 'screwed up', 'mistyped'])
-      suffix = `${h} ${a} ${n} and ${m} ${v}`
+      suffix = `${h} ${a} ${n} and ${mv}`
     } else {
       const a = randomArrayItem(['miswrote', 'botched', 'blundered', 'messed up', 'malformed', 'screwed up', 'mistyped'])
-      suffix = `${a} ${n} and ${m} ${v}`
+      suffix = `${a} ${n} and ${mv}`
     }
     return cleft(c, suffix)
   },
@@ -251,8 +245,8 @@ function makeTweet (): Tweet {
     abstractRules.push(randomArrayItem(RULES))
   }
 
-  const rules = abstractRules.map(([correctionOrMultiple, rule]) => {
-    const c = typeof correctionOrMultiple === 'string' ? correctionOrMultiple : randomArrayItem(correctionOrMultiple)
+  const rules = abstractRules.map(([cOrMany, rule]) => {
+    const c = typeof cOrMany === 'string' ? cOrMany : randomArrayItem(cOrMany)
     return [c, typeof rule === 'string' ? rule : rule(c)]
   })
   const corrections = rules.map(([correction]) => `“${correction}”`)
