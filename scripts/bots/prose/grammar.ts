@@ -12,12 +12,10 @@ export class Grammar {
 type GrammarSymbol = [terminal: boolean, value: string]
 type ProductionRule = GrammarSymbol[]
 
-const MAX_STACK = 1 << 16
-
 export class TokenStream {
   stack: GrammarSymbol[]
 
-  constructor (public g: Grammar, startSymbol: string) {
+  constructor (public g: Grammar, startSymbol: string, public maxStackSize: number) {
     this.stack = [[false, startSymbol]]
   }
 
@@ -31,9 +29,10 @@ export class TokenStream {
           // Add non-terminals to stack
           const rule = randomArrayItem(p)
           for (let i = rule.length - 1; i >= 0; i--) {
-            if (this.stack.push(rule[i]) > MAX_STACK) {
+            if (this.stack.length >= this.maxStackSize) {
               throw new Error('stack overflow')
             }
+            this.stack.push(rule[i])
           }
           continue
         }
@@ -48,11 +47,14 @@ export class TokenStream {
     return ''
   }
 
-  produce (): string {
+  produce (stopAfter: number): string {
     const s = []
     let nextToken
     while (nextToken = this.next()) {
       s.push(nextToken)
+      if ((stopAfter -= nextToken.length) <= 0) {
+        break
+      }
     }
     return s.join('')
   }

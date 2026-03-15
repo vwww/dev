@@ -1,7 +1,12 @@
 <script lang="ts">
 import TweetList from '../TweetList.svelte'
 
+import { pState } from '@/util/svelte.svelte'
+
 import { Grammar, TokenStream } from './grammar'
+
+const maxStackSize = pState('bot/prose/maxStackSize', 1 << 16)
+const stopAtLimit = pState('bot/prose/stopAtLimit', false)
 
 interface ExampleFile {
   name: string
@@ -42,7 +47,7 @@ function generateTweet (maxLen = TWEET_LEN): Tweet {
   const result = []
   let remain = maxLen
   while (remain > 1) {
-    const newSentence = new TokenStream(grammar, grammarRule).produce()
+    const newSentence = new TokenStream(grammar, grammarRule, maxStackSize.value).produce(stopAtLimit.value ? remain : Number.POSITIVE_INFINITY)
     result.push(newSentence)
     remain -= newSentence.length + 1
   }
@@ -148,6 +153,14 @@ void init()
         <option>{e}</option>
       {/each}
     </select>
+    <span class="input-group-text">Max Stack Size</span>
+    <input class="form-control" type="number" min="1" bind:value={maxStackSize.value}>
+    <span class="input-group-text">
+      <label class="form-check mx-auto">
+        <input type="checkbox" class="form-check-input" bind:checked={stopAtLimit.value}>
+        Stop tokens at limit
+      </label>
+    </span>
     <button class="btn btn-outline-primary" type="button" onclick={generate}>Generate</button>
   </div>
 {/if}
