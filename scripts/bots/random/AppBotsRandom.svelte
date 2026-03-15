@@ -3,11 +3,11 @@ import { onMount } from 'svelte'
 
 import { randomArrayItemZipf } from '@/util'
 
-import TweetList, { TWEET_LEN } from '../TweetList.svelte'
+import TweetList, { TWEET_LEN, type Tweet } from '../TweetList.svelte'
 
 let rankedWords: string[] | undefined = $state()
 let loadError: unknown = $state()
-let tweets: string[] = $state([])
+let tweets: Tweet[] = $state([])
 
 function getWord (): string {
   if (!rankedWords) return 'the'
@@ -29,21 +29,21 @@ function randomSentence (maxLen: number): string {
   return result.join(' ')
 }
 
-function randomTweet (maxLen = TWEET_LEN): string {
+function randomTweet (): Tweet {
   const result = []
-  let remain = maxLen
+  let remain = TWEET_LEN
   while (remain > 1) {
     const newWords = randomSentence(remain)
     result.push(newWords)
     remain -= newWords.length + 1
   }
 
-  return result.join('\u2014') // '&mdash;'
+  return [result.join('\u2014'), new Date()] // '&mdash;'
 }
 
 function randomize (): void {
   const NUM_TWEETS = 16
-  tweets = Array.from({ length: NUM_TWEETS }, randomTweet)
+  tweets = Array.from({ length: NUM_TWEETS }, randomTweet).reverse()
 }
 
 onMount(async () => {

@@ -2,11 +2,14 @@
 import { pState } from '@/util/svelte.svelte'
 import { slide } from 'svelte/transition'
 
+export type Tweet = [tweet: string, time?: Date]
+
 interface Props {
-  tweets: string[]
+  tweets: Tweet[]
+  alwaysShowFull?: boolean
 }
 
-const { tweets }: Props = $props()
+const { tweets, alwaysShowFull = false }: Props = $props()
 
 let showFullTweet = pState('game/mp/_shared/showFullTweet', false)
 </script>
@@ -15,22 +18,27 @@ let showFullTweet = pState('game/mp/_shared/showFullTweet', false)
 export const TWEET_LEN = 280
 </script>
 
-<div class="input-group mb-3">
-  <span class="input-group-text flex-grow-1">
-    <label class="form-check mx-auto">
-      <input type="checkbox" class="form-check-input" bind:checked={showFullTweet.value}>
-      Show full tweet text
-    </label>
-  </span>
-</div>
+{#if !alwaysShowFull}
+  <div class="input-group mb-3">
+    <span class="input-group-text flex-grow-1">
+      <label class="form-check mx-auto">
+        <input type="checkbox" class="form-check-input" bind:checked={showFullTweet.value}>
+        Show full tweet text
+      </label>
+    </span>
+  </div>
+{/if}
 
 <div>
-  {#each tweets as tweet, i (i + tweet)}
+  {#each tweets as [tweet, date], i (i + tweet)}
     {@const exceed = tweet.length > TWEET_LEN}
-    <div class="tweet my-2 px-3 py-2" class:showFull={showFullTweet.value} transition:slide>
+    <div class="tweet my-2 px-3 py-2" class:showFull={alwaysShowFull || showFullTweet.value} transition:slide>
       <span class="badge text-bg-{exceed ? 'danger' : tweet.length === TWEET_LEN ? 'success' : 'warning'}">{tweet.length}</span>
-      <span>{exceed ? tweet.slice(0, TWEET_LEN - 1) : tweet}</span>{#if exceed}
+      <span style="overflow-wrap: anywhere">{exceed ? tweet.slice(0, TWEET_LEN - 1) : tweet}</span>{#if exceed}
         <span class="text-muted">&hellip;</span><span class="text-danger">{tweet.slice(TWEET_LEN - 1)}</span>
+      {/if}
+      {#if date}
+        <div class="text-muted text-end">{date.toISOString()}</div>
       {/if}
     </div>
   {/each}
@@ -50,7 +58,7 @@ export const TWEET_LEN = 280
   }
 
   &.showFull, &:hover, &:active, &:focus {
-    .text-muted {
+    span.text-muted {
       display: none;
     }
     .text-danger {

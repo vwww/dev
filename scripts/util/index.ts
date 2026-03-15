@@ -1,6 +1,7 @@
 export * from './array'
 export * from './dom'
 export * from './math'
+export * from './text'
 
 export function deepCopy<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj))

@@ -16,8 +16,6 @@
   - name: Random Words
     desc: 'This bot spews a stream of random words.'
     href: bots/random
-    badges:
-      - [warning, Local]
   - name: Recent Ideas
     desc: '@recentideas learns to tweet from recent tweets.'
     href: bots/recent
@@ -32,8 +30,6 @@
       - name: Twitter
         href: https://twitter.com/prosegen
         ext: true
-    badges:
-      - [warning, Local]
   - name: GooGuns Lulz
     desc: '@googuns_lulz is like other @googuns_ accounts, yet very different.'
     href: bots/googuns
@@ -41,8 +37,6 @@
       - name: Twitter
         href: https://twitter.com/googuns_lulz
         ext: true
-    badges:
-      - [warning, Local]
   - name: Bing Tomorrow
     desc: "@BingTomorrow can see the future! It can predict Bing's homepage image for tomorrow."
     href: bots/bing_tomorrow
@@ -50,8 +44,6 @@
       - name: Twitter
         href: https://twitter.com/BingTomorrow
         ext: true
-    badges:
-      - [warning, Local]
   - name: Spelling
     desc: "@Bot_Dictionary corrects users' spelling. Its output rate from random searches is quite low."
     href: bots/spelling

@@ -1,7 +1,9 @@
 <script lang="ts">
-import Gen from './Gen.svelte'
+import Gen, { randomHex } from './Gen.svelte'
 import Parse1 from './Parse1.svelte'
 import Parse2 from './Parse2.svelte'
+import { generate2_0 } from './Parse2_0.svelte'
+import type { Tweet } from '../TweetList.svelte'
 
 import { tick } from 'svelte'
 import { pState } from '@/util/svelte.svelte'
@@ -24,11 +26,34 @@ async function validate (textbox: HTMLTextAreaElement) {
 function validateInput (this: HTMLTextAreaElement) {
   validate(this)
 }
+
+
+let tweets: Tweet[] = $state([])
+
+function generateTweet (): Tweet {
+  const now = new Date()
+  const timeHex = Math.floor(+now / 1000).toString(16).padStart(16, '0')
+  const rHex = randomHex(120)
+
+  return [generate2_0(timeHex, rHex), now]
+}
+
+function generate (): void {
+  const NUM_TWEETS = 16
+  tweets = Array.from({ length: NUM_TWEETS }, generateTweet).reverse()
+}
+
+generate()
 </script>
 
 <style>
 :global(td) {
   max-width: 100px;
+  overflow-wrap: break-word;
+}
+
+.tweet {
+  font-family: monospace;
   overflow-wrap: break-word;
 }
 </style>
@@ -57,3 +82,20 @@ function validateInput (this: HTMLTextAreaElement) {
 + = concatenation.
 data[a:b] = slice from data[a] to data[b-1], with a=0 and b=data.length by default; empty slice if a=b.
 </pre>
+
+<h2>Local Stream</h2>
+
+<p>Here is a preview that generates random examples.</p>
+
+<button class="btn btn-primary d-block w-100 mb-3" onclick={generate}>Generate</button>
+
+<div class="list-group">
+  {#each tweets as [tweet, date]}
+    <button type="button" class="list-group-item list-group-item-action"
+      class:active={v.value === tweet}
+      onclick={() => v.value = tweet}>
+      <span class="tweet">{tweet}</span>
+      <div class="text-muted text-end">{date!.toISOString()}</div>
+    </button>
+  {/each}
+</div>

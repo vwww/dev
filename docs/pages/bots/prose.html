@@ -1,17 +1,21 @@
 ---
 title: Prose Generator
 date: "2019-09-19 19:33:00 -0600"
-mdate: 2026-03-14 11:00:00 -0600
+mdate: 2026-03-15 10:00:00 -0600
 entry: app_bots_prose
 ---
 <div class="alert alert-warning" role="alert">
-  As I no longer use Twitter, this bot will never be deployed. Below is a preview that generates tweets locally.
+  As I no longer use Twitter, this bot will never be deployed.
 </div>
 
 <p><a href="https://twitter.com/prosegen">@prosegen</a> was planned to be a bot that would generate sentences from a probabilistic context-free grammar.</p>
 
+<p>I initially <a href="https://github.com/theonlypwner/tokenstream">implemented this in Go</a> but migrated it to TypeScript to run the below preview in a browser.</p>
+
 <p>However, the probabilistic portion has not yet been implemented, and each alternative in a production rule has equal probability to be selected.</p>
 
 <h2>Local Stream</h2>
+
+<p>Here is a preview that generates random examples.</p>
 
 {% include 'app.html' %}

@@ -61,8 +61,10 @@ function recalcTimeFromStr (): void {
   }
   timestampHex = timestampNum.toString(16).padStart(16, '0')
 }
+</script>
 
-function randomHex (len: number): string {
+<script module>
+export function randomHex (len: number): string {
   const data = new Uint8Array(len)
   if (window.crypto) {
     window.crypto.getRandomValues(data)

@@ -1,5 +1,5 @@
 <script lang="ts">
-import TweetList, { TWEET_LEN } from '../TweetList.svelte'
+import TweetList, { TWEET_LEN, type Tweet } from '../TweetList.svelte'
 
 import { pState } from '@/util/svelte.svelte'
 
@@ -33,28 +33,28 @@ let grammarRule = $state('')
 let tweetError: unknown = $state()
 let tweetsGrammarTime = $state('')
 let tweetsRule = $state('')
-let tweets: string[] = $state([])
+let tweets: Tweet[] = $state([])
 
-function generateTweet (maxLen = TWEET_LEN): string {
+function generateTweet (): Tweet {
   if (!grammar) {
-    return 'ERROR'
+    return ['ERROR', new Date()]
   }
 
   const result = []
-  let remain = maxLen
+  let remain = TWEET_LEN
   while (remain > 1) {
     const newSentence = new TokenStream(grammar, grammarRule, maxStackSize.value).produce(stopAtLimit.value ? remain : Number.POSITIVE_INFINITY)
     result.push(newSentence)
     remain -= newSentence.length + 1
   }
 
-  return result.join(' ')
+  return [result.join(' '), new Date()]
 }
 
 function generate (): void {
   const NUM_TWEETS = 16
   try {
-    tweets = Array.from({ length: NUM_TWEETS }, generateTweet)
+    tweets = Array.from({ length: NUM_TWEETS }, generateTweet).reverse()
     tweetsGrammarTime = grammarTime
     tweetsRule = grammarRule
     tweetError = undefined
