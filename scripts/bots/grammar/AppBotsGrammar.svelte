@@ -27,11 +27,11 @@ const RULES: [string | string[], string | ((s: string) => string)][] = [
   [
     [
       '[Whoever] is',
-      '[Whoever] are',
+      '[Whoever is]',
       '[Whoever] was',
       'those [who] are',
+      'person [who] is',
       'person [who is]',
-      'person [who] are',
       'persons [who] are',
       'persons [who are]',
       'people [who] are',
