@@ -9,7 +9,7 @@ interface Props {
   alwaysShowFull?: boolean
 }
 
-const { tweets, alwaysShowFull = false }: Props = $props()
+const { tweets, alwaysShowFull }: Props = $props()
 
 let showFullTweet = pState('game/mp/_shared/showFullTweet', false)
 </script>
