@@ -5,6 +5,7 @@ export class SlimeInput {
   private readonly keyManager = new KeyInputManager()
   private keyFlags = 0
   private keyFlagsFlip = 0
+  private keyFlagsL = false
 
   private readonly mouseManager = new MouseInputManager()
 
@@ -24,10 +25,15 @@ export class SlimeInput {
   private KeyR (): boolean { return this.keyManager.isOn(39) || this.keyManager.isOn(68) }
 
   private updateKeyFlags (): void {
-    const L = this.KeyL() ? 1 : 0
-    const R = this.KeyR() ? 1 : 0
+    const l = this.KeyL()
+    const r = this.KeyR()
+    const L = l && (!this.keyFlagsL || !r) ? 1 : 0
+    const R = r && (this.keyFlagsL || !l) ? 1 : 0
     const U = this.KeyU() ? 1 : 0
     this.keyFlags = L | (R << 1) | (U << 2)
     this.keyFlagsFlip = R | (L << 1) | (U << 2)
+    if (l !== r) {
+      this.keyFlagsL = l
+    }
   }
 }
