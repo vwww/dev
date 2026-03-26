@@ -20,11 +20,13 @@ const gameState = new SlimeGame(chatState)
 const name = pState('game/mp/_shared/name', '')
 const color = pState('game/mp/slime/color', '#77ff00')
 const flip = pState('game/mp/slime/f', false)
+const neutral = pState('game/mp/slime/n', false)
 const background = pState('game/mp/slime/b', false)
 const drawHat = pState('game/mp/slime/h', false)
 const devMode = pState('game/mp/slime/d', false)
 
 $effect(() => { gameState.flipP1 = flip.value })
+$effect(() => { gameState.input.neutral = neutral.value })
 $effect(() => { gameState.drawFancyBackground = background.value })
 $effect(() => { gameState.drawHat = drawHat.value })
 $effect(() => { gameState.drawDev = devMode.value })
@@ -86,6 +88,21 @@ let slimePlay: SlimePlay
     </span>
     <span class="input-group-text flex-grow-1">
       <label class="form-check mx-auto">
+        <input type="checkbox" class="form-check-input" bind:checked={neutral.value}>
+        Neutral SOCD
+      </label>
+    </span>
+    <span class="input-group-text flex-grow-1">
+      <label class="form-check mx-auto">
+        <input type="checkbox" class="form-check-input" onclick={function () { this.checked = false; slimePlay.requestFullscreen() }}>
+        <span class="form-check-label">Full-Screen</span>
+      </label>
+    </span>
+  </div>
+
+  <div class="input-group mb-3">
+    <span class="input-group-text flex-grow-1">
+      <label class="form-check mx-auto">
         <input type="checkbox" class="form-check-input" bind:checked={background.value}>
         Fancy Background
       </label>
@@ -100,12 +117,6 @@ let slimePlay: SlimePlay
       <label class="form-check mx-auto">
         <input type="checkbox" class="form-check-input" bind:checked={devMode.value}>
         Dev Mode
-      </label>
-    </span>
-    <span class="input-group-text flex-grow-1">
-      <label class="form-check mx-auto">
-        <input type="checkbox" class="form-check-input" onclick={function () { this.checked = false; slimePlay.requestFullscreen() }}>
-        <span class="form-check-label">Full-Screen</span>
       </label>
     </span>
   </div>

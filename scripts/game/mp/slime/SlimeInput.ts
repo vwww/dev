@@ -2,6 +2,8 @@ import { KeyInputManager } from '@gmc/ui/KeyInputManager'
 import { MouseInputManager } from '@gmc/ui/MouseInputManager'
 
 export class SlimeInput {
+  neutral?: boolean
+
   private readonly keyManager = new KeyInputManager()
   private keyFlags = 0
   private keyFlagsFlip = 0
@@ -27,8 +29,8 @@ export class SlimeInput {
   private updateKeyFlags (): void {
     const l = this.KeyL()
     const r = this.KeyR()
-    const L = l && (!this.keyFlagsL || !r) ? 1 : 0
-    const R = r && (this.keyFlagsL || !l) ? 1 : 0
+    const L = l && (this.neutral || !this.keyFlagsL || !r) ? 1 : 0
+    const R = r && (this.neutral || this.keyFlagsL || !l) ? 1 : 0
     const U = this.KeyU() ? 1 : 0
     this.keyFlags = L | (R << 1) | (U << 2)
     this.keyFlagsFlip = R | (L << 1) | (U << 2)
