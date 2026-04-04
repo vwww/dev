@@ -33,15 +33,28 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
 
   const showBars = dEnd - dStart <= 7200000 * xWidth
   if (!showBars) {
-    return [{
-      x: 0,
-      y: 0,
-      width: xWidth,
-      height: 70,
-      fill: colorScale[1],
-      label: '[zoom in for details]',
-      tooltip: '',
-    }]
+    let exceeded
+    traverseHistory(dStart, dEnd, modHistory,
+      (event) => !!event.infoActive.length,
+      (_tStart, _tEnd, curHistory) => {
+        if (!curHistory.infoActive.length) {
+          return
+        }
+        exceeded = true
+        return dEnd
+      }
+    )
+    if (exceeded) {
+      return [{
+        x: 0,
+        y: 0,
+        width: xWidth,
+        height: 70,
+        fill: colorScale[1],
+        label: '[zoom in for details]',
+        tooltip: '',
+      }]
+    }
   }
 
   traverseHistory(dStart, dEnd, modHistory,
