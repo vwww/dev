@@ -58,7 +58,9 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   }
 
   traverseHistory(dStart, dEnd, modHistory,
-    (event, prevEvent) => !event.add || (event.mod?.active && !(event.mod.featured && prevEvent.infoFeatured.length)),
+    (event, prevEvent) => event.mod?.active && !event.mod.featured
+      || event.infoActiveHours !== prevEvent.infoActiveHours
+      || !event.infoFeatured.length !== !prevEvent.infoFeatured.length,
     (tStart, tEnd, curHistory, nextHistory) => {
       const active = curHistory.infoActive
       const total = curHistory.infoActiveHours * 3600000
@@ -120,9 +122,8 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   // featured
   let featuredColor = 1
   traverseHistory(dStart, dEnd, modHistory,
-    (event) => event.add
-      ? event.mod?.active && event.mod.featured
-      : event.prop === 'featured' || (event.prop === 'active' && event.mod!.featured),
+    (event, prevEvent) => event.infoFeatured.length !== prevEvent.infoFeatured.length
+      || !event.add && event.mod?.active && event.mod.featured && (event.prop === 'title' || event.prop === 'mod_id'),
     (tStart, tEnd, curHistory, nextHistory) => {
       const xStart = Math.max(xScale(tStart), 0)
       const xEnd = Math.min(xScale(tEnd), xWidth)
