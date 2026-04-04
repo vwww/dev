@@ -211,6 +211,7 @@ function init (): void {
 
   barGroup = viz.append('g')
   barTextGroup = viz.append('g')
+    .style('pointer-events', 'none')
 
   xAxis = viz.append('g')
     .classed('axis', true)
