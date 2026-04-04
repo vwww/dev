@@ -123,7 +123,9 @@ export function generateData (xScale: d3.ScaleTime<number, number>, modHistory: 
   let featuredColor = 1
   traverseHistory(dStart, dEnd, modHistory,
     (event, prevEvent) => event.infoFeatured.length !== prevEvent.infoFeatured.length
-      || !event.add && event.mod?.active && event.mod.featured && (event.prop === 'title' || event.prop === 'mod_id'),
+      || !event.add
+        && event.mod?.active && event.mod.featured
+        && (event.prop === 'title' || event.prop === 'mod_id'),
     (tStart, tEnd, curHistory, nextHistory) => {
       const xStart = Math.max(xScale(tStart), 0)
       const xEnd = Math.min(xScale(tEnd), xWidth)
