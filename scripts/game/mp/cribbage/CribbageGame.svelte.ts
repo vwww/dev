@@ -522,9 +522,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
       scoreReasons,
     })
 
-    if (score >= this.mode.optScoreTarget) return
-
-    if (this.playerInfo.some(p => p.handSize)) {
+    if (score < this.mode.optScoreTarget && this.playerInfo.some(p => p.handSize)) {
       this.processMovePlayPost()
     } else if (!this.processMoveFinal()) {
       if (this.mode.optPre) {
