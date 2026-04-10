@@ -1,7 +1,7 @@
 import { getDefaultOptions, type GamemodeFromOptions } from '@gmc/RoomOption'
 
 export const roomCreateOptions = [
-  ['optTurnTime', 'i', 20000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 5000, 60000],
+  ['optTurnTime', 'i', 30000, 'Turn Time / ms', 'duration of each turn, in milliseconds', 5000, 120000],
   ['optScoreTarget', 'i', 121, 'Score Target', 'game ends when this score is reached', 1, 1000],
   ['optSkipEmpty', 'b', true, 'Skip Empty', 'automatically pass (no cards)'],
   ['optSkipPass', 'b', true, 'Skip Pass', 'automatically pass (with cards but cannot play any)'],
