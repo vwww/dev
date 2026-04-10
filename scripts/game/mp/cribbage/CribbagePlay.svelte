@@ -4,7 +4,7 @@ import RoundPlayerList from '@gmc/RoundPlayerList.svelte'
 import { GameState } from '@gmc/game/TurnBasedGame.svelte'
 
 import CribbageCard from './CribbageCard.svelte'
-import { GamePhase, type CribbageGame } from './CribbageGame.svelte'
+import { cardRank, cardValue, GamePhase, type CribbageGame } from './CribbageGame.svelte'
 import CribbageMoveHistory from './CribbageMoveHistory.svelte'
 import CribbageScoreReasons from './CribbageScoreReasons.svelte'
 
@@ -187,8 +187,7 @@ const {
               {#each myHand as card, i}
                 {#if i >= localPlayer.played.length}
                   {@const value = i - localPlayer.played.length}
-                  {@const count = Math.min((card >> 2) + 1, 10)}
-                  {@const newCount = trickCount + count}
+                  {@const newCount = trickCount + cardValue(cardRank(card))}
                   {@const [scoreDelta, scoreReasons] = gameState.scorePlay(card)}
                   <tr class:table-success={gameState.pendingMove === value} class:table-danger={newCount > 31}>
                     <th>
@@ -203,7 +202,7 @@ const {
                     <td class:table-primary={newCount === 31}>{newCount}</td>
                     {#if showValuePlay}
                       <td>
-                        +{scoreDelta}
+                        {gameState.scorePlayFinal(newCount, i).map((d) => d ? `+${scoreDelta}+${d}` : `+${scoreDelta}`).join(' or ')}
                         {#if scoreReasons.length}
                           <br>
                           (<CribbageScoreReasons {scoreReasons} {colorScheme} />)
@@ -220,7 +219,7 @@ const {
                     bind:group={gameState.pendingMove}>
                 </th>
                 <td colspan={showValuePlay ? 3 : 2}>
-                  {gameState.mode.optSkipEmpty && gameState.mode.optSkipPass || myHand.some((card, i) => i >= localPlayer.played.length && trickCount + Math.min((card >> 2) + 1, 10) <= 31) ? 'Random' : 'Pass'}
+                  {gameState.mode.optSkipEmpty && gameState.mode.optSkipPass || myHand.some((card, i) => i >= localPlayer.played.length && trickCount + cardValue(cardRank(card)) <= 31) ? 'Random' : 'Pass'}
                 </td>
               </tr>
             </tbody>

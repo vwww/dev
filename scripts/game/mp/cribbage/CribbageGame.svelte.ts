@@ -218,6 +218,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
   play: number[] = $state([])
   crib: number[] = $state([])
   cribSize = $state(0)
+  usedRanks: number[] = [] // count cards that opponents cannot play
 
   moveHistory = $state([] as CribbageMoveInfo[])
 
@@ -380,6 +381,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     this.play = []
     this.crib = []
     this.cribSize = this.playerInfo.length === 3 ? 1 : 0
+    this.usedRanks = Array.from({ length: CardRank.NUM }, () => 0)
   }
 
   protected processMoveConfirm (m: ByteReader) {
@@ -458,7 +460,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
       }
     }
 
-    const bonus = (this.starter = m.get()) >> 2 === CardRank.FJack
+    const bonus = cardRank(this.starter = m.get()) === CardRank.FJack
 
     const p = this.playerInfo[this.dealer]
     const c = this.clients[p.owner]
@@ -491,6 +493,9 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
       return
     }
 
+    const rank = cardRank(card)
+    const value = cardValue(rank)
+
     const p = this.playerInfo[this.turnIndex]
     const c = this.clients[p.owner]
     const playerIsMe = c === this.localClient
@@ -499,6 +504,8 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
       const i = this.myHand.length - p.handSize
       this.myHand[this.myHand.indexOf(card)] = this.myHand[i]
       this.myHand[i] = card
+    } else {
+      this.usedRanks[rank]++
     }
 
     p.handSize--
@@ -507,9 +514,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     const [scoreDelta, scoreReasons] = this.scorePlay(card)
 
     this.play.push(card)
-    const cardRank = card >> 2
-    const cardValue = Math.min(cardRank + 1, 10)
-    this.trickCount += cardValue
+    this.trickCount += value
 
     const score = p.score += scoreDelta
     this.moveHistory.push({
@@ -539,13 +544,13 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     let scoreDelta = 0
     const scoreReasons: ScoreReason[] = []
 
-    const cardRank = card >> 2
-    const cardValue = Math.min(cardRank + 1, 10)
+    const rank = cardRank(card)
+    const value = cardValue(rank)
 
     const cards = [...this.play, card]
 
     // check 15
-    if (this.trickCount + cardValue === 15) {
+    if (this.trickCount + value === 15) {
       scoreDelta = 2
       scoreReasons.push({
         score: 2,
@@ -555,9 +560,9 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     }
 
     // check pairs
-    if (cards.length >= 2 && cards.at(-2)! >> 2 === cardRank) {
-      if (cards.length >= 3 && cards.at(-3)! >> 2 === cardRank) {
-        if (cards.length >= 4 && cards.at(-4)! >> 2 === cardRank) {
+    if (cards.length >= 2 && cardRank(cards.at(-2)!) === rank) {
+      if (cards.length >= 3 && cardRank(cards.at(-3)!) === rank) {
+        if (cards.length >= 4 && cardRank(cards.at(-4)!) === rank) {
           scoreDelta += 12
           scoreReasons.push({
             score: 12,
@@ -585,20 +590,20 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     // check run
     let bestRun = cards.length - 1
     let bitmask = 0
-    let lowRank = cardRank
-    let highRank = cardRank
+    let lowRank = rank
+    let highRank = rank
     for (let i = bestRun; i >= 0; i--) {
-      const rank = cards[i] >> 2
-      if ((bitmask & (1 << rank)) != 0) {
+      const rank2 = cardRank(cards[i])
+      if ((bitmask & (1 << rank2)) != 0) {
         break
       }
-      bitmask |= 1 << rank
+      bitmask |= 1 << rank2
 
-      if (lowRank > rank) {
-        lowRank = rank
+      if (lowRank > rank2) {
+        lowRank = rank2
       }
-      if (highRank < rank) {
-        highRank = rank
+      if (highRank < rank2) {
+        highRank = rank2
       }
 
       if (highRank - lowRank + 1 === cards.length - i) {
@@ -616,6 +621,35 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     }
 
     return [scoreDelta, scoreReasons]
+  }
+
+  scorePlayFinal (newCount: number, i: number): number[] {
+    if (newCount === 31) {
+      return [2]
+    } else if (newCount < 31) {
+      if (this.playerInfo.some(p => p.owner !== this.localClient.cn && !p.passed && p.handSize)) {
+        // other players might be able to move
+        if (newCount <= 21) {
+          // other players can move for sure
+          return [0]
+        }
+
+        // only 4 ranks can be unavailable to an opponent (1 crib + 4 my hand + 4 + 4 + 3)
+        if (newCount < 31 - 4 || this.usedRanks.slice(31 - newCount).some((v) => v < 4)) {
+          // other players might also be unable to move
+          return [0, 1]
+        }
+        // other players always cannot move, so only we can move
+      }
+
+      // only we can move
+      if (!this.myHand.some((card, j) => j >= this.localPlayer!.played.length && i !== j && newCount + cardValue(cardRank(card)) <= 31)) {
+        // current move forces new trick
+        return [1]
+      }
+      // we must make next move in same trick
+    }
+    return [0]
   }
 
   private processMovePlayPost (): void {
@@ -770,11 +804,11 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     for (let i = cards.length - 1; i >= 0; i--) {
       const c = cards[i]
 
-      const rank = c >> 2
+      const rank = cardRank(c)
       byRank[rank].push(i)
 
       const reach = reachableValues[reachableValues.length - 1]
-      reachableValues.push(reach | (reach << Math.min(rank + 1, 10)) & 0xffff)
+      reachableValues.push(reach | (reach << cardValue(rank)) & 0xffff)
     }
 
     const cardsUsed: number[] = []
@@ -783,7 +817,7 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
       const prevRow = reachableValues[cards.length - 1 - i]
 
       // use current card
-      const v = Math.min((c >> 2) + 1, 10)
+      const v = cardValue(cardRank(c))
       if (target >= v) {
         cardsUsed.push(c)
         if (target > v) {
@@ -968,6 +1002,9 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
 
   private processPrivateInfoHand (m: ByteReader): void {
     this.myHand = Array.from({ length: this.cardsPerPlayer() }, () => m.get())
+    for (const c of this.myHand) {
+      this.usedRanks[cardRank(c)]++
+    }
   }
 
   protected override readonly playersSortProps = [
@@ -1010,4 +1047,12 @@ function comparePlayerInfo (a: CribbagePlayerInfo, b: CribbagePlayerInfo): numbe
 
 function readHand (m: ByteReader): [number, number, number, number] {
   return [m.get(), m.get(), m.get(), m.get()]
+}
+
+export function cardRank (card: number): number {
+  return card >> 2
+}
+
+export function cardValue (cardRank: number): number {
+  return Math.min(cardRank + 1, 10)
 }
