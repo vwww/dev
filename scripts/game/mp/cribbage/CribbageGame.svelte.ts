@@ -626,30 +626,32 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
   scorePlayFinal (newCount: number, i: number): number[] {
     if (newCount === 31) {
       return [2]
-    } else if (newCount < 31) {
+    } else if (newCount < 31 && !this.nextMovePossible(newCount, i)) {
       if (this.playerInfo.some(p => p.owner !== this.localClient.cn && !p.passed && p.handSize)) {
-        // other players might be able to move
         if (newCount <= 21) {
-          // other players can move for sure
+          // other players can move
           return [0]
         }
 
         // only 4 ranks can be unavailable to an opponent (1 crib + 4 my hand + 4 + 4 + 3)
         if (newCount < 31 - 4 || this.usedRanks.slice(31 - newCount).some((v) => v < 4)) {
-          // other players might also be unable to move
+          // other players might be able to move
           return [0, 1]
         }
-        // other players always cannot move, so only we can move
+        // other players cannot move
       }
-
-      // only we can move
-      if (!this.myHand.some((card, j) => j >= this.localPlayer!.played.length && i !== j && newCount + cardValue(cardRank(card)) <= 31)) {
-        // current move forces new trick
-        return [1]
-      }
-      // we must make next move in same trick
+      // trick must end
+      return [1]
     }
     return [0]
+  }
+
+  nextMovePossible (count: number, exclude?: number): boolean {
+    return this.myHand.some((card, i) =>
+      i >= this.localPlayer!.played.length
+      && i !== exclude
+      && count + cardValue(cardRank(card)) <= 31
+    )
   }
 
   private processMovePlayPost (): void {
