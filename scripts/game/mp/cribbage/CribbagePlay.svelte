@@ -20,6 +20,14 @@ interface Props {
 
 const { gameState, showValueCrib, showValueHand, showValuePlay, colorScheme }: Props = $props()
 
+function formatScoreDeltaWithFinal (scoreDelta: number, scoreFinal: number): string {
+  return scoreFinal
+    ? scoreFinal > 2
+      ? `+${scoreDelta} or +${scoreDelta}+1`
+      : `+${scoreDelta}+${scoreFinal}`
+    : `+${scoreDelta}`
+}
+
 const {
   roundState,
   playerInfo,
@@ -201,13 +209,8 @@ const {
                     </td>
                     <td class:table-primary={newCount === 31}>{newCount}</td>
                     {#if showValuePlay}
-                      {@const scoreFinal = gameState.scorePlayFinal(newCount, i)}
                       <td>
-                        {scoreFinal
-                          ? scoreFinal > 2
-                            ? `+${scoreDelta} or +${scoreDelta}+1`
-                            : `+${scoreDelta}+${scoreFinal}`
-                          : `+${scoreDelta}`}
+                        {formatScoreDeltaWithFinal(scoreDelta, gameState.scorePlayFinal(newCount, i))}
                         {#if scoreReasons.length}
                           <br>
                           (<CribbageScoreReasons {scoreReasons} {colorScheme} />)
