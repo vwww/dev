@@ -201,8 +201,13 @@ const {
                     </td>
                     <td class:table-primary={newCount === 31}>{newCount}</td>
                     {#if showValuePlay}
+                      {@const scoreFinal = gameState.scorePlayFinal(newCount, i)}
                       <td>
-                        {gameState.scorePlayFinal(newCount, i).map((d) => d ? `+${scoreDelta}+${d}` : `+${scoreDelta}`).join(' or ')}
+                        {scoreFinal
+                          ? scoreFinal > 2
+                            ? `+${scoreDelta} or +${scoreDelta}+1`
+                            : `+${scoreDelta}+${scoreFinal}`
+                          : `+${scoreDelta}`}
                         {#if scoreReasons.length}
                           <br>
                           (<CribbageScoreReasons {scoreReasons} {colorScheme} />)

@@ -623,27 +623,27 @@ export class CribbageGame extends RoundRobinGame<CribbageClient, CribbagePlayerI
     return [scoreDelta, scoreReasons]
   }
 
-  scorePlayFinal (newCount: number, i: number): number[] {
+  scorePlayFinal (newCount: number, i: number): number {
     if (newCount === 31) {
-      return [2]
+      return 2
     } else if (newCount < 31 && !this.nextMovePossible(newCount, i)) {
       if (this.playerInfo.some(p => p.owner !== this.localClient.cn && !p.passed && p.handSize)) {
         if (newCount <= 21) {
           // other players can move
-          return [0]
+          return 0
         }
 
         // only 4 ranks can be unavailable to an opponent (1 crib + 4 my hand + 4 + 4 + 3)
         if (newCount < 31 - 4 || this.usedRanks.slice(31 - newCount).some((v) => v < 4)) {
           // other players might be able to move
-          return [0, 1]
+          return 3
         }
         // other players cannot move
       }
       // trick must end
-      return [1]
+      return 1
     }
-    return [0]
+    return 0
   }
 
   nextMovePossible (count: number, exclude?: number): boolean {
