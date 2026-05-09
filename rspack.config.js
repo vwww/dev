@@ -4,8 +4,6 @@ import path from 'path'
 import rspack from '@rspack/core'
 import { RspackManifestPlugin } from 'rspack-manifest-plugin'
 
-import sveltePreprocess from 'svelte-preprocess'
-
 const __dirname = import.meta.dirname
 const devMode = process.env.NODE_ENV !== 'production'
 
@@ -40,7 +38,6 @@ export default {
               dev: devMode
             },
             hotReload: devMode,
-            preprocess: sveltePreprocess({})
           }
         },
       },

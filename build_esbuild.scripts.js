@@ -6,7 +6,6 @@ import path from 'path'
 
 import esbuild from 'esbuild'
 import esbuildSvelte from 'esbuild-svelte'
-import sveltePreprocess from 'svelte-preprocess'
 import manifestPlugin from 'esbuild-plugin-manifest'
 
 const __dirname = import.meta.dirname
@@ -48,9 +47,7 @@ const config = {
       },
 	  shortNames: true,
     }),
-    esbuildSvelte({
-      preprocess: sveltePreprocess(),
-    }),
+    esbuildSvelte(),
   ],
 }
 
