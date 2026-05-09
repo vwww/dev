@@ -22,7 +22,7 @@ export class WSAdapter implements BaseGameRoom, Connection {
   }
 
   send (msg: Uint8Array): void {
-    this.ws.send(msg)
+    this.ws.send(msg as BufferSource)
   }
 
   registerRecv (cb: MsgCallback): void {
