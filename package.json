@@ -59,7 +59,7 @@
     "sass-embedded": "^1.100.0",
     "svelte-check": "^4.6.0",
     "svelte-loader": "^3.2.4",
-    "ts-loader": "^9.6.0",
+    "ts-loader": "^9.5.7",
     "typescript": "^6.0.3"
   },
   "dependencies": {
