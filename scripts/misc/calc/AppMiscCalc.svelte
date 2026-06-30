@@ -1,11 +1,5 @@
 <script lang="ts">
-const enum NumMode {
-  Result,
-  ResultMem,
-  Entering,
-  EnteringNum,
-  EnteringDec,
-}
+import { NumMode } from './NumMode'
 
 let display = $state('0')
 
