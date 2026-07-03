@@ -176,34 +176,23 @@ onMount(async () => {
   <p>{Sfiltered}/{Tfiltered} [{Sfiltered.toString(36)}/{Tfiltered.toString(36)}] states/transitions are filtered from the original {S}/{T} [{S.toString(36)}/{T.toString(36)}].</p>
 
   <button class="btn btn-primary d-block w-100 mb-3" onclick={generate}>Generate</button>
-{:else if loadError}
-  <div class="alert alert-danger" role="alert">
-    <h4 class="alert-heading">Error</h4>
-    <pre>{(loadError as Error).stack ?? loadError}</pre>
-  </div>
-{:else}
-  <div class="alert alert-warning" role="alert">
-    This page is loading the Markov chain&hellip;
-  </div>
-{/if}
 
-<TweetList {tweets} />
+  <TweetList {tweets} />
 
-<h2>Markov Chain Viewer</h2>
+  <h2>Markov Chain Viewer</h2>
 
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb breadcrumb-dl">
-    {#each curPath as item, index}
-      {#if index + 1 === curPath.length}
-        <li class="breadcrumb-item active" aria-current="page">{item[0]}</li>
-      {:else}
-        <li class="breadcrumb-item"><a href="#{curPath.slice(2, index + 1).map(([k]) => k).join('/')}" onclick={(event) => (event.preventDefault(), curPath = curPath.slice(0, index + 1))}>{item[0]}</a></li>
-      {/if}
-    {/each}
-  </ol>
-</nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dl">
+      {#each curPath as item, index}
+        {#if index + 1 === curPath.length}
+          <li class="breadcrumb-item active" aria-current="page">{item[0]}</li>
+        {:else}
+          <li class="breadcrumb-item"><a href="#{curPath.slice(2, index + 1).map(([k]) => k).join('/')}" onclick={(event) => (event.preventDefault(), curPath = curPath.slice(0, index + 1))}>{item[0]}</a></li>
+        {/if}
+      {/each}
+    </ol>
+  </nav>
 
-{#if curNode}
   {#if curNode[1]}
     {#each sortTransitions(curNode[1]) as [name, weight]}
       <span class="d-inline-block my-1 px-1">
@@ -214,4 +203,13 @@ onMount(async () => {
   {:else}
     <p>This node has no transitions.</p>
   {/if}
+{:else if loadError}
+  <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error</h4>
+    <pre>{(loadError as Error).stack ?? loadError}</pre>
+  </div>
+{:else}
+  <div class="alert alert-warning" role="alert">
+    This page is loading the Markov chain&hellip;
+  </div>
 {/if}
