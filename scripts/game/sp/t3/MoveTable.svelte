@@ -21,6 +21,8 @@ const {
   getMemo
 }: Props = $props()
 
+let modalDetails: string | undefined = $state()
+
 function memoTitle (memo: MemoEntry, winnerMap: WinnerMap): string {
   const countPathsRaw = memo[1]
   const countPaths = remapPathCount(countPathsRaw, winnerMap)
@@ -83,10 +85,16 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
       {@const made = moveLength > i}
       {@const hasInfo = made || (moveLength === i && !winner)}
       {@const memo = hasInfo ? getMemo?.(boardHistory[i]) : undefined}
+      {@const title = memo && memoTitle(memo, winnerMap)}
 
       <tr>
         <td>#{i + 1}</td>
-        <td title={memo && memoTitle(memo, winnerMap)}>{memo?.[1][0].toLocaleString() ?? ''}</td>
+        <td {title}>
+          <!-- svelte-ignore a11y_invalid_attribute -->
+          <a href="" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick={() => modalDetails = title}>
+            {memo?.[1][0].toLocaleString() ?? ''}
+          </a>
+        </td>
         <td class:table-warning={made}>{made ? moveStack[i] + 1 : ''}</td>
         {#each [Winner.P1, Winner.P2, Winner.Tie] as w}
           {@const [text, className, title] = memo ? winInfo(i, memo, winnerMap, w) : []}
@@ -96,3 +104,22 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
     {/each}
   </tbody>
 </table>
+
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsModalTitle">Details</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex">
+          <pre>{modalDetails}</pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
