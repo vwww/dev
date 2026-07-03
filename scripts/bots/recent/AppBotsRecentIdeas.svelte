@@ -117,15 +117,33 @@ function generate (): void {
   tweets = Array.from({ length: NUM_TWEETS }, makeTweet).reverse()
 }
 
+let rawChains: Record<string, WeightedEdges>
+let curPath: [name: string, transitions: WeightedEdges][] = $state([])
+const curNode = $derived(curPath[curPath.length - 1])
+
+function sortTransitions (transitions: WeightedEdges): [string, number][] {
+  return Object.entries(transitions).sort(([aN, aV], [bN, bV]) => (bV - aV) || aN.localeCompare(bN))
+}
+
+function browse (node: string): void {
+  if (curPath.length > 1) {
+    const k = `${curPath.length > 2 ? curNode[0] : ''} ${node}`
+    curPath.push([node, rawChains[k]])
+  } else {
+    curPath.push(['root', rawChains[' ']])
+  }
+}
+
 onMount(async () => {
   try {
     const res = await fetch('recentideas.json')
-    const rawChains: Record<string, Record<string, number>> = await res.json()
+    rawChains = await res.json()
+    curPath = [['hide', {'click to open': 1}]]
 
     let s = 0
     let t = 0
     for (const [state, originalTransitions] of Object.entries(rawChains)) {
-      const transitions: Record<string, number> = {}
+      const transitions: WeightedEdges = {}
       let totalWeight = 0
 
       for (const [nextState, weight] of Object.entries(originalTransitions)) {
@@ -170,3 +188,30 @@ onMount(async () => {
 {/if}
 
 <TweetList {tweets} />
+
+<h2>Markov Chain Viewer</h2>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb breadcrumb-dl">
+    {#each curPath as item, index}
+      {#if index + 1 === curPath.length}
+        <li class="breadcrumb-item active" aria-current="page">{item[0]}</li>
+      {:else}
+        <li class="breadcrumb-item"><a href="#{curPath.slice(2, index + 1).map(([k]) => k).join('/')}" onclick={(event) => (event.preventDefault(), curPath = curPath.slice(0, index + 1))}>{item[0]}</a></li>
+      {/if}
+    {/each}
+  </ol>
+</nav>
+
+{#if curNode}
+  {#if curNode[1]}
+    {#each sortTransitions(curNode[1]) as [name, weight]}
+      <span class="d-inline-block my-1 px-1">
+        <button onclick={() => browse(name)} class="btn btn-outline-{weight > 1 ? 'primary' : 'secondary'}">{name}</button>
+        {weight}
+      </span>
+    {/each}
+  {:else}
+    <p>This node has no transitions.</p>
+  {/if}
+{/if}
