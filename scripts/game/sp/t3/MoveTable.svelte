@@ -98,7 +98,12 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
         <td class:table-warning={made}>{made ? moveStack[i] + 1 : ''}</td>
         {#each [Winner.P1, Winner.P2, Winner.Tie] as w}
           {@const [text, className, title] = memo ? winInfo(i, memo, winnerMap, w) : []}
-          <td class={className} {title}>{text}</td>
+          <td class={className} {title}>
+            <!-- svelte-ignore a11y_invalid_attribute -->
+            <a href="" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick={() => modalDetails = title}>
+              {text}
+            </a>
+          </td>
         {/each}
       </tr>
     {/each}
