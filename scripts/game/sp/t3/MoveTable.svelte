@@ -54,7 +54,7 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
     canForce ? `${otherPossible ? 'Forcable' : 'Result'} (${canForce === i + 1 ? 'now' : 'by #' + canForce})`
       : countPath ? 'Possible' : 'Impossible'
 
-  const className = `table-${canForce ? 'info' : countPath ? 'success' : 'danger'}`
+  const className = canForce ? 'info' : countPath ? 'success' : 'danger'
 
   const countPathForced = entry[2] ?? 0
   const countPathForcedNoTiming = entry[3] ?? 0
@@ -86,23 +86,26 @@ function winInfo (i: number, memo: MemoEntry, winnerMap: WinnerMap, result: Winn
       {@const hasInfo = made || (moveLength === i && !winner)}
       {@const memo = hasInfo ? getMemo?.(boardHistory[i]) : undefined}
       {@const title = memo && memoTitle(memo, winnerMap)}
+      {@const pathText = memo?.[1][0].toLocaleString()}
 
       <tr>
         <td>#{i + 1}</td>
         <td {title}>
-          <!-- svelte-ignore a11y_invalid_attribute -->
-          <a href="" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick={() => modalDetails = title}>
-            {memo?.[1][0].toLocaleString() ?? ''}
-          </a>
+          {#if pathText}
+            <button class="btn btn-sm btn-secondary"
+              data-bs-toggle="modal" data-bs-target="#detailsModal"
+              onclick={() => modalDetails = title}>{pathText}</button>
+          {/if}
         </td>
         <td class:table-warning={made}>{made ? moveStack[i] + 1 : ''}</td>
         {#each [Winner.P1, Winner.P2, Winner.Tie] as w}
           {@const [text, className, title] = memo ? winInfo(i, memo, winnerMap, w) : []}
-          <td class={className} {title}>
-            <!-- svelte-ignore a11y_invalid_attribute -->
-            <a href="" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick={() => modalDetails = title}>
-              {text}
-            </a>
+          <td class="table-{className}" {title}>
+            {#if text}
+              <button class="btn btn-sm btn-{className}"
+                data-bs-toggle="modal" data-bs-target="#detailsModal"
+                onclick={() => modalDetails = title}>{text}</button>
+            {/if}
           </td>
         {/each}
       </tr>
