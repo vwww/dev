@@ -205,7 +205,13 @@ onMount(() => (window as any).jQuery ||= jQuery)
       onSetPage={page => leaderboardPage = page} />
   </div>
   <div class="tab-pane" id="problem" role="tabpanel">
-    <h2>Problem #{problemPageNum.toLocaleString()}: Do Nothing{problemPageNum === PROBLEM_SPECIAL ? '' : ` (alias of #${PROBLEM_SPECIAL.toLocaleString()})`}</h2>
+    <h2>
+      Problem #{problemPageNum.toLocaleString()}:
+      Do Nothing
+      {#if problemPageNum !== PROBLEM_SPECIAL}
+        (alias of <a href="#problem{PROBLEM_SPECIAL}" onclick={(event) => (event.preventDefault(), showProblem(PROBLEM_SPECIAL))}>#{PROBLEM_SPECIAL.toLocaleString()}</a>)
+      {/if}
+    </h2>
 
     <h3>Input</h3>
     <p>
@@ -316,7 +322,7 @@ onMount(() => (window as any).jQuery ||= jQuery)
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="userModalTitle">User {userModalUID}: {userIdToName(userModalUID)}</h5>
+        <h5 class="modal-title" id="userModalTitle">User Details</h5>
         <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
