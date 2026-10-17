@@ -625,11 +625,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
           if (this.mode.optPass === PresidentModePass.PASS_TURN) {
             this.unsetPassed()
           }
-          this.turnIndex = nextIndex
-
-          if (forceSkip) {
-            this.turnIndex = this.nextUnpassed(this.turnIndex)
-          }
+          this.turnIndex = forceSkip ? this.nextUnpassed(nextIndex) : nextIndex
         }
       }
 
