@@ -671,7 +671,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
 
   private passEndsTrick (p: PresidentPlayerInfo): boolean {
     const nextIndex = this.nextUnpassed(this.turnIndex)
-    if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) === this.turnIndex) {
+    if ((this.passIndex < 0 ? this.nextUnpassed(nextIndex) : nextIndex) === this.turnIndex) {
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
       this.passIndex = -1
       return true
