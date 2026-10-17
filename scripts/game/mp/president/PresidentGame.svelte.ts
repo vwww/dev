@@ -532,7 +532,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
         this.turnIndex = this.nextUnpassed(this.turnIndex)
       } else {
-        if (this.nextTurnAfterPass(p)) {
+        if (this.passEndsTrick(p)) {
           this.nextTrick()
         }
       }
@@ -620,7 +620,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
       this.passIndex = -1
       if (!endTrick) {
         if (this.mode.optPass === PresidentModePass.SINGLE_TURN && this.trickTurn) {
-          endTrick = this.nextTurnAfterPass(p)
+          endTrick = this.passEndsTrick(p)
         } else {
           if (this.mode.optPass === PresidentModePass.PASS_TURN) {
             this.unsetPassed()
@@ -669,7 +669,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
     this.trickTurn = 0
   }
 
-  private nextTurnAfterPass (p: PresidentPlayerInfo): boolean {
+  private passEndsTrick (p: PresidentPlayerInfo): boolean {
     const nextIndex = this.nextUnpassed(this.turnIndex)
     if (nextIndex === this.turnIndex || this.passIndex < 0 && this.nextUnpassed(nextIndex) === this.turnIndex) {
       this.turnIndex = this.passIndex < 0 ? nextIndex : this.passIndex
@@ -761,7 +761,7 @@ export class PresidentGame extends RoundRobinGame<PresidentClient, PresidentPlay
           if (this.gamePhase === GamePhase.PLAYING_MUST_EQUALIZE && this.mode.optEqualize === PresidentModeEqualize.CONTINUE_OR_SKIP) {
             this.turnIndex = this.nextUnpassed(this.turnIndex)
           } else {
-            if (this.nextTurnAfterPass(p)) {
+            if (this.passEndsTrick(p)) {
               this.nextTrick()
             }
           }
