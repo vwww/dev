@@ -36,27 +36,30 @@ ads:
       <th>Type</th>
       <th>Direct Link</th>
       <th>HTML</th>
+      <th>XHTML</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Text</td>
-      <td><input type="text" class="form-control" value="{{ ads.link }}" /></td>
-      <td><input type="text" class="form-control" value="&lt;a href=&quot;{{ ads.link }}&quot;&gt;{{ ads.text }}&lt;/a&gt;" /></td>
+      <td><input type="text" class="form-control" value="{{ ads.link }}" readonly></td>
+      <td colspan="2"><input type="text" class="form-control" value="&lt;a href=&quot;{{ ads.link }}&quot;&gt;{{ ads.text }}&lt;/a&gt;" readonly></td>
     </tr>
     <tr class="text-center">
-      <td colspan="3"><a href="{{ ads.link }}">{{ ads.text }}</a></td>
+      <td colspan="4"><a href="{{ ads.link }}">{{ ads.text }}</a></td>
     </tr>
     {%- for ad in ads.images %}
     {%- set file = ad.file or ad.w + '-' + ad.h %}
     {%- set adl = ads.prefix + file + ads.suffix -%}
-    {%- set adf %}<a href="{{ adl }}"><img src="{{ adl }}" alt="{{ ads.alt }}" width="{{ ad.w }}" height="{{ ad.h }}" /></a>{% endset -%}
+    {%- set adf %}<a href="{{ adl }}"><img src="{{ adl }}" alt="{{ ads.alt }}" width="{{ ad.w }}" height="{{ ad.h }}"></a>{% endset -%}
+    {%- set adx %}<a href="{{ adl }}"><img src="{{ adl }}" alt="{{ ads.alt }}" width="{{ ad.w }}" height="{{ ad.h }}" /></a>{% endset -%}
     <tr>
       <td>{{ ad.name }} ({{ ad.w }}x{{ ad.h }})</td>
-      <td><input type="text" class="form-control" value="{{ adl | escape }}" /></td>
-      <td><input type="text" class="form-control" value="{{ adf | escape }}" /></td>
+      <td><input type="text" class="form-control" value="{{ adl | escape }}" readonly></td>
+      <td><input type="text" class="form-control" value="{{ adf | escape }}" readonly></td>
+      <td><input type="text" class="form-control" value="{{ adx | escape }}" readonly></td>
     </tr>
-    <tr class="text-center"><td colspan="3">{{ adf }}</td></tr>
+    <tr class="text-center"><td colspan="4">{{ adf }}</td></tr>
     {%- endfor %}
   </tbody>
 </table>
